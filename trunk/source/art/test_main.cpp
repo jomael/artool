@@ -68,24 +68,24 @@ class TestClass
 				{
 					success = false;
 					SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_INTENSITY); 
-					#ifndef WIN32
+					#ifdef __linux__
 					std::cout << "\033[1;31m";
 					#endif
 					std::cout << prefix << "\t" << testList[i]->description << " FAILED.\n";
 					SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
-					#ifndef WIN32
+					#ifdef __linux__
 					std::cout << "\033[0m";
 					#endif
 				}
 				else
 				{
 					SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN ); 
-					#ifndef WIN32
+					#ifdef __linux__
 					std::cout << "\033[1;32m";
 					#endif
 					std::cout << prefix << "\t" <<  testList[i]->description << " succeded.\n";
 					SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
-					#ifndef WIN32
+					#ifdef __linux__
 					std::cout << "\033[0m";
 					#endif
 				}
@@ -145,24 +145,24 @@ class TestClass
 				{
 					overallsuccess = false;
 					SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_INTENSITY);
-					#ifndef WIN32
+					#ifdef __linux__
 					std::cout << "\033[1;31m";
 					#endif
 					std::cout << prefix << "\t" << testList[i]->description << " FAILED.\n";
 					SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
-					#ifndef WIN32
+					#ifdef __linux__
 					std::cout << "\033[0m";
 					#endif
 				}
 				else
 				{
 					SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN );
-					#ifndef WIN32
+					#ifdef __linux__
 					std::cout << "\033[1;32m";
 					#endif
 					std::cout << prefix << "\t" <<  testList[i]->description << " succeded.\n";
 					SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
-					#ifndef WIN32
+					#ifdef __linux__
 					std::cout << "\033[0m";
 					#endif
 				}
@@ -172,7 +172,7 @@ class TestClass
 				if (overallsuccess)
 				{
 					SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN );
-					#ifndef WIN32
+					#ifdef __linux__
 					std::cout << "\n\n\033[1;32mAll tests successful!\033[0m\n\n";
 					#else
 					std::cout << "\n\nAll tests successful!\n\n";
@@ -182,7 +182,7 @@ class TestClass
 				else
 				{
 					SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_INTENSITY);
-					#ifndef WIN32
+					#ifdef __linux__
 					std::cout << "\n\n\033[1;31mSome tests FAILED!\033[0m\n\n";
 					#else
 					std::cout << "\n\nSome tests FAILED!\n\n";
@@ -1614,6 +1614,7 @@ CUSTOM_TEST_DEF_START(removeElement, ARTreferencesInCircuits, ARTreferencesInCir
 			std::cout << "\n\n" << e.GetErrorMessage();;
 			return false;
 		}
+		return true;
 	}
 TEST_DEF_END(removeElement)
 
@@ -1631,6 +1632,7 @@ CUSTOM_TEST_DEF_START(removeAllElements, ARTreferencesInCircuits, ARTreferencesI
 			std::cout << "\n\n" << e.GetErrorMessage();;
 			return false;
 		}
+		return true;
 	}
 TEST_DEF_END(removeAllElements)
 
@@ -4692,7 +4694,7 @@ int main(int argc, char **argv)
 		if (success)
 		{
 			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN );
-			#ifndef WIN32
+			#ifdef __linux__
 			std::cout << "\n\n\033[1;32mAll tests successful!\033[0m\n\n";
 			#else
 			std::cout << "\n\nAll tests successful!\n\n";
@@ -4702,7 +4704,7 @@ int main(int argc, char **argv)
 		else
 		{
 			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_INTENSITY);
-			#ifndef WIN32
+			#ifdef __linux__
 			std::cout << "\n\n\033[1;31mSome tests FAILED!\033[0m\n\n";
 			#else
 			std::cout << "\n\nSome tests FAILED!\n\n";
