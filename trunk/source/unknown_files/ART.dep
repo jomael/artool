@@ -1,0 +1,101 @@
+# Microsoft Developer Studio Generated Dependency File, included by main.mak
+
+.\fortran\cbabk2.c : \
+	".\f2c.h"\
+
+.\fortran\cbal.c : \
+	".\f2c.h"\
+
+.\fortran\cdiv.c : \
+	".\f2c.h"\
+
+.\fortran\cg.c : \
+	".\f2c.h"\
+
+.\fortran\comqr.c : \
+	".\f2c.h"\
+
+.\fortran\comqr2.c : \
+	".\f2c.h"\
+
+.\fortran\corth.c : \
+	".\f2c.h"\
+
+.\fortran\csroot.c : \
+	".\f2c.h"\
+
+.\fortran\pythag.c : \
+	".\f2c.h"\
+
+.\simplematrix.cpp : \
+	".\simplematrix.h"\
+
+.\hornelement.cpp : \
+	"..\include\ga\gaconfig.h"\
+	"..\include\ga\garandom.h"\
+	"..\include\ga\gatypes.h"\
+	".\hornelement.h"\
+	".\legquadrature.h"\
+	".\matrix.h"\
+	".\simplematrix.h"\
+
+.\impedancecurve.cpp : \
+	".\impedancecurve.h"\
+
+.\legquadrature.cpp : \
+	".\legquadrature.h"\
+
+.\rosenbrock.cpp : \
+	".\matrix.h"\
+	".\rosenbrock.h"\
+
+.\windinstrument.cpp : \
+	"..\include\ga\gaconfig.h"\
+	"..\include\ga\gaerror.h"\
+	"..\include\ga\gaevaldata.h"\
+	"..\include\ga\gagenome.h"\
+	"..\include\ga\gaid.h"\
+	"..\include\ga\garandom.h"\
+	"..\include\ga\gatypes.h"\
+	"..\include\ga\std_stream.h"\
+	".\hornelement.h"\
+	".\impedancecurve.h"\
+	".\legquadrature.h"\
+	".\matrix.h"\
+	".\simplematrix.h"\
+	".\windinstrument.h"\
+	
+.\interface.cpp : \
+	".\hornelement.h"\
+	".\impedancecurve.h"\
+	".\windinstrument.h"\
+	".\interface.h"\
+
+.\ART.cpp : \
+	"..\include\ga\gabasega.h"\
+	"..\include\ga\gaconfig.h"\
+	"..\include\ga\gaerror.h"\
+	"..\include\ga\gaevaldata.h"\
+	"..\include\ga\gagenome.h"\
+	"..\include\ga\gaid.h"\
+	"..\include\ga\gaparameter.h"\
+	"..\include\ga\gapopulation.h"\
+	"..\include\ga\garandom.h"\
+	"..\include\ga\gascaling.h"\
+	"..\include\ga\gaselector.h"\
+	"..\include\ga\gasimplega.h"\
+	"..\include\ga\gastatistics.h"\
+	"..\include\ga\gatypes.h"\
+	"..\include\ga\std_stream.h"\
+	".\hornelement.h"\
+	".\impedancecurve.h"\
+	".\legquadrature.h"\
+	".\matrix.h"\
+	".\rosenbrock.h"\
+	".\runga.cpp"\
+	".\runrb.cpp"\
+	".\simplematrix.h"\
+	".\windinstrument.h"\
+	".\interface.h"\
+	".\ART.h"\
+	

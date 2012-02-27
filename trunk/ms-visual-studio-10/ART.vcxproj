@@ -1,0 +1,397 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug ARTInterface|Win32">
+      <Configuration>Debug ARTInterface</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <SccProjectName />
+    <SccLocalPath />
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug ARTInterface|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug ARTInterface|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>.\ART___Win32_Release\</OutDir>
+    <IntDir>.\ART___Win32_Release\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+    <TargetExt>.dll</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>.\Debug\</OutDir>
+    <IntDir>.\Debug\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug ARTInterface|Win32'">
+    <OutDir>.\ART___Win32_Debug_ARTInterface\</OutDir>
+    <IntDir>.\ART___Win32_Debug_ARTInterface\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <Optimization>Disabled</Optimization>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <AdditionalIncludeDirectories>..\include;..\include\art;..\include\muParser;..\include\ga;..\include\fortran;..\source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AssemblerListingLocation>.\ART___Win32_Release\</AssemblerListingLocation>
+      <PrecompiledHeaderOutputFile>.\ART___Win32_Release\ART.pch</PrecompiledHeaderOutputFile>
+      <ObjectFileName>.\ART___Win32_Release\</ObjectFileName>
+      <ProgramDataBaseFileName>.\ART___Win32_Release\</ProgramDataBaseFileName>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+    </ClCompile>
+    <Midl>
+      <TypeLibraryName>.\ART___Win32_Release\ART.tlb</TypeLibraryName>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0c07</Culture>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>.\ART___Win32_Release\ART.bsc</OutputFile>
+    </Bscmake>
+    <Link>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OutputFile>.\ART___Win32_Release\ART.dll</OutputFile>
+      <AdditionalDependencies>odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <Optimization>Disabled</Optimization>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <MinimalRebuild>true</MinimalRebuild>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <AdditionalIncludeDirectories>..\include;..\include\art;..\include\muParser;..\include\ga;..\include\fortran;..\source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AssemblerListingLocation>.\Debug\</AssemblerListingLocation>
+      <BrowseInformation>true</BrowseInformation>
+      <PrecompiledHeaderOutputFile>.\Debug\ART.pch</PrecompiledHeaderOutputFile>
+      <ObjectFileName>.\Debug\</ObjectFileName>
+      <ProgramDataBaseFileName>.\Debug\</ProgramDataBaseFileName>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+    </ClCompile>
+    <Midl>
+      <TypeLibraryName>.\Debug\ART.tlb</TypeLibraryName>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0c07</Culture>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>.\Debug\ART.bsc</OutputFile>
+    </Bscmake>
+    <Link>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OutputFile>.\Debug\ART.exe</OutputFile>
+      <AdditionalDependencies>odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug ARTInterface|Win32'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <FunctionLevelLinking>false</FunctionLevelLinking>
+      <Optimization>Disabled</Optimization>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+      <MinimalRebuild>true</MinimalRebuild>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <AdditionalIncludeDirectories>..\include;..\include\art;..\include\muParser;..\include\ga;..\include\fortran;..\source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;ARTinterfaceTest;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AssemblerListingLocation>.\ART___Win32_Debug_ARTInterface\</AssemblerListingLocation>
+      <BrowseInformation>true</BrowseInformation>
+      <PrecompiledHeaderOutputFile>.\ART___Win32_Debug_ARTInterface\ART.pch</PrecompiledHeaderOutputFile>
+      <ObjectFileName>.\ART___Win32_Debug_ARTInterface\</ObjectFileName>
+      <ProgramDataBaseFileName>.\ART___Win32_Debug_ARTInterface\</ProgramDataBaseFileName>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+    </ClCompile>
+    <Midl>
+      <TypeLibraryName>.\ART___Win32_Debug_ARTInterface\ART.tlb</TypeLibraryName>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0c07</Culture>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>.\ART___Win32_Debug_ARTInterface\ART.bsc</OutputFile>
+    </Bscmake>
+    <Link>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OutputFile>.\ART___Win32_Debug_ARTInterface\ART.exe</OutputFile>
+      <AdditionalDependencies>odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\source\art\Art.clp">
+      <FileType>Document</FileType>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\source\art\ART.cpp" />
+    <ClCompile Include="..\source\art\ARTdataContainer.cpp" />
+    <ClCompile Include="..\source\art\ARTerror.cpp" />
+    <ClCompile Include="..\source\art\ARTfunctionoid.cpp" />
+    <ClCompile Include="..\source\art\ARTlink.cpp" />
+    <ClCompile Include="..\source\art\hornelement.cpp" />
+    <ClCompile Include="..\source\art\impedancecurve.cpp" />
+    <ClCompile Include="..\source\art\interface.cpp" />
+    <ClCompile Include="..\source\art\legquadrature.cpp" />
+    <ClCompile Include="..\source\art\rosenbrock.cpp" />
+    <ClCompile Include="..\source\art\runga.cpp" />
+    <ClCompile Include="..\source\art\runrb.cpp" />
+    <ClCompile Include="..\source\art\simplematrix.cpp" />
+    <ClCompile Include="..\source\art\strparsing.cpp" />
+    <ClCompile Include="..\source\art\test_main.cpp" />
+    <ClCompile Include="..\source\art\windinstrument.cpp" />
+    <ClCompile Include="..\source\fortran\cbabk2.c" />
+    <ClCompile Include="..\source\fortran\cbal.c" />
+    <ClCompile Include="..\source\fortran\cdiv.c" />
+    <ClCompile Include="..\source\fortran\cg.c" />
+    <ClCompile Include="..\source\fortran\comqr.c" />
+    <ClCompile Include="..\source\fortran\comqr2.c" />
+    <ClCompile Include="..\source\fortran\corth.c" />
+    <ClCompile Include="..\source\fortran\csroot.c" />
+    <ClCompile Include="..\source\fortran\pythag.c" />
+    <ClCompile Include="..\source\ga\GA1DArrayGenome.cpp" />
+    <ClCompile Include="..\source\ga\GA1DBinStrGenome.cpp" />
+    <ClCompile Include="..\source\ga\GA2DArrayGenome.cpp" />
+    <ClCompile Include="..\source\ga\GA2DBinStrGenome.cpp" />
+    <ClCompile Include="..\source\ga\GA3DArrayGenome.cpp" />
+    <ClCompile Include="..\source\ga\GA3DBinStrGenome.cpp" />
+    <ClCompile Include="..\source\ga\GAAllele.cpp" />
+    <ClCompile Include="..\source\ga\GABaseGA.cpp" />
+    <ClCompile Include="..\source\ga\GABin2DecGenome.cpp" />
+    <ClCompile Include="..\source\ga\gabincvt.cpp" />
+    <ClCompile Include="..\source\ga\GABinStr.cpp" />
+    <ClCompile Include="..\source\ga\GADCrowdingGA.cpp" />
+    <ClCompile Include="..\source\ga\GADemeGA.cpp" />
+    <ClCompile Include="..\source\ga\gaerror.cpp" />
+    <ClCompile Include="..\source\ga\GAGenome.cpp" />
+    <ClCompile Include="..\source\ga\GAIncGA.cpp" />
+    <ClCompile Include="..\source\ga\GAList.cpp" />
+    <ClCompile Include="..\source\ga\GAListBASE.cpp" />
+    <ClCompile Include="..\source\ga\GAListGenome.cpp" />
+    <ClCompile Include="..\source\ga\GAParameter.cpp" />
+    <ClCompile Include="..\source\ga\GAPopulation.cpp" />
+    <ClCompile Include="..\source\ga\garandom.cpp" />
+    <ClCompile Include="..\source\ga\GARealGenome.cpp" />
+    <ClCompile Include="..\source\ga\GAScaling.cpp" />
+    <ClCompile Include="..\source\ga\GASelector.cpp" />
+    <ClCompile Include="..\source\ga\GASimpleGA.cpp" />
+    <ClCompile Include="..\source\ga\GASStateGA.cpp" />
+    <ClCompile Include="..\source\ga\GAStatistics.cpp" />
+    <ClCompile Include="..\source\ga\GAStringGenome.cpp" />
+    <ClCompile Include="..\source\ga\GATree.cpp" />
+    <ClCompile Include="..\source\ga\GATreeBASE.cpp" />
+    <ClCompile Include="..\source\ga\GATreeGenome.cpp" />
+    <ClCompile Include="..\source\muParser\mpARTValue.cpp" />
+    <ClCompile Include="..\source\muParser\mpError.cpp" />
+    <ClCompile Include="..\source\muParser\mpFuncCmplx.cpp" />
+    <ClCompile Include="..\source\muParser\mpFuncCommon.cpp" />
+    <ClCompile Include="..\source\muParser\mpFuncNonCmplx.cpp" />
+    <ClCompile Include="..\source\muParser\mpFuncStr.cpp" />
+    <ClCompile Include="..\source\muParser\mpICallback.cpp" />
+    <ClCompile Include="..\source\muParser\mpIfThenElse.cpp" />
+    <ClCompile Include="..\source\muParser\mpIOprt.cpp" />
+    <ClCompile Include="..\source\muParser\mpIPackage.cpp" />
+    <ClCompile Include="..\source\muParser\mpIToken.cpp" />
+    <ClCompile Include="..\source\muParser\mpIValReader.cpp" />
+    <ClCompile Include="..\source\muParser\mpIValue.cpp" />
+    <ClCompile Include="..\source\muParser\mpOprtBinAssign.cpp" />
+    <ClCompile Include="..\source\muParser\mpOprtBinCommon.cpp" />
+    <ClCompile Include="..\source\muParser\mpOprtCmplx.cpp" />
+    <ClCompile Include="..\source\muParser\mpOprtNonCmplx.cpp" />
+    <ClCompile Include="..\source\muParser\mpOverload.cpp" />
+    <ClCompile Include="..\source\muParser\mpPackageCmplx.cpp" />
+    <ClCompile Include="..\source\muParser\mpPackageCommon.cpp" />
+    <ClCompile Include="..\source\muParser\mpPackageNonCmplx.cpp" />
+    <ClCompile Include="..\source\muParser\mpPackageStr.cpp" />
+    <ClCompile Include="..\source\muParser\mpPackageUnit.cpp" />
+    <ClCompile Include="..\source\muParser\mpParser.cpp" />
+    <ClCompile Include="..\source\muParser\mpParserBase.cpp" />
+    <ClCompile Include="..\source\muParser\mpRPN.cpp" />
+    <ClCompile Include="..\source\muParser\mpTest.cpp" />
+    <ClCompile Include="..\source\muParser\mpTokenReader.cpp" />
+    <ClCompile Include="..\source\muParser\mpValReader.cpp" />
+    <ClCompile Include="..\source\muParser\mpValue.cpp" />
+    <ClCompile Include="..\source\muParser\mpValueCache.cpp" />
+    <ClCompile Include="..\source\muParser\mpVariable.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\art\ART.h" />
+    <ClInclude Include="..\include\art\ARTdataContainer.h" />
+    <ClInclude Include="..\include\art\ARTerror.h" />
+    <ClInclude Include="..\include\art\ARTfunctionoid.h" />
+    <ClInclude Include="..\include\art\ARTlink.h" />
+    <ClInclude Include="..\include\art\ARTmodel.h" />
+    <ClInclude Include="..\include\art\ARTmodelinterface.h" />
+    <ClInclude Include="..\include\art\ARTwaveObject.h" />
+    <ClInclude Include="..\include\art\autoinit.hpp" />
+    <ClInclude Include="..\include\art\binary.hpp" />
+    <ClInclude Include="..\include\art\common.hpp" />
+    <ClInclude Include="..\include\art\common_vs6.hpp" />
+    <ClInclude Include="..\include\art\constants.hpp" />
+    <ClInclude Include="..\include\art\error.hpp" />
+    <ClInclude Include="..\include\art\error_vs6.hpp" />
+    <ClInclude Include="..\include\art\fatals.hpp" />
+    <ClInclude Include="..\include\art\HornElement.h" />
+    <ClInclude Include="..\include\art\ImpedanceCurve.h" />
+    <ClInclude Include="..\include\art\inline.hpp" />
+    <ClInclude Include="..\include\art\Interface.h" />
+    <ClInclude Include="..\include\art\LeGquadrature.h" />
+    <ClInclude Include="..\include\art\matrix.h" />
+    <ClInclude Include="..\include\art\MMSimul.h" />
+    <ClInclude Include="..\include\art\pipeinit.hpp" />
+    <ClInclude Include="..\include\art\rosenbrock.h" />
+    <ClInclude Include="..\include\art\SimpleMatrix.h" />
+    <ClInclude Include="..\include\art\statistic.hpp" />
+    <ClInclude Include="..\include\art\strparsing.h" />
+    <ClInclude Include="..\include\art\token.h" />
+    <ClInclude Include="..\include\art\WindInstrument.h" />
+    <ClInclude Include="..\include\fortran\f2c.h" />
+    <ClInclude Include="..\include\ga\ga.h" />
+    <ClInclude Include="..\include\ga\GA1DArrayGenome.h" />
+    <ClInclude Include="..\include\ga\GA1DBinStrGenome.h" />
+    <ClInclude Include="..\include\ga\GA2DArrayGenome.h" />
+    <ClInclude Include="..\include\ga\GA2DBinStrGenome.h" />
+    <ClInclude Include="..\include\ga\GA3DArrayGenome.h" />
+    <ClInclude Include="..\include\ga\GA3DBinStrGenome.h" />
+    <ClInclude Include="..\include\ga\GAAllele.h" />
+    <ClInclude Include="..\include\ga\GAArray.h" />
+    <ClInclude Include="..\include\ga\GABaseGA.h" />
+    <ClInclude Include="..\include\ga\GABin2DecGenome.h" />
+    <ClInclude Include="..\include\ga\gabincvt.h" />
+    <ClInclude Include="..\include\ga\GABinStr.h" />
+    <ClInclude Include="..\include\ga\gaconfig.h" />
+    <ClInclude Include="..\include\ga\GADCrowdingGA.h" />
+    <ClInclude Include="..\include\ga\GADemeGA.h" />
+    <ClInclude Include="..\include\ga\gaerror.h" />
+    <ClInclude Include="..\include\ga\GAEvalData.h" />
+    <ClInclude Include="..\include\ga\GAGenome.h" />
+    <ClInclude Include="..\include\ga\gaid.h" />
+    <ClInclude Include="..\include\ga\GAIncGA.h" />
+    <ClInclude Include="..\include\ga\GAList.h" />
+    <ClInclude Include="..\include\ga\GAListBASE.h" />
+    <ClInclude Include="..\include\ga\GAListGenome.h" />
+    <ClInclude Include="..\include\ga\GAMask.h" />
+    <ClInclude Include="..\include\ga\GANode.h" />
+    <ClInclude Include="..\include\ga\GAParameter.h" />
+    <ClInclude Include="..\include\ga\GAPopulation.h" />
+    <ClInclude Include="..\include\ga\garandom.h" />
+    <ClInclude Include="..\include\ga\GARealGenome.h" />
+    <ClInclude Include="..\include\ga\GAScaling.h" />
+    <ClInclude Include="..\include\ga\GASelector.h" />
+    <ClInclude Include="..\include\ga\GASimpleGA.h" />
+    <ClInclude Include="..\include\ga\GASStateGA.h" />
+    <ClInclude Include="..\include\ga\GAStatistics.h" />
+    <ClInclude Include="..\include\ga\GAStringGenome.h" />
+    <ClInclude Include="..\include\ga\GATree.h" />
+    <ClInclude Include="..\include\ga\GATreeBASE.h" />
+    <ClInclude Include="..\include\ga\GATreeGenome.h" />
+    <ClInclude Include="..\include\ga\gatypes.h" />
+    <ClInclude Include="..\include\ga\gaversion.h" />
+    <ClInclude Include="..\include\ga\std_stream.h" />
+    <ClInclude Include="..\include\muParser\memory.h" />
+    <ClInclude Include="..\include\muParser\mpARTValue.h" />
+    <ClInclude Include="..\include\muParser\mpDefines.h" />
+    <ClInclude Include="..\include\muParser\mpError.h" />
+    <ClInclude Include="..\include\muParser\mpFuncCmplx.h" />
+    <ClInclude Include="..\include\muParser\mpFuncCommon.h" />
+    <ClInclude Include="..\include\muParser\mpFuncNonCmplx.h" />
+    <ClInclude Include="..\include\muParser\mpFuncStr.h" />
+    <ClInclude Include="..\include\muParser\mpFwdDecl.h" />
+    <ClInclude Include="..\include\muParser\mpICallback.h" />
+    <ClInclude Include="..\include\muParser\mpIfThenElse.h" />
+    <ClInclude Include="..\include\muParser\mpIOprt.h" />
+    <ClInclude Include="..\include\muParser\mpIPackage.h" />
+    <ClInclude Include="..\include\muParser\mpIToken.h" />
+    <ClInclude Include="..\include\muParser\mpIValReader.h" />
+    <ClInclude Include="..\include\muParser\mpIValue.h" />
+    <ClInclude Include="..\include\muParser\mpOprtBinAssign.h" />
+    <ClInclude Include="..\include\muParser\mpOprtBinCommon.h" />
+    <ClInclude Include="..\include\muParser\mpOprtCmplx.h" />
+    <ClInclude Include="..\include\muParser\mpOprtNonCmplx.h" />
+    <ClInclude Include="..\include\muParser\mpOverload.h" />
+    <ClInclude Include="..\include\muParser\mpPackageCmplx.h" />
+    <ClInclude Include="..\include\muParser\mpPackageCommon.h" />
+    <ClInclude Include="..\include\muParser\mpPackageNonCmplx.h" />
+    <ClInclude Include="..\include\muParser\mpPackageStr.h" />
+    <ClInclude Include="..\include\muParser\mpPackageUnit.h" />
+    <ClInclude Include="..\include\muParser\mpParser.h" />
+    <ClInclude Include="..\include\muParser\mpParserBase.h" />
+    <ClInclude Include="..\include\muParser\mpRPN.h" />
+    <ClInclude Include="..\include\muParser\mpStack.h" />
+    <ClInclude Include="..\include\muParser\mpTest.h" />
+    <ClInclude Include="..\include\muParser\mpTokenReader.h" />
+    <ClInclude Include="..\include\muParser\mpTypes.h" />
+    <ClInclude Include="..\include\muParser\mpValReader.h" />
+    <ClInclude Include="..\include\muParser\mpValue.h" />
+    <ClInclude Include="..\include\muParser\mpValueCache.h" />
+    <ClInclude Include="..\include\muParser\mpVariable.h" />
+    <ClInclude Include="..\include\muParser\suSortPred.h" />
+    <ClInclude Include="..\include\muParser\utGeneric.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

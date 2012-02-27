@@ -1,0 +1,45 @@
+	//Loads a script from file and runs it; this script is a series of instructions that run
+	//various commands within the WindInstrument class and ImpedanceCurve, designed to give 
+	// the developer full access to needed commands.
+
+	//Files are to be laid out with one command per line, any parameters listed after 1 space
+	//(whitespace otherwise not permitted as yet), separated by commas. Not case-sensitive. 
+	//Lines beginning with ; will be ignored as comments. Dcomps are to be listed as x,y.
+
+
+If FileExists("debug.scr") then execute script:
+
+Command: ;				->  comment line
+Command: print|pt 			->  printDescription();
+Command: load|ld 			->  load(String);
+Command: loadElemental|ldE 		->  load(String);
+Command: loadPointwise|ldPw 		->  loadPointwise(String);
+Command: loadBase|ldB 			->  loadBase(String);
+Command: save|sv 			->  save(String);
+Command: saveElemental|svE 		->  save(String);
+Command: savePointwise|svPw 		->  savePointwise(String);
+Command: addJump|jump 			->  append(new BoreJumpSection(Double, Double), true);
+Command: addCylr|cylr 			->  append(new CylinderSection(Double, Double), true);
+Command: addCone|cone 			->  append(new ConeSection(Double, Double, Double), true);
+Command: addBess|bess 			->  append(new BesselSection(Double, Double, Double, Double), true);
+Command: addList|list 			->  append(new WindInstrument(false, String), true);
+Command: addBCylr|bcyl 			->  append(new CylinderBendSection(Double, Double, Double), true);
+Command: addBCone|bcon 			->  append(new ConeBendSection(Double, Double, Double, Double), true);
+Command: chgtempC|temp 			->  chgtempC(Double);
+Command: chglossF|loss 			->  chglossF(Double);
+Command: setoutputMode|sOM 		->  setOutputMode(Boolean);	
+Command: runScript|rS 			->  runScript(String);
+Command: inputImpedance|iI 		->  cout << "Impedance = " << inputImpedanceMagnitude(Double);
+Command: roughPlot|rgh 			->  roughPlot(0, Double, Double, Integer);
+Command: saveAsMaple|svAM 		->  saveInstrumentPlot(String);
+Command: refinePeaks|ref 		->  refinePeaks(Double);
+Command: saveImpedanceCurve|svIC 	->  saveImpedancePlot(String);
+Command: saveImpedanceCurveSimple|svICs ->  impedanceCurve.save(String);
+Command: saveLists|svL 			->  impedanceCurve.saveLists(String, false);
+Command: printImpedanceCurve|ptIC 	->  printImpedanceCurve(Boolean);
+Command: findPeaks|fp 			->  impedanceCurve.findPeaks(false);
+Command: printPeaks|ptP 		->  impedanceCurve.printPeaks();
+Command: importBIAS|iB 			->  impedanceCurve.importBIAS(String);
+Command: convertToStandard|cts 		->  impedanceCurve.convertToStandard();
+Command: compareBore|cB 		->  compareBore(String, String);
+Command: quit|qt 			->  {cout << "Quitting script\n"; return;}

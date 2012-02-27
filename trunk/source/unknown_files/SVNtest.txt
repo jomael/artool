@@ -1,0 +1,2 @@
+
+Eine langweilige Textdatei um zu testen ob das SVN geht.

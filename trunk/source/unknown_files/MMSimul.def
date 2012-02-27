@@ -1,0 +1,24 @@
+LIBRARY    MMSimul
+DESCRIPTION "MultiMode Acoustical Simulation"
+EXPORTS
+   load_net     		@1
+   unload_net   		@2
+   set_nModes			@3
+   calc_imp  			@4
+   preview_imp			@5
+   refine_imp			@6
+
+   get_number_of_elements	@7
+   goto_first_section		@8
+   goto_last_section		@9
+   section_plus_plus		@10
+   section_minus_minus		@11
+   return_section		@12
+   modify_section		@13
+   insert_section		@14
+   delete_section		@15
+
+   begin_trace        		@16
+   end_trace        		@17
+   run_script        		@18
+   store_callback		@19

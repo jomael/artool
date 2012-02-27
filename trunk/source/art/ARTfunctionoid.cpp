@@ -1,0 +1,107 @@
+
+#ifndef ARTFUNCTIONOID_CPP
+#define ARTFUNCTIONOID_CPP
+	
+
+#include "Interface.h"
+#include "ARTlink.h"
+#include "ARTfunctionoid.h"
+
+void ARTfunctionoid::SetDependencies()
+{
+	//add all registered input parameters as dependency to output
+	vector<ARTdataContainer*>::iterator it;
+	for ( it=in_.begin() ; it < in_.end(); it++ )
+		out_->AddDependency(*it);
+}
+
+ARTfunctionoid::~ARTfunctionoid() {}
+
+
+bool ARTfrqGridFunc::IsSameFunctionoid(ARTfunctionoid* f)
+{
+	ARTfrqGridFunc* mf = dynamic_cast<ARTfrqGridFunc*>(f);
+	if (!mf) return false;
+	if (mf->lowfrq_ != lowfrq_) return false;
+	if (mf->highfrq_ != highfrq_) return false;
+	if (mf->frqStep_ != frqStep_) return false;
+	return true;
+}
+
+void ARTfrqGridFunc::ApplyFunction()
+{
+//	if (ARTdataContainer* cd = dynamic_cast<ARTdataContainer*>(out_))
+//		cout << "\n" << out_->GetVarName();// << ":\n";
+
+	double fmax = highfrq_->GetValueAsDouble();
+	double fmin = lowfrq_->GetValueAsDouble();
+	double fstep = frqStep_->GetValueAsDouble();
+	//calculate length of frq array
+	int flen = (fmax - (fmin + fstep*(fmin==0.0))) / fstep + 1;
+/*
+	cout << "fmin= " << fmin << " ";
+	cout << "fmax= " << fmax << " ";
+	cout << "fstep= " << fstep << " ";
+	cout << "flen= " << flen << "\n";
+*/
+	out_->SetType(C_ART_ndbl);
+	out_->SetArrayLength(flen);
+	
+	double f;
+	int j;
+	for (f=fmin + fstep*(fmin==0.0), j = 0; j<flen; f+=fstep, j++) 
+	{
+
+    
+		ARTdataContainer::progressIndicator.Continue(out_->GetComplexity(),out_->GetVarName());
+		out_->val->nd[j] = f;  
+
+	}
+}
+
+int ARTfrqGridFunc::GetIterationNumber()
+{
+	double fmax = highfrq_->GetValueAsDouble();
+	double fmin = lowfrq_->GetValueAsDouble();
+	double fstep = frqStep_->GetValueAsDouble();
+	//cout << " frq" << (fmax - (fmin + fstep*(fmin==0.0))) / fstep << "\n";
+	//calculate length of frq array
+	return (fmax - (fmin + fstep*(fmin==0.0))) / fstep + 1;
+}
+
+//**********************************************************************************************************
+
+//functionoid as wrapper for wfrq-Grid
+/*void ARTwfrqGridFunc::SetDependencies()
+{
+	out_->AddDependency(frequencies_);
+}*/
+
+bool ARTwfrqGridFunc::IsSameFunctionoid(ARTfunctionoid* f)
+{
+	ARTwfrqGridFunc* mf = dynamic_cast<ARTwfrqGridFunc*>(f);
+	if (!mf) return false;
+	if (mf->frequencies_ != frequencies_) return false;
+	return true;
+}
+
+void ARTwfrqGridFunc::ApplyFunction()
+{
+	out_->SetType(C_ART_ndbl);
+	out_->SetArrayLength(frequencies_->len);
+
+	//convert Hz in angular frequency (Kreisfrequenz)
+	for (int j=0; j<frequencies_->len; j++) 
+	{
+		ARTdataContainer::progressIndicator.Continue(out_->GetComplexity(),out_->GetVarName());
+		out_->val->nd[j] = 2.0*M_PI*frequencies_->val->nd[j];
+	}
+}
+
+int ARTwfrqGridFunc::GetIterationNumber()
+{
+	return frequencies_->GetIterationNumber();
+}
+
+#endif
+
