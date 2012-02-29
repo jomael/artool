@@ -145,10 +145,6 @@ add_executable(art
 	${ART_SOURCES}
 )
 
-add_library(artsim SHARED
-	${ART_SOURCES}
-)
-
 add_dependencies(art
 	fortran
 	ga
@@ -161,21 +157,33 @@ target_link_libraries(art
 	muparser
 )
 
-add_dependencies(artsim
-	fortran
-	ga
-	muparser
-)
 
-target_link_libraries(artsim
-	fortran
-	ga
-	muparser
-)
 
 # add standard definitions for release build
 if (DEFINED TEST AND TEST=ON AND (NOT DEFINED RELEASE))
 	add_definitions(-D_DEBUG -DARTinterfaceTest)
+elseif(DEFINED RELEASE AND RELEASE=ON)
+	add_library(artsim SHARED
+		${ART_SOURCES}
+	)
+	add_dependencies(artsim
+		fortran
+		ga
+		muparser
+	)
+	target_link_libraries(artsim
+		fortran
+		ga
+		muparser
+	)
+	if (DEFINED CMAKE_COMPILER_IS_GNUCXX AND (NOT DEFINED WIN32))
+		set_target_properties(artsim
+			PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings"
+			COMPILE_DEFINITIONS __stdcall=
+			LINK_FLAGS "-Xlinker tokens.lds"
+		)
+	endif()
+	add_definitions(-D_DEBUG -D_CONSOLE)
 else()
 	add_definitions(-D_DEBUG -D_CONSOLE)
 endif()
@@ -186,11 +194,7 @@ if (DEFINED CMAKE_COMPILER_IS_GNUCXX AND (NOT DEFINED WIN32))
 		COMPILE_DEFINITIONS __stdcall=
 		LINK_FLAGS "-Xlinker tokens.lds"
 	)
-	set_target_properties(artsim
-		PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings"
-		COMPILE_DEFINITIONS __stdcall=
-		LINK_FLAGS "-Xlinker tokens.lds"
-	)
+	
 	set_target_properties(fortran
 		PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings"
 	)
