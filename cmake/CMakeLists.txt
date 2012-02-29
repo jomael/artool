@@ -160,9 +160,10 @@ target_link_libraries(art
 
 
 # add standard definitions for release build
-if (DEFINED TEST AND TEST=ON AND (NOT DEFINED RELEASE))
+if (DEFINED TEST AND (NOT DEFINED RELEASE))
 	add_definitions(-D_DEBUG -DARTinterfaceTest)
-elseif(DEFINED RELEASE AND RELEASE=ON)
+#elseif(DEFINED RELEASE AND RELEASE=ON)
+elseif(DEFINED RELEASE)
 	add_library(artsim SHARED
 		${ART_SOURCES}
 	)
