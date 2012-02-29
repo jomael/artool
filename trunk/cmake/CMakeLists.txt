@@ -9,8 +9,10 @@ set(GA_SOURCE_DIR ../source/ga)
 set(MUPARSER_SOURCE_DIR ../source/muParser)
 set(FORTRAN_SOURCE_DIR ../source/fortran)
 
-add_executable(art 
+set(LIBRARY_OUTPUT_PATH ../release)
+set(EXECUTABLE_OUTPUT_PATH ../release)
 
+set(FORTRAN_SOURCES 
 	${FORTRAN_SOURCE_DIR}/cbabk2.c
 	${FORTRAN_SOURCE_DIR}/cbal.c
 	${FORTRAN_SOURCE_DIR}/cdiv.c
@@ -20,7 +22,13 @@ add_executable(art
 	${FORTRAN_SOURCE_DIR}/corth.c
 	${FORTRAN_SOURCE_DIR}/csroot.c
 	${FORTRAN_SOURCE_DIR}/pythag.c
+)
 
+source_group(fortran_src FILES
+	${FORTRAN_SOURCES}
+)
+
+set(GA_SOURCES
 	${GA_SOURCE_DIR}/GA1DArrayGenome.cpp
 	${GA_SOURCE_DIR}/GA1DBinStrGenome.cpp
 	${GA_SOURCE_DIR}/GA2DArrayGenome.cpp
@@ -53,7 +61,13 @@ add_executable(art
 	${GA_SOURCE_DIR}/GATreeBASE.cpp
 	${GA_SOURCE_DIR}/GATree.cpp
 	${GA_SOURCE_DIR}/GATreeGenome.cpp
+)
 
+source_group(ga_src FILES
+	${GA_SOURCES}
+)
+
+set(MUPARSER_SOURCES
 	${MUPARSER_SOURCE_DIR}/mpARTValue.cpp # y (w)
 	${MUPARSER_SOURCE_DIR}/mpError.cpp
 	${MUPARSER_SOURCE_DIR}/mpFuncCmplx.cpp
@@ -86,7 +100,13 @@ add_executable(art
 	${MUPARSER_SOURCE_DIR}/mpValueCache.cpp
 	${MUPARSER_SOURCE_DIR}/mpValue.cpp
 	${MUPARSER_SOURCE_DIR}/mpVariable.cpp
+)
 
+source_group(muparser_src FILES
+	${MUPARSER_SOURCES}
+)
+
+set(ART_SOURCES
 	${ART_SOURCE_DIR}/ART.cpp # y (w)
 	${ART_SOURCE_DIR}/ARTdataContainer.cpp # y
 	${ART_SOURCE_DIR}/ARTerror.cpp # y
@@ -105,18 +125,82 @@ add_executable(art
 	${ART_SOURCE_DIR}/WindInstrument.cpp # y 
 )
 
+source_group(art_src FILES
+	${ART_SOURCES}
+)
+
+add_library(fortran STATIC
+	${FORTRAN_SOURCES}
+)
+
+add_library(ga STATIC
+	${GA_SOURCES}
+)
+
+add_library(muparser STATIC
+	${MUPARSER_SOURCES}
+)
+
+add_executable(art 
+	${ART_SOURCES}
+)
+
+add_library(artsim SHARED
+	${ART_SOURCES}
+)
+
+add_dependencies(art
+	fortran
+	ga
+	muparser
+)
+
+target_link_libraries(art
+	fortran
+	ga
+	muparser
+)
+
+add_dependencies(artsim
+	fortran
+	ga
+	muparser
+)
+
+target_link_libraries(artsim
+	fortran
+	ga
+	muparser
+)
+
 # add standard definitions for release build
-if (DEFINED TEST)
+if (DEFINED TEST AND TEST=ON AND (NOT DEFINED RELEASE))
 	add_definitions(-D_DEBUG -DARTinterfaceTest)
 else()
 	add_definitions(-D_DEBUG -D_CONSOLE)
 endif()
 
-if (DEFINED GNU)
+if (DEFINED CMAKE_COMPILER_IS_GNUCXX AND (NOT DEFINED WIN32))
 	set_target_properties(art
 		PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings"
 		COMPILE_DEFINITIONS __stdcall=
 		LINK_FLAGS "-Xlinker tokens.lds"
 	)
+	set_target_properties(artsim
+		PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings"
+		COMPILE_DEFINITIONS __stdcall=
+		LINK_FLAGS "-Xlinker tokens.lds"
+	)
+	set_target_properties(fortran
+		PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings"
+	)
+	set_target_properties(ga
+		PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings"
+	)
+	set_target_properties(muparser
+		PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings"
+	)
+elseif(DEFINED MSVC)
+	add_definitions(/W0)
 endif()
 
