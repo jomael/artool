@@ -1477,6 +1477,11 @@ int main(int argc, char **argv)
 
   const char *ImpedanceFile = NULL;
 
+#ifdef __GNUG__
+  // cbg: g++ needs that commandline initialization is called explicitly
+  cmdln.init(argv);
+#endif
+
   int termination = cmdln.termination; //type of radiation (single element case)
   int Contrib = 1;
   int CalcType = -1;
