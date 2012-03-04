@@ -46,12 +46,12 @@
 #define ARTDebug 0
 #define MAIN
 
-#if defined (_MSC_VER) && _MSC_VER < 1600
+#if defined (_MSC_VER) && _MSC_VER <= 1200
 	#include "common_vs6.hpp"
 #else
 	#include "common.hpp"
 #endif
-#include "Art.clp"
+#include "art.clp"
 
 #include "ART.h"
 #include "ARTmodel.h"

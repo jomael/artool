@@ -107,7 +107,7 @@ source_group(muparser_src FILES
 )
 
 set(ART_SOURCES
-	${ART_SOURCE_DIR}/ART.cpp # y (w)
+	${ART_SOURCE_DIR}/art.cpp # y (w)
 	${ART_SOURCE_DIR}/ARTdataContainer.cpp # y
 	${ART_SOURCE_DIR}/ARTerror.cpp # y
 	${ART_SOURCE_DIR}/ARTfunctionoid.cpp # y
@@ -119,7 +119,7 @@ set(ART_SOURCES
 	${ART_SOURCE_DIR}/rosenbrock.cpp # y
 	${ART_SOURCE_DIR}/runga.cpp # y
 	${ART_SOURCE_DIR}/runrb.cpp # y
-	${ART_SOURCE_DIR}/simplematrix.cpp # y
+	${ART_SOURCE_DIR}/SimpleMatrix.cpp # y
 	${ART_SOURCE_DIR}/strparsing.cpp # y
 	${ART_SOURCE_DIR}/test_main.cpp # y
 	${ART_SOURCE_DIR}/WindInstrument.cpp # y 
@@ -206,6 +206,6 @@ if (DEFINED CMAKE_COMPILER_IS_GNUCXX AND (NOT DEFINED WIN32))
 		PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings"
 	)
 elseif(DEFINED MSVC)
-	add_definitions(/W0)
+	add_definitions(-W0)
 endif()
 
