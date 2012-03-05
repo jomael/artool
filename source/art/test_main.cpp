@@ -16,7 +16,7 @@
 // cbg: workaround for unix time measurements
 #define GetTickCount() 0
 #endif
-#include "Art.clp"
+#include "art.clp"
 #include "ART.h"
 #include "Interface.h"
 #include "ARTwaveObject.h"
@@ -259,7 +259,7 @@ TEST_DEF_START(initDataContainers, ARTdataContainerTests)
 			if (strcmp(av_nstr2->val->ns[2],"Ich nicht")) return false;
 			if (av_nstr2->len != 3) return false;
 
-			ARTvariant* av_nstr3 = new ARTvariant("yksi", "kaksi", "kolme", "nelj�");  
+			ARTvariant* av_nstr3 = new ARTvariant("yksi", "kaksi", "kolme", "nelj�");
 			if (av_nstr3->typ != C_ART_nstr) return false;
 			if (strcmp(av_nstr3->val->ns[0],"yksi")) return false;
 			if (strcmp(av_nstr3->val->ns[1],"kaksi")) return false;
@@ -321,7 +321,7 @@ TEST_DEF_START(copyDataContainers, ARTdataContainerTests)
 			if (strcmp(av_copy_nstr2->val->ns[2],"Ich nicht")) return false;
 			if (av_copy_nstr2->len != 3) return false;
 
-			ARTvariant* av_nstr3 = new ARTvariant("yksi", "kaksi", "kolme", "nelj�");  
+			ARTvariant* av_nstr3 = new ARTvariant("yksi", "kaksi", "kolme", "nelj�");
 			ARTvariant* av_copy_nstr3 = new ARTvariant(*av_nstr3);  
 			if (av_copy_nstr3->typ != C_ART_nstr) return false;
 			if (strcmp(av_copy_nstr3->val->ns[0],"yksi")) return false;
@@ -370,7 +370,7 @@ TEST_DEF_START(compareDataContainers, ARTdataContainerTests)
 			ARTvariant* av_copy_nstr2 = new ARTvariant(*av_nstr2);  
 			if ( !av_nstr2->IsEqual(av_copy_nstr2) ) return false;
 
-			ARTvariant* av_nstr3 = new ARTvariant("yksi", "kaksi", "kolme", "nelj�");  
+			ARTvariant* av_nstr3 = new ARTvariant("yksi", "kaksi", "kolme", "nelj�");
 			ARTvariant* av_copy_nstr3 = new ARTvariant(*av_nstr3);  
 			if ( !av_copy_nstr3->IsEqual(av_nstr3) ) return false;
 

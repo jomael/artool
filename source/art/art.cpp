@@ -53,7 +53,9 @@
 #endif
 #include "art.clp"
 
+#include "Interface.h"
 #include "ART.h"
+#include "strparsing.h"
 #include "ARTmodel.h"
 #include "ARTdataContainer.h"
 
@@ -85,6 +87,10 @@ ibinary   bin;                     // the binary input stream, usually attached 
 obinary   bout;                    // the binary output stream, usually attached to stdout
 Statistic statistic;               // class for generating statistical information at program exit
 string lastError;
+static AcousticResearchTool* art = NULL;
+#ifdef _CONSOLE
+static WindInstrument* ins = NULL;
+#endif
 
 //**************************************************************************************************************
 
@@ -93,7 +99,7 @@ void ARTsetLastError(string errormessage);
 
 //**************************************************************************************************************
 
-int             __stdcall begin_trace           (char* filename)
+int             __STDCALL begin_trace           (const char* filename)
 {
   if (art == NULL) art = new AcousticResearchTool();
 
@@ -105,7 +111,7 @@ int             __stdcall begin_trace           (char* filename)
 
 //**************************************************************************************************************
 
-int             __stdcall end_trace             (int dummy)
+int             __STDCALL end_trace             (int dummy)
 {
   if (art == NULL) art = new AcousticResearchTool();
 
@@ -116,7 +122,7 @@ int             __stdcall end_trace             (int dummy)
 }
 
 
-char *		__stdcall ARTGetLastErrorMessage	()
+char *		__STDCALL ARTGetLastErrorMessage	()
 {
 	char *s = (char*)malloc ( strlen(lastError.c_str())+1  ); //+1 for 0 character
 	strcpy(s, lastError.c_str()); 
@@ -126,7 +132,7 @@ char *		__stdcall ARTGetLastErrorMessage	()
 
 //**************************************************************************************************************
 
-P_ART_Object    __stdcall ARTRootObject         ()
+P_ART_Object    __STDCALL ARTRootObject         ()
 {
 	DLL_ERRORHANDLING_BEGIN
 	#if ARTDebug > 5
@@ -140,7 +146,7 @@ P_ART_Object    __stdcall ARTRootObject         ()
 
 //**************************************************************************************************************
 
-bool            __stdcall ARTRootDestroy        ()
+bool            __STDCALL ARTRootDestroy        ()
 {
 	DLL_ERRORHANDLING_BEGIN
   delete art;
@@ -150,7 +156,7 @@ bool            __stdcall ARTRootDestroy        ()
 }
 
 //**************************************************************************************************************
-bool             __stdcall ARTSetProgressFunction        (TprogressFunction f)
+bool             __STDCALL ARTSetProgressFunction        (TprogressFunction f)
 {
 	DLL_ERRORHANDLING_BEGIN
 	//if (art == NULL) throw ARTerror("ARTCreateSimulator", "ARTRootObject not created"); 
@@ -160,7 +166,7 @@ bool             __stdcall ARTSetProgressFunction        (TprogressFunction f)
 	DLL_ERRORHANDLING_END
 }
 
-bool __stdcall ARTCheckPropertyCapability(const char* property, const char* capability)
+bool __STDCALL ARTCheckPropertyCapability(const char* property, const char* capability)
 {
 	DLL_ERRORHANDLING_BEGIN
 	//check if art exists
@@ -186,7 +192,7 @@ bool __stdcall ARTCheckPropertyCapability(const char* property, const char* capa
 }
 
 //**************************************************************************************************************
-P_ART_Simulator __stdcall ARTCreateSimulator    (const char* name, const char* domain, const char* wavetype)
+P_ART_Simulator __STDCALL ARTCreateSimulator    (const char* name, const char* domain, const char* wavetype)
 {
 	DLL_ERRORHANDLING_BEGIN
 	#if ARTDebug > 5
@@ -221,7 +227,7 @@ P_ART_Simulator __stdcall ARTCreateSimulator    (const char* name, const char* d
 	DLL_ERRORHANDLING_END
 }
 
-bool    __stdcall ARTDestroySimulator     (P_ART_Simulator simulator)
+bool    __STDCALL ARTDestroySimulator     (P_ART_Simulator simulator)
 {
 	DLL_ERRORHANDLING_BEGIN
 	#if ARTDebug > 5
@@ -237,7 +243,7 @@ bool    __stdcall ARTDestroySimulator     (P_ART_Simulator simulator)
 	DLL_ERRORHANDLING_END
 }
 
-bool __stdcall ARTSetFrequencyRange    (ARTsimulator* sim, double f_min, double f_max, double f_step)
+bool __STDCALL ARTSetFrequencyRange    (ARTsimulator* sim, double f_min, double f_max, double f_step)
 {
 	DLL_ERRORHANDLING_BEGIN
 	if (art == NULL) art = new AcousticResearchTool();
@@ -257,7 +263,7 @@ bool __stdcall ARTSetFrequencyRange    (ARTsimulator* sim, double f_min, double 
 
 
 
-bool __stdcall ARTSetNModes    (ARTsimulator* sim, int Nmodes)
+bool __STDCALL ARTSetNModes    (ARTsimulator* sim, int Nmodes)
 {
 	DLL_ERRORHANDLING_BEGIN
 	ARTdataProp* modes = static_cast<ARTdataProp*>(sim->FindProperty("NumberOfModes"));
@@ -269,7 +275,7 @@ bool __stdcall ARTSetNModes    (ARTsimulator* sim, int Nmodes)
 
 //**************************************************************************************************************
  
-P_ART_Element    __stdcall ARTCreateElement     (P_ART_Simulator simulator, char* name, char* type)
+P_ART_Element    __STDCALL ARTCreateElement     (P_ART_Simulator simulator, const char* name, const char* type)
 {
 	DLL_ERRORHANDLING_BEGIN
 	#if ARTDebug > 5
@@ -306,22 +312,22 @@ P_ART_Element    __stdcall ARTCreateElement     (P_ART_Simulator simulator, char
 	DLL_ERRORHANDLING_END
 }
 
-P_ART_Element    __stdcall ARTFindElement     (P_ART_Simulator simulator, char* name)
+P_ART_Element    __STDCALL ARTFindElement     (P_ART_Simulator simulator, const char* name)
 {
 	//Find the element
 	ARTelement* element = static_cast<ARTelement*>(simulator->userElements->FindObject(name));
 	return element;
 }
 
-P_ART_Circuit    __stdcall ARTFindCircuit     (P_ART_Simulator simulator, char* name)
+P_ART_Circuit    __STDCALL ARTFindCircuit     (P_ART_Simulator simulator, const char* name)
 {
 	//Find the circuit
 	ARTcircuit* circuit = static_cast<ARTcircuit*>(simulator->circuits->FindObject(name));
 	return circuit;
 }
 
-//P_ART_Element    __stdcall ARTChangeElementModel     (P_ART_Simulator simulator, char* name, char* type)
-P_ART_Element    __stdcall ARTChangeElementModel     (P_ART_Simulator simulator, P_ART_Element element, char* type)
+//P_ART_Element    __STDCALL ARTChangeElementModel     (P_ART_Simulator simulator, char* name, char* type)
+P_ART_Element    __STDCALL ARTChangeElementModel     (P_ART_Simulator simulator, P_ART_Element element, const char* type)
 {
 	DLL_ERRORHANDLING_BEGIN
 	#if ARTDebug > 5
@@ -415,7 +421,7 @@ P_ART_Element    __stdcall ARTChangeElementModel     (P_ART_Simulator simulator,
 
 //**************************************************************************************************************
 
-P_ART_Object	__stdcall	ARTGetModel	(P_ART_Element  element)
+P_ART_Object	__STDCALL	ARTGetModel	(P_ART_Element  element)
 {
 	DLL_ERRORHANDLING_BEGIN
   if (element == NULL) throw ARTerror("ARTGetProperties", "element is NULL.");
@@ -425,7 +431,7 @@ P_ART_Object	__stdcall	ARTGetModel	(P_ART_Element  element)
 
 //**************************************************************************************************************
 
-P_ART_Element    __stdcall ARTChangeName     (P_ART_Element element, char* newName)
+P_ART_Element    __STDCALL ARTChangeName     (P_ART_Element element, const char* newName)
 {
 	DLL_ERRORHANDLING_BEGIN
 	#if ARTDebug > 5
@@ -443,7 +449,7 @@ P_ART_Element    __stdcall ARTChangeName     (P_ART_Element element, char* newNa
 
 
 
-bool    __stdcall ARTDestroyElement     (P_ART_Simulator simulator,P_ART_Element element)
+bool    __STDCALL ARTDestroyElement     (P_ART_Simulator simulator,P_ART_Element element)
 {
 	DLL_ERRORHANDLING_BEGIN
 	#if ARTDebug > 5
@@ -472,7 +478,7 @@ bool    __stdcall ARTDestroyElement     (P_ART_Simulator simulator,P_ART_Element
 
 
 //**************************************************************************************************************
-P_ART_DataProp    __stdcall ARTSetParameter     (P_ART_Simulator simulator, char* command)
+P_ART_DataProp    __STDCALL ARTSetParameter     (P_ART_Simulator simulator, const char* command)
 {
 	DLL_ERRORHANDLING_BEGIN
 	#if ARTDebug > 5
@@ -509,7 +515,7 @@ P_ART_DataProp    __stdcall ARTSetParameter     (P_ART_Simulator simulator, char
 
 //**************************************************************************************************************
 
-P_ART_Circuit    __stdcall ARTCreateCircuit     (P_ART_Simulator simulator, char* name)
+P_ART_Circuit    __STDCALL ARTCreateCircuit     (P_ART_Simulator simulator, const char* name)
 {
 	DLL_ERRORHANDLING_BEGIN
 	//check if the simulator is a valid object
@@ -528,7 +534,7 @@ P_ART_Circuit    __stdcall ARTCreateCircuit     (P_ART_Simulator simulator, char
 	
 }
 
-bool    __stdcall ARTDestroyCircuit     (P_ART_Simulator simulator,P_ART_Circuit circuit)
+bool    __STDCALL ARTDestroyCircuit     (P_ART_Simulator simulator,P_ART_Circuit circuit)
 {
 	DLL_ERRORHANDLING_BEGIN
 	#if ARTDebug > 5
@@ -543,8 +549,8 @@ bool    __stdcall ARTDestroyCircuit     (P_ART_Simulator simulator,P_ART_Circuit
 }
 
 
-//int	__stdcall	ARTGetReferencePosition	(P_ART_Simulator simulator, P_ART_Circuit circuit, char* name)
-int	__stdcall	ARTGetReferencePosition	(P_ART_Circuit circuit, P_ART_Element element)
+//int	__STDCALL	ARTGetReferencePosition	(P_ART_Simulator simulator, P_ART_Circuit circuit, char* name)
+int	__STDCALL	ARTGetReferencePosition	(P_ART_Circuit circuit, P_ART_Element element)
 {
 	DLL_ERRORHANDLING_BEGIN
 
@@ -557,8 +563,8 @@ int	__stdcall	ARTGetReferencePosition	(P_ART_Circuit circuit, P_ART_Element elem
 }
 //**************************************************************************************************************
 
-//P_ART_Object    __stdcall ARTAppendReference     (P_ART_Simulator simulator, P_ART_Circuit circuit, char* name)
-P_ART_Object	__stdcall	ARTAppendReference	( P_ART_Circuit circuit, P_ART_Element reference)
+//P_ART_Object    __STDCALL ARTAppendReference     (P_ART_Simulator simulator, P_ART_Circuit circuit, char* name)
+P_ART_Object	__STDCALL	ARTAppendReference	( P_ART_Circuit circuit, P_ART_Element reference)
 {
 	DLL_ERRORHANDLING_BEGIN
 	//check if the circuit is valid
@@ -574,8 +580,8 @@ P_ART_Object	__stdcall	ARTAppendReference	( P_ART_Circuit circuit, P_ART_Element
 
 //**************************************************************************************************************
 
-P_ART_Object	__stdcall	ARTAppendReferenceBefore	(P_ART_Circuit circuit, P_ART_Element referenceAfter, P_ART_Element reference)
-//P_ART_Object    __stdcall ARTAppendReferenceBefore     (P_ART_Simulator simulator, P_ART_Circuit circuit, char*elementBefore, char* name)
+P_ART_Object	__STDCALL	ARTAppendReferenceBefore	(P_ART_Circuit circuit, P_ART_Element referenceAfter, P_ART_Element reference)
+//P_ART_Object    __STDCALL ARTAppendReferenceBefore     (P_ART_Simulator simulator, P_ART_Circuit circuit, char*elementBefore, char* name)
 {
 	DLL_ERRORHANDLING_BEGIN
 	//check if the circuit is valid
@@ -591,8 +597,8 @@ P_ART_Object	__stdcall	ARTAppendReferenceBefore	(P_ART_Circuit circuit, P_ART_El
 
 //**************************************************************************************************************
 
-P_ART_Object	__stdcall	ARTAppendReferenceAfter	(P_ART_Circuit circuit, P_ART_Element referenceBefore, P_ART_Element reference)
-//P_ART_Object    __stdcall ARTAppendReferenceAfter     (P_ART_Simulator simulator, P_ART_Circuit circuit, char*elementAfter, char* name)
+P_ART_Object	__STDCALL	ARTAppendReferenceAfter	(P_ART_Circuit circuit, P_ART_Element referenceBefore, P_ART_Element reference)
+//P_ART_Object    __STDCALL ARTAppendReferenceAfter     (P_ART_Simulator simulator, P_ART_Circuit circuit, char*elementAfter, char* name)
 {
 	DLL_ERRORHANDLING_BEGIN
 	//check if the circuit is valid
@@ -608,8 +614,8 @@ P_ART_Object	__stdcall	ARTAppendReferenceAfter	(P_ART_Circuit circuit, P_ART_Ele
 }
 
 //**************************************************************************************************************
-//int    __stdcall      ARTRemoveReference     (P_ART_Simulator simulator, P_ART_Circuit circuit, char*element)
-int	__stdcall	ARTRemoveReference	(P_ART_Circuit circuit, P_ART_Element reference)
+//int    __STDCALL      ARTRemoveReference     (P_ART_Simulator simulator, P_ART_Circuit circuit, char*element)
+int	__STDCALL	ARTRemoveReference	(P_ART_Circuit circuit, P_ART_Element reference)
 {
 	DLL_ERRORHANDLING_BEGIN
 	//check if the circuit is valid
@@ -621,8 +627,8 @@ int	__stdcall	ARTRemoveReference	(P_ART_Circuit circuit, P_ART_Element reference
 }
 
 //**************************************************************************************************************
-//int    __stdcall ARTReplaceReference     (P_ART_Simulator simulator, P_ART_Circuit circuit, char*search, char* replace)
-int	__stdcall	ARTReplaceReference	(P_ART_Circuit circuit, P_ART_Element search, P_ART_Element replace)
+//int    __STDCALL ARTReplaceReference     (P_ART_Simulator simulator, P_ART_Circuit circuit, char*search, char* replace)
+int	__STDCALL	ARTReplaceReference	(P_ART_Circuit circuit, P_ART_Element search, P_ART_Element replace)
 {
 	DLL_ERRORHANDLING_BEGIN
 	//check if the circuit is valid
@@ -635,7 +641,7 @@ int	__stdcall	ARTReplaceReference	(P_ART_Circuit circuit, P_ART_Element search, 
 }
 
 //**************************************************************************************************************
-int    __stdcall ARTRemoveAllReferences     (P_ART_Circuit circuit)
+int    __STDCALL ARTRemoveAllReferences     (P_ART_Circuit circuit)
 {
 	DLL_ERRORHANDLING_BEGIN
 	//check if the circuit is valid
@@ -647,7 +653,7 @@ int    __stdcall ARTRemoveAllReferences     (P_ART_Circuit circuit)
 
 //**************************************************************************************************************
 
-P_ART_DataProp    __stdcall ARTInputImpedance     (P_ART_Circuit circuit)
+P_ART_DataProp    __STDCALL ARTInputImpedance     (P_ART_Circuit circuit)
 {
 	DLL_ERRORHANDLING_BEGIN
 	if (circuit == NULL) throw ARTerror("ARTInputImpedance", "Invalid circuit"); 
@@ -693,7 +699,7 @@ P_ART_DataProp    __stdcall ARTInputImpedance     (P_ART_Circuit circuit)
 }
 
 
-const char*           __stdcall ARTGetName            (P_ART_Cell  pobj)
+const char*           __STDCALL ARTGetName            (P_ART_Cell  pobj)
 {
 	DLL_ERRORHANDLING_BEGIN
 	if (pobj == NULL) throw ARTerror("ARTGetName","pobj is NULL");
@@ -703,7 +709,7 @@ const char*           __stdcall ARTGetName            (P_ART_Cell  pobj)
 
 //**************************************************************************************************************
 
-const char*           __stdcall ARTGetShortDescription(P_ART_Cell  pobj)
+const char*           __STDCALL ARTGetShortDescription(P_ART_Cell  pobj)
 {
 	DLL_ERRORHANDLING_BEGIN
   if (pobj == NULL) throw ARTerror("ARTGetShortDescription","pobj is NULL");
@@ -713,7 +719,7 @@ const char*           __stdcall ARTGetShortDescription(P_ART_Cell  pobj)
 
 //**************************************************************************************************************
 
-const char*           __stdcall ARTGetLongDescription (P_ART_Cell  pobj)
+const char*           __STDCALL ARTGetLongDescription (P_ART_Cell  pobj)
 {
 	DLL_ERRORHANDLING_BEGIN
   if (pobj == NULL) throw ARTerror("ARTGetLongDescription","pobj is NULL");
@@ -723,7 +729,7 @@ const char*           __stdcall ARTGetLongDescription (P_ART_Cell  pobj)
 
 //**************************************************************************************************************
 
-const char*           __stdcall ARTGetHelpFilename    (P_ART_Cell  pobj)
+const char*           __STDCALL ARTGetHelpFilename    (P_ART_Cell  pobj)
 {
 	DLL_ERRORHANDLING_BEGIN
   if (pobj == NULL) throw ARTerror("ARTGetHelpFilename","pobj is NULL");
@@ -733,7 +739,7 @@ const char*           __stdcall ARTGetHelpFilename    (P_ART_Cell  pobj)
 
 //**************************************************************************************************************
 
-bool            __stdcall ARTIsListable         (P_ART_Property pprp)
+bool            __STDCALL ARTIsListable         (P_ART_Property pprp)
 {
 	DLL_ERRORHANDLING_BEGIN
   if (pprp == NULL) throw ARTerror("ARTIsListable","pobj is NULL");
@@ -744,7 +750,7 @@ bool            __stdcall ARTIsListable         (P_ART_Property pprp)
 
 //**************************************************************************************************************
 
-bool	__stdcall	ARTIsDataProp	(P_ART_Property pprp) 
+bool	__STDCALL	ARTIsDataProp	(P_ART_Property pprp)
 {
 	if (dynamic_cast<P_ART_DataProp>(pprp)) return true;
 		else return false;
@@ -752,7 +758,7 @@ bool	__stdcall	ARTIsDataProp	(P_ART_Property pprp)
 
 //**************************************************************************************************************
 
-T_ART_Type      __stdcall ARTGetDatatype        (P_ART_Variant pprp)
+T_ART_Type      __STDCALL ARTGetDatatype        (P_ART_Variant pprp)
 {
 	DLL_ERRORHANDLING_BEGIN
 	if (pprp == NULL) throw ARTerror("ARTGetDatatype","pprp is NULL");
@@ -762,7 +768,7 @@ T_ART_Type      __stdcall ARTGetDatatype        (P_ART_Variant pprp)
 
 //**************************************************************************************************************
 
-int             __stdcall ARTGetLength          (P_ART_Variant pprp)
+int             __STDCALL ARTGetLength          (P_ART_Variant pprp)
 {
 	DLL_ERRORHANDLING_BEGIN
 	if (pprp == NULL) throw ARTerror("ARTGetLength","pprp is NULL");
@@ -772,7 +778,7 @@ int             __stdcall ARTGetLength          (P_ART_Variant pprp)
 
 //**************************************************************************************************************
 
-P_ART_Variant   __stdcall ARTGetValue           (P_ART_DataProp pprp)
+P_ART_Variant   __STDCALL ARTGetValue           (P_ART_DataProp pprp)
 {
 	DLL_ERRORHANDLING_BEGIN
   if (pprp == NULL) throw ARTerror("ARTGetValue","pprp is NULL");
@@ -802,7 +808,7 @@ P_ART_Variant   __stdcall ARTGetValue           (P_ART_DataProp pprp)
 	DLL_ERRORHANDLING_END
 }
 
-P_ART_Variant   __stdcall ARTGetRange           (P_ART_DataProp pprp)
+P_ART_Variant   __STDCALL ARTGetRange           (P_ART_DataProp pprp)
 {
 	DLL_ERRORHANDLING_BEGIN
 	if (pprp == NULL) throw ARTerror("ARTGetRange","pprp is NULL");
@@ -810,7 +816,7 @@ P_ART_Variant   __stdcall ARTGetRange           (P_ART_DataProp pprp)
 	DLL_ERRORHANDLING_END
 }
 
-char*          __stdcall ARTGetDefinitionString          (P_ART_DataProp dc)
+char*          __STDCALL ARTGetDefinitionString          (P_ART_DataProp dc)
 {
 	DLL_ERRORHANDLING_BEGIN
 	if (dc == NULL) throw ARTerror("ARTGetDefinitionString","dc is NULL");
@@ -828,7 +834,7 @@ char*          __stdcall ARTGetDefinitionString          (P_ART_DataProp dc)
 	DLL_ERRORHANDLING_END
 }
 
-char*          __stdcall ARTGetString          (P_ART_Variant pprp, int idx)
+char*          __STDCALL ARTGetString          (P_ART_Variant pprp, int idx)
 {
 	DLL_ERRORHANDLING_BEGIN
 	if (pprp == NULL) throw ARTerror("ARTGetString","pprp is NULL");
@@ -850,7 +856,7 @@ char*          __stdcall ARTGetString          (P_ART_Variant pprp, int idx)
 
 //**************************************************************************************************************
 
-bool            __stdcall ARTSetString          (P_ART_Variant pprp, int idx, const char* s)
+bool            __STDCALL ARTSetString          (P_ART_Variant pprp, int idx, const char* s)
 {
 	DLL_ERRORHANDLING_BEGIN
 	if (pprp != NULL) 
@@ -868,7 +874,7 @@ bool            __stdcall ARTSetString          (P_ART_Variant pprp, int idx, co
 
 //**************************************************************************************************************
 
-int            __stdcall ARTGetInteger         (P_ART_Variant pprp, int idx)
+int            __STDCALL ARTGetInteger         (P_ART_Variant pprp, int idx)
 {
 	DLL_ERRORHANDLING_BEGIN
   if (pprp == NULL) throw ARTerror("ARTGetInteger","pprp is NULL");
@@ -886,7 +892,7 @@ int            __stdcall ARTGetInteger         (P_ART_Variant pprp, int idx)
 
 //**************************************************************************************************************
 
-bool            __stdcall ARTSetInteger         (P_ART_Variant pprp, int idx, int i)
+bool            __STDCALL ARTSetInteger         (P_ART_Variant pprp, int idx, int i)
 {
 	DLL_ERRORHANDLING_BEGIN
 	if (pprp != NULL) pprp->SetVal(i,idx);
@@ -897,7 +903,7 @@ bool            __stdcall ARTSetInteger         (P_ART_Variant pprp, int idx, in
 
 //**************************************************************************************************************
 
-float         __stdcall ARTGetFloat           (P_ART_Variant pprp, int idx)
+float         __STDCALL ARTGetFloat           (P_ART_Variant pprp, int idx)
 {
 	DLL_ERRORHANDLING_BEGIN
   if (pprp == NULL) return NULL;
@@ -915,7 +921,7 @@ float         __stdcall ARTGetFloat           (P_ART_Variant pprp, int idx)
 
 //**************************************************************************************************************
 
-bool            __stdcall ARTSetFloat           (P_ART_Variant pprp, int idx, float f)
+bool            __STDCALL ARTSetFloat           (P_ART_Variant pprp, int idx, float f)
 {
 	DLL_ERRORHANDLING_BEGIN
 	if (pprp != NULL) pprp->SetVal(f,idx);
@@ -926,7 +932,7 @@ bool            __stdcall ARTSetFloat           (P_ART_Variant pprp, int idx, fl
 }
 //**************************************************************************************************************
 
-double         __stdcall ARTGetDouble           (P_ART_Variant pprp, int idx)
+double         __STDCALL ARTGetDouble           (P_ART_Variant pprp, int idx)
 {
 	DLL_ERRORHANDLING_BEGIN
   if (pprp == NULL) return NULL;
@@ -944,7 +950,7 @@ double         __stdcall ARTGetDouble           (P_ART_Variant pprp, int idx)
 
 //**************************************************************************************************************
 
-bool            __stdcall ARTSetDouble           (P_ART_Variant pprp, int idx, double d)
+bool            __STDCALL ARTSetDouble           (P_ART_Variant pprp, int idx, double d)
 {
 	DLL_ERRORHANDLING_BEGIN
 	if (pprp != NULL) pprp->SetVal(d,idx);
@@ -955,7 +961,7 @@ bool            __stdcall ARTSetDouble           (P_ART_Variant pprp, int idx, d
 
 //**************************************************************************************************************
 
-T_ART_Cmplx    __stdcall ARTGetComplex         (P_ART_Variant pprp, int idx)
+T_ART_Cmplx    __STDCALL ARTGetComplex         (P_ART_Variant pprp, int idx)
 {
 	T_ART_Cmplx r;
 	#ifdef DLL
@@ -990,7 +996,7 @@ T_ART_Cmplx    __stdcall ARTGetComplex         (P_ART_Variant pprp, int idx)
 }
 
 //**************************************************************************************************************
-bool            __stdcall ARTSetComplex         (P_ART_Variant pprp, int idx, T_ART_Cmplx c)
+bool            __STDCALL ARTSetComplex         (P_ART_Variant pprp, int idx, T_ART_Cmplx c)
 {
 	DLL_ERRORHANDLING_BEGIN
 	if (pprp != NULL) pprp->SetVal(c.re,c.im,idx);
@@ -1001,7 +1007,7 @@ bool            __stdcall ARTSetComplex         (P_ART_Variant pprp, int idx, T_
 
 //**************************************************************************************************************
 
-T_ART_Tripl    __stdcall ARTGetTriple          (P_ART_Variant pprp, int idx)
+T_ART_Tripl    __STDCALL ARTGetTriple          (P_ART_Variant pprp, int idx)
 {
 	DLL_ERRORHANDLING_BEGIN
   if (pprp == NULL) throw ARTerror("ARTGetTriple", "The property is invalid.");
@@ -1019,7 +1025,7 @@ T_ART_Tripl    __stdcall ARTGetTriple          (P_ART_Variant pprp, int idx)
 
 //**************************************************************************************************************
 
-bool            __stdcall ARTSetTriple          (P_ART_Variant pprp, int idx, T_ART_Tripl t)
+bool            __STDCALL ARTSetTriple          (P_ART_Variant pprp, int idx, T_ART_Tripl t)
 {
 	DLL_ERRORHANDLING_BEGIN
   if (pprp != NULL) {
@@ -1038,7 +1044,7 @@ bool            __stdcall ARTSetTriple          (P_ART_Variant pprp, int idx, T_
 
 //**************************************************************************************************************
 
-T_ART_Matrix   __stdcall ARTGetMatrix          (P_ART_Variant pprp, int idx)
+T_ART_Matrix   __STDCALL ARTGetMatrix          (P_ART_Variant pprp, int idx)
 {
 	DLL_ERRORHANDLING_BEGIN
   if (pprp == NULL) throw ARTerror("ARTGetMatrix", "The property is invalid.");
@@ -1057,7 +1063,7 @@ T_ART_Matrix   __stdcall ARTGetMatrix          (P_ART_Variant pprp, int idx)
 
 //**************************************************************************************************************
 
-bool            __stdcall ARTSetMatrix          (P_ART_Variant pprp, int idx, T_ART_Matrix m)
+bool            __STDCALL ARTSetMatrix          (P_ART_Variant pprp, int idx, T_ART_Matrix m)
 {
 	DLL_ERRORHANDLING_BEGIN
   if (pprp != NULL) {
@@ -1076,7 +1082,7 @@ bool            __stdcall ARTSetMatrix          (P_ART_Variant pprp, int idx, T_
 
 //**************************************************************************************************************
 
-P_ART_Property  __stdcall ARTFindProperty       (P_ART_Object  host, char* nam)
+P_ART_Property  __STDCALL ARTFindProperty       (P_ART_Object  host, const char* nam)
 {
 	DLL_ERRORHANDLING_BEGIN
   if (host == NULL) throw ARTerror("ARTFindProperty", "host is NULL.");
@@ -1086,7 +1092,7 @@ P_ART_Property  __stdcall ARTFindProperty       (P_ART_Object  host, char* nam)
 
 //**************************************************************************************************************
 
-P_ART_DataProp  __stdcall ARTFindDataProperty       (P_ART_Object  host, char* nam)
+P_ART_DataProp  __STDCALL ARTFindDataProperty       (P_ART_Object  host, const char* nam)
 {
 	DLL_ERRORHANDLING_BEGIN
   if (host == NULL) throw ARTerror("ARTFindDataProperty", "host is NULL.");
@@ -1096,7 +1102,7 @@ P_ART_DataProp  __stdcall ARTFindDataProperty       (P_ART_Object  host, char* n
 
 //**************************************************************************************************************
 
-P_ART_Method    __stdcall ARTFindMethod         (P_ART_Object  host, char* nam)
+P_ART_Method    __STDCALL ARTFindMethod         (P_ART_Object  host, const char* nam)
 {
 	DLL_ERRORHANDLING_BEGIN
   if (host == NULL) throw ARTerror("ARTFindMethod", "host is NULL.");
@@ -1106,7 +1112,7 @@ P_ART_Method    __stdcall ARTFindMethod         (P_ART_Object  host, char* nam)
 
 //**************************************************************************************************************
 
-P_ART_Object    __stdcall ARTFindObject         (P_ART_ListProp host, char* nam)
+P_ART_Object    __STDCALL ARTFindObject         (P_ART_ListProp host, const char* nam)
 {
 	DLL_ERRORHANDLING_BEGIN
   if (host == NULL) throw ARTerror("ARTFindObject", "host is NULL.");
@@ -1116,7 +1122,7 @@ P_ART_Object    __stdcall ARTFindObject         (P_ART_ListProp host, char* nam)
 
 //**************************************************************************************************************
 
-P_ART_Property  __stdcall ARTGetProperties      (P_ART_Object  host, P_ART_Property pos)
+P_ART_Property  __STDCALL ARTGetProperties      (P_ART_Object  host, P_ART_Property pos)
 {
 	DLL_ERRORHANDLING_BEGIN
   if (host == NULL) throw ARTerror("ARTGetProperties", "host is NULL.");
@@ -1126,7 +1132,7 @@ P_ART_Property  __stdcall ARTGetProperties      (P_ART_Object  host, P_ART_Prope
 
 //**************************************************************************************************************
 
-P_ART_DataProp  __stdcall ARTGetDataProperties      (P_ART_Object  host, P_ART_DataProp pos)
+P_ART_DataProp  __STDCALL ARTGetDataProperties      (P_ART_Object  host, P_ART_DataProp pos)
 {
 	DLL_ERRORHANDLING_BEGIN
   if (host == NULL) throw ARTerror("ARTGetDataProperties", "host is NULL.");
@@ -1147,7 +1153,7 @@ P_ART_DataProp  __stdcall ARTGetDataProperties      (P_ART_Object  host, P_ART_D
 
 //**************************************************************************************************************
 
-P_ART_Method    __stdcall ARTGetMethods         (P_ART_Object  host, P_ART_Method pos)
+P_ART_Method    __STDCALL ARTGetMethods         (P_ART_Object  host, P_ART_Method pos)
 {
 	DLL_ERRORHANDLING_BEGIN
   if (host == NULL) throw ARTerror("ARTGetMethods", "host is NULL.");
@@ -1157,7 +1163,7 @@ P_ART_Method    __stdcall ARTGetMethods         (P_ART_Object  host, P_ART_Metho
 
 //**************************************************************************************************************
 
-P_ART_Object    __stdcall ARTGetObjects         (P_ART_ListProp host, P_ART_Object  pos)
+P_ART_Object    __STDCALL ARTGetObjects         (P_ART_ListProp host, P_ART_Object  pos)
 {
 	DLL_ERRORHANDLING_BEGIN
   if (host == NULL) throw ARTerror("ARTGetObjects", "host is NULL.");
@@ -1167,7 +1173,7 @@ P_ART_Object    __stdcall ARTGetObjects         (P_ART_ListProp host, P_ART_Obje
 
 //**************************************************************************************************************
 
-P_ART_DataProp  __stdcall ARTAppendDataProp     (P_ART_Object host, P_ART_Variant val, char* nam, char* sds, char* lds, char* htm)
+P_ART_DataProp  __STDCALL ARTAppendDataProp     (P_ART_Object host, P_ART_Variant val, const char* nam, const char* sds, const char* lds, const char* htm)
 {
 	DLL_ERRORHANDLING_BEGIN
   if (host == NULL) throw ARTerror("ARTAppendDataProp", "host is NULL.");
@@ -1177,7 +1183,7 @@ P_ART_DataProp  __stdcall ARTAppendDataProp     (P_ART_Object host, P_ART_Varian
 
 //**************************************************************************************************************
 
-P_ART_ListProp  __stdcall ARTAppendListProp     (P_ART_Object host, char* nam, char* sds, char* lds, char* htm)
+P_ART_ListProp  __STDCALL ARTAppendListProp     (P_ART_Object host, const char* nam, const char* sds, const char* lds, const char* htm)
 {
 	DLL_ERRORHANDLING_BEGIN
   if (host == NULL) throw ARTerror("ARTAppendListProp", "host is NULL.");
@@ -1187,7 +1193,7 @@ P_ART_ListProp  __stdcall ARTAppendListProp     (P_ART_Object host, char* nam, c
 
 //**************************************************************************************************************
 
-P_ART_Method    __stdcall ARTAppendMethod       (P_ART_Object host, char* nam, char* sds, char* lds, char* htm)
+P_ART_Method    __STDCALL ARTAppendMethod       (P_ART_Object host, const char* nam, const char* sds, const char* lds, const char* htm)
 {
 	DLL_ERRORHANDLING_BEGIN
   if (host == NULL) throw ARTerror("ARTAppendMethod", "host is NULL.");
@@ -1197,7 +1203,7 @@ P_ART_Method    __stdcall ARTAppendMethod       (P_ART_Object host, char* nam, c
 
 //**************************************************************************************************************
 
-P_ART_Object    __stdcall ARTAppendObject       (P_ART_ListProp host, char* nam, char* sds, char* lds, char* htm)
+P_ART_Object    __STDCALL ARTAppendObject       (P_ART_ListProp host, const char* nam, const char* sds, const char* lds, const char* htm)
 {
 	DLL_ERRORHANDLING_BEGIN
   if (host == NULL) throw ARTerror("ARTAppendObject", "host is NULL.");
@@ -1207,7 +1213,7 @@ P_ART_Object    __stdcall ARTAppendObject       (P_ART_ListProp host, char* nam,
 
 //**************************************************************************************************************
 
-bool            __stdcall ARTDeleteProperty     (P_ART_Object  host, P_ART_Property prp)
+bool            __STDCALL ARTDeleteProperty     (P_ART_Object  host, P_ART_Property prp)
 {
 	DLL_ERRORHANDLING_BEGIN
   if (host == NULL) throw ARTerror("ARTDeleteProperty", "host is NULL.");
@@ -1217,7 +1223,7 @@ bool            __stdcall ARTDeleteProperty     (P_ART_Object  host, P_ART_Prope
 
 //**************************************************************************************************************
 
-bool        __stdcall ARTDeleteMethod           (P_ART_Object  host, P_ART_Method mtd)
+bool        __STDCALL ARTDeleteMethod           (P_ART_Object  host, P_ART_Method mtd)
 {
 	DLL_ERRORHANDLING_BEGIN
   if (host == NULL) throw ARTerror("ARTDeleteMethod", "host is NULL.");
@@ -1227,7 +1233,7 @@ bool        __stdcall ARTDeleteMethod           (P_ART_Object  host, P_ART_Metho
 
 //**************************************************************************************************************
 
-bool        __stdcall ARTDeleteObject           (P_ART_ListProp host, P_ART_Object pobj)
+bool        __STDCALL ARTDeleteObject           (P_ART_ListProp host, P_ART_Object pobj)
 {
 	DLL_ERRORHANDLING_BEGIN
   if (host == NULL) throw ARTerror("ARTDeleteObject", "host is NULL.");
@@ -1236,7 +1242,7 @@ bool        __stdcall ARTDeleteObject           (P_ART_ListProp host, P_ART_Obje
 }
 
 //**************************************************************************************************************
-char*	__stdcall	ARTGetDependencyTree	(P_ART_DataProp pprp, char* linebreak)
+char*	__STDCALL	ARTGetDependencyTree	(P_ART_DataProp pprp, const char* linebreak)
 {
 	string dt = pprp->WriteDepTree("", linebreak);
 	const char* c = dt.c_str();
@@ -1435,7 +1441,7 @@ int calc_Param(const double Freq, const double IndFreq, vector <double> &mag, ve
 
 
 //**************************************************************************************************************
-bool __stdcall percent(double p, const char* s)
+bool __STDCALL percent(double p, const char* s)
 {
 	static int pr;
 	int	i = p*100;

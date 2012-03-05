@@ -39,13 +39,12 @@
 #ifndef ARTLINK_H
 #define ARTLINK_H
 
-//Vereinbarungen 2wischen Hornelement und ART-Interface
-
+//Vereinbarungen zwischen Hornelement und ART-Interface
+#ifdef __cplusplus
 #include <string>
 #include <complex>
 #include "matrix.h"
-//#include "ARTfunctionoid.h"
-
+#endif
 /** \addtogroup ARTimpl
  * @{
  */
@@ -78,6 +77,7 @@ typedef enum
 /**
  * This structure represents a complex number.
  */  
+#ifdef __cplusplus
 struct T_ART_Cmplx	
 {
 	double re; 
@@ -85,10 +85,18 @@ struct T_ART_Cmplx
 	T_ART_Cmplx* copy();
 	//T_ART_Cmplx(const T_ART_Cmplx& c) {} //empty constructor... will have problems when doing smth. like "T_ART_Cmplx()", but strangely not when I add a field "double f;" ... WHY??????
 };
+#else
+typedef struct
+{
+	double re;
+	double im;
+} T_ART_Cmplx;
+#endif /* __cplusplus */
 
 /**
  * In this structure a frequency and a complex number can be stored. 
- */  
+ */
+#ifdef __cplusplus
 struct T_ART_Tripl	
 {
 	double f; 
@@ -96,10 +104,19 @@ struct T_ART_Tripl
 	double im;
 	T_ART_Tripl* copy();
 };
+#else
+typedef struct
+{
+	double f;
+	double re;
+	double im;
+} T_ART_Tripl;
+#endif /* __cplusplus */
 
 /**
  * This structure represents a 2x2 matrix.
  */  
+#ifdef __cplusplus
 struct T_ART_Matrix
 {
 	T_ART_Cmplx a11; 
@@ -108,10 +125,19 @@ struct T_ART_Matrix
 	T_ART_Cmplx a22;
 
 	T_ART_Matrix* copy();
-
 //	double** a; 
 };
+#else
+typedef struct
+{
+	T_ART_Cmplx a11;
+	T_ART_Cmplx a12;
+	T_ART_Cmplx a21;
+	T_ART_Cmplx a22;
+} T_ART_Matrix;
+#endif /* __cplusplus */
 
+#ifdef __cplusplus
 typedef math::matrix< std::complex<double> > Matrix;
 
 /**
@@ -177,6 +203,8 @@ struct ARTvariant
 	void SetArrayLength(int l);
 	ARTvariant* clone();  
 } ;
+
+#endif
 
 //**************************************************************************************************************
 /*

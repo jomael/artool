@@ -1,5 +1,7 @@
 cmake_minimum_required (VERSION 2.6)
 
+#include(CPack)
+
 project(art)
 
 include_directories(../include ../include/ga ../include/art ../include/fortran ../include/muParser ../source)
@@ -180,7 +182,7 @@ elseif(DEFINED RELEASE)
 	if (DEFINED CMAKE_COMPILER_IS_GNUCXX AND (NOT DEFINED WIN32))
 		set_target_properties(artsim
 			PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings"
-			COMPILE_DEFINITIONS __stdcall=
+			COMPILE_DEFINITIONS "DLL"
 			LINK_FLAGS "-Xlinker tokens.lds"
 		)
 	endif()
@@ -192,7 +194,6 @@ endif()
 if (DEFINED CMAKE_COMPILER_IS_GNUCXX AND (NOT DEFINED WIN32))
 	set_target_properties(art
 		PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings"
-		COMPILE_DEFINITIONS __stdcall=
 		LINK_FLAGS "-Xlinker tokens.lds"
 	)
 	
