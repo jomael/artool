@@ -5,6 +5,8 @@
 #include "ARTwaveObject.h"
 #include "ARTlink.h"
 #include "ART.h"
+#include "Interface.h"
+#include "strparsing.h"
 #include "ARTmodelinterface.h"
 
 /** \addtogroup ARTmodelInterfaceGroup ARTmodelInterface
