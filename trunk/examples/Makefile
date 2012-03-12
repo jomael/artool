@@ -2,16 +2,15 @@ CXX=g++
 CC=gcc
 CXXFLAGS=-I../include/art -Wall -Wextra 
 CFLAGS=-I../include/art -Wall -Wextra
-LFLAGS=-L . -l:../release/libartsim.so -lm
+LFLAGS=-Wl,-rpath=../release -L . -l:../release/libartsim.so -lm
 
-all: ../release/libartsim.so ../release/test_cpp  ../release/test_c
-	@echo "Please execute \"export LD_LIBRARY_PATH=.:\$$LD_LIBRARY_PATH\" before executing the test programs!"
+all: ../release/libartsim.so test_cpp  test_c
 
-../release/test_cpp: testlibart.cpp Makefile
+test_cpp: testlibart.cpp Makefile
 	$(CXX) -o $@ $(CXXFLAGS) $< $(LFLAGS)
 
-../release/test_c: testlibart.c Makefile
+test_c: testlibart.c Makefile
 	$(CC) -o $@ $(CFLAGS) $< $(LFLAGS)
 
 clean:
-	rm ../release/test_cpp ../release/test_c
+	rm -f test_cpp test_c
