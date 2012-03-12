@@ -59,18 +59,18 @@ int main(void) {
 	ARTSetFrequencyRange(mySim, 10, 1800, 10);
 	ARTSetNModes(mySim, 1); 
 
-	cout << "Calculating...";
+	cout << "Calculating..." << flush;
 	myImpCurve = ARTGetValue(ARTInputImpedance(myIns));
 	cout << "Done." << endl << endl;
 	cout << "Frequency     Impedance" << endl;
   	
-	for(i = 0; i < ARTGetLength(myImpCurve)-1; i++) {
+	for(i = 0; i < ARTGetLength(myImpCurve); i++) {
 		// get data structure
 		tri = ARTGetTriple(myImpCurve, i);
 		// compute magnitude
-		mag = sqrt(sqrt(tri.re*tri.re + tri.im*tri.im));
+		mag = sqrt(tri.re*tri.re + tri.im*tri.im);
 		cout.width(5);
-		cout << tri.f << " Hz   " << setiosflags(ios::fixed) << setprecision(6);
+		cout << tri.f << " Hz   " << setiosflags(ios::fixed) << setprecision(2);
 		cout.width(12);
 		cout << mag << " Ohm" << endl << setiosflags(ios::fixed) << setprecision(0);
 	}

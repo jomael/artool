@@ -54,18 +54,19 @@ int main(void) {
 	ARTSetNModes(mySim, 1); 
 
 	printf("Calculating...");
+	fflush(stdout);
 	myImpCurve = ARTGetValue(ARTInputImpedance(myIns));
 	printf("Done.\n\n");
 	printf("Frequency     Impedance\n");;
   	
-	for(i = 0; i < ARTGetLength(myImpCurve)-1; i++) {
+	for(i = 0; i < ARTGetLength(myImpCurve); i++) {
 		// get data structure
 		tri = ARTGetTriple(myImpCurve, i);
 		// compute magnitude
-		mag = sqrt(sqrt(tri.re*tri.re + tri.im*tri.im));
+		mag = sqrt(tri.re*tri.re + tri.im*tri.im);
 		//cout << setprecision(0);
 		printf("%5.0f Hz   ", tri.f);
-		printf("%12f Ohm\n", mag);
+		printf("%12.2f Ohm\n", mag);
 	}
 
 	// wait for unser input;
