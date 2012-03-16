@@ -77,7 +77,7 @@
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
       <AdditionalIncludeDirectories>..\include;..\include\art;..\include\muParser;..\include\ga;..\include\fortran;..\source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;WIN32;DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>.\ART___Win32_Release\</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>.\ART___Win32_Release\ART.pch</PrecompiledHeaderOutputFile>
       <ObjectFileName>.\ART___Win32_Release\</ObjectFileName>

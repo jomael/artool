@@ -794,10 +794,16 @@ When calculation the impedance of a cylindrical tube, you would first create an 
 
 #include "ARTlink.h"
 
-#ifdef _MSC_VER
-#define __STDCALL __stdcall
+#if defined(_MSC_VER)
+#define __CALLCONV __cdecl
+#if defined(DLL)
+#define __DECLSPEC __declspec(dllexport)
 #else
-#define __STDCALL
+#define __DECLSPEC
+#endif /* DLL */
+#else
+#define __CALLCONV
+#define __DECLSPEC
 #endif /* _MSC_VER */
 
 
@@ -851,7 +857,7 @@ typedef ARTelement*	P_ART_Element;
 
 typedef bool (* TprogressFunction)(double, const char*);
 
-//typedef int*	__STDCALL	TStatus_Indication(char* msg, int completion);
+//typedef int*	__CALLCONV	TStatus_Indication(char* msg, int completion);
 
 
 //TStatus_Indication* Status_Indication = NULL;
@@ -861,9 +867,9 @@ typedef bool (* TprogressFunction)(double, const char*);
 extern "C" {
 #endif
 
-int	__STDCALL	begin_trace	(const char* filename);
-int	__STDCALL	end_trace	(int dummy);
-//int	__STDCALL	store_callback	(TStatus_Indication func);
+__DECLSPEC int	__CALLCONV	begin_trace	(const char* filename);
+__DECLSPEC int	__CALLCONV	end_trace	(int dummy);
+//int	__CALLCONV	store_callback	(TStatus_Indication func);
 
 //DLL-Interface methods, must be registered in ART.def!!! 
 // (see http://www.functionx.com/visualc/libraries/moduledef.htm)
@@ -882,13 +888,13 @@ int	__STDCALL	end_trace	(int dummy);
  * internally. Do not call this method yourself.
  * @returns a pointer to the root object created. 
  */ 
-P_ART_Object	__STDCALL	ARTRootObject	();
+__DECLSPEC P_ART_Object	__CALLCONV	ARTRootObject	();
 
 /**
  * Destroy the ART root object. Call this function before exiting your programme to clean
  * up memory. 
  */ 
-bool	__STDCALL	ARTRootDestroy	();
+__DECLSPEC bool	__CALLCONV	ARTRootDestroy	();
 
 /**
  * Define a callback function that is frequently informed about the process 
@@ -904,7 +910,7 @@ bool	__STDCALL	ARTRootDestroy	();
  * @see TprogressFunction	
  *	
  */
-bool	__STDCALL	ARTSetProgressFunction	(TprogressFunction f);
+__DECLSPEC bool	__CALLCONV	ARTSetProgressFunction	(TprogressFunction f);
 
 /**
  * Check if a property contains a capability.
@@ -914,7 +920,7 @@ bool	__STDCALL	ARTSetProgressFunction	(TprogressFunction f);
  * @returns true if the capability is found.
  * @throws ARTerror	
  */ 
-bool	__STDCALL	ARTCheckPropertyCapability	(const char* property, const char* capability);
+__DECLSPEC bool	__CALLCONV	ARTCheckPropertyCapability	(const char* property, const char* capability);
 
 /** 
  *  Use this method to create a simulator. A simulator belongs to a domain of simulation 
@@ -930,7 +936,7 @@ bool	__STDCALL	ARTCheckPropertyCapability	(const char* property, const char* cap
  *	string "name" to refer to the simulator is faster and should be favoured.
  *  @throws ARTerror 
  */
-P_ART_Simulator	__STDCALL	ARTCreateSimulator	(const char* name, const char* domain, const char* wavetype);
+__DECLSPEC P_ART_Simulator	__CALLCONV	ARTCreateSimulator	(const char* name, const char* domain, const char* wavetype);
 
 
 /**
@@ -940,7 +946,7 @@ P_ART_Simulator	__STDCALL	ARTCreateSimulator	(const char* name, const char* doma
  *   use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror, if not using the DLL interface.   
  */   
-bool	__STDCALL	ARTDestroySimulator	(P_ART_Simulator simulator);
+__DECLSPEC bool	__CALLCONV	ARTDestroySimulator	(P_ART_Simulator simulator);
 
 
 /**
@@ -953,7 +959,7 @@ bool	__STDCALL	ARTDestroySimulator	(P_ART_Simulator simulator);
  *    use ARTGetLastErrorMessage to get the error message.
  *  @throws ARTerror, if not using the DLL interface.   
  */ 
-bool	__STDCALL	ARTSetFrequencyRange	(ARTsimulator* sim, double f_min, double f_max, double f_step);
+__DECLSPEC bool	__CALLCONV	ARTSetFrequencyRange	(ARTsimulator* sim, double f_min, double f_max, double f_step);
 
 /**
  * Sets the number of modes of a simulator.
@@ -963,18 +969,18 @@ bool	__STDCALL	ARTSetFrequencyRange	(ARTsimulator* sim, double f_min, double f_m
  *   use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror, if not using the DLL interface.   
  */  
-bool	__STDCALL	ARTSetNModes	(ARTsimulator* sim, int Nmodes);
+__DECLSPEC bool	__CALLCONV	ARTSetNModes	(ARTsimulator* sim, int Nmodes);
 
 
 /**
  * Finds an element with a certain name in the simulator specified.
  */ 
-P_ART_Element    __STDCALL ARTFindElement     (P_ART_Simulator simulator, const char* name);
+__DECLSPEC P_ART_Element    __CALLCONV ARTFindElement     (P_ART_Simulator simulator, const char* name);
 
 /**
  * Finds an circuit with a certain name in the simulator specified.
  */ 
-P_ART_Circuit    __STDCALL ARTFindCircuit     (P_ART_Simulator simulator, const char* name);
+__DECLSPEC P_ART_Circuit    __CALLCONV ARTFindCircuit     (P_ART_Simulator simulator, const char* name);
 
 /**
  * Creates an element of a certain prototype model.
@@ -985,8 +991,8 @@ P_ART_Circuit    __STDCALL ARTFindCircuit     (P_ART_Simulator simulator, const 
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror, if not using the DLL interface.   
  */
-P_ART_Element	__STDCALL	ARTCreateElement	(P_ART_Simulator simulator, const char* name, const char* type);
-//P_ART_Element	__STDCALL	ARTCreateElement2	(P_ART_Simulator simulator, char* name, char* type);
+__DECLSPEC P_ART_Element	__CALLCONV	ARTCreateElement	(P_ART_Simulator simulator, const char* name, const char* type);
+//P_ART_Element	__CALLCONV	ARTCreateElement2	(P_ART_Simulator simulator, char* name, char* type);
 
 /**
  * Changes the model of an element.
@@ -997,15 +1003,15 @@ P_ART_Element	__STDCALL	ARTCreateElement	(P_ART_Simulator simulator, const char*
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror, if not using the DLL interface.   
   */ 
-P_ART_Element	__STDCALL	ARTChangeElementModel	(P_ART_Simulator simulator, P_ART_Element element, const char* type);
-//P_ART_Element	__STDCALL	ARTChangeElementModel	(P_ART_Simulator simulator, char* name, char* type);
+__DECLSPEC P_ART_Element	__CALLCONV	ARTChangeElementModel	(P_ART_Simulator simulator, P_ART_Element element, const char* type);
+//P_ART_Element	__CALLCONV	ARTChangeElementModel	(P_ART_Simulator simulator, char* name, char* type);
 
 /**
  * Returns the model of an element. Use this function when you want to get information about an element's model to
  * get a pointer to the model which you can pass on to other functions like ARTGetDataProperties.
  * @param element A pointer to the element whose model should be retrieved.
  */
-P_ART_Object	__STDCALL	ARTGetModel	(P_ART_Element  element);
+__DECLSPEC P_ART_Object	__CALLCONV	ARTGetModel	(P_ART_Element  element);
 
 /**
 * Changes the name of an element or circuit.
@@ -1016,7 +1022,7 @@ P_ART_Object	__STDCALL	ARTGetModel	(P_ART_Element  element);
 * @returns The element renamed. When using the DLL this function will return NULL if an error occurs.
 *    Use ARTGetLastErrorMessage to get the error message.
 */
-P_ART_Element    __STDCALL ARTChangeName     (P_ART_Element element, const char* newName);
+__DECLSPEC P_ART_Element    __CALLCONV ARTChangeName     (P_ART_Element element, const char* newName);
 
 /**
  * Destroys an element.
@@ -1026,9 +1032,9 @@ P_ART_Element    __STDCALL ARTChangeName     (P_ART_Element element, const char*
  *   use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror, if not using the DLL interface.   
  */   
-bool	__STDCALL	ARTDestroyElement	(P_ART_Simulator simulator, P_ART_Element element);
+__DECLSPEC bool	__CALLCONV	ARTDestroyElement	(P_ART_Simulator simulator, P_ART_Element element);
 //DLL needs unique match, so only one function with this name
-//void	__STDCALL	ARTDestroyElement	(P_ART_Simulator simulator,char* name);
+//void	__CALLCONV	ARTDestroyElement	(P_ART_Simulator simulator,char* name);
 
 /**
  * Sets the value of parameters.
@@ -1048,7 +1054,7 @@ bool	__STDCALL	ARTDestroyElement	(P_ART_Simulator simulator, P_ART_Element eleme
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror, if not using the DLL interface.   
  */ 
-P_ART_DataProp	__STDCALL	ARTSetParameter	(P_ART_Simulator simulator, const char* command);
+__DECLSPEC P_ART_DataProp	__CALLCONV	ARTSetParameter	(P_ART_Simulator simulator, const char* command);
 
 
 /**
@@ -1059,7 +1065,7 @@ P_ART_DataProp	__STDCALL	ARTSetParameter	(P_ART_Simulator simulator, const char*
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror, if not using the DLL interface.   
  */
-P_ART_Circuit	__STDCALL	ARTCreateCircuit	(P_ART_Simulator simulator, const char* name);
+__DECLSPEC P_ART_Circuit	__CALLCONV	ARTCreateCircuit	(P_ART_Simulator simulator, const char* name);
 
 /**
  * Destroys a circuit.
@@ -1069,8 +1075,8 @@ P_ART_Circuit	__STDCALL	ARTCreateCircuit	(P_ART_Simulator simulator, const char*
  *   use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror, if not using the DLL interface.   
  */   
-bool	__STDCALL	ARTDestroyCircuit	(P_ART_Simulator simulator,P_ART_Circuit circuit);
-//void	__STDCALL	ARTDestroyCircuit	(char* name);
+__DECLSPEC bool	__CALLCONV	ARTDestroyCircuit	(P_ART_Simulator simulator,P_ART_Circuit circuit);
+//void	__CALLCONV	ARTDestroyCircuit	(char* name);
 //DLL needs unique match, so only one function with this name
 
 /**
@@ -1081,8 +1087,8 @@ bool	__STDCALL	ARTDestroyCircuit	(P_ART_Simulator simulator,P_ART_Circuit circui
  * @returns the position of the element or -1 if the element was not found. (DLL-interface: returns -1 also if another error occured)	
  * @throws ARTerror, if not using the DLL interface
  */
-int	__STDCALL	ARTGetReferencePosition	( P_ART_Circuit circuit, P_ART_Element element);
-//int	__STDCALL	ARTGetReferencePosition	(P_ART_Simulator simulator, P_ART_Circuit circuit, char* name);
+__DECLSPEC int	__CALLCONV	ARTGetReferencePosition	( P_ART_Circuit circuit, P_ART_Element element);
+//int	__CALLCONV	ARTGetReferencePosition	(P_ART_Simulator simulator, P_ART_Circuit circuit, char* name);
 
 
 /**
@@ -1093,8 +1099,8 @@ int	__STDCALL	ARTGetReferencePosition	( P_ART_Circuit circuit, P_ART_Element ele
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror, if not using the DLL interface.   
  */
-P_ART_Object	__STDCALL	ARTAppendReference	(P_ART_Circuit circuit, P_ART_Element element);
-//P_ART_Object	__STDCALL	ARTAppendReference	(P_ART_Simulator simulator, P_ART_Circuit circuit, char* name);
+__DECLSPEC P_ART_Object	__CALLCONV	ARTAppendReference	(P_ART_Circuit circuit, P_ART_Element element);
+//P_ART_Object	__CALLCONV	ARTAppendReference	(P_ART_Simulator simulator, P_ART_Circuit circuit, char* name);
 
 /**
  * Insert the reference to an element before another element into a circuit.
@@ -1105,8 +1111,8 @@ P_ART_Object	__STDCALL	ARTAppendReference	(P_ART_Circuit circuit, P_ART_Element 
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror, if not using the DLL interface.   
  */
-P_ART_Object	__STDCALL	ARTAppendReferenceBefore	(P_ART_Circuit circuit, P_ART_Element referenceAfter, P_ART_Element reference);
-//P_ART_Object	__STDCALL	ARTAppendReferenceBefore	(P_ART_Simulator simulator, P_ART_Circuit circuit, char*elementAfter, char* name);
+__DECLSPEC P_ART_Object	__CALLCONV	ARTAppendReferenceBefore	(P_ART_Circuit circuit, P_ART_Element referenceAfter, P_ART_Element reference);
+//P_ART_Object	__CALLCONV	ARTAppendReferenceBefore	(P_ART_Simulator simulator, P_ART_Circuit circuit, char*elementAfter, char* name);
 
 /**
  * Insert the reference to an element after another element into a circuit.
@@ -1117,8 +1123,8 @@ P_ART_Object	__STDCALL	ARTAppendReferenceBefore	(P_ART_Circuit circuit, P_ART_El
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror, if not using the DLL interface.   
  */
-P_ART_Object	__STDCALL	ARTAppendReferenceAfter	(P_ART_Circuit circuit, P_ART_Element referenceBefore, P_ART_Element reference);
-//P_ART_Object	__STDCALL	ARTAppendReferenceAfter	(P_ART_Simulator simulator, P_ART_Circuit circuit, char*elementBefore, char* name);
+__DECLSPEC P_ART_Object	__CALLCONV	ARTAppendReferenceAfter	(P_ART_Circuit circuit, P_ART_Element referenceBefore, P_ART_Element reference);
+//P_ART_Object	__CALLCONV	ARTAppendReferenceAfter	(P_ART_Simulator simulator, P_ART_Circuit circuit, char*elementBefore, char* name);
 
 /**
  * Remove a reference to an element from a circuit.
@@ -1129,8 +1135,8 @@ P_ART_Object	__STDCALL	ARTAppendReferenceAfter	(P_ART_Circuit circuit, P_ART_Ele
  *   to get the error message.)
  * @throws ARTerror, if not using the DLL interface. 
  */
-int	__STDCALL	ARTRemoveReference	(P_ART_Circuit circuit, P_ART_Element reference);
-//int	__STDCALL	ARTRemoveReference	(P_ART_Simulator simulator, P_ART_Circuit circuit, char* element);
+__DECLSPEC int	__CALLCONV	ARTRemoveReference	(P_ART_Circuit circuit, P_ART_Element reference);
+//int	__CALLCONV	ARTRemoveReference	(P_ART_Simulator simulator, P_ART_Circuit circuit, char* element);
 
 /**
  * Replace a reference to an element with references to another element in a circuit.
@@ -1142,8 +1148,8 @@ int	__STDCALL	ARTRemoveReference	(P_ART_Circuit circuit, P_ART_Element reference
  *   to get the error message.)	
  * @throws ARTerror, if not using the DLL interface. 
  */
-int	__STDCALL	ARTReplaceReference	(P_ART_Circuit circuit, P_ART_Element search, P_ART_Element replace);
-//int	__STDCALL	ARTReplaceReference	(P_ART_Simulator simulator, P_ART_Circuit circuit, char*search, char* replace);
+__DECLSPEC int	__CALLCONV	ARTReplaceReference	(P_ART_Circuit circuit, P_ART_Element search, P_ART_Element replace);
+//int	__CALLCONV	ARTReplaceReference	(P_ART_Simulator simulator, P_ART_Circuit circuit, char*search, char* replace);
 
 /**
  * Remove all references to elements from a circuit.
@@ -1153,7 +1159,7 @@ int	__STDCALL	ARTReplaceReference	(P_ART_Circuit circuit, P_ART_Element search, 
  *   to get the error message.)   
  * @throws ARTerror, if not using the DLL interface.
  */
-int	__STDCALL	ARTRemoveAllReferences	(P_ART_Circuit circuit);
+__DECLSPEC int	__CALLCONV	ARTRemoveAllReferences	(P_ART_Circuit circuit);
 
 /**
  * Returns the input impedance of a circuit. The impedance is evaluated as the circuit is
@@ -1170,7 +1176,7 @@ int	__STDCALL	ARTRemoveAllReferences	(P_ART_Circuit circuit);
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror, if not using the DLL interface.  
  */
-P_ART_DataProp	__STDCALL	ARTInputImpedance	(P_ART_Circuit circuit);
+__DECLSPEC P_ART_DataProp	__CALLCONV	ARTInputImpedance	(P_ART_Circuit circuit);
 
 /**
  * Returns the name of an object.
@@ -1179,7 +1185,7 @@ P_ART_DataProp	__STDCALL	ARTInputImpedance	(P_ART_Circuit circuit);
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror, if not using the DLL interface.  
  */
-const char*	__STDCALL	ARTGetName	(P_ART_Cell  pobj);
+__DECLSPEC const char*	__CALLCONV	ARTGetName	(P_ART_Cell  pobj);
 
 /**
  * Returns the short description of an object.
@@ -1188,7 +1194,7 @@ const char*	__STDCALL	ARTGetName	(P_ART_Cell  pobj);
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror, if not using the DLL interface.  
  */
-const char*	__STDCALL	ARTGetShortDescription	(P_ART_Cell  pobj);
+__DECLSPEC const char*	__CALLCONV	ARTGetShortDescription	(P_ART_Cell  pobj);
 
 /**
  * Returns the long description of an object.
@@ -1198,7 +1204,7 @@ const char*	__STDCALL	ARTGetShortDescription	(P_ART_Cell  pobj);
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror, if not using the DLL interface.  
  */
-const char*	__STDCALL	ARTGetLongDescription	(P_ART_Cell  pobj);
+__DECLSPEC const char*	__CALLCONV	ARTGetLongDescription	(P_ART_Cell  pobj);
 
 /**
  * Returns the help filename of an object.
@@ -1208,7 +1214,7 @@ const char*	__STDCALL	ARTGetLongDescription	(P_ART_Cell  pobj);
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror, if not using the DLL interface.  
   */
-const char*	__STDCALL	ARTGetHelpFilename	(P_ART_Cell  pobj);
+__DECLSPEC const char*	__CALLCONV	ARTGetHelpFilename	(P_ART_Cell  pobj);
 
 /**
  * Returns true if the property is listable. If the property given is NULL, false is returned.
@@ -1218,7 +1224,7 @@ const char*	__STDCALL	ARTGetHelpFilename	(P_ART_Cell  pobj);
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror, if not using the DLL interface.  
  */
-bool	__STDCALL	ARTIsListable	(P_ART_Property pprp);
+__DECLSPEC bool	__CALLCONV	ARTIsListable	(P_ART_Property pprp);
 
 
 /**
@@ -1231,7 +1237,7 @@ bool	__STDCALL	ARTIsListable	(P_ART_Property pprp);
  *@param pprp The data property whose range should be recieved.
  * @returns The range of the data property or null if no range is defined or (only when using the DLL) if there was an error.
  */
-P_ART_Variant   __STDCALL ARTGetRange           (P_ART_DataProp pprp);
+__DECLSPEC P_ART_Variant   __CALLCONV ARTGetRange           (P_ART_DataProp pprp);
 
 /**
  * Properties and data properties are saved in the same lists in all objects. When you are not sure if a property retrieved is a
@@ -1240,7 +1246,7 @@ P_ART_Variant   __STDCALL ARTGetRange           (P_ART_DataProp pprp);
  * @returns true if pprp is a data property; false if it is a property without a value field. The DLL interface also returns false
  * if an error was detected. Use ARTGetLastErrorMessage to get the error message.
  */
-bool	__STDCALL	ARTIsDataProp	(P_ART_Property pprp);
+__DECLSPEC bool	__CALLCONV	ARTIsDataProp	(P_ART_Property pprp);
 
 /**
  * Returns the definition string of a data property, in the same format as it is used in the parser and in the function ARTSetParameter (see there
@@ -1249,7 +1255,7 @@ bool	__STDCALL	ARTIsDataProp	(P_ART_Property pprp);
  * @param dc A data property whose definition should be retrieved.
  * @returns A pointer to a null terminated string containing the definition. Do not change the contents of the string and do not free the associated memory.
  */
-char*          __STDCALL ARTGetDefinitionString          (P_ART_DataProp dc);
+__DECLSPEC char*          __CALLCONV ARTGetDefinitionString          (P_ART_DataProp dc);
 
 /**
  * Returns the datatype of a data property.
@@ -1259,7 +1265,7 @@ char*          __STDCALL ARTGetDefinitionString          (P_ART_DataProp dc);
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror, if not using the DLL interface.  
  */   
-T_ART_Type	__STDCALL	ARTGetDatatype	(P_ART_Variant pprp);
+__DECLSPEC T_ART_Type	__CALLCONV	ARTGetDatatype	(P_ART_Variant pprp);
 
 /**
  * Returns the length of a data property.
@@ -1269,7 +1275,7 @@ T_ART_Type	__STDCALL	ARTGetDatatype	(P_ART_Variant pprp);
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror, if not using the DLL interface.  
  */   
-int	__STDCALL	ARTGetLength	(P_ART_Variant pprp);
+__DECLSPEC int	__CALLCONV	ARTGetLength	(P_ART_Variant pprp);
 
 /**
  * Returns the value of a data property.
@@ -1279,7 +1285,7 @@ int	__STDCALL	ARTGetLength	(P_ART_Variant pprp);
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror, if not using the DLL interface.  
  */   
-P_ART_Variant	__STDCALL	ARTGetValue	(P_ART_DataProp pprp);
+__DECLSPEC P_ART_Variant	__CALLCONV	ARTGetValue	(P_ART_DataProp pprp);
 
 /**
  * @param pprp A pointer to a data property.
@@ -1290,7 +1296,7 @@ P_ART_Variant	__STDCALL	ARTGetValue	(P_ART_DataProp pprp);
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror, if not using the DLL interface.  
  */   
-char*	__STDCALL	ARTGetString	(P_ART_Variant pprp, int idx);
+__DECLSPEC char*	__CALLCONV	ARTGetString	(P_ART_Variant pprp, int idx);
 
 /**
  * Set the string at index idx of the data property pointed to by pprp to s. If the 
@@ -1305,7 +1311,7 @@ char*	__STDCALL	ARTGetString	(P_ART_Variant pprp, int idx);
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror, if not using the DLL interface.  
  */  
-bool	__STDCALL	ARTSetString	(P_ART_Variant pprp, int idx, const char* s);
+__DECLSPEC bool	__CALLCONV	ARTSetString	(P_ART_Variant pprp, int idx, const char* s);
 
 
 /**
@@ -1318,7 +1324,7 @@ bool	__STDCALL	ARTSetString	(P_ART_Variant pprp, int idx, const char* s);
  *    error or if the value of the data property was 0. 
  * @throws ARTerror, if not using the DLL interface.  
  */   
-int	__STDCALL	ARTGetInteger	(P_ART_Variant pprp, int idx);
+__DECLSPEC int	__CALLCONV	ARTGetInteger	(P_ART_Variant pprp, int idx);
 
 /**
  * Set the integer at index idx of the data property pointed to by pprp to i. 
@@ -1331,7 +1337,7 @@ int	__STDCALL	ARTGetInteger	(P_ART_Variant pprp, int idx);
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror, if not using the DLL interface.  
  */  
-bool	__STDCALL	ARTSetInteger	(P_ART_Variant pprp, int idx, int i);
+__DECLSPEC bool	__CALLCONV	ARTSetInteger	(P_ART_Variant pprp, int idx, int i);
 
 /**
  * @param pprp A pointer to a data property.
@@ -1343,7 +1349,7 @@ bool	__STDCALL	ARTSetInteger	(P_ART_Variant pprp, int idx, int i);
  *    error or if the value of the data property was 0. 
  * @throws ARTerror, if not using the DLL interface.  
   */   
-float	__STDCALL	ARTGetFloat	(P_ART_Variant pprp, int idx);
+__DECLSPEC float	__CALLCONV	ARTGetFloat	(P_ART_Variant pprp, int idx);
 
 /**
  * Set the floating point value at index idx of the data property pointed to by pprp to f. 
@@ -1356,7 +1362,7 @@ float	__STDCALL	ARTGetFloat	(P_ART_Variant pprp, int idx);
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror, if not using the DLL interface.  
  */  
-bool	__STDCALL	ARTSetFloat	(P_ART_Variant pprp, int idx, float f);
+__DECLSPEC bool	__CALLCONV	ARTSetFloat	(P_ART_Variant pprp, int idx, float f);
 
 /**
  * @param pprp A pointer to a data property.
@@ -1368,7 +1374,7 @@ bool	__STDCALL	ARTSetFloat	(P_ART_Variant pprp, int idx, float f);
  *    error or if the value of the data property was 0. 
  * @throws ARTerror, if not using the DLL interface.  
  */   
-double	__STDCALL	ARTGetDouble	(P_ART_Variant pprp, int idx);
+__DECLSPEC double	__CALLCONV	ARTGetDouble	(P_ART_Variant pprp, int idx);
 
 /**
  * Set the double value at index idx of the data property pointed to by pprp to d. 
@@ -1381,7 +1387,7 @@ double	__STDCALL	ARTGetDouble	(P_ART_Variant pprp, int idx);
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror, if not using the DLL interface.  
  */  
-bool	__STDCALL	ARTSetDouble	(P_ART_Variant pprp, int idx, double d);
+__DECLSPEC bool	__CALLCONV	ARTSetDouble	(P_ART_Variant pprp, int idx, double d);
 
 /**
  * @param pprp A pointer to a data property.
@@ -1394,9 +1400,9 @@ bool	__STDCALL	ARTSetDouble	(P_ART_Variant pprp, int idx, double d);
  * @throws ARTerror, if not using the DLL interface.  
  */   
 #ifdef __cplusplus
-T_ART_Cmplx	__STDCALL	ARTGetComplex	(P_ART_Variant pprp, int idx = 0);
+__DECLSPEC T_ART_Cmplx	__CALLCONV	ARTGetComplex	(P_ART_Variant pprp, int idx = 0);
 #else
-T_ART_Cmplx	__STDCALL	ARTGetComplex	(P_ART_Variant pprp, int idx);
+__DECLSPEC T_ART_Cmplx	__CALLCONV	ARTGetComplex	(P_ART_Variant pprp, int idx);
 #endif
 
 /**
@@ -1410,7 +1416,7 @@ T_ART_Cmplx	__STDCALL	ARTGetComplex	(P_ART_Variant pprp, int idx);
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror, if not using the DLL interface.  
  */  
-bool	__STDCALL	ARTSetComplex	(P_ART_Variant pprp, int idx, T_ART_Cmplx c);
+__DECLSPEC bool	__CALLCONV	ARTSetComplex	(P_ART_Variant pprp, int idx, T_ART_Cmplx c);
 
 /**
  * @param pprp A pointer to a data property.
@@ -1423,9 +1429,9 @@ bool	__STDCALL	ARTSetComplex	(P_ART_Variant pprp, int idx, T_ART_Cmplx c);
  * @throws ARTerror, if not using the DLL interface.  
  */
 #ifdef __cplusplus
-T_ART_Tripl	__STDCALL	ARTGetTriple	(P_ART_Variant pprp, int idx = 0);
+__DECLSPEC T_ART_Tripl	__CALLCONV	ARTGetTriple	(P_ART_Variant pprp, int idx = 0);
 #else
-T_ART_Tripl	__STDCALL	ARTGetTriple	(P_ART_Variant pprp, int idx);
+__DECLSPEC T_ART_Tripl	__CALLCONV	ARTGetTriple	(P_ART_Variant pprp, int idx);
 #endif
 
 /**
@@ -1439,7 +1445,7 @@ T_ART_Tripl	__STDCALL	ARTGetTriple	(P_ART_Variant pprp, int idx);
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror, if not using the DLL interface.  
  */  
-bool	__STDCALL	ARTSetTriple	(P_ART_Variant pprp, int idx, T_ART_Tripl t);
+__DECLSPEC bool	__CALLCONV	ARTSetTriple	(P_ART_Variant pprp, int idx, T_ART_Tripl t);
 
 /**
  * @param pprp A pointer to a data property.
@@ -1451,7 +1457,7 @@ bool	__STDCALL	ARTSetTriple	(P_ART_Variant pprp, int idx, T_ART_Tripl t);
  *    error or if the value returned is indeed that of the data property's matrix. 
  * @throws ARTerror, if not using the DLL interface.  
  */   
-T_ART_Matrix	__STDCALL	ARTGetMatrix	(P_ART_Variant pprp, int idx);
+__DECLSPEC T_ART_Matrix	__CALLCONV	ARTGetMatrix	(P_ART_Variant pprp, int idx);
 
 /**
  * Set the matrix at index idx of the data property pointed to by pprp to m. 
@@ -1464,7 +1470,7 @@ T_ART_Matrix	__STDCALL	ARTGetMatrix	(P_ART_Variant pprp, int idx);
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror, if not using the DLL interface.  
  */  
-bool	__STDCALL	ARTSetMatrix	(P_ART_Variant pprp, int idx, T_ART_Matrix m);
+__DECLSPEC bool	__CALLCONV	ARTSetMatrix	(P_ART_Variant pprp, int idx, T_ART_Matrix m);
 
 
 /**
@@ -1476,7 +1482,7 @@ bool	__STDCALL	ARTSetMatrix	(P_ART_Variant pprp, int idx, T_ART_Matrix m);
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror, if not using the DLL interface.  
  */  
-P_ART_Property	__STDCALL	ARTFindProperty	(P_ART_Object  host, const char* nam);
+__DECLSPEC P_ART_Property	__CALLCONV	ARTFindProperty	(P_ART_Object  host, const char* nam);
 
 /**
  * Find a data property of an object.
@@ -1487,7 +1493,7 @@ P_ART_Property	__STDCALL	ARTFindProperty	(P_ART_Object  host, const char* nam);
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror, if not using the DLL interface.  
  */  
-P_ART_DataProp	__STDCALL	ARTFindDataProperty	(P_ART_Object  host, const char* nam);
+__DECLSPEC P_ART_DataProp	__CALLCONV	ARTFindDataProperty	(P_ART_Object  host, const char* nam);
 
 /**
  * Find a method of an object.
@@ -1498,7 +1504,7 @@ P_ART_DataProp	__STDCALL	ARTFindDataProperty	(P_ART_Object  host, const char* na
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror, if not using the DLL interface.  
  */  
-P_ART_Method	__STDCALL	ARTFindMethod	(P_ART_Object  host, const char* nam);
+__DECLSPEC P_ART_Method	__CALLCONV	ARTFindMethod	(P_ART_Object  host, const char* nam);
 
 /**
  * Find an object that is appended to another object.
@@ -1509,7 +1515,7 @@ P_ART_Method	__STDCALL	ARTFindMethod	(P_ART_Object  host, const char* nam);
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror, if not using the DLL interface.  
  */  
-P_ART_Object	__STDCALL	ARTFindObject	(P_ART_ListProp host, const char* nam);
+__DECLSPEC P_ART_Object	__CALLCONV	ARTFindObject	(P_ART_ListProp host, const char* nam);
 
 /**
  * Iterates through all properties of the object host (including data properties). To find out if a property is a data property
@@ -1534,7 +1540,7 @@ P_ART_Object	__STDCALL	ARTFindObject	(P_ART_ListProp host, const char* nam);
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror, if not using the DLL interface.  
  */   
-P_ART_Property	__STDCALL	ARTGetProperties	(P_ART_Object  host, P_ART_Property pos);
+__DECLSPEC P_ART_Property	__CALLCONV	ARTGetProperties	(P_ART_Object  host, P_ART_Property pos);
 
 /**
  * Iterates through all the data properties of the object host. If the object is an element, only properties of the element,
@@ -1549,7 +1555,7 @@ P_ART_Property	__STDCALL	ARTGetProperties	(P_ART_Object  host, P_ART_Property po
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror, if not using the DLL interface.  
  */   
-P_ART_DataProp  __STDCALL ARTGetDataProperties      (P_ART_Object  host, P_ART_DataProp pos);
+__DECLSPEC P_ART_DataProp  __CALLCONV ARTGetDataProperties      (P_ART_Object  host, P_ART_DataProp pos);
 
 
 /**
@@ -1564,7 +1570,7 @@ P_ART_DataProp  __STDCALL ARTGetDataProperties      (P_ART_Object  host, P_ART_D
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror, if not using the DLL interface.  
  */   
-P_ART_Method	__STDCALL	ARTGetMethods	(P_ART_Object  host, P_ART_Method pos);
+__DECLSPEC P_ART_Method	__CALLCONV	ARTGetMethods	(P_ART_Object  host, P_ART_Method pos);
 
 /**
  * Iterates through all objects in the list host.
@@ -1578,7 +1584,7 @@ P_ART_Method	__STDCALL	ARTGetMethods	(P_ART_Object  host, P_ART_Method pos);
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror, if not using the DLL interface.  
  */   
-P_ART_Object	__STDCALL	ARTGetObjects	(P_ART_ListProp host, P_ART_Object  pos);
+__DECLSPEC P_ART_Object	__CALLCONV	ARTGetObjects	(P_ART_ListProp host, P_ART_Object  pos);
 
 
 /**
@@ -1594,7 +1600,7 @@ P_ART_Object	__STDCALL	ARTGetObjects	(P_ART_ListProp host, P_ART_Object  pos);
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror, if not using the DLL interface.  
  */	
-P_ART_DataProp	__STDCALL	ARTAppendDataProp	(P_ART_Object host, P_ART_Variant val, const char* nam, const char* sds, const char* lds, const char* htm);
+__DECLSPEC P_ART_DataProp	__CALLCONV	ARTAppendDataProp	(P_ART_Object host, P_ART_Variant val, const char* nam, const char* sds, const char* lds, const char* htm);
 
 /**
  * Appends a listable property to an ARTobject. A listable property is an array of properties.
@@ -1608,7 +1614,7 @@ P_ART_DataProp	__STDCALL	ARTAppendDataProp	(P_ART_Object host, P_ART_Variant val
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror, if not using the DLL interface.  
  */	
-P_ART_ListProp	__STDCALL	ARTAppendListProp	(P_ART_Object host, const char* nam, const char* sds, const char* lds, const char* htm);
+__DECLSPEC P_ART_ListProp	__CALLCONV	ARTAppendListProp	(P_ART_Object host, const char* nam, const char* sds, const char* lds, const char* htm);
 
 /**
  * Appends a method to an ARTobject.
@@ -1622,7 +1628,7 @@ P_ART_ListProp	__STDCALL	ARTAppendListProp	(P_ART_Object host, const char* nam, 
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror, if not using the DLL interface.  
  */ 
-P_ART_Method	__STDCALL	ARTAppendMethod	(P_ART_Object host, const char* nam, const char* sds, const char* lds, const char* htm);
+__DECLSPEC P_ART_Method	__CALLCONV	ARTAppendMethod	(P_ART_Object host, const char* nam, const char* sds, const char* lds, const char* htm);
 
 /**
  * Appends an object to a listable property.
@@ -1636,7 +1642,7 @@ P_ART_Method	__STDCALL	ARTAppendMethod	(P_ART_Object host, const char* nam, cons
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror, if not using the DLL interface.  
  */ 
-P_ART_Object	__STDCALL	ARTAppendObject	(P_ART_ListProp host, const char* nam, const char* sds, const char* lds, const char* htm);
+__DECLSPEC P_ART_Object	__CALLCONV	ARTAppendObject	(P_ART_ListProp host, const char* nam, const char* sds, const char* lds, const char* htm);
 
 /**
  * Deletes the property prp of object host.  
@@ -1648,7 +1654,7 @@ P_ART_Object	__STDCALL	ARTAppendObject	(P_ART_ListProp host, const char* nam, co
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror, if not using the DLL interface.  
  */   
-bool	__STDCALL	ARTDeleteProperty	(P_ART_Object  host, P_ART_Property prp);
+__DECLSPEC bool	__CALLCONV	ARTDeleteProperty	(P_ART_Object  host, P_ART_Property prp);
 
 /**
  * Deletes the method mtd of object host.  
@@ -1660,7 +1666,7 @@ bool	__STDCALL	ARTDeleteProperty	(P_ART_Object  host, P_ART_Property prp);
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror, if not using the DLL interface.  
  */   
-bool	__STDCALL	ARTDeleteMethod	(P_ART_Object  host, P_ART_Method mtd);
+__DECLSPEC bool	__CALLCONV	ARTDeleteMethod	(P_ART_Object  host, P_ART_Method mtd);
 
 /**
  * Deletes the object pobj of object host.  
@@ -1672,7 +1678,7 @@ bool	__STDCALL	ARTDeleteMethod	(P_ART_Object  host, P_ART_Method mtd);
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror, if not using the DLL interface.  
  */   
-bool	__STDCALL	ARTDeleteObject	(P_ART_ListProp host, P_ART_Object pobj);
+__DECLSPEC bool	__CALLCONV	ARTDeleteObject	(P_ART_ListProp host, P_ART_Object pobj);
 
 /**
  * Returns the last error message. Use this function only when you are using the
@@ -1684,13 +1690,13 @@ bool	__STDCALL	ARTDeleteObject	(P_ART_ListProp host, P_ART_Object pobj);
  * function where the error occured. Note that this can be a function you did not
  * call directly.  
  */ 
-char *	__STDCALL	ARTGetLastErrorMessage	();
+__DECLSPEC char *	__CALLCONV	ARTGetLastErrorMessage	();
 
 /** NEU
  * Returns a string representation of the dependency tree. This function is for
  * debugging only and might be removed in the future.
  */  
-char*	__STDCALL	ARTGetDependencyTree	(P_ART_DataProp pprp, const char* linebreak);
+char*	__CALLCONV	ARTGetDependencyTree	(P_ART_DataProp pprp, const char* linebreak);
 
 /** @}
  * End of documentation group ARTinterface
@@ -1699,9 +1705,9 @@ char*	__STDCALL	ARTGetDependencyTree	(P_ART_DataProp pprp, const char* linebreak
 //for debug and command line interface
 #ifdef __cplusplus
 
-void listprops(ARTobject* obj, string ind);
-void listmets(ARTobject* obj, string ind);
-void listobjs(ARTlistProp* lstprp, string ind);
+__DECLSPEC void __CALLCONV listprops(ARTobject* obj, string ind);
+__DECLSPEC void __CALLCONV listmets(ARTobject* obj, string ind);
+__DECLSPEC void __CALLCONV listobjs(ARTlistProp* lstprp, string ind);
 
 
 }
