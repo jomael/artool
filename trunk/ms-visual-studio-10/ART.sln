@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ART", "ART.vcxproj", "{3C5A814C-9784-445D-5922-13B4307BDA9C}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ART", "ART.vcxproj", "{096A932B-9F33-88CE-C093-97FE0299A16E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -10,12 +10,12 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{3C5A814C-9784-445D-5922-13B4307BDA9C}.Debug ARTInterface|Win32.ActiveCfg = Debug ARTInterface|Win32
-		{3C5A814C-9784-445D-5922-13B4307BDA9C}.Debug ARTInterface|Win32.Build.0 = Debug ARTInterface|Win32
-		{3C5A814C-9784-445D-5922-13B4307BDA9C}.Debug|Win32.ActiveCfg = Debug|Win32
-		{3C5A814C-9784-445D-5922-13B4307BDA9C}.Debug|Win32.Build.0 = Debug|Win32
-		{3C5A814C-9784-445D-5922-13B4307BDA9C}.Release|Win32.ActiveCfg = Release|Win32
-		{3C5A814C-9784-445D-5922-13B4307BDA9C}.Release|Win32.Build.0 = Release|Win32
+		{096A932B-9F33-88CE-C093-97FE0299A16E}.Debug ARTInterface|Win32.ActiveCfg = Debug ARTInterface|Win32
+		{096A932B-9F33-88CE-C093-97FE0299A16E}.Debug ARTInterface|Win32.Build.0 = Debug ARTInterface|Win32
+		{096A932B-9F33-88CE-C093-97FE0299A16E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{096A932B-9F33-88CE-C093-97FE0299A16E}.Debug|Win32.Build.0 = Debug|Win32
+		{096A932B-9F33-88CE-C093-97FE0299A16E}.Release|Win32.ActiveCfg = Release|Win32
+		{096A932B-9F33-88CE-C093-97FE0299A16E}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
