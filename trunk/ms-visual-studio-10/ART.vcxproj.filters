@@ -33,11 +33,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="..\source\art\Art.clp">
-      <Filter>SourceFiles\art</Filter>
-    </CustomBuild>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="..\source\art\ART.cpp">
       <Filter>SourceFiles\art</Filter>
     </ClCompile>
@@ -643,5 +638,10 @@
     <ClInclude Include="..\include\fortran\f2c.h">
       <Filter>HeaderFiles\fortran</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <_EmbedManagedResourceFile Include="..\source\art\Art.clp">
+      <Filter>SourceFiles\art</Filter>
+    </_EmbedManagedResourceFile>
   </ItemGroup>
 </Project>

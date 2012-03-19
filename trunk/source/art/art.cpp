@@ -1483,8 +1483,8 @@ int main(int argc, char **argv)
 
   const char *ImpedanceFile = NULL;
 
-#ifdef __GNUG__
-  // cbg: g++ needs that commandline initialization is called explicitly
+#if defined(__GNUG__) || (defined(_MSC_VER) && (_MSC_VER > 1200))
+  // cbg: g++ and VS2010 needs commandline initialization
   cmdln.init(argv);
 #endif
 
@@ -1501,7 +1501,7 @@ int main(int argc, char **argv)
   bin  <= cmdln.isignal;
   bout <= cmdln.osignal;
 
-   statistic << "\nProcess statistics for " << cmdln.pgmname << ":\n";
+  statistic << "\nProcess statistics for " << cmdln.pgmname << ":\n";
   if(cmdln.columns==0){std::cout<<"ERROR_: columns must be >=1 "<<endl;}
   if (IsDef (cmdln.stat)) {
      if (cmdln.stat) statistic.attach (cmdln.stat);
