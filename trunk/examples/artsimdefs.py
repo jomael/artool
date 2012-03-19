@@ -4,7 +4,7 @@ from sys import platform;
 
 # load dynamic library
 if platform.startswith("win") :
-	artsim = cdll.LoadLibrary("../release/art.dll");
+	artsim = cdll.LoadLibrary("../release/artsim.dll");
 elif platform.startswith("linux") :
 	artsim = cdll.LoadLibrary("../release/libartsim.so");
 

@@ -331,7 +331,7 @@ P_ART_Element    __CALLCONV ARTChangeElementModel     (P_ART_Simulator simulator
 {
 	DLL_ERRORHANDLING_BEGIN
 	#if ARTDebug > 5
-		std::cout << "ARTChangeElementType("<< simulator << "," << name << "," << type << ");\n";
+		std::cout << "ARTChangeElementType("<< simulator << "," << element << "," << type << ");\n";
 	#endif
 	//check if art and simulator are valid objects
 	if (art == NULL) art = new AcousticResearchTool();
@@ -435,7 +435,7 @@ P_ART_Element    __CALLCONV ARTChangeName     (P_ART_Element element, const char
 {
 	DLL_ERRORHANDLING_BEGIN
 	#if ARTDebug > 5
-		std::cout << "ARTChangeName("<< simulator << "," << name << "," << newName << ");\n";
+		std::cout << "ARTChangeName(" << element << "," << newName << ");\n";
 	#endif
 	//check if art and simulator are valid objects
 	if (art == NULL) art = new AcousticResearchTool();

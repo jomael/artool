@@ -1,25 +1,24 @@
-# Microsoft Developer Studio Project File - Name="ART" - Package Owner=<4>
+# Microsoft Developer Studio Project File - Name="artsim" - Package Owner=<4>
 # Microsoft Developer Studio Generated Build File, Format Version 6.00
 # ** DO NOT EDIT **
 
-# TARGTYPE "Win32 (x86) Console Application" 0x0103
+# TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 
-CFG=ART - Win32 Debug ARTInterface
+CFG=artsim - Win32 Debug
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
-!MESSAGE NMAKE /f "ART.mak".
+!MESSAGE NMAKE /f "artsim.mak".
 !MESSAGE 
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "ART.mak" CFG="ART - Win32 Debug ARTInterface"
+!MESSAGE NMAKE /f "artsim.mak" CFG="artsim - Win32 Debug"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
-!MESSAGE "ART - Win32 Debug" (based on "Win32 (x86) Console Application")
-!MESSAGE "ART - Win32 Release" (based on "Win32 (x86) Console Application")
-!MESSAGE "ART - Win32 Debug ARTInterface" (based on "Win32 (x86) Console Application")
+!MESSAGE "artsim - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "artsim - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE 
 
 # Begin Project
@@ -27,95 +26,66 @@ CFG=ART - Win32 Debug ARTInterface
 # PROP Scc_ProjName ""
 # PROP Scc_LocalPath ""
 CPP=cl.exe
+MTL=midl.exe
 RSC=rc.exe
 
-!IF  "$(CFG)" == "ART - Win32 Debug"
+!IF  "$(CFG)" == "artsim - Win32 Release"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 0
+# PROP BASE Output_Dir "artsim___Win32_Release"
+# PROP BASE Intermediate_Dir "artsim___Win32_Release"
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 0
+# PROP Output_Dir "..\release"
+# PROP Intermediate_Dir "artsim___Win32_Release"
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "ARTSIM_EXPORTS" /YX /FD /c
+# ADD CPP /nologo /MLd /w /W0 /GR /GX /Ot /I "..\include" /I "..\include\art" /I "..\include\muParser" /I "..\include\ga" /I "..\include\fortran" /I "..\source" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "ARTSIM_EXPORTS" /D "DLL" /FR /YX /FD /c
+# ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
+# ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
+# ADD BASE RSC /l 0xc07 /d "NDEBUG"
+# ADD RSC /l 0xc07 /d "NDEBUG"
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+LINK32=link.exe
+# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib fortran.lib /nologo /dll /machine:I386
+
+!ELSEIF  "$(CFG)" == "artsim - Win32 Debug"
 
 # PROP BASE Use_MFC 0
 # PROP BASE Use_Debug_Libraries 1
-# PROP BASE Output_Dir "Debug"
-# PROP BASE Intermediate_Dir "Debug"
+# PROP BASE Output_Dir "artsim___Win32_Debug"
+# PROP BASE Intermediate_Dir "artsim___Win32_Debug"
 # PROP BASE Target_Dir ""
 # PROP Use_MFC 0
 # PROP Use_Debug_Libraries 1
 # PROP Output_Dir "..\debug"
-# PROP Intermediate_Dir "ART___Win32_Debug"
+# PROP Intermediate_Dir "artsim___Win32_Debug"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# ADD CPP /nologo /w /W0 /Gm /GR /GX /ZI /Od /I "..\include" /I "..\include\art" /I "..\include\muParser" /I "..\include\ga" /I "..\include\fortran" /I "..\source" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fr /YX /FD /GZ /c
+# ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "ARTSIM_EXPORTS" /YX /FD /GZ /c
+# ADD CPP /nologo /w /W0 /Gm /GR /GX /ZI /Od /I "..\include" /I "..\include\art" /I "..\include\muParser" /I "..\include\ga" /I "..\include\fortran" /I "..\source" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "ARTSIM_EXPORTS" /D "DLL" /YX /FD /GZ /c
+# ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
+# ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0xc07 /d "_DEBUG"
 # ADD RSC /l 0xc07 /d "_DEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib fortran.lib GALib.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# SUBTRACT LINK32 /pdb:none
-
-!ELSEIF  "$(CFG)" == "ART - Win32 Release"
-
-# PROP BASE Use_MFC 0
-# PROP BASE Use_Debug_Libraries 1
-# PROP BASE Output_Dir "ART___Win32_Release"
-# PROP BASE Intermediate_Dir "ART___Win32_Release"
-# PROP BASE Ignore_Export_Lib 0
-# PROP BASE Target_Dir ""
-# PROP Use_MFC 0
-# PROP Use_Debug_Libraries 1
-# PROP Output_Dir "..\release"
-# PROP Intermediate_Dir "ART___Win32_Release"
-# PROP Ignore_Export_Lib 0
-# PROP Target_Dir ""
-# ADD BASE CPP /nologo /w /W0 /GR /GX /Ot /I "..\..\include" /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /GZ /c
-# SUBTRACT BASE CPP /Ox /Og /Fr
-# ADD CPP /nologo /w /W0 /GR /GX /Ot /I "..\include" /I "..\include\art" /I "..\include\muParser" /I "..\include\ga" /I "..\include\fortran" /I "..\source" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "WIN32" /YX /FD /GZ /c
-# ADD BASE RSC /l 0xc07 /d "_DEBUG"
-# ADD RSC /l 0xc07 /d "_DEBUG"
-BSC32=bscmake.exe
-# ADD BASE BSC32 /nologo
-# ADD BSC32 /nologo
-LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /pdb:none /machine:I386
-# SUBTRACT BASE LINK32 /profile /debug
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib fortran.lib GALib.lib /nologo /subsystem:console /pdb:none /machine:I386
-# SUBTRACT LINK32 /profile /debug
-
-!ELSEIF  "$(CFG)" == "ART - Win32 Debug ARTInterface"
-
-# PROP BASE Use_MFC 0
-# PROP BASE Use_Debug_Libraries 1
-# PROP BASE Output_Dir "ART___Win32_Debug_ARTInterface"
-# PROP BASE Intermediate_Dir "ART___Win32_Debug_ARTInterface"
-# PROP BASE Ignore_Export_Lib 0
-# PROP BASE Target_Dir ""
-# PROP Use_MFC 0
-# PROP Use_Debug_Libraries 1
-# PROP Output_Dir "..\debug_artinterface"
-# PROP Intermediate_Dir "ART___Win32_Debug_ARTInterface"
-# PROP Ignore_Export_Lib 0
-# PROP Target_Dir ""
-# ADD BASE CPP /nologo /w /W0 /Gm /GR /GX /ZI /Od /I "..\..\include" /D "WIN32" /D "_DEBUG" /D "ARTinterfaceTest" /D "_MBCS" /Fr /YX /FD /GZ /c
-# ADD CPP /nologo /w /W0 /Gm /GR /GX /ZI /Od /I "..\include" /I "..\include\art" /I "..\include\muParser" /I "..\include\ga" /I "..\include\fortran" /I "..\source" /D "WIN32" /D "_DEBUG" /D "ARTinterfaceTest" /D "_MBCS" /Fr /YX /FD /GZ /c
-# ADD BASE RSC /l 0xc07 /d "_DEBUG"
-# ADD RSC /l 0xc07 /d "_DEBUG"
-BSC32=bscmake.exe
-# ADD BASE BSC32 /nologo
-# ADD BSC32 /nologo
-LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# SUBTRACT BASE LINK32 /profile
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib fortran.lib GALib.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
-# SUBTRACT LINK32 /profile /incremental:no
+# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib fortran.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
 
 !ENDIF 
 
 # Begin Target
 
-# Name "ART - Win32 Debug"
-# Name "ART - Win32 Release"
-# Name "ART - Win32 Debug ARTInterface"
+# Name "artsim - Win32 Release"
+# Name "artsim - Win32 Debug"
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
@@ -128,7 +98,7 @@ SOURCE=..\source\art\Art.clp
 # End Source File
 # Begin Source File
 
-SOURCE=..\source\art\ART.cpp
+SOURCE=..\source\art\art.cpp
 # End Source File
 # Begin Source File
 
@@ -148,15 +118,15 @@ SOURCE=..\source\art\ARTlink.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\source\art\hornelement.cpp
+SOURCE=..\source\art\HornElement.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\source\art\impedancecurve.cpp
+SOURCE=..\source\art\ImpedanceCurve.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\source\art\interface.cpp
+SOURCE=..\source\art\Interface.cpp
 # End Source File
 # Begin Source File
 
@@ -176,7 +146,7 @@ SOURCE=..\source\art\runrb.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\source\art\simplematrix.cpp
+SOURCE=..\source\art\SimpleMatrix.cpp
 # End Source File
 # Begin Source File
 
@@ -188,7 +158,7 @@ SOURCE=..\source\art\test_main.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\source\art\windinstrument.cpp
+SOURCE=..\source\art\WindInstrument.cpp
 # End Source File
 # End Group
 # Begin Group "muparser_src"
@@ -323,13 +293,145 @@ SOURCE=..\source\muParser\mpValueCache.cpp
 SOURCE=..\source\muParser\mpVariable.cpp
 # End Source File
 # End Group
+# Begin Group "ga_src"
+
+# PROP Default_Filter ""
+# Begin Source File
+
+SOURCE=..\source\ga\GA1DArrayGenome.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\source\ga\GA1DBinStrGenome.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\source\ga\GA2DArrayGenome.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\source\ga\GA2DBinStrGenome.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\source\ga\GA3DArrayGenome.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\source\ga\GA3DBinStrGenome.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\source\ga\GAAllele.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\source\ga\GABaseGA.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\source\ga\GABin2DecGenome.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\source\ga\gabincvt.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\source\ga\GABinStr.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\source\ga\GADCrowdingGA.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\source\ga\GADemeGA.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\source\ga\gaerror.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\source\ga\GAGenome.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\source\ga\GAIncGA.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\source\ga\GAList.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\source\ga\GAListBASE.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\source\ga\GAListGenome.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\source\ga\GAParameter.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\source\ga\GAPopulation.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\source\ga\garandom.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\source\ga\GARealGenome.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\source\ga\GAScaling.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\source\ga\GASelector.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\source\ga\GASimpleGA.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\source\ga\GASStateGA.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\source\ga\GAStatistics.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\source\ga\GAStringGenome.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\source\ga\GATree.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\source\ga\GATreeBASE.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\source\ga\GATreeGenome.cpp
+# End Source File
+# End Group
 # End Group
 # Begin Group "Header Files"
 
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 # Begin Group "art_h"
 
-# PROP Default_Filter "*.h"
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\include\art\ART.h
@@ -417,7 +519,7 @@ SOURCE=..\include\art\windinstrument.h
 # End Group
 # Begin Group "fortran_h"
 
-# PROP Default_Filter "*.h"
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\include\fortran\f2c.h
@@ -425,7 +527,7 @@ SOURCE=..\include\fortran\f2c.h
 # End Group
 # Begin Group "ga_h"
 
-# PROP Default_Filter "*.h"
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\include\ga\ga.h
@@ -597,7 +699,7 @@ SOURCE=..\include\ga\std_stream.h
 # End Group
 # Begin Group "muparser_h"
 
-# PROP Default_Filter "*.h"
+# PROP Default_Filter ""
 # Begin Source File
 
 SOURCE=..\include\muParser\memory.h
@@ -755,6 +857,10 @@ SOURCE=..\include\muParser\suSortPred.h
 SOURCE=..\include\muParser\utGeneric.h
 # End Source File
 # End Group
+# End Group
+# Begin Group "Resource Files"
+
+# PROP Default_Filter "ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"
 # End Group
 # End Target
 # End Project
