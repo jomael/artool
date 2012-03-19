@@ -84,8 +84,13 @@ using namespace math;
 #	endif
 #else
 #	ifdef _USRDLL
-#		define DBG1
-#		define DBG2
+#		if !defined(NDEBUG)
+#			define DBG1
+#			define DBG2
+#		else
+#			define DBG1 if (false) 
+#			define DBG2 if (false) 
+#		endif /* _DEBUG */
 //#		define std::cout if (false) std::cout 
 #	else
 #		define DBG1 if (false) 
