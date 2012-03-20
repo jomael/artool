@@ -4,6 +4,12 @@ cmake_minimum_required (VERSION 2.6)
 
 project(art)
 
+if ((NOT DEFINED RELEASE) AND (NOT DEFINED DEBUG) AND (NOT DEFINED ARTINTERFACEDEBUG))
+	message(FATAL_ERROR
+		"Please specify one of the following specifications:\n\tRELEASE\n\tDEBUG\n\tARTINTERFACEDEBUG\ne.g. \"cmake -DRELEASE=ON .\""
+	)
+endif()
+
 include_directories(../include ../include/ga ../include/art ../include/fortran ../include/muParser ../source)
 
 set(ART_SOURCE_DIR ../source/art)
@@ -11,8 +17,16 @@ set(GA_SOURCE_DIR ../source/ga)
 set(MUPARSER_SOURCE_DIR ../source/muParser)
 set(FORTRAN_SOURCE_DIR ../source/fortran)
 
-set(LIBRARY_OUTPUT_PATH ../release)
-set(EXECUTABLE_OUTPUT_PATH ../release)
+if (DEFINED RELEASE)
+	set(LIBRARY_OUTPUT_PATH ../release)
+	set(EXECUTABLE_OUTPUT_PATH ../release)
+elseif (DEFINED DEBUG)
+	set(LIBRARY_OUTPUT_PATH ../debug)
+	set(EXECUTABLE_OUTPUT_PATH ../debug)
+elseif (DEFINED ARTINTERFACEDEBUG)
+	set(LIBRARY_OUTPUT_PATH ../debug_artinterface)
+	set(EXECUTABLE_OUTPUT_PATH ../debug_artinterface)
+endif()
 
 set(FORTRAN_SOURCES 
 	${FORTRAN_SOURCE_DIR}/cbabk2.c
@@ -162,10 +176,9 @@ target_link_libraries(art
 
 
 # add standard definitions for release build
-if (DEFINED TEST AND (NOT DEFINED RELEASE))
+if (DEFINED ARTINTERFACEDEBUG)
 	add_definitions(-D_DEBUG -DARTinterfaceTest)
-#elseif(DEFINED RELEASE AND RELEASE=ON)
-elseif(DEFINED RELEASE)
+elseif ((DEFINED RELEASE) OR (DEFINED DEBUG))
 	add_library(artsim SHARED
 		${ART_SOURCES}
 	)
@@ -185,10 +198,17 @@ elseif(DEFINED RELEASE)
 			COMPILE_DEFINITIONS "DLL"
 			LINK_FLAGS "-Xlinker tokens.lds"
 		)
+	elseif (DEFINED MSVC)
+		set_target_properties(artsim
+			PROPERTIES COMPILE_FLAGS "/W0"
+			COMPILE_DEFINITIONS "DLL"
+		)
 	endif()
-	add_definitions(-D_DEBUG -D_CONSOLE)
-else()
-	add_definitions(-D_DEBUG -D_CONSOLE)
+	if (DEFINED RELEASE)
+		add_definitions(-D_CONSOLE)
+	else()
+		add_definitions(-D_DEBUG -D_CONSOLE)
+	endif()
 endif()
 
 if (DEFINED CMAKE_COMPILER_IS_GNUCXX AND (NOT DEFINED WIN32))
@@ -196,7 +216,6 @@ if (DEFINED CMAKE_COMPILER_IS_GNUCXX AND (NOT DEFINED WIN32))
 		PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings"
 		LINK_FLAGS "-Xlinker tokens.lds"
 	)
-	
 	set_target_properties(fortran
 		PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings"
 	)
@@ -206,7 +225,18 @@ if (DEFINED CMAKE_COMPILER_IS_GNUCXX AND (NOT DEFINED WIN32))
 	set_target_properties(muparser
 		PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings"
 	)
-elseif(DEFINED MSVC)
-	add_definitions(-W0)
+elseif (DEFINED MSVC)
+	set_target_properties(art
+		PROPERTIES COMPILE_FLAGS "/W0"
+	)
+	set_target_properties(fortran
+		PROPERTIES COMPILE_FLAGS "/W0"
+	)
+	set_target_properties(ga
+		PROPERTIES COMPILE_FLAGS "/W0"
+	)
+	set_target_properties(muparser
+		PROPERTIES COMPILE_FLAGS "/W0"
+	)
 endif()
 

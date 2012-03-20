@@ -40,9 +40,10 @@ RSC=rc.exe
 # PROP Use_Debug_Libraries 0
 # PROP Output_Dir "..\release"
 # PROP Intermediate_Dir "artsim___Win32_Release"
+# PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "ARTSIM_EXPORTS" /YX /FD /c
-# ADD CPP /nologo /MLd /w /W0 /GR /GX /Ot /I "..\include" /I "..\include\art" /I "..\include\muParser" /I "..\include\ga" /I "..\include\fortran" /I "..\source" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "ARTSIM_EXPORTS" /D "DLL" /FR /YX /FD /c
+# ADD CPP /nologo /MD /w /W0 /GR /GX /Ot /I "..\include" /I "..\include\art" /I "..\include\muParser" /I "..\include\ga" /I "..\include\fortran" /I "..\source" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "ARTSIM_EXPORTS" /D "DLL" /FR /YX /FD /c
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0xc07 /d "NDEBUG"
@@ -52,7 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib fortran.lib /nologo /dll /machine:I386
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib fortran.lib /nologo /dll /machine:I386 /nodefaultlib:"libc"
 
 !ELSEIF  "$(CFG)" == "artsim - Win32 Debug"
 
