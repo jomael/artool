@@ -1,14 +1,13 @@
 cmake_minimum_required (VERSION 2.6)
 
-#include(CPack)
-
-project(art)
-
+# a configuration has to be specified
 if ((NOT DEFINED RELEASE) AND (NOT DEFINED DEBUG) AND (NOT DEFINED ARTINTERFACEDEBUG))
 	message(FATAL_ERROR
-		"Please specify one of the following specifications:\n\tRELEASE\n\tDEBUG\n\tARTINTERFACEDEBUG\ne.g. \"cmake -DRELEASE=ON .\""
+		"Please specify one of the following configurations:\n\tRELEASE\n\tDEBUG\n\tARTINTERFACEDEBUG\ne.g. \"cmake -DRELEASE=ON .\""
 	)
 endif()
+
+project(art)
 
 include_directories(../include ../include/ga ../include/art ../include/fortran ../include/muParser ../source)
 
@@ -238,5 +237,23 @@ elseif (DEFINED MSVC)
 	set_target_properties(muparser
 		PROPERTIES COMPILE_FLAGS "/W0"
 	)
+endif()
+
+# enable packaging for release build
+if ((DEFINED RELEASE) AND (DEFINED UNIX))
+
+	set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Acoustic Research Tool - A Simulation Framework with Modelling Library for Acoustic Systems")
+	set(CPACK_PACKAGE_VENDOR "Inst. of Music Acoustics, Univ. of Music, Vienna, AT")
+	set(CPACK_PACKAGE_CONTACT "http://iwk.mdw.ac.at/")
+	set(CPACK_DEBIAN_PACKAGE_MAINTAINER "http://iwk.mdw.ac.at/")
+	set(CPACK_PACKAGE_VERSION_MAJOR "0")
+	set(CPACK_PACKAGE_VERSION_MINOR "9")
+	set(CPACK_PACKAGE_VERSION_PATCH "1")
+	set(CPACK_PACKAGE_ICON "art_logo.jpg")
+
+	include(CPack)
+	install_files(/include/art .h ../include/art/ART ../include/art/ARTlink ../include/art/matrix)
+	install_targets(/lib/art artsim)
+	install_targets(/bin art)
 endif()
 
