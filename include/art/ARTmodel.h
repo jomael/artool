@@ -638,9 +638,14 @@ private:
 		ARTdataProp* dprop = dynamic_cast<ARTdataProp*>(FindProperty("radiation"));
 		if (dprop) 
 		{
+			/*
 			if (dprop->IsEqual(&ARTvariant("Reflecting"))) return REFLECTING_RADIATION;
 			if (dprop->IsEqual(&ARTvariant("Zorumski"))) return ZORUMSKI_RADIATION;
 			if (dprop->IsEqual(&ARTvariant("Levine"))) return LEVINE_RADIATION;
+			*/
+			if (dprop->IsEqual((const char*) "Reflecting")) return REFLECTING_RADIATION;
+			if (dprop->IsEqual((const char*) "Zorumski")) return ZORUMSKI_RADIATION;
+			if (dprop->IsEqual((const char*) "Levine")) return LEVINE_RADIATION;
 			throw ARTerror("ToneHole::GetRadiationType", "The value '%s1' of the property '%s2' is invalid. Please check the description for valid values.", dprop->GetValue()->s, "radiation");
 		} 
 		else 
@@ -1092,9 +1097,14 @@ private:
 		ARTdataProp* dprop = dynamic_cast<ARTdataProp*>(FindProperty("radiation"));
 		if (dprop) 
 		{
+			/*
 			if (dprop->IsEqual(&ARTvariant("Reflecting"))) return REFLECTING_RADIATION;
 			if (dprop->IsEqual(&ARTvariant("Zorumski"))) return ZORUMSKI_RADIATION;
 			if (dprop->IsEqual(&ARTvariant("Levine"))) return LEVINE_RADIATION;
+			*/
+			if (dprop->IsEqual((const char*) "Reflecting")) return REFLECTING_RADIATION;
+			if (dprop->IsEqual((const char*) "Zorumski")) return ZORUMSKI_RADIATION;
+			if (dprop->IsEqual((const char*) "Levine")) return LEVINE_RADIATION;
 			throw ARTerror("TerminationModel::GetRadiationType", "The value '%s1' of the property '%s2' is invalid. Please check the description for valid values.", dprop->GetValue()->s, "radiation");
 		} 
 		else 

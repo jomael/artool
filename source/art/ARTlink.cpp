@@ -735,6 +735,22 @@ bool ARTvariant::IsEqual(ARTvariant* other)
 	return true;
 }
 
+bool ARTvariant::IsEqual(const char* other) {
+	if (typ != C_ART_str) {
+		return false;
+	}
+	if ((val->s == NULL) && (other == NULL)) {
+		return true;
+	}
+	if ((val->s == NULL) && (other != NULL)) {
+		return false;
+	}
+	if ((val->s != NULL) && (other == NULL)) {
+		return false;
+	}
+	return (0==strcmp(val->s, other));
+}
+
 
 
 #endif

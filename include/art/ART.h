@@ -1255,7 +1255,7 @@ __DECLSPEC bool	__CALLCONV	ARTIsDataProp	(P_ART_Property pprp);
  * @param dc A data property whose definition should be retrieved.
  * @returns A pointer to a null terminated string containing the definition. Do not change the contents of the string and do not free the associated memory.
  */
-__DECLSPEC char*          __CALLCONV ARTGetDefinitionString          (P_ART_DataProp dc);
+__DECLSPEC const char* __CALLCONV ARTGetDefinitionString          (P_ART_DataProp dc);
 
 /**
  * Returns the datatype of a data property.

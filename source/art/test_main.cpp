@@ -17,8 +17,8 @@
 #define GetTickCount() 0
 #endif
 #include "art.clp"
-#include "ART.h"
 #include "Interface.h"
+#include "ART.h"
 #include "ARTwaveObject.h"
 #include "ARTmodel.h"
 
@@ -1047,7 +1047,7 @@ TEST_DEF_START(changeElementName, ARTpreperationFunctions)
 			} catch (mup::ParserError e) {exceptionsCaught++;}
 
 			//check that variable name in definition string was also changed
-			char* def = ARTGetDefinitionString( ARTFindDataProperty( ARTGetModel(El2), "temp") );
+			const char* def = ARTGetDefinitionString( ARTFindDataProperty( ARTGetModel(El2), "temp") );
 			if (strcmp(def, "Cyl.temp = 20") != 0) return false;
 
 			ARTChangeName( El2, "Cylin");

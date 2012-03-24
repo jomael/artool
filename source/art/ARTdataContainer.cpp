@@ -240,7 +240,7 @@ void ARTdataContainer::SetDefinition(const string s, ARTsimulator* scope)
 }
 
 // return definition string
-string ARTdataContainer::GetDefinition() 
+const string& ARTdataContainer::GetDefinition()
 {
 	//return the definition string - if it exists...
 	if (definition_ != "")	return definition_;
