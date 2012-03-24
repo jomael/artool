@@ -816,20 +816,20 @@ P_ART_Variant   __CALLCONV ARTGetRange           (P_ART_DataProp pprp)
 	DLL_ERRORHANDLING_END
 }
 
-char*          __CALLCONV ARTGetDefinitionString          (P_ART_DataProp dc)
+const char*          __CALLCONV ARTGetDefinitionString          (P_ART_DataProp dc)
 {
 	DLL_ERRORHANDLING_BEGIN
 	if (dc == NULL) throw ARTerror("ARTGetDefinitionString","dc is NULL");
-	string s = dc->GetDefinition();
+	const string& s = dc->GetDefinition();
 	if (s == "") return NULL;
 	else 
 	{
 		// cbg: workaround for VS2010
-		#if defined(_MSC_VER) && _MSC_VER > 1200
-		return (char*)strdup(s.c_str()); //this points to the string the data container holds!
-		#else
-		return (char*)s.c_str(); //this points to the string the data container holds!
-		#endif
+		// #if defined(_MSC_VER) && _MSC_VER > 1200
+		// return (char*)strdup(s.c_str()); //this points to the string the data container holds!
+		// #else
+		return (const char*)s.c_str(); //this points to the string the data container holds!
+		// #endif
 	}
 	DLL_ERRORHANDLING_END
 }

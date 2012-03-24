@@ -474,7 +474,7 @@ int ARTcircuit::RemoveElement(ARTelement* element)
 			it = references.erase(it); //returns position after removed element
 			found++;
 			// cbg: workaround for VS2010
-			break;
+			// break;
 		}
 	}
 //	if (!found) throw ARTerror("ARTcircuit::removeElement", "The element specified as parameter 'element' was not found.");

@@ -187,7 +187,7 @@ public:
 
 	int GetValueAsInt(); 
 
-	string GetDefinition(); 
+	const string& GetDefinition();
 
 	/** 
 	 * direct change of data value (ignore definition string); set value pointer and force

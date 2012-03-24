@@ -199,6 +199,7 @@ struct ARTvariant
 	void SetType(T_ART_Type t, int l=-1);
 	std::string GetTypeString();
 	bool IsEqual(ARTvariant* other);
+	bool IsEqual(const char* s);
 	~ARTvariant();
 	void SetArrayLength(int l);
 	ARTvariant* clone();  
