@@ -173,7 +173,6 @@ target_link_libraries(art
 )
 
 
-
 # add standard definitions for release build
 if (DEFINED ARTINTERFACEDEBUG)
 	add_definitions(-D_DEBUG -DARTinterfaceTest)
@@ -193,13 +192,13 @@ elseif ((DEFINED RELEASE) OR (DEFINED DEBUG))
 	)
 	if (DEFINED CMAKE_COMPILER_IS_GNUCXX AND (NOT DEFINED WIN32))
 		set_target_properties(artsim
-			PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings"
+			PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -Wno-unused-parameter -Wall -Wextra -std=c++98"
 			COMPILE_DEFINITIONS "DLL"
 			LINK_FLAGS "-Xlinker tokens.lds"
 		)
 	elseif (DEFINED MSVC)
 		set_target_properties(artsim
-			PROPERTIES COMPILE_FLAGS "/W0"
+			PROPERTIES COMPILE_FLAGS "/W4"
 			COMPILE_DEFINITIONS "DLL"
 		)
 	endif()
@@ -212,7 +211,7 @@ endif()
 
 if (DEFINED CMAKE_COMPILER_IS_GNUCXX AND (NOT DEFINED WIN32))
 	set_target_properties(art
-		PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings"
+		PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -Wno-unused-parameter -Wall -Wextra -std=c++98"
 		LINK_FLAGS "-Xlinker tokens.lds"
 	)
 	set_target_properties(fortran
@@ -226,7 +225,7 @@ if (DEFINED CMAKE_COMPILER_IS_GNUCXX AND (NOT DEFINED WIN32))
 	)
 elseif (DEFINED MSVC)
 	set_target_properties(art
-		PROPERTIES COMPILE_FLAGS "/W0"
+		PROPERTIES COMPILE_FLAGS "/W4"
 	)
 	set_target_properties(fortran
 		PROPERTIES COMPILE_FLAGS "/W0"
