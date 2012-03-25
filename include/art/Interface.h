@@ -100,10 +100,10 @@ public:
 	virtual ~ARTcell() {}
 	virtual ARTcell* clone() {return new ARTcell(*this);}
 
-	string GetName() const {return name_;}
-	string GetShortDescription() const {return shortDesc_;}
-	string GetLongDescription() const {return longDesc_;}
-	string GetHelpFilename() const {return helpFile_;}
+	const string& GetName() const {return name_;}
+	const string& GetShortDescription() const {return shortDesc_;}
+	const string& GetLongDescription() const {return longDesc_;}
+	const string& GetHelpFilename() const {return helpFile_;}
 
 	void SetName(const string name) {name_ = name;}
 

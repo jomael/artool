@@ -59,7 +59,7 @@ ARTobject::ARTobject(const ARTobject& orig) //copy constructor
 		{
 			*piter_ = (ARTproperty*)((*piter_)->clone());
 			//std::cout << "ARTobject::ARTobject: " << (*piter_)->GetName() << " kopiert\n";
-			piter_++;
+			++piter_;
 		}
 
 		methodList_ = orig.methodList_;
@@ -67,7 +67,7 @@ ARTobject::ARTobject(const ARTobject& orig) //copy constructor
 		while (miter_ != methodList_.end()) 
 		{
 			*miter_ = (ARTmethod*)((*miter_)->clone());
-			miter_++;
+			++miter_;
 		}
 		
 		// use same values for iterators as in original
@@ -78,12 +78,12 @@ ARTobject::ARTobject(const ARTobject& orig) //copy constructor
 // ARTobject destructor
 ARTobject::~ARTobject() 
 {
-	for (piter_ = propertyList_.begin(); (piter_ != propertyList_.end()); piter_++) 
+	for (piter_ = propertyList_.begin(); (piter_ != propertyList_.end()); ++piter_) 
 	{
 		delete *piter_;
 	}
 
-	for (miter_ = methodList_.begin(); (miter_ != methodList_.end()); miter_++) 
+	for (miter_ = methodList_.begin(); (miter_ != methodList_.end()); ++miter_) 
 	{
 		delete *miter_;
 	}
@@ -98,7 +98,7 @@ ARTproperty* ARTobject::AppendProperty(const string name, const string sds, cons
 	if (FindProperty(name)) throw ARTerror("ARTobject::AppendProperty","A property with the name '%s1' has already been appended to object '%s2'.",name,name_);
 	propertyList_.push_back(new ARTproperty(name,sds,lds,htm));
 	piter_ = propertyList_.end();
-	piter_--;
+	--piter_;
 	return (ARTproperty*)(*piter_);
 }
 
@@ -111,7 +111,7 @@ ARTdataProp* ARTobject::AppendDataProp(const string name, ARTvariant* val, const
 	{
 		propertyList_.push_back(new ARTdataProp(val->typ,val->len,name,sds,lds,htm));
 		piter_ = propertyList_.end();
-		piter_--;
+		--piter_;
 		((ARTdataProp*)(*piter_))->SetValue(val);
 		return (ARTdataProp*)(*piter_);
 	}
@@ -119,7 +119,7 @@ ARTdataProp* ARTobject::AppendDataProp(const string name, ARTvariant* val, const
 	{
 		propertyList_.push_back(new ARTdataProp(C_ART_undef,-1,name,sds,lds,htm));
 		piter_ = propertyList_.end();
-		piter_--;
+		--piter_;
 		((ARTdataProp*)(*piter_))->SetValue(NULL);
 		return (ARTdataProp*)(*piter_);
 	}
@@ -131,7 +131,7 @@ ARTdataProp* ARTobject::AppendDataProp(ARTdataProp* dataProp)
 	if (FindProperty(dataProp->GetName())) throw ARTerror("ARTobject::AppendProperty","A property with the name '%s1' has already been appended to object '%s2'.",dataProp->GetName(),name_);
 	propertyList_.push_back(dataProp);
 	piter_ = propertyList_.end();
-	piter_--;
+	--piter_;
 	return (ARTdataProp*)(*piter_);
 }
 
@@ -141,7 +141,7 @@ ARTdataProp* ARTobject::AppendDataProp(const string name, double val, const stri
 	ARTvariant* av = new ARTvariant(val);
 	propertyList_.push_back(new ARTdataProp(av->typ,av->len,name,sds,lds,htm));
 	piter_ = propertyList_.end();
-	piter_--;
+	--piter_;
 	((ARTdataProp*)(*piter_))->SetValue(av);
 	return (ARTdataProp*)(*piter_);
 }
@@ -151,7 +151,7 @@ ARTdataProp* ARTobject::AppendDataProp(const string name, float val, const strin
 	ARTvariant* av = new ARTvariant(val);
 	propertyList_.push_back(new ARTdataProp(av->typ,av->len,name,sds,lds,htm));
 	piter_ = propertyList_.end();
-	piter_--;
+	--piter_;
 	((ARTdataProp*)(*piter_))->SetValue((av));
 	return (ARTdataProp*)(*piter_);
 }
@@ -161,7 +161,7 @@ ARTdataProp* ARTobject::AppendDataProp(const string name, int val, const string 
 	ARTvariant* av = new ARTvariant(val);
 	propertyList_.push_back(new ARTdataProp(av->typ,av->len,name,sds,lds,htm));
 	piter_ = propertyList_.end();
-	piter_--;
+	--piter_;
 	((ARTdataProp*)(*piter_))->SetValue((av));
 	return (ARTdataProp*)(*piter_);
 }
@@ -171,7 +171,7 @@ ARTdataProp* ARTobject::AppendDataProp(const string name, const string val, cons
 	ARTvariant* av = new ARTvariant(val.c_str());
 	propertyList_.push_back(new ARTdataProp(av->typ,av->len,name,sds,lds,htm));
 	piter_ = propertyList_.end();
-	piter_--;
+	--piter_;
 	((ARTdataProp*)(*piter_))->SetValue((av));
 	return (ARTdataProp*)(*piter_);
 }
@@ -182,7 +182,7 @@ ARTlistProp* ARTobject::AppendListProp(const string name, const string sds, cons
 	if (FindProperty(name)) throw ARTerror("ARTobject::AppendListProperty","A property with the name '%s1' has already been appended to object '%s2'.",name,name_);
 	propertyList_.push_back(new ARTlistProp(name,sds,lds,htm));
 	piter_ = propertyList_.end();
-	piter_--;
+	--piter_;
 	return (ARTlistProp*)(*piter_);
 }
 
@@ -198,15 +198,21 @@ ARTmethod* ARTobject::AppendMethod(const string name, const string sds, const st
 // find and return named property (or return NULL if no match)
 ARTproperty* ARTobject::FindProperty(const string nam) 
 {
-	for (piter_ = propertyList_.begin(); (piter_ != propertyList_.end()); piter_++) {
-		if (0 == strcmp((*piter_)->GetName().c_str(),nam.c_str())) {return *piter_;};};
+	for (piter_ = propertyList_.begin(); (piter_ != propertyList_.end()); ++piter_) {
+		if ((*piter_)->GetName() == nam) {
+			return *piter_;
+		}
+	}
 	return NULL;
 }
 
 // find and return named method (or return NULL if no match)
 ARTmethod* ARTobject::FindMethod(const string nam) {
-	for (miter_ = methodList_.begin(); (miter_ != methodList_.end()); miter_++) {
-		if (0 == strcmp((*miter_)->GetName().c_str(),nam.c_str())) {return *miter_;};};
+	for (miter_ = methodList_.begin(); (miter_ != methodList_.end()); ++miter_) {
+		if ((*miter_)->GetName() == nam) {
+			return *miter_;
+		}
+	}
 	return NULL;
 }
 
@@ -250,9 +256,15 @@ ARTmethod* ARTobject::FindMethod(const string nam) {
 
 // iterate through method list (pass NULL to restart iteration, receive NULL after last element)
 	ARTmethod* ARTobject::GetMethods	(ARTmethod* pos) {
-		if (pos == NULL) {miter_ = methodList_.begin(); return (miter_ == methodList_.end()) ? NULL : *miter_++;}
-		else if (miter_ == methodList_.end()) {return NULL;}
-		else {return *miter_++;};}
+		if (pos == NULL) {
+			miter_ = methodList_.begin(); 
+			return (miter_ == methodList_.end()) ? NULL : *miter_++;
+		} else if (miter_ == methodList_.end()) {
+			return NULL;
+		} else {
+			return *miter_++;
+		}
+	}
 
 
 ///copies properties from other objects (also copying the objects of all list-entries). OVERWRITES list own list!
@@ -269,7 +281,7 @@ void ARTobject::CopyPropertyListEntries(ARTobject* obj)
 
 		ARTdataProp* dp;			
 
-		piter_++;
+		++piter_;
 	}
 }
 
@@ -282,7 +294,7 @@ void ARTobject::CopyMethodListEntries(ARTobject* obj)
 	while (miter_ != methodList_.end()) 
 	{
 		*miter_ = (ARTmethod*)((*miter_)->clone());
-		miter_++;
+		++miter_;
 	}
 }
 
@@ -295,7 +307,7 @@ ARTobject* ARTlistProp::AppendObject(const string name, const string sds, const 
 {
 	objectList_.push_back(new ARTobject(name,sds,lds,htm));
 	oiter_ = objectList_.end();
-	oiter_--;
+	--oiter_;
 	return (*oiter_);
 }
 
@@ -304,23 +316,32 @@ ARTobject* ARTlistProp::AppendObject(ARTobject* object)
 {
 	objectList_.push_back(object);
 	oiter_ = objectList_.end();
-	oiter_--;
+	--oiter_;
 	return (*oiter_);
 }
 
 // find and return named object (or return NULL if no match)
 ARTobject* ARTlistProp::FindObject(const string nam) 
 {
-	for (oiter_ = objectList_.begin(); (oiter_ != objectList_.end()); oiter_++) {
-		if (0 == strcmp((*oiter_)->GetName().c_str(),nam.c_str() )) {return *oiter_;};};
+	for (oiter_ = objectList_.begin(); (oiter_ != objectList_.end()); ++oiter_) {
+		if ((*oiter_)->GetName() == nam) {
+			return *oiter_;
+		}
+	}
 	return NULL;
 }
 
 ARTobject* ARTlistProp::GetObjects(ARTobject* pos) 
 {
-	if (pos == NULL) {oiter_ = objectList_.begin(); return (oiter_ == objectList_.end()) ? NULL : *oiter_++;}
-	else if (oiter_ == objectList_.end()) {return NULL;}
-	else {return *oiter_++;};
+	if (pos == NULL) {
+		oiter_ = objectList_.begin(); 
+		return (oiter_ == objectList_.end()) ? NULL : *oiter_++;
+	}
+	else if (oiter_ == objectList_.end()) {
+		return NULL;
+	} else {
+		return *oiter_++;
+	};
 }
 
 bool ARTlistProp::DeleteObject(ARTobject* obj) 
@@ -329,14 +350,16 @@ bool ARTlistProp::DeleteObject(ARTobject* obj)
 	//remove all obj
 	objectList_.remove(obj);
 	//if the size has changed something was removed
-	if (sizeBefore > objectList_.size()) return true;
+	if (sizeBefore > objectList_.size()) {
+		return true;
+	}
 	return false;
 }
 
 int ARTlistProp::ReplaceObject(ARTobject* obj,ARTobject* newobj) 
 {
 	int i = 0;
-	for (oiter_ = objectList_.begin(); (oiter_ != objectList_.end()); oiter_++) 
+	for (oiter_ = objectList_.begin(); (oiter_ != objectList_.end()); ++oiter_) 
 	{
 		if (obj == (*oiter_)) 
 		{
@@ -400,12 +423,13 @@ int ARTcircuit::GetElementPosition(ARTelement* el)
 	pos = -1;
 	//find element 
 	int i;
-	for (i = 0; i < references.size(); i++ )
+	for (i = 0; i < references.size(); ++i) {
 		if (references[i] == el) 
 		{
 			pos = i;
 			break;
 		}
+	}
 	return pos;
 }
 
@@ -418,13 +442,14 @@ void ARTcircuit::AppendElementBefore(ARTelement* before, ARTelement* element)
 	pos = references.end();
 	//find element before
 	vector<ARTelement*>::iterator it;
-	for (it = references.begin(); it < references.end(); it++ )
+	for (it = references.begin(); it < references.end(); ++it) {
 		if (*it == before) 
 		{
 			pos = it;
 			break;
 		}
-		if (pos == references.end()) throw ARTerror("ARTcircuit::appendElementBefore", "The element specified as parameter 'before' was not found.");
+	}
+	if (pos == references.end()) throw ARTerror("ARTcircuit::appendElementBefore", "The element specified as parameter 'before' was not found.");
 
 	references.insert(pos, element);
 }
@@ -438,13 +463,14 @@ void ARTcircuit::AppendElementAfter(ARTelement* after, ARTelement* element)
 	pos = references.begin();
 	//find element after
 	vector<ARTelement*>::iterator it;
-	for (it = references.begin(); it < references.end(); it++ )
+	for (it = references.begin(); it < references.end(); ++it ) {
 		if (*it == after) 
 		{
 			pos = ++it; //move to the next position
 			break;
 		}
-		if (pos == references.begin()) throw ARTerror("ARTcircuit::appendElementafter", "The element specified as parameter 'after' was not found.");
+	}
+	if (pos == references.begin()) throw ARTerror("ARTcircuit::appendElementafter", "The element specified as parameter 'after' was not found.");
 	//insert element *before* pos (that's why we've moved it...)
 	references.insert(pos, element);
 }
@@ -454,7 +480,7 @@ int ARTcircuit::DeleteElement(ARTelement* element)
 	int found = 0;
 	//find element 
 	vector<ARTelement*>::iterator it;
-	for (it = references.begin(); it < references.end(); it++ )
+	for (it = references.begin(); it < references.end(); ++it )
 		if (*it == element) 
 		{
 			*it = NULL;
@@ -467,15 +493,15 @@ int ARTcircuit::RemoveElement(ARTelement* element)
 {
 	int found = 0;
 	//find element 
-	vector<ARTelement*>::iterator it;
-	for (it = references.begin(); it < references.end(); it++ ) {
+	vector<ARTelement*>::iterator it = references.begin();
+	while (it < references.end()) {
 		if (*it == element) 
 		{
 			it = references.erase(it); //returns position after removed element
 			found++;
-			// cbg: workaround for VS2010
-			// break;
+			continue;
 		}
+		++it;
 	}
 //	if (!found) throw ARTerror("ARTcircuit::removeElement", "The element specified as parameter 'element' was not found.");
 	return found;
