@@ -115,12 +115,12 @@ inline unsigned bitcnt (T& val)
 }
 
 
-inline double rint (double x)
+inline double rint (double x) throw ()
 {
     return floor (x+0.5);
 }
 
-inline double rint (double x, double r)
+inline double rint (double x, double r) throw ()
 {
     return floor ((x+0.5)/r) * r;
 }

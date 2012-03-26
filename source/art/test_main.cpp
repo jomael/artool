@@ -58,7 +58,7 @@ class TestClass
 			std::cout <<  "\n" << prefix << "SUITE " << description << ":\n";
 			//prepare(); //NOT called! ((un)prepare methods are called in loop below, from where run() is called. calling run from here would mean we call it twice...)	
 			if (testList.size()==0) std::cout << prefix << "\t(empty)\n";
-			for (int i = 0; i < testList.size(); i++)
+			for (size_t i = 0; i < testList.size(); i++)
 			{
 				testList[i]->prepare();
 				//make sure that sub-suites (if there are any, prefix this)
@@ -126,7 +126,7 @@ class TestClass
 		virtual void printTree() 
 		{
 			std::cout << prefix << "SUITE " << description << ":\n";
-			for (int i = 0; i < testList.size(); i++)
+			for (size_t i = 0; i < testList.size(); i++)
 			{
 				testList[i]->addMessagePrefix(prefix + "\t");
 				testList[i]->printTree();
@@ -137,7 +137,7 @@ class TestClass
 		{
 			bool overallsuccess = true;
 			if (testList.size()!=0) std::cout <<  "\n" << prefix << "SUITE " << description << ":\n";
-			for (int i = 0; i < testList.size(); i++)
+			for (size_t i = 0; i < testList.size(); i++)
 			{
 				testList[i]->addMessagePrefix(prefix + "\t");
 				testList[i]->printSummary(false); //false means the test is not top level
@@ -690,7 +690,7 @@ TEST_DEF_START(getSimulatorParamsDef, ARTpreperationFunctions)
 			// get all parameters as strings
 			ARTdataProp* prop = NULL;
 			string allParams = "";
-			while ( prop = ARTGetDataProperties(mySim, prop) ) 
+			while ( (prop = ARTGetDataProperties(mySim, prop)) )
 			{
 				allParams += string(ARTGetDefinitionString(prop)) + ",";
 			}
@@ -4590,7 +4590,7 @@ int main(int argc, char **argv)
 		int modes = 1;
 		ARTSetNModes(mySim, modes);
 	
-/*
+
 		El2 = ARTCreateElement(mySim, "El2", "BoreJump");
 		ARTSetParameter(mySim, "El2.r1 = 1.5; ");
 		ARTSetParameter(mySim, "El2.r2 = 2.5; ");
@@ -4616,7 +4616,7 @@ int main(int argc, char **argv)
 			Checked (binary_out << meineImpKurve->val->nt[i].f << abs(com) << arg(com));
 		}
 	
-		/*
+
 		//Text Ausgabe
 		std::cout <<  ((1+2*modes*modes) * (meineImpKurve->len)) << " L�nge\n";
 		for (int i=0; i<meineImpKurve->len; i++)

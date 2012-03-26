@@ -52,7 +52,7 @@ class WaveObjectInterface
 		 * dimensional complex transfer matrix. 
 		 * @param out the data container the output is written to     		 
 		 */
-		//šbertragungsfunktion, eine eindimensionale Matrix komplexer Zahlen 
+		//šbertragungsfunktion, eine eindimensionale Matrix komplexer Zahlen
 		virtual void TransferMatrix(ARTdataContainer*& out) = 0;
 
 		/**
@@ -158,7 +158,7 @@ class WaveObjectMMImpedance : public WaveObjectInterface
 	 * @param frq The frequency grid giving the frequency for every index.     	
 	 */	
 	WaveObjectMMImpedance( string name , ARTfunctionoid* MMimpedanceFunc = NULL, ARTdataContainer* frq = NULL)
-	: frequencies(frq), name_(name)
+	: name_(name), frequencies(frq)
 	{
 		MMimpedance = new ARTdataContainer(name_,MMimpedanceFunc);
 	}

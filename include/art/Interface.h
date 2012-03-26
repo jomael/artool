@@ -410,8 +410,8 @@ public:
 	: ARTmodelInterface(name,sds,lds,htm),
 	  //propMatrix(NULL),
 	  model(NULL),
-	  wavefrontIn(NULL),
-	  wavefrontOut(NULL)
+	  wavefrontOut(NULL),
+	  wavefrontIn(NULL)
 	{
 	
 		ParserX* parser = NULL;

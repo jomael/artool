@@ -175,7 +175,7 @@ WindInstrument::WindInstrument (HornElement *c) {
 	} else cout << "ERROR: Trying copy constructor with incompatible HornElements\n";
 }
 
-WindInstrument::WindInstrument (const WindInstrument& a) {
+WindInstrument::WindInstrument (const WindInstrument& a) : GAGenome(), HornElement() {
 	impedanceCurve = ImpedanceCurve(); //Blank ic
 	iter = elementList_.begin();
 	verboseMode_ = a.verboseMode_;
@@ -885,8 +885,8 @@ void WindInstrument::multimodeInputImpedance (const double w, const bool bends, 
 
 double WindInstrument::inputImpedanceMagnitude (const double f, const int term, const bool accumulate)  {
 	const double mag=1; //0.1 = MOhm, 100 = kOhm (used for thesis experiments)
-	double* tmag=0;
-	double* targ=0;
+	//double* tmag=0;
+	//double* targ=0;
 	list<Matrix> ImpedanceList;
 	vector<int> IndHole;
 	//===================================================
