@@ -236,7 +236,7 @@ ARTmethod* ARTobject::FindMethod(const string nam) {
 
 	bool ARTobject::DeleteProperty(ARTproperty* prp) 
 	{
-		size_t sizeBefore = propertyList_.size();
+		::size_t sizeBefore = propertyList_.size();
 		//remove all obj
 		propertyList_.remove(prp);
 		//if the size has changed something was removed
@@ -246,7 +246,7 @@ ARTmethod* ARTobject::FindMethod(const string nam) {
 
 	bool ARTobject::DeleteMethod(ARTmethod* mtd) 
 	{
-		size_t sizeBefore = methodList_.size();
+		::size_t sizeBefore = methodList_.size();
 		//remove all obj
 		methodList_.remove(mtd);
 		//if the size has changed something was removed
@@ -346,7 +346,7 @@ ARTobject* ARTlistProp::GetObjects(ARTobject* pos)
 
 bool ARTlistProp::DeleteObject(ARTobject* obj) 
 {
-	size_t sizeBefore = objectList_.size();
+	::size_t sizeBefore = objectList_.size();
 	//remove all obj
 	objectList_.remove(obj);
 	//if the size has changed something was removed
@@ -422,7 +422,7 @@ int ARTcircuit::GetElementPosition(ARTelement* el)
 	int pos;
 	pos = -1;
 	//find element 
-	size_t i;
+	::size_t i;
 	for (i = 0; i < references.size(); ++i) {
 		if (references[i] == el) 
 		{
@@ -533,7 +533,7 @@ bool ARTcircuit::HasBends()
 {
 	bool hasBends = false;
 	//cycle through all references, check if they have bends
-	for (size_t i = 0; i < references.size(); i++)
+	for (::size_t i = 0; i < references.size(); i++)
 	{
 		if (references.at(i)->HasBends()) hasBends = true;
 	}
@@ -547,7 +547,7 @@ void ARTcircuit::PrepareCalculation()
 	//ARTdataContainer* wfrqGrid = simulator_->GetFrequencyGrid();
 	//ARTdataContainer* modes = simulator_->GetNumberOfModes();
 
-	size_t i;
+	::size_t i;
 	int j;
 
 	// remove all dependencies of own properties

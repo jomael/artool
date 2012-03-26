@@ -681,7 +681,7 @@ void ARTdataContainer::Rename(const string& newname)
 	//if there is a definition, change the name in the definition (replace old name with new name)
 	if (definition_ != "")
 	{
-		size_t pos = definition_.find(varname_);
+		::size_t pos = definition_.find(varname_);
 		if (pos != std::string::npos) definition_.replace(pos, varname_.length(), newname);
 	}
 	//if there was a parser variable rename it by recreating it
