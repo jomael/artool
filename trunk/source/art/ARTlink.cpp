@@ -97,6 +97,8 @@ ARTvariant::ARTvariant(T_ART_Type t, int l) //constructor where type is specifie
 		case C_ART_nmat: val->nm = NULL; break;
 		case C_ART_nmatx: val->nmx = NULL; break;
 		case C_ART_nstr:  val->ns = NULL; break;
+		// suppress warning for unhandled enums
+		default: break;
 	}
 	if (l > 0) SetArrayLength(l);
 }
@@ -299,6 +301,7 @@ ARTvariant::~ARTvariant()
 
  		case C_ART_undef: break; //do nothing if undefined
 		//and nothing if any of the simple types...
+ 		default: break;
 //		default: throw ARTerror("ARTvariant (destructor)", "The specified type is unknown."); 
 	}//end switch
 
@@ -605,6 +608,7 @@ void ARTvariant::SetType(T_ART_Type t, int l)
 				for (int i=0; i<len; i++) {free(val->ns[i]); val->ns[i] = NULL;}
 				free(val->ns); val->ns = NULL; 
 				break;
+			default: break;
 		}//end switch
 	}
 	else
@@ -624,6 +628,7 @@ void ARTvariant::SetType(T_ART_Type t, int l)
 		case C_ART_ntri: val->nt = NULL; break;
 		case C_ART_nmat: val->nm = NULL; break;
 		case C_ART_nstr:  val->ns = NULL; break;
+		default: break;
 	}
 	if (l > 0) SetArrayLength(l);
 }
@@ -648,8 +653,8 @@ std::string ARTvariant::GetTypeString()
 		case C_ART_ntri: return "C_ART_ntri";
 		case C_ART_nmat: return "C_ART_nmat";
 		case C_ART_undef: return "C_ART_undef";
+		default: return "(unknown type)";
 	}
-	return "(unknown type)";
 }
 
 bool ARTvariant::IsEqual(ARTvariant* other)

@@ -15,18 +15,18 @@ namespace std
 
 
 ARTdataContainer::ARTdataContainer(const T_ART_Type dtyp, const int dlen, const string varname) : ARTvariant(dtyp, dlen),
-		valid_(false), counted_(false),	clientList_(list<ARTdataContainer*>()),	citer_(clientList_.begin()),
-		dependencyList_(list<ARTdataContainer*>()), diter_(dependencyList_.begin()), parser_(NULL), varname_(varname),
-		definition_(""), func_(NULL), parserVarDefined(false)//, complexity_(1)
+		valid_(false), counted_(false), func_(NULL), clientList_(list<ARTdataContainer*>()), citer_(clientList_.begin()),
+		dependencyList_(list<ARTdataContainer*>()), diter_(dependencyList_.begin()), definition_(""),
+		parser_(NULL), varname_(varname), parserVarDefined(false)//, complexity_(1)
 {
 	//cout << "ARTdataContainer(typ,len)\n";
 	eval_started = false;
 }
 
 ARTdataContainer::ARTdataContainer(std::string name, ARTfunctionoid* func) : ARTvariant(C_ART_undef, -1),
-		valid_(false), counted_(false), clientList_(list<ARTdataContainer*>()),	citer_(clientList_.begin()),
-		dependencyList_(list<ARTdataContainer*>()), diter_(dependencyList_.begin()), parser_(NULL), varname_(name),
-		definition_(""), func_(func), parserVarDefined(false)//, complexity_(1)
+		valid_(false), counted_(false), func_(func), clientList_(list<ARTdataContainer*>()), citer_(clientList_.begin()),
+		dependencyList_(list<ARTdataContainer*>()), diter_(dependencyList_.begin()), definition_(""),
+		parser_(NULL), varname_(name),	parserVarDefined(false)//, complexity_(1)
 {
 	//cout << "ARTdataContainer(func)\n";
 	if (func_)
@@ -199,7 +199,7 @@ ARTprogressIndicator ARTdataContainer::progressIndicator = ARTprogressIndicator(
 //**************************************************************************************************************
 // ARTdataContainer
 
-void ARTdataContainer::SetDefinition(const string s, ARTsimulator* scope)
+void ARTdataContainer::SetDefinition(const string& s, ARTsimulator* scope)
 {
 	scope_ = scope;					
 	parser_ = scope_->GetParser();
@@ -409,7 +409,7 @@ void ARTdataContainer::Evaluate()
 	if ((func_) && (definition_ != "")) throw ARTerror("ARTdataContainer::Evaluate", "Function and parser expression specified for dataContainer '%s1'. Only either of them can be used.", varname_);
 
 	//cout << "evaluated: " << varname_ << "\n";
-	clock_t start = clock();
+	//clock_t start = clock();
 	//if a functionoid is specified, use this to evaluate
 	if (func_)
 		func_->ApplyFunction();	
@@ -431,7 +431,7 @@ void ARTdataContainer::Evaluate()
 	}
 	else //function and parser are NULL 
 		throw ARTerror("ARTdataContainer::Evaluate", "No evaluating expression or functionoid specified for dataContainer '%s1'.", varname_); 
-	clock_t finish = clock();
+	//clock_t finish = clock();
 	
 	//complexity_ = (double)(finish - start) / GetIterationNumber();
 	//if (!complexity_) complexity_ = 0.001;
@@ -681,7 +681,7 @@ void ARTdataContainer::Rename(const string& newname)
 	//if there is a definition, change the name in the definition (replace old name with new name)
 	if (definition_ != "")
 	{
-		int pos = definition_.find(varname_);
+		size_t pos = definition_.find(varname_);
 		if (pos != std::string::npos) definition_.replace(pos, varname_.length(), newname);
 	}
 	//if there was a parser variable rename it by recreating it

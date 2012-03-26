@@ -161,6 +161,8 @@
 #if defined(__GNUG__)
 	#include <cstring>
 	#include <cstdlib>
+	#include <alloca.h>
+	#define _alloca(a) alloca(a)
 #endif
 
 // forward declaration
@@ -871,7 +873,7 @@ void Failure::Handle ()
 
 void Failure::Print (std::ostream& out)
 {
-#if defined(_WIN32)
+#if defined(_WIN32) || defined(__GNUG__)
     const char **argv = (const char **)_alloca (argc*sizeof(const char*));
 #else    
     const char* argv [argc];            // pointer to additional error informations

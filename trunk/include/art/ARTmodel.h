@@ -35,7 +35,7 @@ private:
 		   * then use a different layout in the multimode impedance matrix.                      		   
 		   */       		  
 			RadiationImpedanceFunc(HornElementPrototype_FD<HE>* host, ARTdataContainer* frequencies, ARTdataContainer* modes, bool hasBends)
-				: host_(host), frequencies_(frequencies), hasBends_(hasBends), modes_(modes)
+				: host_(host), hasBends_(hasBends), frequencies_(frequencies), modes_(modes)
 				{
 					if (!host) throw ARTerror("RadiationImpedanceFunc(Constructor)", "Argument '%s1' is NULL.","host");
 					if (!frequencies) throw ARTerror("RadiationImpedanceFunc(Constructor)", "Argument '%s1' is NULL.","host");
@@ -116,7 +116,7 @@ private:
 		   * then use a different layout in the multimode impedance matrix.                      		   
 		   */       		  
 			InputImpedanceFunc(HornElementPrototype_FD<HE>* host, ARTdataContainer* wfrequencies, ARTdataContainer* modes, ARTdataContainer* prop_z, bool hasBends)
-				: host_(host), wfrequencies_(wfrequencies), prop_z_(prop_z), hasBends_(hasBends), modes_(modes)
+				: host_(host), hasBends_(hasBends), wfrequencies_(wfrequencies), prop_z_(prop_z), modes_(modes)
 				{
 					if (!host) throw ARTerror("InputImpedanceFunc(Constructor)", "Argument '%s1' is NULL.","host");
 					if (!wfrequencies) throw ARTerror("InputImpedanceFunc(Constructor)", "Argument '%s1' is NULL.","wfrequencies");
@@ -350,7 +350,7 @@ private:
 		   * then use a different layout in the multimode impedance matrix.                      		   
 		   */    
        	InputImpedanceFunc(ToneHole* host, ARTdataContainer* wfrequencies, ARTdataContainer* modes, ARTdataContainer* prop_z, bool hasBends)
-				: host_(host), wfrequencies_(wfrequencies), prop_z_(prop_z), hasBends_(hasBends), modes_(modes)
+				: host_(host), hasBends_(hasBends), wfrequencies_(wfrequencies), prop_z_(prop_z), modes_(modes)
 				{
 					if (!host) throw ARTerror("InputImpedanceFunc(Constructor)", "Argument '%s1' is NULL.","host");
 					if (!wfrequencies) throw ARTerror("InputImpedanceFunc(Constructor)", "Argument '%s1' is NULL.","wfrequencies");
@@ -688,7 +688,7 @@ private:
 		   * then use a different layout in the multimode impedance matrix.                      		   
 		   */    
        	CombineParallelImpedanceFunc(ARTdataContainer* wfrequencies, ARTdataContainer* modes, ARTdataContainer* prop_z1, ARTdataContainer* prop_z2)
-				: wfrequencies_(wfrequencies), modes_(modes), prop_z1_(prop_z1), prop_z2_(prop_z2)
+				: wfrequencies_(wfrequencies), prop_z1_(prop_z1), prop_z2_(prop_z2), modes_(modes)
 				{
 					if (!prop_z1) throw ARTerror("CombineParallelImpedanceFunc(Constructor)", "Argument '%s1' is NULL.","prop_z1");
 					if (!prop_z2) throw ARTerror("CombineParallelImpedanceFunc(Constructor)", "Argument '%s1' is NULL.","prop_z2");
@@ -887,7 +887,7 @@ private:
 		   * then use a different layout in the multimode impedance matrix.                      		   
 		   */    
        	RadiationImpedanceFunc(TerminationModel* host, ARTdataContainer* wfrequencies, ARTdataContainer* modes, bool hasBends)
-				: host_(host), wfrequencies_(wfrequencies), hasBends_(hasBends), modes_(modes)
+				: host_(host), hasBends_(hasBends), wfrequencies_(wfrequencies), modes_(modes)
 				{
 					if (!host) throw ARTerror("RadiationImpedanceFunc(Constructor)", "Argument '%s1' is NULL.","host");
 					if (!wfrequencies) throw ARTerror("RadiationImpedanceFunc(Constructor)", "Argument '%s1' is NULL.","wfrequencies");

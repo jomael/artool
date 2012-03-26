@@ -106,9 +106,9 @@ void HornElement::SetImpedanceFile(const char filename[], int RadHole, int Contr
 	if (!file.is_open()) {REPORT_ERROR("ERROR: failed to open the input file");}
 	int const arraySize=500;
 	string line, tempValues[arraySize];
-	bool nearEnd=false, noErrors=true;
+	bool nearEnd=false; // noErrors=true;
 	int Length = 0;
-	int c = 0;
+	size_t c = 0;
 	Matrix Z;
 	if (nModes_==0){Z = Matrix(1,1);}
 	else Z = Matrix(nModes_,nModes_);
@@ -478,7 +478,7 @@ void HornElement::jumpMultimodeInputImpedance (const double w, double *rr, Matri
 	// WK: Verify Matrix A and its RadiusRatio rr
 DBG2 std::cout << "	--- static jumpMultimodeInputImpedance: ";
 
-	if ((abs(rOut/rIn - (*rr)) > eps) || (A == NULL) || (A->RowNo() != nModes_)) {
+	if ((abs(rOut/rIn - (*rr)) > eps) || (A == NULL) || (A->RowNo() != (size_t) nModes_)) {
 
 		double zeta;
 		if (rIn<rOut) zeta = rIn/rOut; else zeta = rOut/rIn;
@@ -519,9 +519,9 @@ DBG2 std::cout << "	--- static jumpMultimodeInputImpedance: ";
 
 	// WK cache scattering matrices!
 	if (A == NULL) A = new Matrix(nModes_, nModes_) ;
-	else if (A->RowNo() != nModes_) A->Null(nModes_, nModes_) ; 
+	else if (A->RowNo() != (size_t) nModes_) A->Null(nModes_, nModes_) ;
 	if (B == NULL) B = new Matrix(nModes_, nModes_) ;
-	else if (B->RowNo() != nModes_) B->Null(nModes_, nModes_) ; 
+	else if (B->RowNo() != (size_t) nModes_) B->Null(nModes_, nModes_) ;
 
 
 	if (rIn<rOut) 	{ (*A) = F_; 	(*B) = (~F_);    }
@@ -772,7 +772,7 @@ void HornElement::cylBendMultimodeInputImpedance (const double w, Matrix *Zout, 
 	}
 
 	const double sf = -length;
-	const double thetaf = -length/bendRadius;
+	//const double thetaf = -length/bendRadius;
 	const double Zc = RHO2(T,Humidity)*C2(T, Humidity,XC)/M_PI/radius/radius;
 	const double k=w/C2(T, Humidity,XC);
 
@@ -3395,11 +3395,11 @@ void Branch::ImpLengthCorrection() {
 	double Lb, w, La_open, La_close;
 	double delta = radius_Hole_/rIn_;
 	double tm = (radius_Hole_*delta)*(1+0.207*delta*delta*delta)/8;
-	double Epsilon = tm/length_Hole_;
+	//double Epsilon = tm/length_Hole_;
 	double S = M_PI * rIn_ * rIn_; 
-	double SPost = M_PI * rOut_ * rOut_;
+	//double SPost = M_PI * rOut_ * rOut_;
 	double Shole = M_PI * radius_Hole_ * radius_Hole_;
-	double VHole = Shole*(length_Hole_);
+	//double VHole = Shole*(length_Hole_);
 	double lb = (radius_Hole_)*(8/(3*M_PI) - 0.193*delta - 1.09*delta*delta + 1.27*delta*delta*delta - 0.71*delta*delta*delta*delta);
 	double la_open = radius_Hole_*delta*delta/(1.78*tanh(1.84*(tm+length_Hole_)/radius_Hole_) - 0.940 + 0.540*delta + 0.285*delta*delta);
 	double la_close = radius_Hole_*delta*delta/(1.78*(1/tanh(1.84*(tm+length_Hole_))/radius_Hole_) - 0.940 + 0.540*delta + 0.285*delta*delta);
@@ -3418,7 +3418,7 @@ void Branch::ImpLengthCorrection() {
 		}
 	}
 	else{
-		for(int k =0; k< Freq.size(); k++){
+		for(size_t k =0; k< Freq.size(); k++){
 			double f = Freq[k];
 			w = 2.0*M_PI*f;
 			Za_open.push_back(dcomp(J*w*La_open)); //impedance correction: main tube, opened hole
@@ -3449,7 +3449,7 @@ Matrix Branch::GetParallelImpedance(const double w, const int IndFreq) {
 
 	if(SimpleModel_){ //parallel calculation
 		iter++;
-		for(int i=0;i<(BranchImpedanceList_)->size()-1;i+=2){
+		for(size_t i=0;i<(BranchImpedanceList_)->size()-1;i+=2){
 			Yt = Yt + (!(*iter));
 			iter++;
 			iter++;
@@ -3516,7 +3516,7 @@ Matrix Branch::GetImpedance(const double w, const int IndFreq) {
 
 	if(SimpleModel_){
 		iter++;
-		for(int i=0;i<(BranchImpedanceList_)->size()-1;i+=2){	
+		for(size_t i=0;i<(BranchImpedanceList_)->size()-1;i+=2){
 			if(i==(BranchImpedanceList_)->size()-2){Yt = Yt + (!(*iter));}
 			else {Yt = Yt - (!(*iter));}		
 			iter++;

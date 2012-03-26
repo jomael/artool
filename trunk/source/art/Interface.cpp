@@ -236,7 +236,7 @@ ARTmethod* ARTobject::FindMethod(const string nam) {
 
 	bool ARTobject::DeleteProperty(ARTproperty* prp) 
 	{
-		int sizeBefore = propertyList_.size();
+		size_t sizeBefore = propertyList_.size();
 		//remove all obj
 		propertyList_.remove(prp);
 		//if the size has changed something was removed
@@ -246,7 +246,7 @@ ARTmethod* ARTobject::FindMethod(const string nam) {
 
 	bool ARTobject::DeleteMethod(ARTmethod* mtd) 
 	{
-		int sizeBefore = methodList_.size();
+		size_t sizeBefore = methodList_.size();
 		//remove all obj
 		methodList_.remove(mtd);
 		//if the size has changed something was removed
@@ -279,7 +279,7 @@ void ARTobject::CopyPropertyListEntries(ARTobject* obj)
 		//clone original object, then overwrite its list entry by setting the iterator to a pointer of the created clone
 		*piter_ = (ARTproperty*)((*piter_)->clone());
 
-		ARTdataProp* dp;			
+		//ARTdataProp* dp;
 
 		++piter_;
 	}
@@ -346,7 +346,7 @@ ARTobject* ARTlistProp::GetObjects(ARTobject* pos)
 
 bool ARTlistProp::DeleteObject(ARTobject* obj) 
 {
-	int sizeBefore = objectList_.size();
+	size_t sizeBefore = objectList_.size();
 	//remove all obj
 	objectList_.remove(obj);
 	//if the size has changed something was removed
@@ -378,7 +378,7 @@ void ARTelement::PrepareCalculation()
 	do
 	{
 		//if a property is found...
-		if (prop = this->GetProperties(prop))
+		if ((prop = this->GetProperties(prop)))
 			//if its no PROTOTYPE prop, but a data property...
 			if (!(this->IsPrototypeProperty(prop)) &&
 				(dprop = dynamic_cast<ARTdataProp*>(prop)))
@@ -398,7 +398,7 @@ bool ARTelement::HasBends()
 //**************************************************************************************************************
 // ARTcircuit
 ARTcircuit::ARTcircuit(ARTsimulator* simulator, const string name, const string sds, const string lds, const string htm) 
-	: ARTelement(name,sds,lds,htm), references(), simulator_(simulator), impedanceCurve_(NULL), wavefrontRadiation(NULL) // , wavefrontOut(NULL), wavefrontIn(NULL)
+	: ARTelement(name,sds,lds,htm), references(), impedanceCurve_(NULL), simulator_(simulator), wavefrontRadiation(NULL) // , wavefrontOut(NULL), wavefrontIn(NULL)
 
 {
 	//Every circuit has its impedance as data property. impedanceCurve is a shortcut pointer:
@@ -422,7 +422,7 @@ int ARTcircuit::GetElementPosition(ARTelement* el)
 	int pos;
 	pos = -1;
 	//find element 
-	int i;
+	size_t i;
 	for (i = 0; i < references.size(); ++i) {
 		if (references[i] == el) 
 		{
@@ -533,7 +533,7 @@ bool ARTcircuit::HasBends()
 {
 	bool hasBends = false;
 	//cycle through all references, check if they have bends
-	for (int i = 0; i < references.size(); i++)
+	for (size_t i = 0; i < references.size(); i++)
 	{
 		if (references.at(i)->HasBends()) hasBends = true;
 	}
@@ -543,11 +543,12 @@ bool ARTcircuit::HasBends()
 void ARTcircuit::PrepareCalculation() 
 {
 	//cout << " **************** ARTcircuit::prepareCalculation() " << GetName() << " *********\n" ;
-	ARTdataContainer* frqGrid = simulator_->GetAngularFrequencyGrid();
-	ARTdataContainer* wfrqGrid = simulator_->GetFrequencyGrid();
-	ARTdataContainer* modes = simulator_->GetNumberOfModes();
+	//ARTdataContainer* frqGrid = simulator_->GetAngularFrequencyGrid();
+	//ARTdataContainer* wfrqGrid = simulator_->GetFrequencyGrid();
+	//ARTdataContainer* modes = simulator_->GetNumberOfModes();
 
-	int i;
+	size_t i;
+	int j;
 
 	// remove all dependencies of own properties
 	impedanceCurve_->RemoveAllDependencies();
@@ -612,13 +613,13 @@ void ARTcircuit::PrepareCalculation()
 	// PROPAGATION OF IMPEDANCE THROUGH CIRCUIT
 
 	// calculate the input impedance of every element (i) from the impedance wave front of previous element (i+1... note that we are going backwards)
-	for (i = terminatingElement-1; i >= 0; i--) //impedance before first element is already input imp., so only down to i=1
+	for (j = terminatingElement-1; j >= 0; j--) //impedance before first element is already input imp., so only down to i=1
 	{
 		//set the input of the element i to the last element's output (except for the element right after the termination, it has been set already)
-		if (i != terminatingElement-1)
-			references.at(i)->wavefrontIn = references.at(i+1)->wavefrontOut;
+		if (j != terminatingElement-1)
+			references.at(j)->wavefrontIn = references.at(j+1)->wavefrontOut;
 		//propagate the impedance through the element i
-		references.at(i)->InputImpedance(references.at(i)->wavefrontIn, references.at(i)->wavefrontOut);
+		references.at(j)->InputImpedance(references.at(j)->wavefrontIn, references.at(j)->wavefrontOut);
 		// BTW, if references.at(i) is a circuit, the circuits InputImpedance will be called and take care of branching
 	}		
 

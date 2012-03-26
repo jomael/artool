@@ -187,8 +187,8 @@ public:
 
 	HornElement(const float tempC=21.0, const float lossF=1.0, const float humidity=80, 
 		const float xc=382, const string name=" ", int type=-1, Matrix MA=NULL, Matrix MB=NULL, 
-		double rr=0.0, double length=0.0, const bool canSplit=false, const bool canModify=false): type_(type), MA_(MA), MB_(MB), rr_(rr), tempC_(tempC), lossF_(lossF), 
-		humidity_(humidity), xc_(xc), name_(name), length_(length), canSplit_(canSplit), canModify_(canModify) {}
+		double rr=0.0, double length=0.0, const bool canSplit=false, const bool canModify=false): type_(type), name_(name), tempC_(tempC), humidity_(humidity), xc_(xc),
+		lossF_(lossF), FirstElement_(0), length_(length), canModify_(canModify), canSplit_(canSplit), MA_(MA), MB_(MB), rr_(rr) {}
 	virtual ~HornElement() {}
 
 	//Sadjad: setnModes used to be static, but when we change the number of modes, different elements need to
@@ -526,9 +526,9 @@ public:
 	BoreJumpSection(const double rIn=0.0, const double rOut=0.0, const float tempC=21.0, 
 		const float lossF=1.0, const float humidity=80, const float xc=382, const string name = " ", 
 		Matrix MA=NULL, Matrix MB=NULL, double rr=0.0, double length=0.0, bool canModify=false, 
-		bool canSplit=false, double jumpSize=0.0) : rIn_(rIn), rOut_(rOut), jumpSize_(rOut-rIn), 
-		HornElement(tempC,lossF,humidity/100,xc/1e06,name,BOREJUMPSECTION_TYPE,MA,MB,rr,length, canSplit, 
-		canModify)  {}
+		bool canSplit=false, double jumpSize=0.0) :
+		HornElement(tempC, lossF, humidity/100, xc/1e06, name, BOREJUMPSECTION_TYPE, MA, MB, rr, length, canSplit, canModify),
+		rIn_(rIn), rOut_(rOut), jumpSize_(rOut-rIn) {}
 	~BoreJumpSection();
 	BoreJumpSection(HornElement *c);
 
@@ -588,8 +588,8 @@ public:
 	CylinderSection(const bool canModify=false, const bool canSplit=false, const double length=100.0, 
 		const double radius=1.0, const float tempC=21.0, const float lossF=1.0, const float humidity=80, 
 		const float xc=382, const string name = " ", Matrix MA=NULL, Matrix MB=NULL, double rr=0.0) : 
-		radius_(radius), HornElement(tempC,lossF,humidity/100,xc/1e06,name,CYLINDERSECTION_TYPE,MA,MB,
-		rr,length, canSplit, canModify)  {}
+		HornElement(tempC,lossF,humidity/100,xc/1e06,name,CYLINDERSECTION_TYPE,MA,MB,
+		rr,length, canSplit, canModify), radius_(radius)  {}
 	CylinderSection(const bool canModify, const bool canSplit, const double minLength, const double maxLength, 
 		const double minradius, const double maxradius); //max & min values
 	CylinderSection(HornElement* c);
@@ -657,9 +657,9 @@ public:
 	ConeSection(const bool canModify=false, const bool canSplit=false, const double length=100.0, 
 		const double rIn=1.0, const double rOut=2.0, const float tempC=21.0, const float lossF=1.0, 
 		const float humidity=80, const float xc=382, const string name = " ", Matrix MA=NULL, 
-		Matrix MB=NULL, double rr=0.0, const double rDiff=-0.0) : rIn_(rIn), rOut_(rOut), rDiff_(rDiff), 
+		Matrix MB=NULL, double rr=0.0, const double rDiff=-0.0) :
 		HornElement(tempC,lossF,humidity/100,xc/1e06,name,CONESECTION_TYPE,MA,MB,rr,length, 
-		canSplit, canModify)  {}
+		canSplit, canModify), rIn_(rIn), rOut_(rOut), rDiff_(rDiff) {}
 	ConeSection(const bool canModify, const bool canSplit, const double minLength, const double maxLength, 
 		const double minRin, const double maxRin, const double minRout, const double maxRout); //max&min values
 	ConeSection(HornElement *c);
@@ -726,9 +726,9 @@ public:
 	BesselSection(const bool canModify=false, const bool canSplit=false, const double length=100.0, 
 		const double rIn=1.0, const double rOut=2.0, const double flare=2, const float tempC=21.0, const float lossF=1.0, 
 		const float humidity=80, const float xc=382, const string name = " ", Matrix MA=NULL, 
-		Matrix MB=NULL, double rr=0.0) : rIn_(rIn), rOut_(rOut), flare_(flare), 
+		Matrix MB=NULL, double rr=0.0) :
 		HornElement(tempC,lossF,humidity/100,xc/1e06,name,BESSELSECTION_TYPE,MA,MB,rr,length, 
-		canSplit, canModify)  {}
+		canSplit, canModify), rIn_(rIn), rOut_(rOut), flare_(flare) {}
 	
 	BesselSection(const bool canModify, const bool canSplit, const double minLength, const double maxLength, const double minRin, const double maxRin, 
 		const double minRout, const double maxRout, const double minFlare, const double maxFlare); //max&min values
@@ -805,10 +805,10 @@ public:
 		const double radius=1.0, const double bendRadius=50.0, const float tempC=21.0, const float lossF=1.0, 
 		const float humidity=80, const float xc=382, const string name = " ", Matrix MA=NULL, 
 		Matrix MB=NULL, double rr=0.0, bool hasBendMatrices = false, 
-		bool dimBendMatrices = false) : radius_(radius), bendRadius_(bendRadius),
-		hasBendMatrices_(hasBendMatrices), dimBendMatrices_(dimBendMatrices),
+		bool dimBendMatrices = false) :
 		HornElement(tempC,lossF,humidity/100,xc/1e06,name,CYLINDERBENDSECTION_TYPE,MA,MB,rr,length, 
-		canSplit, canModify)  {}
+		canSplit, canModify), radius_(radius), bendRadius_(bendRadius),
+		hasBendMatrices_(hasBendMatrices), dimBendMatrices_(dimBendMatrices) {}
 	CylinderBendSection(const bool canModify, const bool canSplit, const double minLength, const double maxLength, 
 		const double minradius, const double maxradius); //DEPRECATED!!!!
 	CylinderBendSection(HornElement* c);
@@ -898,10 +898,10 @@ public:
 	ConeBendSection(const bool canModify=false, const bool canSplit=false, const double length=100.0, 
 		const double rIn=1.0, const double rOut = 2.0, const double bendRadius=50.0, const float tempC=21.0, const float lossF=1.0, 
 		const float humidity=80, const float xc=382, const string name = " ", Matrix MA=NULL, 
-		Matrix MB=NULL, double rr=0.0, bool dimBendMatrices = false) : rIn_(rIn), rOut_(rOut), 
-		bendRadius_(bendRadius),dimBendMatrices_(dimBendMatrices),
+		Matrix MB=NULL, double rr=0.0, bool dimBendMatrices = false) :
 		HornElement(tempC,lossF,humidity/100,xc/1e06,name,CONEBENDSECTION_TYPE,MA,MB,rr,length, 
-		canSplit, canModify)  {}
+		canSplit, canModify), rIn_(rIn), rOut_(rOut),
+		bendRadius_(bendRadius), dimBendMatrices_(dimBendMatrices) {}
 	ConeBendSection(const bool canModify, const bool canSplit, const double minLength, const double maxLength, 
 		const double minRin, const double maxRin, const double minRout, const double maxRout); //DEPRECIATED
 	ConeBendSection(HornElement *c);
@@ -994,11 +994,11 @@ public:
 	TerminationElement(const bool canModify=false, const bool canSplit=false, int test=0,int Contrib=1, const double RadiationRadius=1.0, const double PrevInputRadius  = 1.0, const int PrevType=1, 
 		const int radiation_type = 0,const char filename[100] = " ",const float tempC=21.0, const float lossF=1.0, 
 		const float humidity=80, const float xc=382, const string name = " ", Matrix MA=NULL, 
-		Matrix MB=NULL, double rr=0.0) : RadiationRadius_(RadiationRadius), Test_(test), Contrib_(Contrib),
-		PrevInputRadius_(PrevInputRadius), PrevType_(PrevType), RADIATION_TYPE_(radiation_type),
-		FILENAME_(filename), NAME_(name),
+		Matrix MB=NULL, double rr=0.0) :
 		HornElement(tempC,lossF,humidity/100,xc/1e06,name,TERMINATIONELEMENT_TYPE,MA,MB,rr,0, 
-		canSplit, canModify) {} //{if(radiation_type<10) {GetRadiationImpedance(test, Contrib);}}
+		canSplit, canModify), RADIATION_TYPE_(radiation_type), FILENAME_(filename), NAME_(name),
+		RadiationRadius_(RadiationRadius), PrevInputRadius_(PrevInputRadius),
+		PrevType_(PrevType), Test_(test), Contrib_(Contrib) {} //{if(radiation_type<10) {GetRadiationImpedance(test, Contrib);}}
 	TerminationElement(HornElement* c);
 	~TerminationElement();
 
@@ -1055,9 +1055,9 @@ public:
 		const int NbHole = 1, const double rIn = 1.0, const double rOut = 1.0, const int SimpleModel = 1, 
 		const float tempC=21.0, const float lossF=1.0, const float humidity=80, const float xc=382, 
 		const string name = " ", Matrix MA=NULL, Matrix MB=NULL, double rr=0.0) : 
-		NbHole_(NbHole), rIn_(rIn), rOut_(rOut), SimpleModel_(SimpleModel),
 		HornElement(tempC,lossF,humidity/100,xc/1e06,name,BRANCH_TYPE,MA,MB,rr,0, 
-		canSplit, canModify)  {}
+		canSplit, canModify), rIn_(rIn), rOut_(rOut), SimpleModel_(SimpleModel),
+		NbHole_(NbHole) {}
 	Branch(HornElement* c);
 	~Branch();
 

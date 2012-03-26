@@ -10,7 +10,7 @@ ARTerror::ARTerror(std::string in, std::string des, std::string s1, std::string 
 {
 	inFunction = in; 
 	description = des;
-	int pos;
+	size_t pos;
 
 	// replace place holders with substrings
 	pos = description.find("%s1");

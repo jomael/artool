@@ -83,7 +83,7 @@ public:
   GADefineIdentity("GALinearScaling", GAID::LinearScaling);
 
   GALinearScaling(float fm=gaDefLinearScalingMultiplier) {multiplier(fm);}
-  GALinearScaling(const GALinearScaling & arg) {copy(arg);}
+  GALinearScaling(const GALinearScaling & arg) : GAScalingScheme() {copy(arg);}
   GALinearScaling & operator=(const GAScalingScheme & arg)
     {copy(arg); return(*this);}
   virtual ~GALinearScaling(){}
@@ -118,7 +118,7 @@ public:
 
   GASigmaTruncationScaling(float m=gaDefSigmaTruncationMultiplier)
     {multiplier(m);}
-  GASigmaTruncationScaling(const GASigmaTruncationScaling & arg){copy(arg);}
+  GASigmaTruncationScaling(const GASigmaTruncationScaling & arg) : GAScalingScheme() {copy(arg);}
   GASigmaTruncationScaling & operator=(const GAScalingScheme & arg)
     {copy(arg); return(*this);}
   virtual ~GASigmaTruncationScaling(){}
@@ -153,7 +153,7 @@ public:
   GADefineIdentity("GAPowerLawScaling", GAID::PowerLawScaling);
 
   GAPowerLawScaling(float f=gaDefPowerScalingFactor) {k = f;}
-  GAPowerLawScaling(const GAPowerLawScaling & arg) {copy(arg);}
+  GAPowerLawScaling(const GAPowerLawScaling & arg) : GAScalingScheme() {copy(arg);}
   GAPowerLawScaling & operator=(const GAScalingScheme & arg)
     {copy(arg); return(*this);}
   virtual ~GAPowerLawScaling(){}
@@ -242,7 +242,7 @@ public:
     { N=0; d=(float*)0; df=func; _sigma = cut; _alpha = a; _minmax = 0; }
   GASharing(float cut=gaDefSharingCutoff, float a=1.0)
     { N=0; d=(float*)0; df=0; _sigma = cut; _alpha = a; _minmax = 0; }
-  GASharing(const GASharing & arg) { N=0; d=(float*)0; copy(arg); }
+  GASharing(const GASharing & arg) : GAScalingScheme() { N=0; d=(float*)0; copy(arg); }
   GASharing & operator=(const GAScalingScheme & arg){copy(arg); return(*this);}
   virtual ~GASharing(){ delete [] d;}
   virtual GAScalingScheme * clone() const {return new GASharing(*this);}

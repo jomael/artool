@@ -84,7 +84,7 @@ public:
   GADefineIdentity("GARankSelector", GAID::RankSelection);
 
   GARankSelector(int w=GASelectionScheme::SCALED) : GASelectionScheme(w) {}
-  GARankSelector(const GARankSelector& orig) { copy(orig); }
+  GARankSelector(const GARankSelector& orig) : GASelectionScheme(orig.which) { copy(orig); }
   GARankSelector& operator=(const GASelectionScheme& orig) 
     { if(&orig != this) copy(orig); return *this; }
   virtual ~GARankSelector() {}
@@ -106,7 +106,7 @@ public:
   GARouletteWheelSelector(int w=GASelectionScheme::SCALED) : 
   GASelectionScheme(w) 
     { psum = (float*)0; n = 0; }
-  GARouletteWheelSelector(const GARouletteWheelSelector& orig) 
+  GARouletteWheelSelector(const GARouletteWheelSelector& orig) : GASelectionScheme(orig.which)
     { psum = (float*)0; n = 0; copy(orig); }
   GARouletteWheelSelector& operator=(const GASelectionScheme& orig) 
     { if(&orig != this) copy(orig); return *this; }
@@ -144,7 +144,7 @@ public:
 
   GATournamentSelector(int w=GASelectionScheme::SCALED) : 
   GARouletteWheelSelector(w) {}
-  GATournamentSelector(const GATournamentSelector& orig) { copy(orig); }
+  GATournamentSelector(const GATournamentSelector& orig) : GARouletteWheelSelector(orig.which) { copy(orig); }
   GATournamentSelector& operator=(const GASelectionScheme& orig) 
     { if(&orig != this) copy(orig); return *this; }
   virtual ~GATournamentSelector() {}
@@ -167,7 +167,7 @@ public:
   GADefineIdentity("GAUniformSelector", GAID::UniformSelection);
 
   GAUniformSelector(int w=GASelectionScheme::SCALED) : GASelectionScheme(w) { }
-  GAUniformSelector(const GAUniformSelector& orig) { copy(orig); }
+  GAUniformSelector(const GAUniformSelector& orig) : GASelectionScheme(orig.which) { copy(orig); }
   GAUniformSelector& operator=(const GASelectionScheme& orig) 
     { if(&orig != this) copy(orig); return *this; }
   virtual ~GAUniformSelector() { }
@@ -187,7 +187,7 @@ public:
 
   GASRSSelector(int w=GASelectionScheme::SCALED) : GASelectionScheme(w)
     { fraction = (float*)0; choices = (unsigned int *)0; n = 0; }
-  GASRSSelector(const GASRSSelector& orig)
+  GASRSSelector(const GASRSSelector& orig) : GASelectionScheme(orig.which)
     { fraction = (float*)0; choices = (unsigned int *)0; n = 0; copy(orig); }
   GASRSSelector& operator=(const GASelectionScheme& orig) 
     { if(&orig != this) copy(orig); return *this; }
@@ -228,7 +228,7 @@ public:
     idx = (unsigned int *)0; 
     n = 0; 
   }
-  GADSSelector(const GADSSelector& orig) { 
+  GADSSelector(const GADSSelector& orig) : GASelectionScheme(orig.which) {
     fraction = (float*)0; 
     choices = (unsigned int *)0; 
     idx = (unsigned int *)0; 

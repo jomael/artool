@@ -27,7 +27,7 @@ Adresse in das Feld out_ des Funktionoides.
 
 Dem Konstruktor eines jeden Funktionoides werden als Parameter zeiger auf die Datenkontainer nbergeben, 
 die fnr den Rechenvorgang benötigt werden. Dies kann als eingefrorener Funktionsaufruf betrachtet werden,
-denn erst wenn der Datenkontainer, zu welchem der Funktionoid gehört, ausgewertet werden soll, wird die 
+denn erst wenn der Datenkontainer, zu welchem der Funktionoid gehört, ausgewertet werden soll, wird die
 Kernfunktion des Funktionoides (ApplyFunction) aufgerufen. Diese Funktion weiss, auf welche Weise der 
 Ausgabewert (also der Wert des in out_ angebundenen Datenkontainers) aus den Parametern berechnet 
 wird.
@@ -115,7 +115,7 @@ class ARTmmRadImpFunc : public ARTfunctionoid
 {
 public:
 	ARTmmRadImpFunc(ARTelement* host, ARTdataContainer* frequencies, ARTdataContainer* modes, bool hasBends)
-	: host_(host), frequencies_(frequencies), hasBends_(hasBends), modes_(modes)
+	: host_(host), hasBends_(hasBends), frequencies_(frequencies), modes_(modes)
 	{
 		if (!host) throw ARTerror("ARTmmRadImpFunc(Constructor)", "Argument '%s1' is NULL.","host");
 		if (!frequencies) throw ARTerror("ARTmmRadImpFunc(Constructor)", "Argument '%s1' is NULL.","host");

@@ -513,7 +513,8 @@ MUP_NAMESPACE_START
 	const cmplx_type& ARTValue::GetComplex() const
 	{
 //		return m_val;
-		return 1;
+		static cmplx_type tmp = cmplx_type(1,0);
+		return tmp;
 	}
 
 	//---------------------------------------------------------------------------
@@ -522,7 +523,8 @@ MUP_NAMESPACE_START
 /*		CheckType('s');
 		assert(m_psVal!=NULL);
 		return *m_psVal;*/
-		return "test";
+		static string tmp = "test";
+		return tmp;
 
 	}
 
@@ -540,7 +542,7 @@ MUP_NAMESPACE_START
 		/*CheckType('a');
 		assert(m_pvVal!=NULL);
 		return *m_pvVal;*/
-		std::vector<class mup::Value> dummy;
+		static std::vector<class mup::Value> dummy;
 		return dummy;
 	}
 

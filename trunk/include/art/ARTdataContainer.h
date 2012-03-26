@@ -47,11 +47,11 @@ class ARTprogressIndicator
 {
 public:
 	ARTprogressIndicator()
-	: progressFunction_(NULL), nfuncCalls_(1), count_(0), active_(false) 
+	: progressFunction_(NULL), count_(0), nfuncCalls_(1), active_(false)
 	{ }
 
 	ARTprogressIndicator(TprogressFunction progressFunction, int nfuncCalls)
-	: progressFunction_(progressFunction), nfuncCalls_(nfuncCalls), count_(0), active_(false) 
+	: progressFunction_(progressFunction), count_(0), nfuncCalls_(nfuncCalls), active_(false)
 	{
 		//to avoid division by 0
 		if (nfuncCalls_ == 0) nfuncCalls_ = 1;
@@ -241,7 +241,7 @@ public:
 	string GetVarName() {return varname_;}
 
 	// change definition string (no immediate re-evaluation)
-	void SetDefinition(const string s, ARTsimulator* scope);
+	void SetDefinition(const string& s, ARTsimulator* scope);
 
 	//if there is a definition string, redo all dependencies
 	void RedoDefinitionDependencies();

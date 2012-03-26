@@ -178,7 +178,7 @@ bool __CALLCONV ARTCheckPropertyCapability(const char* property, const char* cap
 	bool hasCapability = false;
 	ARTdataProp* capabilities = static_cast<ARTdataProp*>(art->FindProperty(property));
 	int i = 0;
-	while (possibleCapability = ARTGetString(capabilities, i))
+	while ((possibleCapability = ARTGetString(capabilities, i)))
 	{
 		if (0 == strcmp(possibleCapability, capability))
 		{
@@ -354,7 +354,7 @@ P_ART_Element    __CALLCONV ARTChangeElementModel     (P_ART_Simulator simulator
 		//save list of all datacontainers dependent on properties of this one
 		list<ARTdataContainer*> allclients;
 		ARTproperty* prop = NULL;
-		while (prop = element->model->GetProperties(prop))
+		while ((prop = element->model->GetProperties(prop)))
 		{
 			//if it is a data property 
 			ARTdataProp* dprop = dynamic_cast<ARTdataProp*>(prop);
@@ -489,7 +489,7 @@ P_ART_DataProp    __CALLCONV ARTSetParameter     (P_ART_Simulator simulator, con
 	//command string can contain more than one command sperated by ; -> cut string into commands
 	vector<string> commands = strsplit(command,';');
 	ARTdataProp* prop;
-	for (int i = 0; i < commands.size(); i++)
+	for (size_t i = 0; i < commands.size(); i++)
 	{
 		vector<string> expressions = strsplit(commands[i],'=');
 		string s = strcrop(expressions[0]);
@@ -506,7 +506,7 @@ P_ART_DataProp    __CALLCONV ARTSetParameter     (P_ART_Simulator simulator, con
 			}
 			//otherwise set the parser definition of the string
 			else
-				dc->SetDefinition(commands[i].c_str(), simulator);
+				dc->SetDefinition(commands[i], simulator);
 		}
 	}
 	return prop;
@@ -1383,7 +1383,7 @@ int calc_imp(double f, vector <double> &mag, vector <double> & pha, int IndFreq,
     res = ins->getInputImpedance(f,term,IndFreq,Contrib,gain*1.0E-5,0,&ImpedanceList,0,IndHole,accumulate); //scales for Ohms
   }
 
-  for(int i=0;i<res.size();i++){
+  for(size_t i=0;i<res.size();i++){
     //res[i] = res[i]/dcomp(1.0E6); //Input impedance in MOhm
     mag.push_back(abs(res[i])); //Magnitude
     pha.push_back(arg(res[i])); //Phase
@@ -1407,7 +1407,7 @@ int calc_rad(const double Freq, const double IndFreq, vector <double> &mag, vect
   if(res[1]==dcomp(0,0)) res[0] = mem;
 
   if(res[0]==dcomp(0,0)) {res[0]+= dcomp(1,0);}
-  for(int i=1;i<res.size();i++){
+  for(size_t i=1;i<res.size();i++){
       res[i] = res[i]/pow(10,abs(res[0]));
       mag.push_back(abs(res[i]));
       pha.push_back(arg(res[i]));
@@ -1429,7 +1429,7 @@ int calc_Param(const double Freq, const double IndFreq, vector <double> &mag, ve
   for(int p=0;p<4;p++){IndHole.push_back(0);}
   res = ins->getParam(Freq,IndFreq,Contrib, 0,&ImpedanceList,0,IndHole);
   if(res[0]==dcomp(0,0)) res[0] = mem;
-  for(int i=0;i<res.size();i++){
+  for(size_t i=0;i<res.size();i++){
     mag.push_back(abs(res[i]));
     pha.push_back(arg(res[i]));
   }
@@ -1606,7 +1606,7 @@ int main(int argc, char **argv)
 
 			//Sadjad: original!
 		  Checked (bout << f << r[0] << ph[0]);
-          for(int a=1;a<r.size();a++){Checked (bout << r[a] << ph[a]);}
+          for(size_t a=1;a<r.size();a++){Checked (bout << r[a] << ph[a]);}
 /*
 		  //SADJAD:Text output
           std::cout <<"\n"<< f <<"Hz: "<< r[0] <<" "<< ph[0];
@@ -1626,7 +1626,7 @@ int main(int argc, char **argv)
         double freq = ins->Freq[k];
         if (0 ==calc_imp(freq, r, ph, k, termination, 1,cmdln.modes, cmdln.columns, IsDef(cmdln.accumulate))) {
           Checked (bout << freq << r[0] << ph[0]);
-          for(int a=1;a<r.size();a++){Checked (bout << r[a] << ph[a]);}
+          for(size_t a=1;a<r.size();a++){Checked (bout << r[a] << ph[a]);}
         } else throw NumError;
       }
     }
@@ -1641,7 +1641,7 @@ int main(int argc, char **argv)
         double freq = ins->Freq[k];
         if (0 ==calc_imp(freq, r, ph, k, termination, 1, cmdln.modes, cmdln.columns, IsDef(cmdln.accumulate))) {
           Checked (bout << freq << r[0] << ph[0]);
-          for(int a=1;a<r.size();a++){Checked (bout << r[a] << ph[a]);}
+          for(size_t a=1;a<r.size();a++){Checked (bout << r[a] << ph[a]);}
         } else throw NumError;
       }
     }
@@ -1673,7 +1673,7 @@ int main(int argc, char **argv)
       if (0 ==calc_rad(freq,k, r, ph,mem,cmdln.modes, cmdln.columns)){
         mem = r[0]*exp(J*ph[0]);
         Checked (bout << freq << r[0] << ph[0]);
-        for(int a=1;a<r.size();a++){Checked (bout << r[a] << ph[a]);}
+        for(size_t a=1;a<r.size();a++){Checked (bout << r[a] << ph[a]);}
       } else throw NumError;
     }
   }
@@ -1691,7 +1691,7 @@ int main(int argc, char **argv)
       if (0 ==calc_Param(freq,k, r, ph,mem,cmdln.modes, cmdln.columns)){ 
         mem = r[0]*exp(J*ph[0]);
         Checked (bout << freq << r[0] << ph[0]);
-        for(int a=1;a<r.size();a++){Checked (bout << r[a] << ph[a]);}
+        for(size_t a=1;a<r.size();a++){Checked (bout << r[a] << ph[a]);}
       } else throw NumError;
     }
   }
