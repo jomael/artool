@@ -597,6 +597,7 @@ void ARTvariant::SetType(T_ART_Type t, int l)
 	{
 		switch(typ)
 		{
+			default: break;
 			case C_ART_str: free(val->s); val->s = NULL; break; //but usually len is -1, that's why we also have the else clause below
 			case C_ART_nint: free(val->ni); val->ni = NULL; break;
 			case C_ART_nflo: free(val->nf); val->nf = NULL; break;
@@ -608,7 +609,6 @@ void ARTvariant::SetType(T_ART_Type t, int l)
 				for (int i=0; i<len; i++) {free(val->ns[i]); val->ns[i] = NULL;}
 				free(val->ns); val->ns = NULL; 
 				break;
-			default: break;
 		}//end switch
 	}
 	else

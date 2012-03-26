@@ -58,7 +58,7 @@ class TestClass
 			std::cout <<  "\n" << prefix << "SUITE " << description << ":\n";
 			//prepare(); //NOT called! ((un)prepare methods are called in loop below, from where run() is called. calling run from here would mean we call it twice...)	
 			if (testList.size()==0) std::cout << prefix << "\t(empty)\n";
-			for (size_t i = 0; i < testList.size(); i++)
+			for (::size_t i = 0; i < testList.size(); i++)
 			{
 				testList[i]->prepare();
 				//make sure that sub-suites (if there are any, prefix this)
@@ -126,7 +126,7 @@ class TestClass
 		virtual void printTree() 
 		{
 			std::cout << prefix << "SUITE " << description << ":\n";
-			for (size_t i = 0; i < testList.size(); i++)
+			for (::size_t i = 0; i < testList.size(); i++)
 			{
 				testList[i]->addMessagePrefix(prefix + "\t");
 				testList[i]->printTree();
@@ -137,7 +137,7 @@ class TestClass
 		{
 			bool overallsuccess = true;
 			if (testList.size()!=0) std::cout <<  "\n" << prefix << "SUITE " << description << ":\n";
-			for (size_t i = 0; i < testList.size(); i++)
+			for (::size_t i = 0; i < testList.size(); i++)
 			{
 				testList[i]->addMessagePrefix(prefix + "\t");
 				testList[i]->printSummary(false); //false means the test is not top level
