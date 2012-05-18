@@ -97,6 +97,7 @@ ARTvariant::ARTvariant(T_ART_Type t, int l) //constructor where type is specifie
 		case C_ART_nmat: val->nm = NULL; break;
 		case C_ART_nmatx: val->nmx = NULL; break;
 		case C_ART_nstr:  val->ns = NULL; break;
+		case C_ART_na: val->na = NULL; break;
 		// suppress warning for unhandled enums
 		default: break;
 	}
@@ -268,6 +269,12 @@ ARTvariant::ARTvariant(const ARTvariant& orig) //copy constructor
 				}
 				break;
 
+		// in case the current variant is just a container for
+		// multiple variant objects, copy memory pointer
+        case C_ART_na:
+				val->na = orig.val->na;
+				break;
+
         case C_ART_undef: break; //do nothing if undefined
 
 		default: throw ARTerror("ARTvariant (copy constructor)", "The specified type is unknown."); 
@@ -296,6 +303,11 @@ ARTvariant::~ARTvariant()
 		case C_ART_nmatx:
 			for (i=0; i<len; i++) {delete val->nmx[i];  val->nmx[i] = NULL;}
 			free(val->nmx); val->nmx = NULL;
+			break;
+
+		// nothing to do in case of arrays, memory management
+		// is done somewhere else
+		case C_ART_na:
 			break;
  
 
@@ -330,6 +342,8 @@ void ARTvariant::SetArrayLength(int l)
 			case C_ART_ntri: val->nt = (T_ART_Tripl*)malloc ( len * sizeof(T_ART_Tripl)  ); break;
 			case C_ART_nmat: val->nm = (T_ART_Matrix*)malloc ( len * sizeof(T_ART_Matrix)  ); break;
 			case C_ART_nmatx: val->nmx = (Matrix**)malloc ( len * sizeof(Matrix*)  ); for (i=0;i<len;i++) val->nmx[i]=NULL; break;
+			// in case of art variant array do nothing
+			case C_ART_na: break;
 
 			//non-array types and *char: do nothing.
 			case C_ART_int:
@@ -360,6 +374,8 @@ void ARTvariant::SetArrayLength(int l)
 			case C_ART_ncpx: val->nc = (T_ART_Cmplx*)realloc ( val->nc, len * sizeof(T_ART_Cmplx)  ); break;
 			case C_ART_ntri: val->nt = (T_ART_Tripl*)realloc ( val->nt, len * sizeof(T_ART_Tripl)  ); break;
 			case C_ART_nmat: val->nm = (T_ART_Matrix*)realloc ( val->nm, len * sizeof(T_ART_Matrix)  ); break;
+			// in case of art variant array do nothing
+			case C_ART_na: break;
 
 			//non-array types and std::strings: do nothing.
 			case C_ART_int:
@@ -418,6 +434,21 @@ void ARTvariant::SetVal(const int i, int ind)
 			}
 			break;
 
+		case C_ART_na:
+			if (len <= ind) throw ARTerror("ARTvariant::SetVal", "Index is out of bounds.");
+			else
+			{
+				if (val->na != NULL)
+				{
+					val->na[ind].SetVal(i);
+				}
+				else
+				{
+					throw ARTerror("ARTvariant::SetVall", "Array of ARTvariant objects has not been initialized!");
+				}
+			}
+			break;
+
 		default: throw  ARTerror("ARTvariant::SetVal", "An integer value can not be written to an ARTvariant of type %s1.", this->GetTypeString());
 	}
 
@@ -459,6 +490,14 @@ void ARTvariant::SetVal(const double d, int ind)
 			}
 			break;
 
+		case C_ART_na:
+			if (len <= ind) throw ARTerror("ARTvariant::SetVal", "Index is out of bounds.");
+			else
+			{
+				val->na[ind].SetVal(d);
+			}
+			break;
+
 		default: throw  ARTerror("ARTvariant::SetVal", "A double value can not be written to an ARTvariant of type %s1.", this->GetTypeString());
 	}
 }
@@ -496,6 +535,21 @@ void ARTvariant::SetVal(const float f, int ind)
 			{ 
 				val->nc[ind].re =  f;
 				val->nc[ind].im =  0;
+			}
+			break;
+
+		case C_ART_na:
+			if (len <= ind) throw ARTerror("ARTvariant::SetVal", "Index is out of bounds.");
+			else
+			{
+				if (val->na != NULL)
+				{
+					val->na[ind].SetVal(f);
+				}
+				else
+				{
+					throw ARTerror("ARTvariant::SetVall", "Array of ARTvariant objects has not been initialized!");
+				}
 			}
 			break;
 
@@ -557,6 +611,22 @@ void ARTvariant::SetVal(const double re, const double im, int ind)
 			}
 			break;
 
+		case C_ART_na:
+			if (len <= ind) throw ARTerror("ARTvariant::SetVal", "Index is out of bounds.");
+			else
+			{
+				if (val->na != NULL)
+				{
+					val->na[ind].SetVal(re, im);
+				}
+				else
+				{
+					throw ARTerror("ARTvariant::SetVall", "Array of ARTvariant objects has not been initialized!");
+				}
+
+			}
+			break;
+
 		default: throw ARTerror("ARTvariant::SetVal", "A complex value can not be written to an ARTvariant of type %s1.", this->GetTypeString());
 	}
 }
@@ -585,6 +655,17 @@ void ARTvariant::SetVal(const char* s, int ind)
 		val->ns[ind] = (char*)malloc (strlen(s)+1  ); //+1 for 0 character
 		strcpy(val->ns[ind], s); 
 	}
+	else if (typ == C_ART_na)
+	{
+		if (len <= ind) throw ARTerror("ARTvariant::SetVal", "The index is out of bounds.");
+		if (val->na != NULL) {
+			val->na[ind].SetVal(s);
+		}
+		else
+		{
+			throw ARTerror("ARTvariant::SetVall", "Array of ARTvariant objects has not been initialized!");
+		}
+	}
 	else throw ARTerror("ARTvariant::SetVal", "A string with index can not be written to an ARTvariant of type %s1.", this->GetTypeString());
 }
 
@@ -609,6 +690,9 @@ void ARTvariant::SetType(T_ART_Type t, int l)
 				for (int i=0; i<len; i++) {free(val->ns[i]); val->ns[i] = NULL;}
 				free(val->ns); val->ns = NULL; 
 				break;
+			// only set pointer to null, memory management is done by
+			// other instances
+			case C_ART_na: val->na = NULL; break;
 		}//end switch
 	}
 	else
@@ -628,6 +712,7 @@ void ARTvariant::SetType(T_ART_Type t, int l)
 		case C_ART_ntri: val->nt = NULL; break;
 		case C_ART_nmat: val->nm = NULL; break;
 		case C_ART_nstr:  val->ns = NULL; break;
+		case C_ART_na: val->na = NULL; break;
 		default: break;
 	}
 	if (l > 0) SetArrayLength(l);
@@ -652,6 +737,7 @@ std::string ARTvariant::GetTypeString()
 		case C_ART_ncpx: return "C_ART_ncpx";
 		case C_ART_ntri: return "C_ART_ntri";
 		case C_ART_nmat: return "C_ART_nmat";
+		case C_ART_na: return "C_ART_na";
 		case C_ART_undef: return "C_ART_undef";
 		default: return "(unknown type)";
 	}
@@ -733,6 +819,17 @@ bool ARTvariant::IsEqual(ARTvariant* other)
 			if ((val->nm == NULL) && (other->val->nm != NULL)) return false;
 			if ((val->nm != NULL) && (other->val->nm == NULL)) return false;
 			if (0!=memcmp(val->nm, other->val->nm, len*sizeof(T_ART_Matrix))) return false; 
+			break;
+		case C_ART_na:
+			// only compare whether pointer of arrays are equal
+			if ((val->na == NULL) && (other->val->na == NULL)) return true;
+			if ((val->na == NULL) && (other->val->na != NULL)) return false;
+			if ((val->na != NULL) && (other->val->na == NULL)) return false;
+			for (int i = 0; i < len; i++) {
+				if ( (val->na[i].IsEqual( &(other->val->na[i]) )) == false ) {
+					return false;
+				}
+			}
 			break;
 		case C_ART_undef: break; //no comparison if undefined
 		default: throw ARTerror("ARTvariant::IsEqual", "The specified type is unknown."); 

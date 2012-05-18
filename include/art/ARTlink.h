@@ -53,24 +53,25 @@
 //Datentypen:
 typedef enum	
 {
-	C_ART_str, 
-	C_ART_enum, 
-	C_ART_int, 
-	C_ART_dbl, 
-	C_ART_flo, 
-	C_ART_cpx, 
-	C_ART_tri, 
-	C_ART_mat,
-	C_ART_matx,
-	C_ART_nstr,
-	C_ART_nint,
-	C_ART_nflo,
-	C_ART_ndbl,
-	C_ART_ncpx,
-	C_ART_ntri,
-	C_ART_nmat,
-	C_ART_nmatx,
-	C_ART_undef  
+	C_ART_str,		///< string type
+	C_ART_enum, 	///< enum type
+	C_ART_int, 		///< integer type
+	C_ART_dbl, 		///< double type
+	C_ART_flo, 		///< float type
+	C_ART_cpx, 		///< T_ART_Cmplx type
+	C_ART_tri, 		///< T_ART_Tripl type
+	C_ART_mat,		///< T_ART_Matrix type
+	C_ART_matx,		///< math::matrix< std::complex<double> >* type
+	C_ART_nstr,		///< string array type
+	C_ART_nint,		///< integer array type
+	C_ART_nflo,		///< float array type
+	C_ART_ndbl,		///< double array type
+	C_ART_ncpx,		///< T_ART_Cmplx array type
+	C_ART_ntri,		///< T_ART_Tripl array type
+	C_ART_nmat,		///< T_ART_Matrix array type
+	C_ART_nmatx,	///< math::matrix< std::complex<double> >* array type
+	C_ART_na,		///< ARTvariant array type (container for other ARTvariant objects)
+	C_ART_undef  	///< uninitialized type
 					} T_ART_Type;
 
 
@@ -140,6 +141,9 @@ typedef struct
 #ifdef __cplusplus
 typedef math::matrix< std::complex<double> > Matrix;
 
+// cbg: forward declaration
+struct ARTvariant;
+
 /**
  * This structure provides a field, where values or arrays of different types can be 
  * stored. Since it is an union only a value of one type can be stored at once. 
@@ -164,6 +168,7 @@ typedef union
 	T_ART_Cmplx*	nc;
 	T_ART_Tripl*	nt;
 	T_ART_Matrix*	nm;
+	ARTvariant*		na;
 	math::matrix< std::complex<double> >** nmx;
 	//pointers are not seperate types but nX types with len = 1 
 } T_ART_Var;
@@ -200,9 +205,9 @@ struct ARTvariant
 	std::string GetTypeString();
 	bool IsEqual(ARTvariant* other);
 	bool IsEqual(const char* s);
-	~ARTvariant();
+	virtual ~ARTvariant();
 	void SetArrayLength(int l);
-	ARTvariant* clone();  
+	ARTvariant* clone();
 } ;
 
 #endif

@@ -223,7 +223,7 @@ void ARTdataContainer::SetDefinition(const string& s, ARTsimulator* scope)
 			{
 				if (this->varname_ != v->first)
 				{
-					//TODO: Warning instead of error if a variable is not found. The same should be implemented in function below (rewrite testcase to check warings instead of error)
+					//TODO: Warning instead of error if a variable is not found. The same should be implemented in function below (rewrite testcase to check warnings instead of error)
 					dp = scope_->FindDataPropInSimulator(v->first);
 					//make sure this dataContainer is notified when one of the variables changes
 					//and remember this dataContainer depends on the variable v, ie. dataproperty dp
@@ -712,7 +712,7 @@ void ARTdataContainer::CreateParserVar(const string& varname)
 		varname_ = varname;
 		//cout << "varname: " << varname << " defined = ";
 
-		parser_->SetExpr(varname);
+		//parser_->SetExpr(varname);
 		//cout << parser->Eval() << "\n";
 		
 		//since the dp is now connected to the parser variable called varname, changes are
