@@ -372,6 +372,7 @@ MUP_NAMESPACE_START
 			case C_ART_ntri: return 'a';
 			case C_ART_nmat: return 'a';
 			case C_ART_nmatx: return 'a';
+			case C_ART_na: return 'a';
 			case C_ART_undef: return ' ';  
 		}
 	}

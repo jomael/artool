@@ -735,7 +735,8 @@ AcousticResearchTool::AcousticResearchTool() : ARTobject("ART","Acoustic Researc
 	AppendDataProp(authors);
 
 	AppendDataProp("Copyright","This program is licenced according to GPL-Library ()");
-	AppendDataProp("SimulationDomain", new ARTvariant("FrequencyDomain", " "));
+	// modified by CBG: support time domain
+	AppendDataProp("SimulationDomain", new ARTvariant("FrequencyDomain", "TimeDomain"));
 	AppendDataProp("WaveType",new ARTvariant("SphericalWave", "PlaneWave" ,"MultiModal"));
 	AppendDataProp("LosslessModel",1);
 
