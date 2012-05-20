@@ -2,6 +2,8 @@
 #define ARTMODELINTERFACE_H
 
 #include "ARTwaveObject.h"
+// forward declaration
+//class WaveObjectInterface;
 
 //prototype: a blueprint of a model (same class), but without simulator (NULL).
 //model: a copy of a prototype used by an element

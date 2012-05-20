@@ -415,14 +415,17 @@ TEST_DEF_START(createDataContainerParserVars, ARTdataContainerTests)
 	{
 		try
 		{
-			ARTdataContainer* testDC = new ARTdataContainer(C_ART_dbl, 1, "meineTestVar");
+			ARTdataContainer* testDC = new ARTdataContainer(C_ART_dbl, -1, "meineTestVar");
 			ParserX* parser = new ParserX(mup::pckCOMPLEX_NO_STRING);
 			testDC->SetParser(parser);
-			testDC->CreateParserVar("meineTestVar");
+			testDC->SetParserVar("meineTestVar");
 
 			//Check if variable exists
+			//cout << "testDC value = " << testDC->GetValueAsDouble() << endl;
 			parser->SetExpr("meineTestVar = 2 + 2");
 			parser->Eval(); //will throw an error if the variable does not exist
+
+			//cout << "testDC value (should be 4) = " << testDC->GetValueAsDouble() << endl;
 
 			delete testDC;
 
@@ -435,6 +438,7 @@ TEST_DEF_START(createDataContainerParserVars, ARTdataContainerTests)
 			{	
 				return true;
 			}
+
 		}
 		catch(mup::ParserError e)
 		{	
@@ -2404,12 +2408,12 @@ TEST_DEF_START(calculateImpedance, ARTcalculatingImpedance)
 			ARTAppendReference(meinIns, ARTcalculatingImpedance->BZyl1);
 			ARTAppendReference(meinIns, ARTcalculatingImpedance->Zyl1);
 			ARTvariant* meineImpKurve = ARTInputImpedance(meinIns);
-			/*
-			std::cout << "meineImpKurve " << meineImpKurve << "\n";
-			std::cout << "meineImpKurve->val " << meineImpKurve->val << "\n";
-			std::cout << "meineImpKurve->val->typ " << meineImpKurve->GetTypeString() << "\n";
-			std::cout << "meineImpKurve->val->nt " << meineImpKurve->val->nt << "\n";
-			*/
+
+			//std::cout << "meineImpKurve " << meineImpKurve << "\n";
+			//std::cout << "meineImpKurve->val " << meineImpKurve->val << "\n";
+			//std::cout << "meineImpKurve->val->typ " << meineImpKurve->GetTypeString() << "\n";
+			//std::cout << "meineImpKurve->val->nt " << meineImpKurve->val->nt << "\n";
+
 			//check if results are as we expect them (at least approx. in int, because of rounding errors...)
 			if (int(meineImpKurve->val->nt[0].f) != 10) return false;
 			if (int(meineImpKurve->val->nt[0].re) != 2546) return false;
@@ -2504,15 +2508,15 @@ TEST_DEF_START(calculateImpedance2, ARTcalculatingImpedance)
 			ARTSetParameter(ARTcalculatingImpedance->mySim, "Kon.length = 11.123; ");
 			ARTvariant* meineImpKurve = ARTInputImpedance(meinIns);
 			meineImpKurve = ARTInputImpedance(meinIns);
-/*
-			std::cout << int(meineImpKurve->val->nt[0].f) << "\n";
-			std::cout << int(meineImpKurve->val->nt[0].re) << "\n";
-			std::cout << int(meineImpKurve->val->nt[0].im) << "\n";
 
-			std::cout << int(meineImpKurve->val->nt[1].f) << "\n";
-			std::cout << int(meineImpKurve->val->nt[1].re) << "\n";
-			std::cout << int(meineImpKurve->val->nt[1].im) << "\n";
-*/
+			//std::cout << int(meineImpKurve->val->nt[0].f) << "\n";
+			//std::cout << int(meineImpKurve->val->nt[0].re) << "\n";
+			//std::cout << int(meineImpKurve->val->nt[0].im) << "\n";
+
+			//std::cout << int(meineImpKurve->val->nt[1].f) << "\n";
+			//std::cout << int(meineImpKurve->val->nt[1].re) << "\n";
+			//std::cout << int(meineImpKurve->val->nt[1].im) << "\n";
+
 			//check if results are as we expect them (at least approx. in int, because of rounding errors...)
 			if (int(meineImpKurve->val->nt[0].f) != 10) return false;
 			if (int(meineImpKurve->val->nt[0].re) != 310) return false;
@@ -2689,15 +2693,15 @@ TEST_DEF_START(calculateBentImpedance, ARTcalculatingImpedance)
 			meineImpKurve = ARTInputImpedance(meinIns);
 			int i;
 
-			/*
-			for (i = 0; i < meineImpKurve->len; i++)
-			{
-				dcomp c = dcomp(meineImpKurve->val->nt[i].re,meineImpKurve->val->nt[i].im);
-				std::cout << (meineImpKurve->val->nt[i].f) << "H ";
-				std::cout << int(abs(c)) << " ";
-				std::cout << int(arg(c)) << "\n";
-			}
-			*/
+
+			//for (i = 0; i < meineImpKurve->len; i++)
+			//{
+			//	dcomp c = dcomp(meineImpKurve->val->nt[i].re,meineImpKurve->val->nt[i].im);
+			//	std::cout << (meineImpKurve->val->nt[i].f) << "H ";
+			//	std::cout << int(abs(c)) << " ";
+			//	std::cout << int(arg(c)) << "\n";
+			//}
+
 
 			if (meineImpKurve->len != 2) return false;
 	
@@ -2759,13 +2763,13 @@ TEST_DEF_START(calculateBentImpedanceAndChangeModes, ARTcalculatingImpedance)
 			ARTvariant* meineImpKurve = ARTInputImpedance(meinIns);
 			meineImpKurve = ARTInputImpedance(meinIns);
 			int i;
-			/*for (i = 0; i < meineImpKurve->len; i++)
-			{
-			dcomp c = dcomp(meineImpKurve->val->nt[i].re,meineImpKurve->val->nt[i].im);
-			std::cout << (meineImpKurve->val->nt[i].f) << "H ";
-			std::cout << int(abs(c)) << " ";
-			std::cout << int(arg(c)) << "\n";
-			}*/
+			//for (i = 0; i < meineImpKurve->len; i++)
+			//{
+			//	dcomp c = dcomp(meineImpKurve->val->nt[i].re,meineImpKurve->val->nt[i].im);
+			//	std::cout << (meineImpKurve->val->nt[i].f) << "H ";
+			//	std::cout << int(abs(c)) << " ";
+			//	std::cout << int(arg(c)) << "\n";
+			//}
 	
 			if (meineImpKurve->len != 2) return false;
 	
@@ -2917,14 +2921,14 @@ TEST_DEF_START(calculateTerminationModelImpedance, ARTcalculatingImpedance)
 			if (int(abs(c)) != 11647690) return false;
 			if (int(arg(c)) != 0) return false;	
 
-/*			for (i = 0; i < meineImpKurve->len; i++)
-			{
-				dcomp c = dcomp(meineImpKurve->val->nt[i].re,meineImpKurve->val->nt[i].im);
-				std::cout << (meineImpKurve->val->nt[i].f) << "H ";
-				std::cout << int(abs(c)) << " ";
-				std::cout << int(arg(c)) << "\n";
-			}
-*/
+			//for (i = 0; i < meineImpKurve->len; i++)
+			//{
+			//	dcomp c = dcomp(meineImpKurve->val->nt[i].re,meineImpKurve->val->nt[i].im);
+			//	std::cout << (meineImpKurve->val->nt[i].f) << "H ";
+			//	std::cout << int(abs(c)) << " ";
+			//	std::cout << int(arg(c)) << "\n";
+			//}
+
 			
 		}
 		catch(ARTerror e)
@@ -3874,14 +3878,14 @@ TEST_DEF_START(getHElementImpedance, ARTmodelTests)
 			if (int(var->nt[1].f) != 15) return false;
 			if (int(var->nt[1].re) != 13481) return false;
 			if (int(var->nt[1].im) != 683379) return false;
-			/*
-			for (int i = 0; i < z->len; i++)
-			{
-				std::cout << int( z->GetValue()->nt[i].f )<< "Hz: ";
-				std::cout << int( z->GetValue()->nt[i].re )<< " + ";
-				std::cout << int( z->GetValue()->nt[i].im )<< " * i\n";
-			}
-			*/
+
+			//for (int i = 0; i < z->len; i++)
+			//{
+			//	std::cout << int( z->GetValue()->nt[i].f )<< "Hz: ";
+			//	std::cout << int( z->GetValue()->nt[i].re )<< " + ";
+			//	std::cout << int( z->GetValue()->nt[i].im )<< " * i\n";
+			//}
+
 		}
 		catch(ARTerror e)
 		{	
@@ -4028,14 +4032,14 @@ TEST_DEF_START(testToneHoleImp, customModelTests)
 			if (int(meineImpKurve->val->nt[1].f) != 15) return false;
 			if (int(meineImpKurve->val->nt[1].re) != 95) return false;
 			if (int(meineImpKurve->val->nt[1].im) != 178563) return false;
-			/*
-			for (int i = 0; i < meineImpKurve->len; i++)
-			{
-				std::cout << int( meineImpKurve->val->nt[i].f )<< "Hz: ";
-				std::cout << int( meineImpKurve->val->nt[i].re )<< " + ";
-				std::cout << int( meineImpKurve->val->nt[i].im )<< " * i\n";
-			}
-			*/
+
+			//for (int i = 0; i < meineImpKurve->len; i++)
+			//{
+			//	std::cout << int( meineImpKurve->val->nt[i].f )<< "Hz: ";
+			//	std::cout << int( meineImpKurve->val->nt[i].re )<< " + ";
+			//	std::cout << int( meineImpKurve->val->nt[i].im )<< " * i\n";
+			//}
+
 		}
 		catch(ARTerror e)
 		{	
@@ -4169,10 +4173,10 @@ TEST_DEF_START(testClosedToneHoleImp, customModelTests)
 			ARTvariant* meineImpKurve = ARTInputImpedance(meinIns);
 			meineImpKurve = ARTInputImpedance(meinIns);
 
-			/*std::cout << int(meineImpKurve->val->nt[0].re) << "\n";
-			std::cout << int(meineImpKurve->val->nt[0].im) << "\n";
-			std::cout << int(meineImpKurve->val->nt[1].re) << "\n";
-			std::cout << int(meineImpKurve->val->nt[1].im) << "\n"; */
+			//std::cout << int(meineImpKurve->val->nt[0].re) << "\n";
+			//std::cout << int(meineImpKurve->val->nt[0].im) << "\n";
+			//std::cout << int(meineImpKurve->val->nt[1].re) << "\n";
+			//std::cout << int(meineImpKurve->val->nt[1].im) << "\n";
 
 			//Check some values (these values are slightly different from the values of the open tonehole)
 			if (int(meineImpKurve->val->nt[0].f) != 10) return false;
@@ -4255,14 +4259,14 @@ TEST_DEF_START(addCircuitAsReference, BranchTests)
 			ARTSetFrequencyRange(mySim, 10, 200, 5);
 			ARTSetNModes(mySim, 1);
 			ARTvariant* meineImpKurve = ARTInputImpedance(Branch1);
-			/*
-			for (int i = 0; i < meineImpKurve->len; i++)
-			{
-				std::cout << int( meineImpKurve->val->nt[i].f )<< "Hz: ";
-				std::cout << int( meineImpKurve->val->nt[i].re )<< " + ";
-				std::cout << int( meineImpKurve->val->nt[i].im )<< " * i\n";
-			}
-			*/
+
+			//for (int i = 0; i < meineImpKurve->len; i++)
+			//{
+			//	std::cout << int( meineImpKurve->val->nt[i].f )<< "Hz: ";
+			//	std::cout << int( meineImpKurve->val->nt[i].re )<< " + ";
+			//	std::cout << int( meineImpKurve->val->nt[i].im )<< " * i\n";
+			//}
+
 		}
 		catch(ARTerror e)
 		{	
@@ -4328,13 +4332,13 @@ TEST_DEF_START(testCircuitAsBranchImpedance, BranchTests)
 			ARTAppendReference( mainInst, branch);
 			ARTAppendReference( mainInst, Cyl2);
 			ARTvariant* meineImpKurve = ARTInputImpedance(mainInst);
-			/*
-			for (int i = 0; i < meineImpKurve->len; i++)
-			{
-				std::cout << int( meineImpKurve->val->nt[i].f )<< "Hz: ";
-				std::cout << int( meineImpKurve->val->nt[i].re) << " " << int( meineImpKurve->val->nt[i].im)<< "\n";
-			}
-			*/
+
+			//for (int i = 0; i < meineImpKurve->len; i++)
+			//{
+			//	std::cout << int( meineImpKurve->val->nt[i].f )<< "Hz: ";
+			//	std::cout << int( meineImpKurve->val->nt[i].re) << " " << int( meineImpKurve->val->nt[i].im)<< "\n";
+			//}
+
 			if (int(meineImpKurve->val->nt[0].f) != 10) return false;
 			if (int(meineImpKurve->val->nt[0].re) != 39) return false;
 			if (int(meineImpKurve->val->nt[0].im) != 124019) return false;
@@ -4401,13 +4405,13 @@ TEST_DEF_START(testCircuitAsBranchImpedanceModes2, BranchTests)
 			ARTAppendReference( mainInst, Cyl2);
 			ARTvariant* meineImpKurve = ARTInputImpedance(mainInst);
 			
-			/*
-			for (int i = 0; i < meineImpKurve->len; i++)
-			{
-				std::cout << int( meineImpKurve->val->nt[i].f )<< "Hz: ";
-				std::cout << int( meineImpKurve->val->nt[i].re) << " " << int( meineImpKurve->val->nt[i].im)<< "\n";
-			}
-			*/
+
+			//for (int i = 0; i < meineImpKurve->len; i++)
+			//{
+			//	std::cout << int( meineImpKurve->val->nt[i].f )<< "Hz: ";
+			//	std::cout << int( meineImpKurve->val->nt[i].re) << " " << int( meineImpKurve->val->nt[i].im)<< "\n";
+			//}
+
 
 			if (int(meineImpKurve->val->nt[0].f) != 10) return false;
 			if (int(meineImpKurve->val->nt[0].re) != 1142) return false;

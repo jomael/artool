@@ -6,12 +6,13 @@
 #include <string>
 #include <complex>
 #include "mpParser.h" //braucht ARTvariant
-//#include "ARTerror.h"
-//#include "ARTlink.h"
+#include "mpARTValue.h"
+#include "ARTerror.h"
+#include "ARTlink.h"
 //#include "matrix.h"
 //#include "ARTfunctionoid.h"
 
-#include "Interface.h"
+//#include "Interface.h"
 using mup::ParserX;
 
 class ARTsimulator;
@@ -148,8 +149,18 @@ public:
 
 	static ARTprogressIndicator progressIndicator;
 
+	ARTdataContainer(); /**< default constructor */
+
 	ARTdataContainer(const T_ART_Type dtyp, const int dlen, const string varname = "");
 	ARTdataContainer(std::string name, ARTfunctionoid* func = NULL);
+
+	ARTdataContainer(const int i);
+	ARTdataContainer(const double d);
+	ARTdataContainer(const float f);
+	ARTdataContainer(const char* s);
+	ARTdataContainer(const char* s1, const char* s2);
+	ARTdataContainer(const char* s1, const char* s2, const char* s3);
+	ARTdataContainer(const char* s1, const char* s2, const char* s3, const char* s4);
 
 	///copy constructor
 	ARTdataContainer(const ARTdataContainer& orig);
@@ -195,6 +206,14 @@ public:
 	 */
 	void SetValue(ARTvariant* var);
 
+	virtual void SetVal(const int i, const int ind = 0);
+	virtual void SetVal(const double d, const int ind = 0);
+	virtual void SetVal(const float f, const int ind = 0);
+	virtual void SetVal(std::complex<double>, const int ind = 0);
+	virtual void SetVal(const double re, const double im, const int ind = 0);
+	virtual void SetVal(const char* s);
+	virtual void SetVal(const char* s, int ind);
+
 	/// mark value as invalid and invalidate all dependent data containers
 	void Invalidate();
 
@@ -234,7 +253,7 @@ public:
 
 	void Rename(const string& newname);
 
-	void CreateParserVar(const string& varname);
+	void SetParserVar(const string& varname);
 
 	void DestroyParserVar();
 
@@ -242,6 +261,9 @@ public:
 
 	// change definition string (no immediate re-evaluation)
 	void SetDefinition(const string& s, ARTsimulator* scope);
+
+	// set definition string without setting the parser
+	void SetDefinition(const string& s);
 
 	//if there is a definition string, redo all dependencies
 	void RedoDefinitionDependencies();

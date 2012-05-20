@@ -194,19 +194,19 @@ struct ARTvariant
 	ARTvariant(const char* s1, const char* s2, const char* s3);  
 	ARTvariant(const char* s1, const char* s2, const char* s3, const char* s4);  
 	ARTvariant(const ARTvariant& orig); /**< copy constructor */ 
-	void SetVal(const int i, const int ind = 0); 
-	void SetVal(const double d, const int ind = 0); 
-	void SetVal(const float f, const int ind = 0);  
-	void SetVal(std::complex<double>, const int ind = 0); 
-	void SetVal(const double re, const double im, const int ind = 0); 
-	void SetVal(const char* s);  
-	void SetVal(const char* s, int ind);
-	void SetType(T_ART_Type t, int l=-1);
-	std::string GetTypeString();
-	bool IsEqual(ARTvariant* other);
-	bool IsEqual(const char* s);
+	virtual void SetVal(const int i, const int ind = 0);
+	virtual void SetVal(const double d, const int ind = 0);
+	virtual void SetVal(const float f, const int ind = 0);
+	virtual void SetVal(std::complex<double>, const int ind = 0);
+	virtual void SetVal(const double re, const double im, const int ind = 0);
+	virtual void SetVal(const char* s);
+	virtual void SetVal(const char* s, int ind);
+	virtual void SetType(T_ART_Type t, int l=-1);
+	virtual std::string GetTypeString();
+	virtual bool IsEqual(ARTvariant* other);
+	virtual bool IsEqual(const char* s);
 	virtual ~ARTvariant();
-	void SetArrayLength(int l);
+	virtual void SetArrayLength(int l);
 	ARTvariant* clone();
 } ;
 

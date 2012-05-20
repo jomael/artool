@@ -150,8 +150,10 @@ typedef int bool;
 #endif
 
 #ifndef __MINMAX_DEFINED
-#  define max(a,b)    (((a) > (b)) ? (a) : (b))
-#  define min(a,b)    (((a) < (b)) ? (a) : (b))
+#  if !defined(__GNUG__)
+#    define max(a,b)    (((a) > (b)) ? (a) : (b))
+#    define min(a,b)    (((a) < (b)) ? (a) : (b))
+#  endif
 #endif
 
 #if defined(_MSC_VER)

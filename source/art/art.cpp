@@ -55,8 +55,8 @@
 
 #include "Interface.h"
 #include "ART.h"
-#include "strparsing.h"
-#include "ARTmodel.h"
+//#include "strparsing.h"
+//#include "ARTmodel.h"
 #include "ARTdataContainer.h"
 
 #define NOERROR_ 0
@@ -393,7 +393,7 @@ P_ART_Element    __CALLCONV ARTChangeElementModel     (P_ART_Simulator simulator
 				{
 					string varname = string(element->GetName()) + "." + dprop->GetName();
 					dprop->SetParser(parser);
-					dprop->CreateParserVar(varname);
+					dprop->SetParserVar(varname);
 					//std::cout << "Created Parser Var: " << varname << "\n";
 				}
 				prop = element->model->GetProperties(prop);

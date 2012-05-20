@@ -3,67 +3,123 @@
 #include "mpError.h"
 #include "mpValueCache.h"
 #include "mpValue.h"
-	
+#include "ARTdataContainer.h"
+
+//#define _DBG_MSG(a) {cout << __FILE__ << "::" <<__func__ << "("<< a << ")" << endl;}
+#define _DBG_MSG(a)
 
 MUP_NAMESPACE_START
 
 	//------------------------------------------------------------------------------
 	ARTValue::ARTValue()
 		:IValue(cmVAL)
+		,arrayVals(NULL)
 		,m_iFlags(flNONE)
 		,m_pCache(NULL)
 	{
-		var = new ARTvariant(0.0);
+		var = new ARTdataContainer(0.0);
 		own = true;
+		_DBG_MSG("");
 	}
 
 	//---------------------------------------------------------------------------
 	ARTValue::ARTValue(int_type a_iVal)
 		:IValue(cmVAL)
+		,arrayVals(NULL)
 		,m_iFlags(flNONE)
 		,m_pCache(NULL)
 	{
-		var = new ARTvariant(a_iVal);
+		var = new ARTdataContainer(a_iVal);
 		own = true;
+		_DBG_MSG("int_type");
 	}
 
 	//---------------------------------------------------------------------------
 	ARTValue::ARTValue(bool_type a_bVal)
 		:IValue(cmVAL)
+		,arrayVals(NULL)
 		,m_iFlags(flNONE)
 		,m_pCache(NULL)
 	{
 		//we don't have a boolean type...
-		var = new ARTvariant((int)(a_bVal));
+		var = new ARTdataContainer((int)(a_bVal));
 		own = true;
+		_DBG_MSG("bool_type");
 	}
 
 	//---------------------------------------------------------------------------
 	ARTValue::ARTValue(string_type a_sVal)
 		:IValue(cmVAL)
+		,arrayVals(NULL)
 		,m_iFlags(flNONE)
 		,m_pCache(NULL)
 	{
-		var = new ARTvariant(a_sVal.c_str());
+		var = new ARTdataContainer(a_sVal.c_str());
 		own = true;
+		_DBG_MSG("string_type");
 	}
 
 	//---------------------------------------------------------------------------
-	ARTValue::ARTValue(int_type array_size, float_type val)
+	ARTValue::ARTValue(int_type array_size, float_type val, T_ART_Type type)
 		:IValue(cmVAL)
+		,arrayVals(NULL)
 		,m_iFlags(flNONE)
 		,m_pCache(NULL)
 	{
-		var = new ARTvariant(C_ART_ndbl);
+		var = new ARTdataContainer(type);
 		var->SetArrayLength(array_size);
-		for (int i = 0; i < array_size; i++)
-			var->val->nd[i] = val;
-		own = true;
+		switch (type)
+		{
+			case C_ART_ndbl:
+				for (int i = 0; i < array_size; i++)
+					var->val->nd[i] = static_cast<double>(val);
+				own = true;
+				break;
+			case C_ART_nflo:
+				for (int i = 0; i < array_size; i++)
+					var->val->nf[i] = static_cast<float>(val);
+				own = true;
+				break;
+			case C_ART_nint:
+				for (int i = 0; i < array_size; i++)
+					var->val->ni[i] = static_cast<int>(val);
+				own = true;
+				break;
+			case C_ART_ncpx:
+				for (int i = 0; i < array_size; i++)
+				{
+					var->val->nc[i].re = static_cast<double>(val);
+					var->val->nc[i].im = 0;
+				}
+				own = true;
+				break;
+			case C_ART_na:
+				// create new ARTdataContainer array
+				var->val->na = new ARTdataContainer[array_size];
+				// create new ARTValue array, containing references
+				// to ARTdataContainer values
+				arrayVals = new ARTValue[array_size];
+				for (int i = 0; i < array_size; i++)
+				{
+					// set and initialize all elements
+					var->val->na[i].SetType(C_ART_dbl);
+					var->val->na[i].SetVal(static_cast<double>(val));
+					// remove local ARTdataContainer object
+					arrayVals[i].deleteVar();
+					// set reference of ARTValue to ARTdataContainer
+					arrayVals[i].var = dynamic_cast<ARTdataContainer*>(&(var->val->na[i]));
+				}
+			default:
+				throw ParserError();
+
+		}
+		_DBG_MSG("int_type, float, T_ART_TYPE");
 	}
 /* brauchma net */
 	//---------------------------------------------------------------------------
 	ARTValue::ARTValue(int_type m, int_type n, float_type val)
 		:IValue(cmVAL)
+		,arrayVals(NULL)
 /*		,m_val()
 		,m_psVal(NULL)
 		,m_pvVal(NULL)
@@ -80,42 +136,50 @@ MUP_NAMESPACE_START
 		}
 		*/
 		std::cout << "ARTValue::ARTValue(int_type m, int_type n, float_type val) not implemented\n";
+		_DBG_MSG("int_type, int_type, float_type")
 	}
 	//---------------------------------------------------------------------------
 	ARTValue::ARTValue(const char_type *a_szVal)
 		:IValue(cmVAL)
+		,arrayVals(NULL)
 		,m_iFlags(flNONE)
 		,m_pCache(NULL)
 	{
-		var = new ARTvariant(a_szVal);
+		var = new ARTdataContainer(a_szVal);
 		own = true;
+		_DBG_MSG("const char_type*");
 	}
 
 	//---------------------------------------------------------------------------
 	ARTValue::ARTValue(const cmplx_type &v)
 		:IValue(cmVAL)
+		,arrayVals(NULL)
 		,m_iFlags(flNONE)
 		,m_pCache(NULL)
 	{
-		var = new ARTvariant(C_ART_cpx);
+		var = new ARTdataContainer(C_ART_cpx);
 		var->val->c.re = v.real();
 		var->val->c.im =v.imag();
 		own = true;
+		_DBG_MSG("const cmplx_type&");
 	}
 
 	//---------------------------------------------------------------------------
 	ARTValue::ARTValue(float_type val)
 		:IValue(cmVAL)
+		,arrayVals(NULL)
 		,m_iFlags(flNONE)
 		,m_pCache(NULL)
 	{
-		var = new ARTvariant(val);
+		var = new ARTdataContainer(val);
 		own = true;
+		_DBG_MSG("float_type");
 	}
 /**/
 	//---------------------------------------------------------------------------
 	ARTValue::ARTValue(const array_type &val)
 		:IValue(cmVAL)
+		,arrayVals(NULL)
 /*		,m_val()
 		,m_psVal(NULL)
 		,m_pvVal(new array_type(val))
@@ -124,29 +188,35 @@ MUP_NAMESPACE_START
 		,m_pCache(NULL)
 	{
 		std::cout << "ARTValue::ARTValue(const array_type &val) not implemented\n";
+		_DBG_MSG("array_type&");
 	}
 
-	ARTValue::ARTValue(ARTvariant* av)
+	ARTValue::ARTValue(ARTdataContainer* av)
 		:IValue(cmVAL)
+		,arrayVals(NULL)
 		,m_iFlags(flNONE)
 		,m_pCache(NULL)
 	{
 		var = av;
-		own = false; //var is connected to foreign ARTvariant, so var must not be destroyed by this object
+		own = false; //var is connected to foreign ARTdataContainer, so var must not be destroyed by this object
+		_DBG_MSG("ARTdataContainer*");
 	}
 
 /**/
 	//---------------------------------------------------------------------------
 	ARTValue::ARTValue(const ARTValue &a_Val)
 		:IValue(cmVAL)
+		,arrayVals(NULL)
 		,m_pCache(NULL)
 	{
 		Assign(a_Val);
+		_DBG_MSG("const ARTValue&");
 	}
 
 	//---------------------------------------------------------------------------
 	ARTValue::ARTValue(const IValue &a_Val)
 		:IValue(cmVAL)
+		,arrayVals(NULL)
 		,m_pCache(NULL)
 	{
 		Reset();
@@ -180,12 +250,14 @@ MUP_NAMESPACE_START
 		
 		m_cType = a_Val.GetType();
 		*/
+		_DBG_MSG("const IValue&");
 	}
 
 	//---------------------------------------------------------------------------
 	ARTValue& ARTValue::operator=(const ARTValue &a_Val)
 	{
 		Assign(a_Val);
+		_DBG_MSG("const ARTValue&");
 		return *this;
 	}
 
@@ -204,35 +276,57 @@ MUP_NAMESPACE_START
 		var->val->nc
 	 // return (*m_pvVal)[i];
 	 */
-		std::cout << "IValue& ARTValue::operator[](std::size_t i) not implemented\n";
+		switch (var->typ)
+		{
+			case C_ART_na:
+				return arrayVals[i % (var->len)];
+				break;
+			default:
+				throw ParserError();
+				break;
+		}
+		//std::cout << "IValue& ARTValue::operator[](std::size_t i) not implemented\n";
+		_DBG_MSG("std::size_t");
 		return *this;
 	}
 
 	//---------------------------------------------------------------------------
 	ARTValue::~ARTValue()
 	{
+		// if we are saving an array, we have to delete all ARTdataContainers
+		// we have to free the inner data containers before we can delete the
+		// variable
+		if (arrayVals != NULL)
+		{
+			delete[] arrayVals;
+			delete[] var->val->na;
+		}
 		if (own)
 		{
 			delete var;
 			own = false;
 		}
+		_DBG_MSG("");
 	}
 
 	//---------------------------------------------------------------------------
 	IToken* ARTValue::Clone() const
 	{
+		_DBG_MSG("");
 		return new ARTValue(*this);
 	}
 
 	//---------------------------------------------------------------------------
 	Value* ARTValue::AsValue()
 	{
+		_DBG_MSG("");
 		return new Value(this);
 	}
 
 	//---------------------------------------------------------------------------
 	IValue* ARTValue::AsIValue()
 	{
+		_DBG_MSG("");
 		return this;
 	}
 
@@ -243,11 +337,12 @@ MUP_NAMESPACE_START
 			return;
 
 		//copy value
-		var = new ARTvariant(*ref.var);
+		var = new ARTdataContainer(*ref.var);
 		own = true;
 
 		m_iFlags = ref.m_iFlags;
 
+		_DBG_MSG("const ARTValue&");
 		// Do not copy the ARTValue cache pointer!
 		// ARTValue cache should be assigned expplicitely and
 		// not implicitely (i.e. when retrieving the final result.)
@@ -260,22 +355,25 @@ MUP_NAMESPACE_START
 		if (own) delete var;
 		var = NULL;
 		own = false;
+		_DBG_MSG("");
 	}
 
 	//---------------------------------------------------------------------------
 	void ARTValue::Reset()
 	{
 		deleteVar();
-		var = new ARTvariant();
+		var = new ARTdataContainer();
 		own = true;
 
 		m_iFlags = flNONE;
+		_DBG_MSG("");
 	}
 
 	//---------------------------------------------------------------------------
 	IValue& ARTValue::operator=(bool val) //should I even care about booleans?
 	{
 		var->SetVal(val);
+		_DBG_MSG("bool");
 		return *this;
 
 		/*		If Parser errors are prefered, catch ARTerrors here and throw parser errors (Design the methods
@@ -312,14 +410,18 @@ MUP_NAMESPACE_START
 	//---------------------------------------------------------------------------
 	IValue& ARTValue::operator=(int_type a_iVal)
 	{
+		cout << "in operator=(int)" << endl;
 		var->SetVal(a_iVal);
+		_DBG_MSG("int_type");
 		return *this;
 	}
 
 	//---------------------------------------------------------------------------
 	IValue& ARTValue::operator=(float_type val)
 	{
+		cout << "in operator=(float)" << endl;
 		var->SetVal(val);
+		_DBG_MSG("float_type");
 		return *this;
 	}
 
@@ -327,6 +429,7 @@ MUP_NAMESPACE_START
 	IValue& ARTValue::operator=(string_type a_sVal)
 	{
 		var->SetVal(a_sVal.c_str());
+		_DBG_MSG("string_type");
 		return *this;
 	}
 
@@ -334,12 +437,14 @@ MUP_NAMESPACE_START
 	IValue& ARTValue::operator=(const char_type *a_szVal)
 	{
 		var->SetVal(a_szVal);
+		_DBG_MSG("const char_type*");
 		return *this;
 	}
 
 	//---------------------------------------------------------------------------
 	IValue& ARTValue::operator=(const array_type &a_vVal)
 	{
+		_DBG_MSG("const array_type&");
 		return *this;
 	}
 
@@ -347,12 +452,14 @@ MUP_NAMESPACE_START
 	IValue& ARTValue::operator=(const cmplx_type &val)
 	{
 		var->SetVal(val);
+		_DBG_MSG("const cmplx_type&");
 		return *this;
 	}
 
 	//---------------------------------------------------------------------------
 	char_type ARTValue::GetType() const
 	{
+		_DBG_MSG("");
 		switch (var->typ)
 		{
 			case C_ART_str: return 's'; 
@@ -380,6 +487,22 @@ MUP_NAMESPACE_START
 	//---------------------------------------------------------------------------
 	float_type ARTValue::GetFloat() const
 	{
+		_DBG_MSG("");
+
+		ARTdataContainer* tmp = dynamic_cast<ARTdataContainer*>(var);
+		//cout << "in GetFloat()" << endl;
+		return static_cast<float_type>(tmp->GetValueAsDouble());
+		/*if (tmp != NULL)
+		{
+			cout << "erfolgreich nach artdatacontainer gecastet!" << endl;
+		}
+		else
+		{
+			cout << "konnte nicht nach artdatacontainer casten!" << endl;
+		}
+		*/
+
+
 		try
 		{
 			switch(var->typ)
@@ -410,6 +533,11 @@ MUP_NAMESPACE_START
 					else return var->val->nc->re;
 					break;
 
+				case C_ART_na:
+					if ((var->len > 1) || (var->val->na->typ != C_ART_dbl)) throw ParserError();
+					else return var->val->na->val->d;
+					break;
+
 				default: throw ParserError();
 			}
 		}
@@ -434,6 +562,7 @@ MUP_NAMESPACE_START
 			throw ParserError(err);
 			
 		}
+
 	}
 /*		if (!IsScalar() && m_cType!='b')
 		{
@@ -462,6 +591,7 @@ MUP_NAMESPACE_START
 	//---------------------------------------------------------------------------
 	float_type ARTValue::GetImag() const
 	{
+		_DBG_MSG("");
 		try
 		{
 			switch(var->typ)
@@ -483,6 +613,15 @@ MUP_NAMESPACE_START
 					if (var->len > 1) throw ParserError();
 					else return var->val->nc->im;
 					break;
+
+				case C_ART_na:
+					if (var->len > 1) throw ParserError();
+					else
+					{
+						ARTdataContainer* tmp;
+						tmp = dynamic_cast<ARTdataContainer*>(var);
+						return tmp->GetValueAsDouble();
+					}
 
 				default: throw ParserError();
 			}
@@ -513,6 +652,7 @@ MUP_NAMESPACE_START
 	//---------------------------------------------------------------------------
 	const cmplx_type& ARTValue::GetComplex() const
 	{
+		_DBG_MSG("");
 //		return m_val;
 		static cmplx_type tmp = cmplx_type(1,0);
 		return tmp;
@@ -521,6 +661,7 @@ MUP_NAMESPACE_START
 	//---------------------------------------------------------------------------
 	const string_type& ARTValue::GetString() const
 	{
+		_DBG_MSG("");
 /*		CheckType('s');
 		assert(m_psVal!=NULL);
 		return *m_psVal;*/
@@ -532,6 +673,7 @@ MUP_NAMESPACE_START
 	//---------------------------------------------------------------------------
 	bool ARTValue::GetBool() const
 	{
+		_DBG_MSG("");
 /*		CheckType('b');
 		return m_val.real()==1;*/
 		return false;
@@ -540,6 +682,7 @@ MUP_NAMESPACE_START
 	//---------------------------------------------------------------------------
 	const array_type& ARTValue::GetArray() const
 	{
+		_DBG_MSG("");
 		/*CheckType('a');
 		assert(m_pvVal!=NULL);
 		return *m_pvVal;*/
@@ -550,6 +693,7 @@ MUP_NAMESPACE_START
 	//---------------------------------------------------------------------------
 	void ARTValue::CheckType(char_type a_cType) const
 	{
+		_DBG_MSG("char_type");
 		if (GetType()!=a_cType)
 		{
 			ErrorContext err;
@@ -575,6 +719,7 @@ MUP_NAMESPACE_START
 	//---------------------------------------------------------------------------
 	bool ARTValue::IsVolatile() const
 	{
+		_DBG_MSG("");
 		return IsFlagSet(IValue::flVOLATILE);
 //		return true;
 	}
@@ -582,6 +727,7 @@ MUP_NAMESPACE_START
 	//---------------------------------------------------------------------------
 	string_type ARTValue::AsciiDump() const
 	{
+		_DBG_MSG("");
 		stringstream_type ss;
 
 		ss << g_sCmdCode[ GetCode() ];
@@ -608,6 +754,7 @@ MUP_NAMESPACE_START
 			case C_ART_ntri: ss << _T("(array)"); break;
 			case C_ART_nmat: ss << _T("(array)"); break;
 			case C_ART_nmatx: ss << _T("(array)"); break;
+			case C_ART_na: ss << _T("(array)"); break;
 			case C_ART_undef: ss << _T("(undef)"); break;
 		}
 
@@ -620,6 +767,7 @@ MUP_NAMESPACE_START
 	//---------------------------------------------------------------------------
 	void ARTValue::Release()
 	{
+		_DBG_MSG("");
 		if (m_pCache)
 			std::cout << "ReleaseToCache not implemented\n";
 			//m_pCache->ReleaseToCache(this);
@@ -630,6 +778,7 @@ MUP_NAMESPACE_START
 	//---------------------------------------------------------------------------
 	void ARTValue::BindToCache(ValueCache *pCache)
 	{
+		_DBG_MSG("");
 		m_pCache = pCache;
 	}
 }	// namespace mu
