@@ -13,6 +13,10 @@
 //--- ART Interface ------------------------------------------------------------------
 #include "ARTlink.h"
 
+// forward declaration
+struct ARTdataContainer;
+//struct ARTvariant;
+
 /** \addtogroup ARTimpl
  * @{
  */
@@ -37,10 +41,10 @@ MUP_NAMESPACE_START
 		ARTValue(const char_type *val);
 		ARTValue(const cmplx_type &v);
 		ARTValue(const array_type &val);
-		ARTValue(ARTvariant* av);
+		ARTValue(ARTdataContainer* av);
 
 		/** Array constructor */
-		ARTValue(int_type m, float_type v);
+		ARTValue(int_type m, float_type v, T_ART_Type type = C_ART_ndbl);
 
 		/** Matrix constructor */
 		ARTValue(int_type m, int_type n, float_type v);
@@ -80,7 +84,9 @@ MUP_NAMESPACE_START
 
 	private:
 
-		ARTvariant* var;
+		//ARTvariant* var;
+		ARTdataContainer* var;
+		ARTValue* arrayVals; ///< Needed for arrays of ARTdataContainers
 		EFlags 			m_iFlags; ///< Additional flags
 		ValueCache	*m_pCache; ///< Pointer to the ARTValue Cache
 		bool own; ///< does the var pointer only belong to this object?

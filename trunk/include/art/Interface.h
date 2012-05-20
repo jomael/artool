@@ -435,7 +435,7 @@ public:
 					{
 						string varname = name_ + "." + dprop->GetName();
 						dprop->SetParser(parser);
-						dprop->CreateParserVar(varname);
+						dprop->SetParserVar(varname);
 						//std::cout << "Created Parser Var: " << varname << "\n";
 					}
 					prop = model->GetProperties(prop);

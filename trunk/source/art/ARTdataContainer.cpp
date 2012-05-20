@@ -13,18 +13,23 @@ namespace std
 	#include <time.h>
 }
 
+ARTdataContainer::ARTdataContainer() : ARTvariant(),
+		valid_(false), counted_(false), eval_started(false), func_(NULL), clientList_(list<ARTdataContainer*>()), citer_(clientList_.begin()),
+		dependencyList_(list<ARTdataContainer*>()), diter_(dependencyList_.begin()), definition_(""),
+		parser_(NULL), varname_(""), parserVarDefined(false)//, complexity_(1)
+{
+}
 
 ARTdataContainer::ARTdataContainer(const T_ART_Type dtyp, const int dlen, const string varname) : ARTvariant(dtyp, dlen),
-		valid_(false), counted_(false), func_(NULL), clientList_(list<ARTdataContainer*>()), citer_(clientList_.begin()),
+		valid_(false), counted_(false), eval_started(false), func_(NULL), clientList_(list<ARTdataContainer*>()), citer_(clientList_.begin()),
 		dependencyList_(list<ARTdataContainer*>()), diter_(dependencyList_.begin()), definition_(""),
 		parser_(NULL), varname_(varname), parserVarDefined(false)//, complexity_(1)
 {
 	//cout << "ARTdataContainer(typ,len)\n";
-	eval_started = false;
 }
 
 ARTdataContainer::ARTdataContainer(std::string name, ARTfunctionoid* func) : ARTvariant(C_ART_undef, -1),
-		valid_(false), counted_(false), func_(func), clientList_(list<ARTdataContainer*>()), citer_(clientList_.begin()),
+		valid_(false), counted_(false), eval_started(false), func_(func), clientList_(list<ARTdataContainer*>()), citer_(clientList_.begin()),
 		dependencyList_(list<ARTdataContainer*>()), diter_(dependencyList_.begin()), definition_(""),
 		parser_(NULL), varname_(name),	parserVarDefined(false)//, complexity_(1)
 {
@@ -32,9 +37,57 @@ ARTdataContainer::ARTdataContainer(std::string name, ARTfunctionoid* func) : ART
 	if (func_)
 	{
 		func_->SetOutput(this);
-		func->SetDependencies();
+		func_->SetDependencies();
 	}
-	eval_started = false;
+}
+
+ARTdataContainer::ARTdataContainer(const int i) : ARTvariant(i),
+		valid_(true), counted_(false), eval_started(false), func_(NULL), clientList_(list<ARTdataContainer*>()), citer_(clientList_.begin()),
+		dependencyList_(list<ARTdataContainer*>()), diter_(dependencyList_.begin()), definition_(""),
+		parser_(NULL), varname_(""), parserVarDefined(false)//, complexity_(1)
+{
+}
+
+ARTdataContainer::ARTdataContainer(const double d) : ARTvariant(d),
+		valid_(true), counted_(false), eval_started(false), func_(NULL), clientList_(list<ARTdataContainer*>()), citer_(clientList_.begin()),
+		dependencyList_(list<ARTdataContainer*>()), diter_(dependencyList_.begin()), definition_(""),
+		parser_(NULL), varname_(""), parserVarDefined(false)//, complexity_(1)
+{
+}
+
+ARTdataContainer::ARTdataContainer(const float f) : ARTvariant(f),
+		valid_(true), counted_(false), eval_started(false), func_(NULL), clientList_(list<ARTdataContainer*>()), citer_(clientList_.begin()),
+		dependencyList_(list<ARTdataContainer*>()), diter_(dependencyList_.begin()), definition_(""),
+		parser_(NULL), varname_(""), parserVarDefined(false)//, complexity_(1)
+{
+}
+
+ARTdataContainer::ARTdataContainer(const char* s) : ARTvariant(s),
+		valid_(true), counted_(false), eval_started(false), func_(NULL), clientList_(list<ARTdataContainer*>()), citer_(clientList_.begin()),
+		dependencyList_(list<ARTdataContainer*>()), diter_(dependencyList_.begin()), definition_(""),
+		parser_(NULL), varname_(""), parserVarDefined(false)//, complexity_(1)
+{
+}
+
+ARTdataContainer::ARTdataContainer(const char* s1, const char* s2) : ARTvariant(s1, s2),
+		valid_(true), counted_(false), eval_started(false), func_(NULL), clientList_(list<ARTdataContainer*>()), citer_(clientList_.begin()),
+		dependencyList_(list<ARTdataContainer*>()), diter_(dependencyList_.begin()), definition_(""),
+		parser_(NULL), varname_(""), parserVarDefined(false)//, complexity_(1)
+{
+}
+
+ARTdataContainer::ARTdataContainer(const char* s1, const char* s2, const char* s3) : ARTvariant(s1, s2, s3),
+		valid_(true), counted_(false), eval_started(false), func_(NULL), clientList_(list<ARTdataContainer*>()), citer_(clientList_.begin()),
+		dependencyList_(list<ARTdataContainer*>()), diter_(dependencyList_.begin()), definition_(""),
+		parser_(NULL), varname_(""), parserVarDefined(false)//, complexity_(1)
+{
+}
+
+ARTdataContainer::ARTdataContainer(const char* s1, const char* s2, const char* s3, const char* s4) : ARTvariant(s1, s2, s3, s4),
+		valid_(true), counted_(false), eval_started(false), func_(NULL), clientList_(list<ARTdataContainer*>()), citer_(clientList_.begin()),
+		dependencyList_(list<ARTdataContainer*>()), diter_(dependencyList_.begin()), definition_(""),
+		parser_(NULL), varname_(""), parserVarDefined(false)//, complexity_(1)
+{
 }
 
 	///copy constructor
@@ -237,6 +290,45 @@ void ARTdataContainer::SetDefinition(const string& s, ARTsimulator* scope)
 		}
 
 	};
+}
+
+void ARTdataContainer::SetDefinition(const string& s)
+{
+	if (parser_ == NULL) throw ARTerror("ARTdataContainer::SetDefinition", "The current parser is set to NULL");
+	//if there is a definition, only redefine if the new definition differs
+	if (definition_ != s)
+	{
+		//remove old dependencies
+		//RemoveAllDependencies();
+		// change in definition needs to be communicated: notify clients
+		Invalidate();
+		definition_ = s;
+		/*ARTdataProp* dp;
+		try
+		{
+			parser_->SetExpr(definition_);
+			//for all variables in the expression
+			mup::var_maptype map = parser_->GetExprVar();
+			mup::var_maptype::const_iterator v;
+			for(v = map.begin(); v != map.end(); ++v)
+			{
+				if (this->varname_ != v->first)
+				{
+					//TODO: Warning instead of error if a variable is not found. The same should be implemented in function below (rewrite testcase to check warnings instead of error)
+					dp = scope_->FindDataPropInSimulator(v->first);
+					//make sure this dataContainer is notified when one of the variables changes
+					//and remember this dataContainer depends on the variable v, ie. dataproperty dp
+					AddDependency(dp);
+				}
+			}
+		}
+		catch( mup::ParserError e )
+		{
+			throw ARTerror("ARTdataContainer::SetDefinition", "Error in Parser: '%s1'", e.GetMsg().c_str());;
+		}
+		*/
+
+	}
 }
 
 // return definition string
@@ -508,7 +600,8 @@ void ARTdataContainer::SetFunction(ARTfunctionoid* func)
 
 double ARTdataContainer::GetValueAsDouble() 
 {
-	if (!valid_) Evaluate(); 
+	//cout << __func__ << "(): valid_ = " << valid_ << endl;
+	if (!valid_) Evaluate();
 	double d;
     switch(typ)
 	{
@@ -516,6 +609,7 @@ double ARTdataContainer::GetValueAsDouble()
 		case C_ART_int: d = val->i; break;
 		case C_ART_flo: d = val->f; break;
 		case C_ART_dbl: d = val->d; break;
+		case C_ART_cpx: d = val->c.re; break;
 
 		case C_ART_nint:
 			if (len > 1) throw ARTerror("ARTdataContainer::GetValueAsDouble", "Invalid type conversion: nint with len>1 to double.");
@@ -530,6 +624,24 @@ double ARTdataContainer::GetValueAsDouble()
 		case C_ART_ndbl: 
 			if (len > 1) throw ARTerror("ARTdataContainer::GetValueAsDouble", "Invalid type conversion: ndbl with len>1 to double.");
 			else d = *(val->nd);
+			break;
+
+		case C_ART_ncpx:
+			if (len > 1) throw ARTerror("ARTdataContainer::GetValueAsDouble", "Invalid type conversion: ncpx with len>1 to double.");
+			else d = val->nc->re;
+			break;
+
+
+		case C_ART_na:
+			ARTdataContainer* tmp;
+			if (len > 1) {
+				throw ARTerror("ARTdataContainer::GetValueAsDouble", "Invalid type conversion: ndbl with len>1 to double.");
+			}
+			else
+			{
+				tmp = dynamic_cast<ARTdataContainer*>(val->na);
+				d = tmp->GetValueAsDouble();
+			}
 			break;
 
 		default: throw ARTerror("ARTdataContainer::GetValueAsDouble", "Invalid type conversion to double: type is non-numeric, complex or triple.");
@@ -548,23 +660,41 @@ int ARTdataContainer::GetValueAsInt()
 		case C_ART_int: i = val->i; break;
 		case C_ART_flo: i = val->f; break;
 		case C_ART_dbl: i = val->d; break;
+		case C_ART_cpx: i = val->c.re; break;
 
 		case C_ART_nint:
-			if (len > 1) throw ARTerror("ARTdataContainer::GetValueAsDouble", "Invalid type conversion: nint with len>1 to int.");
+			if (len > 1) throw ARTerror("ARTdataContainer::GetValueAsInt", "Invalid type conversion: nint with len>1 to int.");
 			else i = *(val->ni);
 			break;
 
 		case C_ART_nflo: 
-			if (len > 1) throw ARTerror("ARTdataContainer::GetValueAsDouble", "Invalid type conversion: nflo with len>1 to int.");
+			if (len > 1) throw ARTerror("ARTdataContainer::GetValueAsInt", "Invalid type conversion: nflo with len>1 to int.");
 			else i = *(val->nf);
 			break;
 
 		case C_ART_ndbl: 
-			if (len > 1) throw ARTerror("ARTdataContainer::GetValueAsDouble", "Invalid type conversion: ndbl with len>1 to int.");
+			if (len > 1) throw ARTerror("ARTdataContainer::GetValueAsInt", "Invalid type conversion: ndbl with len>1 to int.");
 			else i = *(val->nd);
 			break;
 
-		default: throw ARTerror("ARTdataContainer::GetValueAsDouble", "Invalid type conversion to int: type is non-numeric, complex or triple.");
+		case C_ART_ncpx:
+			if (len > 1) throw ARTerror("ARTdataContainer::GetValueAsInt", "Invalid type conversion: ncpx with len>1 to int.");
+			else i = val->nc->re;
+			break;
+
+		case C_ART_na:
+			ARTdataContainer* tmp;
+			if (len > 1)
+			{
+				throw ARTerror("ARTdataContainer::GetValueAsInt", "Invalid type conversion: na with len>1 to int.");
+			}
+			else
+			{
+				tmp = dynamic_cast<ARTdataContainer*>(val->na);
+				i = tmp->GetValueAsInt();
+			}
+
+		default: throw ARTerror("ARTdataContainer::GetValueAsInt", "Invalid type conversion to int: type is non-numeric, complex or triple.");
 	}//end switch
 	return i;
 }
@@ -588,10 +718,60 @@ void ARTdataContainer::SetValue(ARTvariant* var)
 		val = NULL; 
 		valid_ = false;
 	}
-}											
+}
+
+void ARTdataContainer::SetVal(const int i, const int ind)
+{
+	ARTvariant::SetVal(i, ind);
+	NotifyClients();
+	valid_ = true;
+}
+
+void ARTdataContainer::SetVal(const double d, const int ind)
+{
+	ARTvariant::SetVal(d, ind);
+	NotifyClients();
+	valid_ = true;
+}
+
+void ARTdataContainer::SetVal(const float f, const int ind)
+{
+	ARTvariant::SetVal(f, ind);
+	NotifyClients();
+	valid_ = true;
+}
+
+void ARTdataContainer::SetVal(std::complex<double> c, const int ind)
+{
+	ARTvariant::SetVal(c, ind);
+	NotifyClients();
+	valid_ = true;
+	//cout << "Setze wert und setze valid_ auf true!" << endl;
+}
+
+void ARTdataContainer::SetVal(const double re, const double im, const int ind)
+{
+	ARTvariant::SetVal(re, im, ind);
+	NotifyClients();
+	valid_ = true;
+}
+
+void ARTdataContainer::SetVal(const char* s)
+{
+	ARTvariant::SetVal(s);
+	NotifyClients();
+	valid_ = true;
+}
+
+void ARTdataContainer::SetVal(const char* s, int ind)
+{
+	ARTvariant::SetVal(s, ind);
+	NotifyClients();
+	valid_ = true;
+}
 
 // mark value as invalid and invalidate all dependent data containers
-void ARTdataContainer::Invalidate() 
+void ARTdataContainer::Invalidate()
 {
 //	if (eval_started) throw ARTerror("ARTdataContainer::Invalidate", "Circular reference to dataContainer '%s1'.",varname_); 
 //	eval_started = true;
@@ -688,15 +868,20 @@ void ARTdataContainer::Rename(const string& newname)
 	if (parserVarDefined)
 	{
 		DestroyParserVar();	
-		CreateParserVar(newname);
+		SetParserVar(newname);
 	}
 	//and make sure that the data container remembers its new name
 	varname_ = newname;
 }
 
-void ARTdataContainer::CreateParserVar(const string& varname)
+void ARTdataContainer::SetParserVar(const string& varname)
 {
 	if (!parser_) throw ARTerror("ARTdataContainer::CreateParserVar","A parser variable for datacontainer '%s1' can not be created, because the datacontainer's parser pointer is NULL. Please use SetParser() to specify which parser the data container should use.",varname_);
+	// if we have already a variable created, destroy it
+	if (parserVarDefined)
+	{
+		DestroyParserVar();
+	}
 	try 
 	{
 		//connect dataproperty to custom value type (ARTValue is only used by parser).
@@ -713,7 +898,7 @@ void ARTdataContainer::CreateParserVar(const string& varname)
 		//cout << "varname: " << varname << " defined = ";
 
 		//parser_->SetExpr(varname);
-		//cout << parser->Eval() << "\n";
+		//cout << parser_->Eval() << "\n";
 		
 		//since the dp is now connected to the parser variable called varname, changes are
 		//written and read directely to/from the dp. nice, isn't it!
@@ -736,6 +921,8 @@ void ARTdataContainer::DestroyParserVar()
 		//delete associated storage fields
 		delete aval;
 		delete avar;
+		// we currently have no parser variable defined
+		parserVarDefined = false;
 	}
 	catch(mup::ParserError e)
 	{

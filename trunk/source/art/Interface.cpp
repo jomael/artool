@@ -680,7 +680,7 @@ ARTsimulator::ARTsimulator(const string name,const string domain, const string w
 		{
 			string varname = dprop->GetName();
 			dprop->SetParser(parser_);
-			dprop->CreateParserVar(varname);
+			dprop->SetParserVar(varname);
 			//std::cout << "Created Parser Var: " << varname << "\n";
 		}
 		prop = GetProperties(prop);
