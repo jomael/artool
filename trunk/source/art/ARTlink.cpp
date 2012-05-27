@@ -444,7 +444,7 @@ void ARTvariant::SetVal(const int i, int ind)
 				}
 				else
 				{
-					throw ARTerror("ARTvariant::SetVall", "Array of ARTvariant objects has not been initialized!");
+					throw ARTerror("ARTvariant::SetVal", "Array of ARTvariant objects has not been initialized!");
 				}
 			}
 			break;
@@ -494,7 +494,14 @@ void ARTvariant::SetVal(const double d, int ind)
 			if (len <= ind) throw ARTerror("ARTvariant::SetVal", "Index is out of bounds.");
 			else
 			{
-				val->na[ind].SetVal(d);
+				if (val->na != NULL)
+				{
+					val->na[ind].SetVal(d);
+				}
+				else
+				{
+					throw ARTerror("ARTvariant::SetVal", "Array of ARTvariant objects has not been initialized!");
+				}
 			}
 			break;
 
@@ -548,7 +555,7 @@ void ARTvariant::SetVal(const float f, int ind)
 				}
 				else
 				{
-					throw ARTerror("ARTvariant::SetVall", "Array of ARTvariant objects has not been initialized!");
+					throw ARTerror("ARTvariant::SetVal", "Array of ARTvariant objects has not been initialized!");
 				}
 			}
 			break;
@@ -621,7 +628,7 @@ void ARTvariant::SetVal(const double re, const double im, int ind)
 				}
 				else
 				{
-					throw ARTerror("ARTvariant::SetVall", "Array of ARTvariant objects has not been initialized!");
+					throw ARTerror("ARTvariant::SetVal", "Array of ARTvariant objects has not been initialized!");
 				}
 
 			}
@@ -663,7 +670,7 @@ void ARTvariant::SetVal(const char* s, int ind)
 		}
 		else
 		{
-			throw ARTerror("ARTvariant::SetVall", "Array of ARTvariant objects has not been initialized!");
+			throw ARTerror("ARTvariant::SetVal", "Array of ARTvariant objects has not been initialized!");
 		}
 	}
 	else throw ARTerror("ARTvariant::SetVal", "A string with index can not be written to an ARTvariant of type %s1.", this->GetTypeString());

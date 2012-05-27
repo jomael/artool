@@ -109,6 +109,8 @@ MUP_NAMESPACE_START
 					// set reference of ARTValue to ARTdataContainer
 					arrayVals[i].var = dynamic_cast<ARTdataContainer*>(&(var->val->na[i]));
 				}
+				own = true;
+				break;
 			default:
 				throw ParserError();
 
@@ -199,10 +201,23 @@ MUP_NAMESPACE_START
 	{
 		var = av;
 		own = false; //var is connected to foreign ARTdataContainer, so var must not be destroyed by this object
+		// if data container is of type array, we have to initialize the local value array
+		if (var->typ == C_ART_na)
+		{
+			arrayVals = new ARTValue[var->len];
+			ARTdataContainer* arrayElements = dynamic_cast<ARTdataContainer*>(var->val->na);
+			for (int i = 0; i < var->len; ++i)
+			{
+				// delete standard var object
+				arrayVals[i].deleteVar();
+				// set reference to array element of the parent
+				// data container
+				arrayVals[i].var = &(arrayElements[i]);
+			}
+		}
 		_DBG_MSG("ARTdataContainer*");
 	}
 
-/**/
 	//---------------------------------------------------------------------------
 	ARTValue::ARTValue(const ARTValue &a_Val)
 		:IValue(cmVAL)
@@ -299,7 +314,10 @@ MUP_NAMESPACE_START
 		if (arrayVals != NULL)
 		{
 			delete[] arrayVals;
-			delete[] var->val->na;
+			if (own)
+			{
+				delete[] dynamic_cast<ARTdataContainer*>(var->val->na);
+			}
 		}
 		if (own)
 		{
@@ -336,6 +354,9 @@ MUP_NAMESPACE_START
 		if (this==&ref)
 			return;
 
+		// delete variable first
+		deleteVar();
+
 		//copy value
 		var = new ARTdataContainer(*ref.var);
 		own = true;
@@ -352,7 +373,18 @@ MUP_NAMESPACE_START
 	//---------------------------------------------------------------------------
 	void ARTValue::deleteVar()
 	{
-		if (own) delete var;
+		if (arrayVals != NULL)
+		{
+			delete[] arrayVals;
+			if (own)
+			{
+				delete[] var->val->na;
+			}
+		}
+		if (own)
+		{
+			delete var;
+		}
 		var = NULL;
 		own = false;
 		_DBG_MSG("");
@@ -410,7 +442,6 @@ MUP_NAMESPACE_START
 	//---------------------------------------------------------------------------
 	IValue& ARTValue::operator=(int_type a_iVal)
 	{
-		cout << "in operator=(int)" << endl;
 		var->SetVal(a_iVal);
 		_DBG_MSG("int_type");
 		return *this;
@@ -419,7 +450,6 @@ MUP_NAMESPACE_START
 	//---------------------------------------------------------------------------
 	IValue& ARTValue::operator=(float_type val)
 	{
-		cout << "in operator=(float)" << endl;
 		var->SetVal(val);
 		_DBG_MSG("float_type");
 		return *this;
@@ -500,7 +530,7 @@ MUP_NAMESPACE_START
 		{
 			cout << "konnte nicht nach artdatacontainer casten!" << endl;
 		}
-		*/
+
 
 
 		try
@@ -561,10 +591,9 @@ MUP_NAMESPACE_START
 
 			throw ParserError(err);
 			
-		}
+		} */
 
-	}
-/*		if (!IsScalar() && m_cType!='b')
+		/* if (!IsScalar() && m_cType!='b')
 		{
 			ErrorContext err;
 			err.Errc	= ecTYPE_CONFLICT;
@@ -585,9 +614,9 @@ MUP_NAMESPACE_START
 			throw ParserError(err);
 		}
 
-		return m_val.real();
+		return m_val.real(); */
 	}
-*/
+
 	//---------------------------------------------------------------------------
 	float_type ARTValue::GetImag() const
 	{
@@ -686,8 +715,21 @@ MUP_NAMESPACE_START
 		/*CheckType('a');
 		assert(m_pvVal!=NULL);
 		return *m_pvVal;*/
-		static std::vector<class mup::Value> dummy;
-		return dummy;
+		if (var->typ == C_ART_na)
+		{
+			static array_type testArray = array_type(var->len);
+			for (int i = 0; i < var->len; ++i)
+			{
+				testArray[i] = &(arrayVals[i]);
+			}
+			return testArray;
+		}
+		else
+		{
+			//static std::vector<class mup::IValue*> dummy;
+			static array_type dummy;
+			return dummy;
+		}
 	}
 
 	//---------------------------------------------------------------------------

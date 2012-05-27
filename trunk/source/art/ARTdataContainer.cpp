@@ -25,7 +25,21 @@ ARTdataContainer::ARTdataContainer(const T_ART_Type dtyp, const int dlen, const 
 		dependencyList_(list<ARTdataContainer*>()), diter_(dependencyList_.begin()), definition_(""),
 		parser_(NULL), varname_(varname), parserVarDefined(false)//, complexity_(1)
 {
-	//cout << "ARTdataContainer(typ,len)\n";
+//	cout << "ARTdataContainer(typ,len)\n";
+	// in case of art data container array
+	if (dtyp == C_ART_na)
+	{
+		val->na = new ARTdataContainer[dlen];
+		cout << "new array initialized" << endl;
+		ARTdataContainer* arrayElements = dynamic_cast<ARTdataContainer*>(val->na);
+		for (int i = 0; i < dlen; ++i)
+		{
+			// all variables are of type complex
+			arrayElements[i].typ = C_ART_cpx;
+			// all values are initialized with zero
+			arrayElements[i].SetVal(0.0);
+		}
+	}
 }
 
 ARTdataContainer::ARTdataContainer(std::string name, ARTfunctionoid* func) : ARTvariant(C_ART_undef, -1),
@@ -128,6 +142,12 @@ ARTdataContainer::~ARTdataContainer()
 	if (parserVarDefined)
 	{
 		DestroyParserVar();
+	}
+
+	// in case of an array, remove all child elements
+	if (typ == C_ART_na)
+	{
+		delete[] dynamic_cast<ARTdataContainer*>(val->na);
 	}
 
 	delete func_;
@@ -303,6 +323,16 @@ void ARTdataContainer::SetDefinition(const string& s)
 		// change in definition needs to be communicated: notify clients
 		Invalidate();
 		definition_ = s;
+		// in case we have an array, set definition to all children elements
+		if (typ == C_ART_na)
+		{
+			ARTdataContainer* arrayElements = dynamic_cast<ARTdataContainer*>(val->na);
+			for (int i = 0; i < len; ++i)
+			{
+				arrayElements[i].SetDefinition(s);
+			}
+		}
+
 		/*ARTdataProp* dp;
 		try
 		{
@@ -512,8 +542,13 @@ void ARTdataContainer::Evaluate()
 		{
 //			progressIndicator.Continue(complexity_,varname_);//count this evaluation
 			progressIndicator.Continue(1,varname_);//count this evaluation
+			// only set expression of parser if it has not been done yet
+			if (parser_->GetExpr() != definition_)
+			{
+				parser_->SetExpr(definition_);
+			}
 			//evaluate value of this data container and save result
-			parser_->SetExpr(definition_);
+			cout << "Evaluate the following expression: " << parser_->GetExpr() << endl;
 			parser_->Eval();
 		}
 		catch( mup::ParserError e )
@@ -649,6 +684,42 @@ double ARTdataContainer::GetValueAsDouble()
 	return d;
 }
 
+double ARTdataContainer::GetValueAsDoubleFromIndex(std::size_t ind)
+{
+	double retVal = 0;
+	if (typ == C_ART_na)
+	{
+		/*ARTdataContainer* arrayElements = dynamic_cast<ARTdataContainer*>(val->na);
+		if ((int) ind < len)
+		{
+			if (!arrayElements[ind].valid_)
+			{
+				cout << "Evaluate array element " << ind << endl;
+				arrayElements[ind].Evaluate();
+			}
+			retVal = arrayElements[ind].val->d;
+		}
+		else
+		{
+			throw ARTerror("ARTdataContainer::GetValueAsDoubleFromIndex", "Index out of bounds.");
+		}*/
+		retVal = (*aval)[ind].GetFloat();
+	}
+	return retVal;
+
+}
+
+void ARTdataContainer::SetInvalid(int st, int end)
+{
+	if (typ == C_ART_na)
+	{
+		ARTdataContainer* arrayElements = dynamic_cast<ARTdataContainer*>(val->na);
+		for (int i = st; i <= end; ++i)
+		{
+			arrayElements[i].valid_ = false;
+		}
+	}
+}
 
 int ARTdataContainer::GetValueAsInt() 
 {
@@ -722,7 +793,29 @@ void ARTdataContainer::SetValue(ARTvariant* var)
 
 void ARTdataContainer::SetVal(const int i, const int ind)
 {
-	ARTvariant::SetVal(i, ind);
+	// in case we have an array, we have to handle that separately
+	if (typ == C_ART_na)
+	{
+		/*if (len <= ind) throw ARTerror("ARTvariant::SetVal", "Index is out of bounds.");
+			else
+			{
+				ARTdataContainer* arrayElements = dynamic_cast<ARTdataContainer*>(val->na);
+				if (arrayElements != NULL)
+				{
+					arrayElements[ind].SetVal(i);
+				}
+				else
+				{
+					throw ARTerror("ARTvariant::SetVal", "Array of ARTvariant objects has not been initialized!");
+				}
+			}
+		*/
+		(*aval)[ind] = i;
+	}
+	else
+	{
+		ARTvariant::SetVal(i, ind);
+	}
 	NotifyClients();
 	valid_ = true;
 }
@@ -743,10 +836,10 @@ void ARTdataContainer::SetVal(const float f, const int ind)
 
 void ARTdataContainer::SetVal(std::complex<double> c, const int ind)
 {
+	cout << "setVal(cmplx<" << c.real() << "," << c.imag() << ">, " << ind << ")" << endl;
 	ARTvariant::SetVal(c, ind);
 	NotifyClients();
 	valid_ = true;
-	//cout << "Setze wert und setze valid_ auf true!" << endl;
 }
 
 void ARTdataContainer::SetVal(const double re, const double im, const int ind)
@@ -874,6 +967,26 @@ void ARTdataContainer::Rename(const string& newname)
 	varname_ = newname;
 }
 
+void ARTdataContainer::SetParser(mup::ParserX *p){
+	parser_ = p;
+	// in case we have children, set the same parser
+	if (typ == C_ART_na)
+	{
+		ARTdataContainer* arrayElements = dynamic_cast<ARTdataContainer*>(val->na);
+		for (int i = 0; i < len; ++i)
+		{
+			arrayElements[i].parser_ = p;
+		}
+	}
+	// if we have a valid name, register it in parser
+	if (varname_ != "")
+	{
+		cout << "Set parser var: " << endl;
+		SetParserVar(varname_);
+	}
+}
+
+
 void ARTdataContainer::SetParserVar(const string& varname)
 {
 	if (!parser_) throw ARTerror("ARTdataContainer::CreateParserVar","A parser variable for datacontainer '%s1' can not be created, because the datacontainer's parser pointer is NULL. Please use SetParser() to specify which parser the data container should use.",varname_);
@@ -895,6 +1008,8 @@ void ARTdataContainer::SetParserVar(const string& varname)
 		parserVarDefined = true;
 		//remember variable name
 		varname_ = varname;
+
+
 		//cout << "varname: " << varname << " defined = ";
 
 		//parser_->SetExpr(varname);

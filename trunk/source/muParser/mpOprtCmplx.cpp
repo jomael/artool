@@ -90,7 +90,7 @@ MUP_NAMESPACE_START
   void OprtAddCmplx::Eval(ptr_val_type& ret, const ptr_val_type *a_pArg, int num)
   { 
     assert(num==2);
-
+    std::size_t i;
     const IValue *arg1 = a_pArg[0].Get();
     const IValue *arg2 = a_pArg[1].Get();
     if (arg1->IsNonComplexScalar() && arg2->IsNonComplexScalar())
@@ -106,19 +106,23 @@ MUP_NAMESPACE_START
         throw ParserError(ErrorContext(ecARRAY_SIZE_MISMATCH, -1, GetIdent(), 'a', 'a', 2));
       
       array_type rv(a1.size());
-      for (std::size_t i=0; i<a1.size(); ++i)
+      for (i=0; i<a1.size(); ++i)
       {
-        if (!a1[i].IsScalar())
-          throw ParserError( ErrorContext(ecTYPE_CONFLICT_FUN, -1, GetIdent(), a1[i].GetType(), 'c', 1)); 
+        if (!a1[i]->IsScalar())
+          throw ParserError( ErrorContext(ecTYPE_CONFLICT_FUN, -1, GetIdent(), a1[i]->GetType(), 'c', 1));
 
-        if (!a2[i].IsScalar())
-          throw ParserError( ErrorContext(ecTYPE_CONFLICT_FUN, -1, GetIdent(), a2[i].GetType(), 'c', 1)); 
+        if (!a2[i]->IsScalar())
+          throw ParserError( ErrorContext(ecTYPE_CONFLICT_FUN, -1, GetIdent(), a2[i]->GetType(), 'c', 1));
 
-        rv[i] = cmplx_type(a1[i].GetFloat() + a2[i].GetFloat(),
-                           a1[i].GetImag()  + a2[i].GetImag());
+        rv[i] = new Value(cmplx_type(a1[i]->GetFloat() + a2[i]->GetFloat(),
+                           a1[i]->GetImag()  + a2[i]->GetImag()));
       }
 
       *ret = rv; 
+      for (i = 0; i < rv.size(); ++i)
+      {
+        delete dynamic_cast<Value*>(rv[i]);
+      }
     }
     else
     {
@@ -159,7 +163,7 @@ MUP_NAMESPACE_START
   void OprtSubCmplx::Eval(ptr_val_type &ret, const ptr_val_type *a_pArg, int num)
   { 
     assert(num==2);
-
+    std::size_t i;
     if ( a_pArg[0]->IsNonComplexScalar() && a_pArg[1]->IsNonComplexScalar())
     {
       *ret = a_pArg[0]->GetFloat() - a_pArg[1]->GetFloat(); 
@@ -172,19 +176,23 @@ MUP_NAMESPACE_START
         throw ParserError(ErrorContext(ecARRAY_SIZE_MISMATCH, -1, GetIdent(), 'a', 'a', 2));
       
       array_type rv(a1.size());
-      for (std::size_t i=0; i<a1.size(); ++i)
+      for (i=0; i<a1.size(); ++i)
       {
-        if (!a1[i].IsScalar())
-          throw ParserError( ErrorContext(ecTYPE_CONFLICT_FUN, -1, GetIdent(), a1[i].GetType(), 'c', 1)); 
+        if (!a1[i]->IsScalar())
+          throw ParserError( ErrorContext(ecTYPE_CONFLICT_FUN, -1, GetIdent(), a1[i]->GetType(), 'c', 1));
 
-        if (!a2[i].IsScalar())
-          throw ParserError( ErrorContext(ecTYPE_CONFLICT_FUN, -1, GetIdent(), a2[i].GetType(), 'c', 1)); 
+        if (!a2[i]->IsScalar())
+          throw ParserError( ErrorContext(ecTYPE_CONFLICT_FUN, -1, GetIdent(), a2[i]->GetType(), 'c', 1));
 
-        rv[i] = cmplx_type(a1[i].GetFloat() - a2[i].GetFloat(),
-                           a1[i].GetImag()  - a2[i].GetImag());
+        rv[i] = new Value(cmplx_type(a1[i]->GetFloat() - a2[i]->GetFloat(),
+                           a1[i]->GetImag()  - a2[i]->GetImag()));
       }
 
       *ret = rv;
+      for (i = 0; i < rv.size(); ++i)
+      {
+        delete dynamic_cast<Value*>(rv[i]);
+      }
     }
     else
     {
@@ -227,6 +235,7 @@ MUP_NAMESPACE_START
     assert(num==2);
     IValue *arg1 = a_pArg[0].Get();
     IValue *arg2 = a_pArg[1].Get();
+    std::size_t i;
     if (arg1->IsNonComplexScalar() && arg2->IsNonComplexScalar())
     {
       *ret = arg1->GetFloat() * arg2->GetFloat(); 
@@ -241,8 +250,8 @@ MUP_NAMESPACE_START
         throw ParserError(ErrorContext(ecARRAY_SIZE_MISMATCH, -1, GetIdent(), 'a', 'a', 2));
 
       float_type val(0);
-      for (std::size_t i=0; i<a1.size(); ++i)
-        val += a1[i].GetFloat()*a2[i].GetFloat();
+      for (i=0; i<a1.size(); ++i)
+        val += (a1[i]->GetFloat())*(a2[i]->GetFloat());
 
       *ret = val;
     }
@@ -250,19 +259,27 @@ MUP_NAMESPACE_START
     {
       // Skalar * Vector
       array_type out(a_pArg[0]->GetArray());
-      for (std::size_t i=0; i<out.size(); ++i)
-        out[i] = out[i].GetFloat() * a_pArg[1]->GetFloat();
+      for (i=0; i<out.size(); ++i)
+        out[i] = new Value((out[i]->GetFloat()) * (a_pArg[1]->GetFloat()));
 
       *ret = out; 
+      for (i = 0; i < out.size(); ++i)
+      {
+        delete dynamic_cast<Value*>(out[i]);
+      }
     }
     else if (a_pArg[1]->GetType()=='a' && a_pArg[0]->IsScalar())
     {
       // Vector * Skalar
       array_type out(a_pArg[1]->GetArray());
-      for (std::size_t i=0; i<out.size(); ++i)
-        out[i] = out[i].GetFloat() * a_pArg[0]->GetFloat();
+      for (i=0; i<out.size(); ++i)
+        out[i] = new Value((out[i]->GetFloat()) * (a_pArg[0]->GetFloat()));
 
       *ret = out; 
+      for (i = 0; i < out.size(); ++i)
+      {
+        delete dynamic_cast<Value*>(out[i]);
+      }
     }
     else
     {
@@ -277,7 +294,7 @@ MUP_NAMESPACE_START
                  b = a_pArg[0]->GetImag(),
                  c = a_pArg[1]->GetFloat(),
                  d = a_pArg[1]->GetImag();
-      *ret = cmplx_type(a*c-b*d, a*d-b*c); 
+      *ret = cmplx_type(a*c-b*d, a*d+b*c);
     }
   }
 
