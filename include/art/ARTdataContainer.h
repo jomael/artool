@@ -194,7 +194,11 @@ public:
 		return val;
 	}
 
-	double GetValueAsDouble();	
+	double GetValueAsDouble();
+
+	double GetValueAsDoubleFromIndex(std::size_t ind);
+
+	void SetInvalid(int st, int end);
 
 	int GetValueAsInt(); 
 
@@ -246,10 +250,7 @@ public:
 
 	void RemoveFromDefinition(ARTdataContainer* dependency);
 
-	void SetParser(ParserX* p) 
-	{
-		parser_ = p;
-	}
+	void SetParser(ParserX* p);
 
 	void Rename(const string& newname);
 

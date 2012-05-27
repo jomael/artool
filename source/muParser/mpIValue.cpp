@@ -115,7 +115,7 @@ MUP_NAMESPACE_START
                    ss << arr[i];
                    if (i!=arr.size()-1)
                    {
-                     if (arr[i].GetType()!='a')
+                     if (arr[i]->GetType()!='a')
                        ss << _T("; ");
                      else
                        ss << _T("\n ");
