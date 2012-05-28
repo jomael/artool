@@ -68,25 +68,26 @@ MUP_NAMESPACE_START
 	{
 		var = new ARTdataContainer(type);
 		var->SetArrayLength(array_size);
+		int i;
 		switch (type)
 		{
 			case C_ART_ndbl:
-				for (int i = 0; i < array_size; i++)
+				for (i = 0; i < array_size; i++)
 					var->val->nd[i] = static_cast<double>(val);
 				own = true;
 				break;
 			case C_ART_nflo:
-				for (int i = 0; i < array_size; i++)
+				for (i = 0; i < array_size; i++)
 					var->val->nf[i] = static_cast<float>(val);
 				own = true;
 				break;
 			case C_ART_nint:
-				for (int i = 0; i < array_size; i++)
+				for (i = 0; i < array_size; i++)
 					var->val->ni[i] = static_cast<int>(val);
 				own = true;
 				break;
 			case C_ART_ncpx:
-				for (int i = 0; i < array_size; i++)
+				for (i = 0; i < array_size; i++)
 				{
 					var->val->nc[i].re = static_cast<double>(val);
 					var->val->nc[i].im = 0;
@@ -99,7 +100,7 @@ MUP_NAMESPACE_START
 				// create new ARTValue array, containing references
 				// to ARTdataContainer values
 				arrayVals = new ARTValue[array_size];
-				for (int i = 0; i < array_size; i++)
+				for (i = 0; i < array_size; i++)
 				{
 					// set and initialize all elements
 					var->val->na[i].SetType(C_ART_dbl);

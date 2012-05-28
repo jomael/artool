@@ -16,6 +16,10 @@
 
 #include <stdexcept>
 
+
+/** Limit maximum number of elements a buffer might contain. */
+static const ::size_t _max_size = (1<<25);
+
 template <typename _Type, typename _Alloc = std::allocator<_Type> > class mpBuffer
 {
 public:
@@ -43,8 +47,7 @@ protected:
   /* member variables */
   /** Current number of elements in use. */
   size_type _size;
-  /** Limit maximum number of elements a buffer might contain. */
-  static const size_type _max_size = (1<<25);
+  
 
   /** Allocator of current element type. */
   allocator_type _allocator;
@@ -99,7 +102,11 @@ public:
     _size(n),
     //_capacity(n + 10),
     _allocator(a),
+#if defined _MSC_VER && _MSC_VER <= 1200
+    _fields(_allocator.allocate(_size, 0)),
+#else
     _fields(_allocator.allocate(_size)),
+#endif
     _is_ringbuffer(rb),
     _first(0),
     _last(0),
@@ -119,7 +126,11 @@ public:
     _size(buf._size),
     //_capacity(buf._capacity),
     _allocator(buf._allocator),
+#if defined _MSC_VER && _MSC_VER <= 1200
+    _fields(_allocator.allocate(_size, 0)),
+#else
     _fields(_allocator.allocate(_size)),
+#endif
     _is_ringbuffer(buf._is_ringbuffer),
     _first(buf._first),
     _last(buf._last),
@@ -139,7 +150,11 @@ public:
     _size = buf._size;
     //_capacity = buf._capacity;
     _allocator = buf._allocator;
+#if defined _MSC_VER && _MSC_VER <= 1200
+    _fields = _allocator.allocate(_size, 0),
+#else
     _fields = _allocator.allocate(_size);
+#endif
     _is_ringbuffer = buf._is_ringbuffer;
     _first = buf._first;
     _last = buf._last;
@@ -177,7 +192,13 @@ public:
 
   void virtual resize(size_type sz, value_type c = value_type() )
   {
+#if defined _MSC_VER && _MSC_VER <= 1200
+    pointer newFields = _allocator.allocate(sz, 0);
+#else
     pointer newFields = _allocator.allocate(sz);
+#endif
+
+	size_type i;
 
     // if we do not have a ring buffer, just copy the first elements to
     // the newly allocated array
@@ -186,13 +207,13 @@ public:
       // number of fields to copy is minimum of current size and new size
       size_type copy_fields = (sz > _size) ? _size : sz;
       // copy all existing fields
-      for (size_type i = 0; i < copy_fields; ++i)
+      for (i = 0; i < copy_fields; ++i)
       {
         _allocator.construct(&(newFields[i]), _fields[i]);
       }
 
       // initialize all new elements if any
-      for (size_type i = copy_fields; i < sz; ++i)
+      for (i = copy_fields; i < sz; ++i)
       {
         _allocator.construct(&(newFields[i]), c);
       }
@@ -205,14 +226,14 @@ public:
       size_type copy_fields = (sz > _size) ?
           ((_first - _last + 1 + _size) % _size) : (sz);
       size_type bufPointer = (sz > _size) ? _last : ((_first - sz + _size) % _size);
-      for (size_type i = 0; i < copy_fields; ++i)
+      for (i = 0; i < copy_fields; ++i)
       {
         _allocator.construct(&(newFields[i]), _fields[bufPointer]);
         bufPointer = (bufPointer + 1) % _size;
       }
 
       // initialize all new elements if any
-      for (size_type i = copy_fields; i < sz; ++i)
+      for (i = copy_fields; i < sz; ++i)
       {
         _allocator.construct(&(newFields[i]), c);
       }

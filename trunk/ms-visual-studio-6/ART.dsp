@@ -608,6 +608,10 @@ SOURCE=..\include\muParser\mpARTValue.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\include\muParser\mpBuffer.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\include\muParser\mpDefines.h
 # End Source File
 # Begin Source File
