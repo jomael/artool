@@ -683,6 +683,7 @@ void ARTvariant::SetType(T_ART_Type t, int l)
 	//free memory occupied if type is array or struct
 	if (len>0)
 	{
+		int i;
 		switch(typ)
 		{
 			default: break;
@@ -694,7 +695,7 @@ void ARTvariant::SetType(T_ART_Type t, int l)
 			case C_ART_ntri: free(val->nt); val->nt = NULL; break;
 			case C_ART_nmat: free(val->nm); val->nm = NULL; break;
 			case C_ART_nstr:
-				for (int i=0; i<len; i++) {free(val->ns[i]); val->ns[i] = NULL;}
+				for (i=0; i<len; i++) {free(val->ns[i]); val->ns[i] = NULL;}
 				free(val->ns); val->ns = NULL; 
 				break;
 			// only set pointer to null, memory management is done by
@@ -832,7 +833,7 @@ bool ARTvariant::IsEqual(ARTvariant* other)
 			if ((val->na == NULL) && (other->val->na == NULL)) return true;
 			if ((val->na == NULL) && (other->val->na != NULL)) return false;
 			if ((val->na != NULL) && (other->val->na == NULL)) return false;
-			for (int i = 0; i < len; i++) {
+			for (i = 0; i < len; i++) {
 				if ( (val->na[i].IsEqual( &(other->val->na[i]) )) == false ) {
 					return false;
 				}

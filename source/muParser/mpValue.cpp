@@ -192,6 +192,7 @@ MUP_NAMESPACE_START
     _DBG_MSG("const IValue&");
     Reset();
     const array_type& tmpArray = (a_Val.GetType() == 'a') ? a_Val.GetArray() : array_type(0);
+	int_type i;
 
     switch(a_Val.GetType())
     {
@@ -214,7 +215,7 @@ MUP_NAMESPACE_START
                 //m_pvVal = new array_type(a_Val.GetArray());
                 m_pvVal = new array_type(tmpArray.size());
 
-                for (int_type i = 0; i < tmpArray.size(); ++i)
+                for (i = 0; i < tmpArray.size(); ++i)
                 {
                   Value* tmp = dynamic_cast<Value*>(tmpArray[i]);
                   (*m_pvVal)[i] = new Value(*tmp);
