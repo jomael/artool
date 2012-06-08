@@ -196,10 +196,6 @@ SOURCE=..\source\art\windinstrument.cpp
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=..\source\muParser\mpARTValue.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\source\muParser\mpError.cpp
 # End Source File
 # Begin Source File
@@ -601,10 +597,6 @@ SOURCE=..\include\ga\std_stream.h
 # Begin Source File
 
 SOURCE=..\include\muParser\memory.h
-# End Source File
-# Begin Source File
-
-SOURCE=..\include\muParser\mpARTValue.h
 # End Source File
 # Begin Source File
 
