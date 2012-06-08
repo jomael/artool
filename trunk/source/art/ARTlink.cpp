@@ -435,7 +435,7 @@ void ARTvariant::SetVal(const int i, int ind)
 			break;
 
 		case C_ART_na:
-			if (len <= ind) throw ARTerror("ARTvariant::SetVal", "Index is out of bounds.");
+			/*if (len <= ind) throw ARTerror("ARTvariant::SetVal", "Index is out of bounds.");
 			else
 			{
 				if (val->na != NULL)
@@ -446,7 +446,7 @@ void ARTvariant::SetVal(const int i, int ind)
 				{
 					throw ARTerror("ARTvariant::SetVal", "Array of ARTvariant objects has not been initialized!");
 				}
-			}
+			}*/
 			break;
 
 		default: throw  ARTerror("ARTvariant::SetVal", "An integer value can not be written to an ARTvariant of type %s1.", this->GetTypeString());
@@ -491,7 +491,7 @@ void ARTvariant::SetVal(const double d, int ind)
 			break;
 
 		case C_ART_na:
-			if (len <= ind) throw ARTerror("ARTvariant::SetVal", "Index is out of bounds.");
+			/*if (len <= ind) throw ARTerror("ARTvariant::SetVal", "Index is out of bounds.");
 			else
 			{
 				if (val->na != NULL)
@@ -502,7 +502,7 @@ void ARTvariant::SetVal(const double d, int ind)
 				{
 					throw ARTerror("ARTvariant::SetVal", "Array of ARTvariant objects has not been initialized!");
 				}
-			}
+			}*/
 			break;
 
 		default: throw  ARTerror("ARTvariant::SetVal", "A double value can not be written to an ARTvariant of type %s1.", this->GetTypeString());
@@ -546,7 +546,7 @@ void ARTvariant::SetVal(const float f, int ind)
 			break;
 
 		case C_ART_na:
-			if (len <= ind) throw ARTerror("ARTvariant::SetVal", "Index is out of bounds.");
+			/*if (len <= ind) throw ARTerror("ARTvariant::SetVal", "Index is out of bounds.");
 			else
 			{
 				if (val->na != NULL)
@@ -557,7 +557,7 @@ void ARTvariant::SetVal(const float f, int ind)
 				{
 					throw ARTerror("ARTvariant::SetVal", "Array of ARTvariant objects has not been initialized!");
 				}
-			}
+			}*/
 			break;
 
 		default: throw  ARTerror("ARTvariant::SetVal", "A float value can not be written to an ARTvariant of type %s1.", this->GetTypeString());
@@ -619,7 +619,7 @@ void ARTvariant::SetVal(const double re, const double im, int ind)
 			break;
 
 		case C_ART_na:
-			if (len <= ind) throw ARTerror("ARTvariant::SetVal", "Index is out of bounds.");
+			/*if (len <= ind) throw ARTerror("ARTvariant::SetVal", "Index is out of bounds.");
 			else
 			{
 				if (val->na != NULL)
@@ -631,7 +631,7 @@ void ARTvariant::SetVal(const double re, const double im, int ind)
 					throw ARTerror("ARTvariant::SetVal", "Array of ARTvariant objects has not been initialized!");
 				}
 
-			}
+			}*/
 			break;
 
 		default: throw ARTerror("ARTvariant::SetVal", "A complex value can not be written to an ARTvariant of type %s1.", this->GetTypeString());
@@ -662,7 +662,7 @@ void ARTvariant::SetVal(const char* s, int ind)
 		val->ns[ind] = (char*)malloc (strlen(s)+1  ); //+1 for 0 character
 		strcpy(val->ns[ind], s); 
 	}
-	else if (typ == C_ART_na)
+	/*else if (typ == C_ART_na)
 	{
 		if (len <= ind) throw ARTerror("ARTvariant::SetVal", "The index is out of bounds.");
 		if (val->na != NULL) {
@@ -672,7 +672,7 @@ void ARTvariant::SetVal(const char* s, int ind)
 		{
 			throw ARTerror("ARTvariant::SetVal", "Array of ARTvariant objects has not been initialized!");
 		}
-	}
+	}*/
 	else throw ARTerror("ARTvariant::SetVal", "A string with index can not be written to an ARTvariant of type %s1.", this->GetTypeString());
 }
 
@@ -833,11 +833,12 @@ bool ARTvariant::IsEqual(ARTvariant* other)
 			if ((val->na == NULL) && (other->val->na == NULL)) return true;
 			if ((val->na == NULL) && (other->val->na != NULL)) return false;
 			if ((val->na != NULL) && (other->val->na == NULL)) return false;
-			for (i = 0; i < len; i++) {
+			/* for (i = 0; i < len; i++) {
 				if ( (val->na[i].IsEqual( &(other->val->na[i]) )) == false ) {
 					return false;
 				}
-			}
+			}*/
+			return false;
 			break;
 		case C_ART_undef: break; //no comparison if undefined
 		default: throw ARTerror("ARTvariant::IsEqual", "The specified type is unknown."); 

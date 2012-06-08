@@ -303,10 +303,10 @@ private:
 				switch (p->typ)
 				{
 					case C_ART_ndbl:
-						*p->val->nd = dprop->GetValueAsDouble();
+						*p->val->nd = dprop->GetFloat();
 						break;
 					case C_ART_nflo:
-						*p->val->nf = dprop->GetValueAsDouble();
+						*p->val->nf = dprop->GetFloat();
 						break;
 					default:
 						throw ARTerror("ARTelement::PrepareCalculation", "The hornelement attached to element '%s1' returned the data property '%s2' with an unknown type.", name_ , dprop->GetName().c_str());
@@ -576,14 +576,14 @@ private:
 		//Use the data properties of the element to set the cylindersection's values
 		ARTdataProp* dprop = dynamic_cast<ARTdataProp*>(FindProperty("length"));
 		if (dprop)
-			tunnel->length( len = dprop->GetValueAsDouble() ); 
+			tunnel->length( len = dprop->GetFloat() );
 		else 
 			throw ARTerror("ToneHole::PrepareCalculation", "The data property '%s1' was not found.", "length"); //Debug
 
 		dprop = dynamic_cast<ARTdataProp*>(FindProperty("r"));
 		if (dprop)
 		{
-			tunnel->radius( rad = dprop->GetValueAsDouble()); 
+			tunnel->radius( rad = dprop->GetFloat() );
 			branch->radius( rad ); 
 			term->radius( rad ); 
 		}
@@ -593,9 +593,9 @@ private:
 		dprop = dynamic_cast<ARTdataProp*>(FindProperty("temp"));
 		if (dprop) 
 		{
-			tunnel->settempC(dprop->GetValueAsDouble()); 
-			branch->settempC(dprop->GetValueAsDouble()); 
-			term->settempC(dprop->GetValueAsDouble()); 
+			tunnel->settempC(dprop->GetFloat());
+			branch->settempC(dprop->GetFloat());
+			term->settempC(dprop->GetFloat());
 		} 
 		else 
 			throw ARTerror("ToneHole::PrepareCalculation", "The data property '%s1' was not found.", "temp");
@@ -603,9 +603,9 @@ private:
 		dprop = dynamic_cast<ARTdataProp*>(FindProperty("loss"));
 		if (dprop) 
 		{
-			tunnel->setlossF(dprop->GetValueAsDouble());
-			branch->setlossF(dprop->GetValueAsDouble());
-			term->setlossF(dprop->GetValueAsDouble());
+			tunnel->setlossF(dprop->GetFloat());
+			branch->setlossF(dprop->GetFloat());
+			term->setlossF(dprop->GetFloat());
 		} 
 		else 
 			throw ARTerror("ToneHole::PrepareCalculation", "The data property '%s1' was not found.", "loss");
@@ -613,9 +613,9 @@ private:
 		dprop = dynamic_cast<ARTdataProp*>(FindProperty("xc"));
 		if (dprop) 
 		{
-			tunnel->setxc(dprop->GetValueAsDouble());
-			branch->setxc(dprop->GetValueAsDouble());
-			term->setxc(dprop->GetValueAsDouble());
+			tunnel->setxc(dprop->GetFloat());
+			branch->setxc(dprop->GetFloat());
+			term->setxc(dprop->GetFloat());
 		} 
 		else 
 			throw ARTerror("TerminationModel::PrepareCalculation", "The data property '%s1' was not found.", "xc");
@@ -623,9 +623,9 @@ private:
 		dprop = dynamic_cast<ARTdataProp*>(FindProperty("humidity"));
 		if (dprop) 
 		{
-			tunnel->sethumidity(dprop->GetValueAsDouble());
-			branch->sethumidity(dprop->GetValueAsDouble());
-			term->sethumidity(dprop->GetValueAsDouble());
+			tunnel->sethumidity(dprop->GetFloat());
+			branch->sethumidity(dprop->GetFloat());
+			term->sethumidity(dprop->GetFloat());
 		} 
 		else 
 			throw ARTerror("TerminationModel::PrepareCalculation", "The data property '%s1' was not found.", "humidity");
@@ -1054,7 +1054,7 @@ private:
 		//Use the data properties of the element to set the cylindersection's values
 		ARTdataProp* dprop = dynamic_cast<ARTdataProp*>(FindProperty("radiationradius"));
 		if (dprop)
-			model->radius( dprop->GetValueAsDouble() ); 
+			model->radius( dprop->GetFloat() );
 		else 
 			throw ARTerror("TerminationModel::PrepareCalculation", "The data property '%s1' was not found.", "radiationradius"); //Debug
 
@@ -1062,7 +1062,7 @@ private:
 		dprop = dynamic_cast<ARTdataProp*>(FindProperty("temp"));
 		if (dprop) 
 		{
-			model->settempC(dprop->GetValueAsDouble()); 
+			model->settempC(dprop->GetFloat());
 		} 
 		else 
 			throw ARTerror("TerminationModel::PrepareCalculation", "The data property '%s1' was not found.", "temp");
@@ -1070,7 +1070,7 @@ private:
 		dprop = dynamic_cast<ARTdataProp*>(FindProperty("loss"));
 		if (dprop) 
 		{
-			model->setlossF(dprop->GetValueAsDouble());
+			model->setlossF(dprop->GetFloat());
 		} 
 		else 
 			throw ARTerror("TerminationModel::PrepareCalculation", "The data property '%s1' was not found.", "loss");
@@ -1078,7 +1078,7 @@ private:
 		dprop = dynamic_cast<ARTdataProp*>(FindProperty("xc"));
 		if (dprop) 
 		{
-			model->setxc(dprop->GetValueAsDouble());
+			model->setxc(dprop->GetFloat());
 		} 
 		else 
 			throw ARTerror("TerminationModel::PrepareCalculation", "The data property '%s1' was not found.", "xc");
@@ -1086,7 +1086,7 @@ private:
 		dprop = dynamic_cast<ARTdataProp*>(FindProperty("humidity"));
 		if (dprop) 
 		{
-			model->sethumidity(dprop->GetValueAsDouble());
+			model->sethumidity(dprop->GetFloat());
 		} 
 		else 
 			throw ARTerror("TerminationModel::PrepareCalculation", "The data property '%s1' was not found.", "humidity");

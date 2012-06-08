@@ -83,7 +83,7 @@ source_group(ga_src FILES
 )
 
 set(MUPARSER_SOURCES
-	${MUPARSER_SOURCE_DIR}/mpARTValue.cpp # y (w)
+#	${MUPARSER_SOURCE_DIR}/mpARTValue.cpp # y (w)
 	${MUPARSER_SOURCE_DIR}/mpError.cpp
 	${MUPARSER_SOURCE_DIR}/mpFuncCmplx.cpp
 	${MUPARSER_SOURCE_DIR}/mpFuncCommon.cpp

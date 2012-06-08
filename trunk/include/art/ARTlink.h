@@ -168,7 +168,7 @@ typedef union
 	T_ART_Cmplx*	nc;
 	T_ART_Tripl*	nt;
 	T_ART_Matrix*	nm;
-	ARTvariant*		na;
+	void*		na;
 	math::matrix< std::complex<double> >** nmx;
 	//pointers are not seperate types but nX types with len = 1 
 } T_ART_Var;

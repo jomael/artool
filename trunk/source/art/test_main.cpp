@@ -653,13 +653,13 @@ TEST_DEF_START(changeSimulatorParams, ARTpreperationFunctions)
 
 			// check their values
 			ARTdataProp* p = ARTFindDataProperty(mySim,"LowerFrequencyLimit");
-			if (p->GetValueAsDouble() != 1) return false;
+			if (p->GetFloat() != 1) return false;
 			p = ARTFindDataProperty(mySim,"HigherFrequencyLimit");
-			if (p->GetValueAsDouble() != 1000) return false;
+			if (p->GetFloat() != 1000) return false;
 			p = ARTFindDataProperty(mySim,"FrequencyStep");
-			if (p->GetValueAsDouble() != 11) return false;
+			if (p->GetFloat() != 11) return false;
 			p = ARTFindDataProperty(mySim,"NumberOfModes");
-			if (p->GetValueAsDouble() != 2) return false;
+			if (p->GetFloat() != 2) return false;
 		}
 		catch(ARTerror e)
 		{	
@@ -3807,8 +3807,8 @@ TEST_DEF_START(setHElementParam, ARTmodelTests)
 			ARTdataContainer* p2 = dynamic_cast<ARTdataContainer*>(((ARTelement*)El1)->model->FindProperty("r"));
 			//std::cout << p1->GetValue()->d << "\n";
 			//std::cout << p2->GetValue()->d << "\n";
-			if (p1->GetValueAsDouble() != 1000) return false;
-			if (p2->GetValueAsDouble() != 250) return false;
+			if (p1->GetFloat() != 1000) return false;
+			if (p2->GetFloat() != 250) return false;
 		}
 		catch(ARTerror e)
 		{	
@@ -3966,8 +3966,8 @@ TEST_DEF_START(testToneHoleParam, customModelTests)
 			ARTSetParameter(mySim, "myToneHole.r = myToneHole.length * 0.25;");
 			ARTdataContainer* p1 = dynamic_cast<ARTdataContainer*>(((ARTelement*)Th)->model->FindProperty("length"));
 			ARTdataContainer* p2 = dynamic_cast<ARTdataContainer*>(((ARTelement*)Th)->model->FindProperty("r"));
-			if (p1->GetValueAsDouble() != 100) return false;
-			if (p2->GetValueAsDouble() != 25) return false;
+			if (p1->GetFloat() != 100) return false;
+			if (p2->GetFloat() != 25) return false;
 		}
 		catch(ARTerror e)
 		{	
