@@ -5,15 +5,19 @@
 
 #include <string>
 #include <complex>
-#include "mpParser.h" //braucht ARTvariant
-#include "mpARTValue.h"
-#include "ARTerror.h"
-#include "ARTlink.h"
-//#include "matrix.h"
-//#include "ARTfunctionoid.h"
 
-//#include "Interface.h"
-using mup::ParserX;
+#include "ARTlink.h"
+
+// includes from muParser
+#include "mpParser.h" //braucht ARTvariant
+//#include "mpARTValue.h"
+#include "mpIValue.h"
+#include "mpTypes.h"
+
+#include "ARTerror.h"
+
+
+using namespace mup;
 
 class ARTsimulator;
 class ARTobject;
@@ -104,18 +108,19 @@ private:
  * you can not keep track of their names easily without storing them as strings within the
  * object.
  */ 
-class ARTdataContainer : public ARTvariant {
+class ARTdataContainer : public ARTvariant, public IValue {
+//class ARTdataContainer : public ARTvariant {
 protected:
-	bool valid_;		///< true if value is consistent with definition
+	mutable bool valid_;		///< true if value is consistent with definition
 	bool counted_;		
-	bool eval_started;
+	mutable bool eval_started;
 	ARTfunctionoid* func_;
 	// double complexity_; ///< after a calculation the amount of needed CPU ticks divided by the number of iterations is saved to estimate future evaluation cost more accurately
 
-	list<ARTdataContainer*>	clientList_;			///< other dataContainers depending on this one (need invalidation when value changes) 
-	list<ARTdataContainer*>::iterator citer_;			
-	list<ARTdataContainer*>	dependencyList_;		///< other dataContainers this one depends on (variables in expression): need lookup whenever value is evaluated
-	list<ARTdataContainer*>::iterator diter_;		  
+	list<ARTdataContainer*>	clientList_;			///< other dataContainers depending on this one (need invalidation when value changes)
+	list<ARTdataContainer*>::iterator citer_;
+	mutable list<ARTdataContainer*>	dependencyList_;		///< other dataContainers this one depends on (variables in expression): need lookup whenever value is evaluated
+	mutable list<ARTdataContainer*>::iterator diter_;
 
 	void SetCountedFlag(bool b);
 
@@ -129,7 +134,7 @@ protected:
 	ARTsimulator* scope_;	///< scope of variable names
 	string varname_; ///< name of corresponding variable in parser
 	virtual int EvaluationCost();
- 	virtual void Evaluate();
+ 	virtual void Evaluate() const;
 	/**
 	 * Add a new client to this dataContainer. Enter client into clientList if it is not
 	 * already there. If the dependency relation is mutual (as in most cases) consider using 
@@ -139,10 +144,23 @@ protected:
 
 private:
 	//used for parser
-	mup::ARTValue* aval;
-	mup::Variable* avar;
-	bool parserVarDefined;
-	string tempDef;
+	mup::ARTValue* aval_;
+	mup::Variable* avar_;
+	bool parserVarDefined_;
+	string tempDef_;
+
+private:
+
+	array_type* arrayVals_;
+	//EFlags 			m_iFlags_; ///< Additional flags
+	ValueCache	*m_pCache_; ///< Pointer to the ARTValue Cache
+
+	void CheckType(char_type a_cType) const;
+	//void Assign(const ARTValue &a_Val);
+	void Reset();
+
+	//virtual void Release();
+
 public:
 	void DebugDepTree(const string intend, const string linebreak = "\n");
 	string WriteDepTree(const string intend, const string linebreak = "\n");
@@ -194,11 +212,11 @@ public:
 		return val;
 	}
 
-	double GetValueAsDouble();
+	//float_type GetFloat();
 
-	double GetValueAsDoubleFromIndex(std::size_t ind);
+	//double GetValueAsDoubleFromIndex(std::size_t ind);
 
-	void SetInvalid(int st, int end);
+	//void SetInvalid(int st, int end);
 
 	int GetValueAsInt(); 
 
@@ -280,6 +298,44 @@ public:
 
 	list<ARTdataContainer*>	GetClientList(){return clientList_;}
 	bool CheckValidity() ;
+
+	// former ARTValue
+
+	/** Array constructor */
+	//ARTValue(int_type m, float_type v, T_ART_Type type = C_ART_ndbl);
+
+	/** Matrix constructor */
+	//ARTValue(int_type m, int_type n, float_type v);
+	//ARTdataContainer& operator=(const ARTdataContainer &a_Val);
+
+	void deleteVar();
+
+	virtual IValue& operator[](std::size_t idx);
+
+	virtual IValue& operator=(int_type a_iVal);
+	virtual IValue& operator=(float_type a_fVal);
+	virtual IValue& operator=(string_type a_sVal);
+	virtual IValue& operator=(bool val);
+	virtual IValue& operator=(const array_type &a_vVal);
+	virtual IValue& operator=(const cmplx_type &val);
+	virtual IValue& operator=(const char_type *a_szVal);
+	virtual char_type GetType() const;
+	virtual float_type GetFloat() const;
+	virtual float_type GetImag() const;
+	virtual bool GetBool() const;
+	virtual const cmplx_type& GetComplex() const;
+	virtual const string_type& GetString() const;
+	virtual const array_type& GetArray() const;
+	virtual bool IsVolatile() const;
+	virtual IToken* Clone() const;
+	virtual Value* AsValue();
+	virtual IValue* AsIValue();
+
+	//virtual ARTdataContainer* GetContainer() const;
+
+//	virtual string_type AsciiDump() const;
+//	void BindToCache(ValueCache *pCache);
+
 };
 
 /** 

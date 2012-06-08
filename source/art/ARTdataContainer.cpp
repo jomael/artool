@@ -7,47 +7,99 @@
 #include "ARTdataContainer.h"
 #include "ARTlink.h"
 
+//#define _DBG_MSG(a) {cout << __FILE__ << "::" <<__func__ << "("<< a << ")" << endl;}
+#define _DBG_MSG(a)
 
 namespace std
 {
 	#include <time.h>
 }
 
-ARTdataContainer::ARTdataContainer() : ARTvariant(),
-		valid_(false), counted_(false), eval_started(false), func_(NULL), clientList_(list<ARTdataContainer*>()), citer_(clientList_.begin()),
-		dependencyList_(list<ARTdataContainer*>()), diter_(dependencyList_.begin()), definition_(""),
-		parser_(NULL), varname_(""), parserVarDefined(false)//, complexity_(1)
+ARTdataContainer::ARTdataContainer() :
+		ARTvariant(),
+		IValue(cmVAL),
+		valid_(false),
+		counted_(false),
+		eval_started(false),
+		func_(NULL),
+		clientList_(list<ARTdataContainer*>()),
+		citer_(clientList_.begin()),
+		dependencyList_(list<ARTdataContainer*>()),
+		diter_(dependencyList_.begin()),
+		definition_(""),
+		parser_(NULL),
+		scope_(NULL),
+		varname_(""),
+		avar_(NULL),
+		parserVarDefined_(false),
+		tempDef_(""),
+		arrayVals_(NULL),
+		m_pCache_(NULL)
 {
+	_DBG_MSG("");
 }
 
-ARTdataContainer::ARTdataContainer(const T_ART_Type dtyp, const int dlen, const string varname) : ARTvariant(dtyp, dlen),
-		valid_(false), counted_(false), eval_started(false), func_(NULL), clientList_(list<ARTdataContainer*>()), citer_(clientList_.begin()),
-		dependencyList_(list<ARTdataContainer*>()), diter_(dependencyList_.begin()), definition_(""),
-		parser_(NULL), varname_(varname), parserVarDefined(false)//, complexity_(1)
+ARTdataContainer::ARTdataContainer(const T_ART_Type dtyp, const int dlen, const string varname) :
+		ARTvariant(dtyp, dlen),
+		IValue(cmVAL),
+		valid_(false),
+		counted_(false),
+		eval_started(false),
+		func_(NULL),
+		clientList_(list<ARTdataContainer*>()),
+		citer_(clientList_.begin()),
+		dependencyList_(list<ARTdataContainer*>()),
+		diter_(dependencyList_.begin()),
+		definition_(""),
+		parser_(NULL),
+		scope_(NULL),
+		varname_(varname),
+		avar_(NULL),
+		parserVarDefined_(false),
+		tempDef_(""),
+		arrayVals_(NULL),
+		m_pCache_(NULL)
 {
-//	cout << "ARTdataContainer(typ,len)\n";
-	// in case of art data container array
-	if (dtyp == C_ART_na)
+	_DBG_MSG("const T_ART_Type, const int, const string");
+	// we have to handle array of data containers
+	if (typ == C_ART_na)
 	{
-		val->na = new ARTdataContainer[dlen];
-		cout << "new array initialized" << endl;
-		ARTdataContainer* arrayElements = dynamic_cast<ARTdataContainer*>(val->na);
-		for (int i = 0; i < dlen; ++i)
+		array_type* tmpArray = new array_type(len);
+		ARTdataContainer* tmpARTdataContainer;
+		for (int i = 0; i < len; ++i)
 		{
-			// all variables are of type complex
-			arrayElements[i].typ = C_ART_cpx;
-			// all values are initialized with zero
-			arrayElements[i].SetVal(0.0);
+			// create empty ARTdataContainers of type complex
+			tmpARTdataContainer = new ARTdataContainer();
+			tmpARTdataContainer->SetType(C_ART_cpx);
+			(*tmpArray)[i] = tmpARTdataContainer;
 		}
+		// save pointer to na field of val
+		val->na = (void *) tmpArray;
 	}
 }
 
-ARTdataContainer::ARTdataContainer(std::string name, ARTfunctionoid* func) : ARTvariant(C_ART_undef, -1),
-		valid_(false), counted_(false), eval_started(false), func_(func), clientList_(list<ARTdataContainer*>()), citer_(clientList_.begin()),
-		dependencyList_(list<ARTdataContainer*>()), diter_(dependencyList_.begin()), definition_(""),
-		parser_(NULL), varname_(name),	parserVarDefined(false)//, complexity_(1)
+ARTdataContainer::ARTdataContainer(std::string name, ARTfunctionoid* func) :
+		ARTvariant(),
+		IValue(cmVAL),
+		valid_(false),
+		counted_(false),
+		eval_started(false),
+		func_(func),
+		clientList_(list<ARTdataContainer*>()),
+		citer_(clientList_.begin()),
+		dependencyList_(list<ARTdataContainer*>()),
+		diter_(dependencyList_.begin()),
+		definition_(""),
+		parser_(NULL),
+		scope_(NULL),
+		varname_(name),
+		avar_(NULL),
+		parserVarDefined_(false),
+		tempDef_(""),
+		arrayVals_(NULL),
+		m_pCache_(NULL)
 {
-	//cout << "ARTdataContainer(func)\n";
+	_DBG_MSG("string, ARTfunctionoid*");
 	if (func_)
 	{
 		func_->SetOutput(this);
@@ -55,76 +107,221 @@ ARTdataContainer::ARTdataContainer(std::string name, ARTfunctionoid* func) : ART
 	}
 }
 
-ARTdataContainer::ARTdataContainer(const int i) : ARTvariant(i),
-		valid_(true), counted_(false), eval_started(false), func_(NULL), clientList_(list<ARTdataContainer*>()), citer_(clientList_.begin()),
-		dependencyList_(list<ARTdataContainer*>()), diter_(dependencyList_.begin()), definition_(""),
-		parser_(NULL), varname_(""), parserVarDefined(false)//, complexity_(1)
+ARTdataContainer::ARTdataContainer(const int i) :
+		ARTvariant(i),
+		IValue(cmVAL),
+		valid_(true),
+		counted_(false),
+		eval_started(false),
+		func_(NULL),
+		clientList_(list<ARTdataContainer*>()),
+		citer_(clientList_.begin()),
+		dependencyList_(list<ARTdataContainer*>()),
+		diter_(dependencyList_.begin()),
+		definition_(""),
+		parser_(NULL),
+		scope_(NULL),
+		varname_(""),
+		avar_(NULL),
+		parserVarDefined_(false),
+		tempDef_(""),
+		arrayVals_(NULL),
+		m_pCache_(NULL)
 {
+	_DBG_MSG("int");
 }
 
-ARTdataContainer::ARTdataContainer(const double d) : ARTvariant(d),
-		valid_(true), counted_(false), eval_started(false), func_(NULL), clientList_(list<ARTdataContainer*>()), citer_(clientList_.begin()),
-		dependencyList_(list<ARTdataContainer*>()), diter_(dependencyList_.begin()), definition_(""),
-		parser_(NULL), varname_(""), parserVarDefined(false)//, complexity_(1)
+ARTdataContainer::ARTdataContainer(const double d) :
+		ARTvariant(d),
+		IValue(cmVAL),
+		valid_(true),
+		counted_(false),
+		eval_started(false),
+		func_(NULL),
+		clientList_(list<ARTdataContainer*>()),
+		citer_(clientList_.begin()),
+		dependencyList_(list<ARTdataContainer*>()),
+		diter_(dependencyList_.begin()),
+		definition_(""),
+		parser_(NULL),
+		scope_(NULL),
+		varname_(""),
+		avar_(NULL),
+		parserVarDefined_(false),
+		tempDef_(""),
+		arrayVals_(NULL),
+		m_pCache_(NULL)
 {
+	_DBG_MSG("double");
 }
 
-ARTdataContainer::ARTdataContainer(const float f) : ARTvariant(f),
-		valid_(true), counted_(false), eval_started(false), func_(NULL), clientList_(list<ARTdataContainer*>()), citer_(clientList_.begin()),
-		dependencyList_(list<ARTdataContainer*>()), diter_(dependencyList_.begin()), definition_(""),
-		parser_(NULL), varname_(""), parserVarDefined(false)//, complexity_(1)
+ARTdataContainer::ARTdataContainer(const float f) :
+		ARTvariant(f),
+		IValue(cmVAL),
+		valid_(true),
+		counted_(false),
+		eval_started(false),
+		func_(NULL),
+		clientList_(list<ARTdataContainer*>()),
+		citer_(clientList_.begin()),
+		dependencyList_(list<ARTdataContainer*>()),
+		diter_(dependencyList_.begin()),
+		definition_(""),
+		parser_(NULL),
+		scope_(NULL),
+		varname_(""),
+		avar_(NULL),
+		parserVarDefined_(false),
+		tempDef_(""),
+		arrayVals_(NULL),
+		m_pCache_(NULL)
 {
+	_DBG_MSG("float");
 }
 
-ARTdataContainer::ARTdataContainer(const char* s) : ARTvariant(s),
-		valid_(true), counted_(false), eval_started(false), func_(NULL), clientList_(list<ARTdataContainer*>()), citer_(clientList_.begin()),
-		dependencyList_(list<ARTdataContainer*>()), diter_(dependencyList_.begin()), definition_(""),
-		parser_(NULL), varname_(""), parserVarDefined(false)//, complexity_(1)
+ARTdataContainer::ARTdataContainer(const char* s) :
+		ARTvariant(s),
+		IValue(cmVAL),
+		valid_(true),
+		counted_(false),
+		eval_started(false),
+		func_(NULL),
+		clientList_(list<ARTdataContainer*>()),
+		citer_(clientList_.begin()),
+		dependencyList_(list<ARTdataContainer*>()),
+		diter_(dependencyList_.begin()),
+		definition_(""),
+		parser_(NULL),
+		scope_(NULL),
+		varname_(""),
+		avar_(NULL),
+		parserVarDefined_(false),
+		tempDef_(""),
+		arrayVals_(NULL),
+		m_pCache_(NULL)
 {
+	_DBG_MSG("const char*");
 }
 
-ARTdataContainer::ARTdataContainer(const char* s1, const char* s2) : ARTvariant(s1, s2),
-		valid_(true), counted_(false), eval_started(false), func_(NULL), clientList_(list<ARTdataContainer*>()), citer_(clientList_.begin()),
-		dependencyList_(list<ARTdataContainer*>()), diter_(dependencyList_.begin()), definition_(""),
-		parser_(NULL), varname_(""), parserVarDefined(false)//, complexity_(1)
+ARTdataContainer::ARTdataContainer(const char* s1, const char* s2) :
+		ARTvariant(s1, s2),
+		IValue(cmVAL),
+		valid_(true),
+		counted_(false),
+		eval_started(false),
+		func_(NULL),
+		clientList_(list<ARTdataContainer*>()),
+		citer_(clientList_.begin()),
+		dependencyList_(list<ARTdataContainer*>()),
+		diter_(dependencyList_.begin()),
+		definition_(""),
+		parser_(NULL),
+		scope_(NULL),
+		varname_(""),
+		avar_(NULL),
+		parserVarDefined_(false),
+		tempDef_(""),
+		arrayVals_(NULL),
+		m_pCache_(NULL)
 {
+	_DBG_MSG("const char*, const char*");
 }
 
-ARTdataContainer::ARTdataContainer(const char* s1, const char* s2, const char* s3) : ARTvariant(s1, s2, s3),
-		valid_(true), counted_(false), eval_started(false), func_(NULL), clientList_(list<ARTdataContainer*>()), citer_(clientList_.begin()),
-		dependencyList_(list<ARTdataContainer*>()), diter_(dependencyList_.begin()), definition_(""),
-		parser_(NULL), varname_(""), parserVarDefined(false)//, complexity_(1)
+ARTdataContainer::ARTdataContainer(const char* s1, const char* s2, const char* s3) :
+		ARTvariant(s1, s2, s3),
+		IValue(cmVAL),
+		valid_(true),
+		counted_(false),
+		eval_started(false),
+		func_(NULL),
+		clientList_(list<ARTdataContainer*>()),
+		citer_(clientList_.begin()),
+		dependencyList_(list<ARTdataContainer*>()),
+		diter_(dependencyList_.begin()),
+		definition_(""),
+		parser_(NULL),
+		scope_(NULL),
+		varname_(""),
+		avar_(NULL),
+		parserVarDefined_(false),
+		tempDef_(""),
+		arrayVals_(NULL),
+		m_pCache_(NULL)
 {
+	_DBG_MSG("const char*, const char*, const char*");
 }
 
-ARTdataContainer::ARTdataContainer(const char* s1, const char* s2, const char* s3, const char* s4) : ARTvariant(s1, s2, s3, s4),
-		valid_(true), counted_(false), eval_started(false), func_(NULL), clientList_(list<ARTdataContainer*>()), citer_(clientList_.begin()),
-		dependencyList_(list<ARTdataContainer*>()), diter_(dependencyList_.begin()), definition_(""),
-		parser_(NULL), varname_(""), parserVarDefined(false)//, complexity_(1)
+ARTdataContainer::ARTdataContainer(const char* s1, const char* s2, const char* s3, const char* s4) :
+		ARTvariant(s1, s2, s3, s4),
+		IValue(cmVAL),
+		valid_(true),
+		counted_(false),
+		eval_started(false),
+		func_(NULL),
+		clientList_(list<ARTdataContainer*>()),
+		citer_(clientList_.begin()),
+		dependencyList_(list<ARTdataContainer*>()),
+		diter_(dependencyList_.begin()),
+		definition_(""),
+		parser_(NULL),
+		scope_(NULL),
+		varname_(""),
+		avar_(NULL),
+		parserVarDefined_(false),
+		tempDef_(""),
+		arrayVals_(NULL),
+		m_pCache_(NULL)
 {
+	_DBG_MSG("const char*, const char*, const char*, const char*");
 }
 
 	///copy constructor
-ARTdataContainer::ARTdataContainer(const ARTdataContainer& orig) : ARTvariant(orig)
+ARTdataContainer::ARTdataContainer(const ARTdataContainer& orig) :
+	ARTvariant(orig),
+	IValue(cmVAL),
+	valid_(orig.valid_),
+	counted_(orig.counted_),
+	eval_started(false),
+	func_(orig.func_),
+	clientList_(orig.clientList_),
+	citer_(orig.citer_),
+	dependencyList_(orig.dependencyList_),
+	diter_(orig.diter_),
+	definition_(orig.definition_),
+	parser_(orig.parser_),
+	scope_(orig.scope_),
+	varname_(orig.varname_),
+	avar_(NULL),
+	parserVarDefined_(false),
+	tempDef_(orig.tempDef_),
+	arrayVals_(NULL), // TODO copy values!
+	m_pCache_(NULL)
 {
-	//copy client and dep lists, but keep pointers to same objects, after all, they are the same
-	clientList_	= orig.clientList_;
-	dependencyList_ = orig.dependencyList_;
-	citer_ = orig.citer_;
-	diter_ = orig.diter_;
-	valid_ = orig.valid_;
-	counted_ = orig.counted_;
-	eval_started = false;
-	definition_ = orig.definition_;
-	scope_ = orig.scope_; //same object
-	parser_ = orig.parser_; //same object
-	func_ = orig.func_;
-	parserVarDefined = false;
-	//complexity_ = orig.complexity_;
+	_DBG_MSG("const ARTdataContainer&");
+	// we have to handle array of data containers
+	if (typ == C_ART_na)
+	{
+		array_type* tmpArray = new array_type(len);
+		array_type* oldArray = (array_type*) (orig.val->na);
+
+		ARTdataContainer* tmpARTdataContainer;
+		ARTdataContainer* oldARTdataContainer;
+		for (int i = 0; i < len; ++i)
+		{
+			oldARTdataContainer = dynamic_cast<ARTdataContainer*>((*oldArray)[i]);
+			// create empty ARTdataContainers of type complex
+			tmpARTdataContainer = new ARTdataContainer(*oldARTdataContainer);
+			tmpARTdataContainer->SetType(C_ART_cpx);
+			(*tmpArray)[i] = tmpARTdataContainer;
+		}
+		// save pointer to na field of val
+		val->na = (void *) tmpArray;
+	}
 }
 
 ARTdataContainer::~ARTdataContainer()
 {
+	_DBG_MSG("");
 	//"Clients, you can't depend on this object anymore, because it will cease to exist!"
 	for (citer_=clientList_.begin();citer_!=clientList_.end(); citer_++)
 	{
@@ -135,26 +332,41 @@ ARTdataContainer::~ARTdataContainer()
 		(*citer_)->Invalidate();
 		//Otherwise there's a problem anyway...
 	}
-	//"Dependencies, do not notify this object anymore!"
+
+	// "Dependencies, do not notify this object anymore!"
 	RemoveAllDependencies();
 
+	// Release memory of all array elements in case we have
+	// a container of type C_ART_na
+	if (typ == C_ART_na)
+	{
+		array_type* tmpArray = (array_type *) (val->na);
+		ARTdataContainer* tmpARTdataContainer;
+		for (int i = 0; i < tmpArray->size(); ++i)
+		{
+			tmpARTdataContainer = dynamic_cast<ARTdataContainer*>((*tmpArray)[i]);
+			delete tmpARTdataContainer;
+		}
+	}
+
 	//if there was a var in the parser, delete it!
-	if (parserVarDefined)
+	if (parserVarDefined_)
 	{
 		DestroyParserVar();
 	}
 
 	// in case of an array, remove all child elements
-	if (typ == C_ART_na)
+	/*if (typ == C_ART_na)
 	{
 		delete[] dynamic_cast<ARTdataContainer*>(val->na);
-	}
+	}*/
 
 	delete func_;
 }
 
 int ARTdataContainer::GetIterationNumber()
 {
+	_DBG_MSG("");
 	if (func_) return func_->GetIterationNumber();
 	else return 1;
 }
@@ -168,6 +380,7 @@ int ARTdataContainer::GetIterationNumber()
  */
 void ARTdataContainer::SetCountedFlag(bool b)
 {
+	_DBG_MSG("bool");
 	//to avoid circular references, check if we are already considering this dataContainer
 	if (eval_started) throw ARTerror("ARTdataContainer::SetCountedFlag", "Circular reference to dataContainer '%s1'.",varname_); 
 
@@ -193,6 +406,7 @@ void ARTdataContainer::SetCountedFlag(bool b)
  */
 void ARTdataContainer::ResetEvaluation()
 {
+	_DBG_MSG("");
 	//reset the flag of this data container...
 	eval_started = false;
 	//go through dependencies and set the flag there everywhere
@@ -205,6 +419,7 @@ void ARTdataContainer::ResetEvaluation()
  */
 void ARTdataContainer::DebugDepTree(const string intend, const string linebreak)
 {
+	_DBG_MSG("const string, const string");
 	//to avoid circular references, check if we are already considering this dataContainer
 	if (eval_started) 
 	{
@@ -225,6 +440,7 @@ void ARTdataContainer::DebugDepTree(const string intend, const string linebreak)
 
 string ARTdataContainer::WriteDepTree(const string intend, const string linebreak)
 {
+	_DBG_MSG("const string, const string");
 	string thisbranch = "";
 	//to avoid circular references, check if we are already considering this dataContainer
 	if (eval_started) 
@@ -248,6 +464,7 @@ string ARTdataContainer::WriteDepTree(const string intend, const string linebrea
 
 void ARTdataContainer::AddPropertiesAsDependency(ARTobject* obj)
 {
+	_DBG_MSG("ARTobject*");
 	//go through all DATAproperties of element and add as dependencies
 	ARTproperty* prop = obj->GetProperties(NULL);
 	while (prop)
@@ -274,6 +491,7 @@ ARTprogressIndicator ARTdataContainer::progressIndicator = ARTprogressIndicator(
 
 void ARTdataContainer::SetDefinition(const string& s, ARTsimulator* scope)
 {
+	_DBG_MSG("const string&, ARTsimulator");
 	scope_ = scope;					
 	parser_ = scope_->GetParser();
  	if (parser_ == NULL) throw ARTerror("ARTdataContainer::SetDefinition", "The simulator's parser is NULL");
@@ -314,6 +532,7 @@ void ARTdataContainer::SetDefinition(const string& s, ARTsimulator* scope)
 
 void ARTdataContainer::SetDefinition(const string& s)
 {
+	_DBG_MSG("const string&");
 	if (parser_ == NULL) throw ARTerror("ARTdataContainer::SetDefinition", "The current parser is set to NULL");
 	//if there is a definition, only redefine if the new definition differs
 	if (definition_ != s)
@@ -323,40 +542,17 @@ void ARTdataContainer::SetDefinition(const string& s)
 		// change in definition needs to be communicated: notify clients
 		Invalidate();
 		definition_ = s;
-		// in case we have an array, set definition to all children elements
+		// in case we have an array, set definition to all child elements
 		if (typ == C_ART_na)
 		{
-			ARTdataContainer* arrayElements = dynamic_cast<ARTdataContainer*>(val->na);
+			array_type* tmpArray = (array_type *) (val->na);
+			ARTdataContainer* tmp;
 			for (int i = 0; i < len; ++i)
 			{
-				arrayElements[i].SetDefinition(s);
+				tmp = dynamic_cast<ARTdataContainer*>((*tmpArray)[i]);
+				tmp->definition_ = s;
 			}
 		}
-
-		/*ARTdataProp* dp;
-		try
-		{
-			parser_->SetExpr(definition_);
-			//for all variables in the expression
-			mup::var_maptype map = parser_->GetExprVar();
-			mup::var_maptype::const_iterator v;
-			for(v = map.begin(); v != map.end(); ++v)
-			{
-				if (this->varname_ != v->first)
-				{
-					//TODO: Warning instead of error if a variable is not found. The same should be implemented in function below (rewrite testcase to check warnings instead of error)
-					dp = scope_->FindDataPropInSimulator(v->first);
-					//make sure this dataContainer is notified when one of the variables changes
-					//and remember this dataContainer depends on the variable v, ie. dataproperty dp
-					AddDependency(dp);
-				}
-			}
-		}
-		catch( mup::ParserError e )
-		{
-			throw ARTerror("ARTdataContainer::SetDefinition", "Error in Parser: '%s1'", e.GetMsg().c_str());;
-		}
-		*/
 
 	}
 }
@@ -364,21 +560,22 @@ void ARTdataContainer::SetDefinition(const string& s)
 // return definition string
 const string& ARTdataContainer::GetDefinition()
 {
+	_DBG_MSG("");
 	//return the definition string - if it exists...
 	if (definition_ != "")	return definition_;
 	//otherwise: create a definition string and return it.
-	tempDef = varname_ + " = "; //this is not a local variable, so that the string created will continue to exist after this method was called (as return value)
+	tempDef_ = varname_ + " = "; //this is not a local variable, so that the string created will continue to exist after this method was called (as return value)
 	std::stringstream Num;
     switch(typ)
 	{
 		//simple types
-		case C_ART_int: Num << val->i; tempDef += Num.str(); break;
-		case C_ART_flo: Num << val->f; tempDef += Num.str(); break;
-		case C_ART_dbl: Num << val->d; tempDef += Num.str(); break;
+		case C_ART_int: Num << val->i; tempDef_ += Num.str(); break;
+		case C_ART_flo: Num << val->f; tempDef_ += Num.str(); break;
+		case C_ART_dbl: Num << val->d; tempDef_ += Num.str(); break;
 		
 		//string
 		case C_ART_str: 
-			tempDef += string(val->s);
+			tempDef_ += string(val->s);
 			break;
 		
 		//array or pointer types, convert value only when length of array is 1
@@ -386,36 +583,37 @@ const string& ARTdataContainer::GetDefinition()
 			if (len > 1) throw ARTerror("ARTdataContainer::GetValueAsDouble", "Invalid type conversion: nint with len>1 to double.");
 			if (len < 0) throw ARTerror("ARTdataContainer::GetValueAsDouble", "The data structure is an array type but was not initialized.");
 			Num << *(val->ni);
-			tempDef += Num.str();
+			tempDef_ += Num.str();
 			break;
 
 		case C_ART_nflo: 
 			if (len > 1) throw ARTerror("ARTdataContainer::GetValueAsDouble", "Invalid type conversion: nflo with len>1 to double.");
 			if (len < 0) throw ARTerror("ARTdataContainer::GetValueAsDouble", "The data structure is an array type but was not initialized.");
 			Num << *(val->nf);
-			tempDef += Num.str();
+			tempDef_ += Num.str();
 			break;
 
 		case C_ART_ndbl: 
 			if (len > 1) throw ARTerror("ARTdataContainer::GetValueAsDouble", "Invalid type conversion: ndbl with len>1 to double.");
 			if (len < 0) throw ARTerror("ARTdataContainer::GetValueAsDouble", "The data structure is an array type but was not initialized.");
 			Num << *(val->nd);
-			tempDef += Num.str();
+			tempDef_ += Num.str();
 			break;
 
 		case C_ART_nstr: 
 			if (len > 1) throw ARTerror("ARTdataContainer::GetValueAsDouble", "Invalid type conversion: ndbl with len>1 to double.");
 			if (len < 0) throw ARTerror("ARTdataContainer::GetValueAsDouble", "The data structure is an array type but was not initialized.");
-			tempDef += string(*(val->ns));
+			tempDef_ += string(*(val->ns));
 			break;
 
 		default: throw ARTerror("ARTdataContainer::GetValueAsDouble", "Invalid type conversion to double: type is non-numeric, complex or triple.");
 	}//end switch
-	return tempDef;
+	return tempDef_;
 }
 
 void ARTdataContainer::RedoDefinitionDependencies()
 {
+	_DBG_MSG("");
 	//only do something if there is a definition
 	if (definition_ != "")
 	{
@@ -459,6 +657,7 @@ void ARTdataContainer::RedoDefinitionDependencies()
 
 void ARTdataContainer::RemoveFromDefinition(ARTdataContainer *dependency)
 {
+	_DBG_MSG("");
 /*	string s = "[Invalid reference to " + dependency->varname_ + "]";
 //	definition_.find("dependency->varname_");
 	alle vorkommen ausbessern!
@@ -477,6 +676,7 @@ void ARTdataContainer::RemoveFromDefinition(ARTdataContainer *dependency)
 // expression evaluation cost
 int ARTdataContainer::EvaluationCost() 
 {
+	_DBG_MSG("");
 	//std::cout << "EvaluationCost() for " << varname_ << "\n";
 	//to avoid circular references, check if we are already counting calculations for this dataContainer
 	if (eval_started) throw ARTerror("ARTdataContainer::EvaluationCost", "Circular reference to dataContainer '%s1'.",varname_); 
@@ -512,8 +712,9 @@ int ARTdataContainer::EvaluationCost()
 }
 
 // expression evaluation
-void ARTdataContainer::Evaluate() 
+void ARTdataContainer::Evaluate() const
 {
+	_DBG_MSG("");
 	//std::cout << "ARTdataContainer::Evaluate() " << val << " // " << varname_ << "////////////////////\n";
 	//to avoid circular references, check if we are already calcualting this dataContainer
 	if (eval_started) throw ARTerror("ARTdataContainer::Evaluate", "Circular reference to dataContainer '%s1'.",varname_); 
@@ -548,7 +749,7 @@ void ARTdataContainer::Evaluate()
 				parser_->SetExpr(definition_);
 			}
 			//evaluate value of this data container and save result
-			cout << "Evaluate the following expression: " << parser_->GetExpr() << endl;
+			//cout << "Evaluate the following expression: " << parser_->GetExpr() << endl;
 			parser_->Eval();
 		}
 		catch( mup::ParserError e )
@@ -573,6 +774,7 @@ void ARTdataContainer::Evaluate()
 
 bool ARTdataContainer::CheckValidity() 
 {
+	_DBG_MSG("");
 	//to avoid circular references, check if we are already considering this dataContainer
 	if (eval_started) throw ARTerror("ARTdataContainer::Evaluate", "Circular reference to dataContainer '%s1'.",varname_); 
 	//... and if we are not, remember we do so now.
@@ -602,6 +804,7 @@ bool ARTdataContainer::CheckValidity()
 
 void ARTdataContainer::SetFunction(ARTfunctionoid* func)
 {
+	_DBG_MSG("ARTfunctionoid*");
 	//std::cout << "\n\nSTART (varname: " << varname_ << endl; DebugDepTree(""); std::cout << "END\n\n";
 
 	if (!func) throw ARTerror("ARTdataContainer::SetFunction", "Argument '%s1' is NULL.","func");
@@ -633,11 +836,14 @@ void ARTdataContainer::SetFunction(ARTfunctionoid* func)
 	func_->SetDependencies();
 }
 
-double ARTdataContainer::GetValueAsDouble() 
+float_type ARTdataContainer::GetFloat() const
 {
+	_DBG_MSG("");
 	//cout << __func__ << "(): valid_ = " << valid_ << endl;
 	if (!valid_) Evaluate();
-	double d;
+	float_type d;
+	array_type* tmpArray = (array_type *) (val->na);
+	ARTdataContainer* tmp;
     switch(typ)
 	{
 		//simple types: copy orig.value
@@ -668,15 +874,15 @@ double ARTdataContainer::GetValueAsDouble()
 
 
 		case C_ART_na:
-			ARTdataContainer* tmp;
 			if (len > 1) {
 				throw ARTerror("ARTdataContainer::GetValueAsDouble", "Invalid type conversion: ndbl with len>1 to double.");
 			}
 			else
 			{
-				tmp = dynamic_cast<ARTdataContainer*>(val->na);
-				d = tmp->GetValueAsDouble();
+				tmp = dynamic_cast<ARTdataContainer*>((*tmpArray)[0]);
+				d = tmp->GetFloat();
 			}
+
 			break;
 
 		default: throw ARTerror("ARTdataContainer::GetValueAsDouble", "Invalid type conversion to double: type is non-numeric, complex or triple.");
@@ -684,47 +890,52 @@ double ARTdataContainer::GetValueAsDouble()
 	return d;
 }
 
-double ARTdataContainer::GetValueAsDoubleFromIndex(std::size_t ind)
-{
-	double retVal = 0;
-	if (typ == C_ART_na)
-	{
-		/*ARTdataContainer* arrayElements = dynamic_cast<ARTdataContainer*>(val->na);
-		if ((int) ind < len)
-		{
-			if (!arrayElements[ind].valid_)
-			{
-				cout << "Evaluate array element " << ind << endl;
-				arrayElements[ind].Evaluate();
-			}
-			retVal = arrayElements[ind].val->d;
-		}
-		else
-		{
-			throw ARTerror("ARTdataContainer::GetValueAsDoubleFromIndex", "Index out of bounds.");
-		}*/
-		retVal = (*aval)[ind].GetFloat();
-	}
-	return retVal;
+//double ARTdataContainer::GetValueAsDoubleFromIndex(std::size_t ind)
+//{
+//	double retVal = 0;
+//	if (typ == C_ART_na)
+//	{
+//		/*ARTdataContainer* arrayElements = dynamic_cast<ARTdataContainer*>(val->na);
+//		if ((int) ind < len)
+//		{
+//			if (!arrayElements[ind].valid_)
+//			{
+//				cout << "Evaluate array element " << ind << endl;
+//				arrayElements[ind].Evaluate();
+//			}
+//			retVal = arrayElements[ind].val->d;
+//		}
+//		else
+//		{
+//			throw ARTerror("ARTdataContainer::GetValueAsDoubleFromIndex", "Index out of bounds.");
+//		}*/
+//		retVal = (*aval)[ind].GetFloat();
+//	}
+//	return retVal;
+//
+//}
 
-}
-
-void ARTdataContainer::SetInvalid(int st, int end)
-{
-	if (typ == C_ART_na)
-	{
-		ARTdataContainer* arrayElements = dynamic_cast<ARTdataContainer*>(val->na);
-		for (int i = st; i <= end; ++i)
-		{
-			arrayElements[i].valid_ = false;
-		}
-	}
-}
+//void ARTdataContainer::SetInvalid(int st, int end)
+//{
+//	if (typ == C_ART_na)
+//	{
+//		//ARTdataContainer* arrayElements = dynamic_cast<ARTdataContainer*>(val->na);
+//		for (int i = st; i <= end; ++i)
+//		{
+//			//arrayElements[i].valid_ = false;
+//			ARTdataContainer* tmp = dynamic_cast<mup::ARTValue&>((*aval)[i]).GetContainer();
+//			tmp->valid_ = false;
+//		}
+//	}
+//}
 
 int ARTdataContainer::GetValueAsInt() 
 {
+	_DBG_MSG("");
 	if (!valid_) Evaluate(); 
 	int i;
+	array_type* tmpArray = (array_type *) (val->na);
+	ARTdataContainer* tmp;
     switch(typ)
 	{
 		//simple types: copy orig.value
@@ -754,15 +965,15 @@ int ARTdataContainer::GetValueAsInt()
 			break;
 
 		case C_ART_na:
-			ARTdataContainer* tmp;
 			if (len > 1)
 			{
 				throw ARTerror("ARTdataContainer::GetValueAsInt", "Invalid type conversion: na with len>1 to int.");
 			}
 			else
 			{
-				tmp = dynamic_cast<ARTdataContainer*>(val->na);
-				i = tmp->GetValueAsInt();
+				tmp = dynamic_cast<ARTdataContainer*>((*tmpArray)[0]);
+				//i = tmp->GetValueAsInt();
+				i = tmp->GetFloat();
 			}
 
 		default: throw ARTerror("ARTdataContainer::GetValueAsInt", "Invalid type conversion to int: type is non-numeric, complex or triple.");
@@ -773,6 +984,7 @@ int ARTdataContainer::GetValueAsInt()
 // direct change of data value (ignore definition string); set value pointer
 void ARTdataContainer::SetValue(ARTvariant* var) 
 {	
+	_DBG_MSG("ARTvariant*");
 	if (var)
 	{
 		if ( !IsEqual(var) ) Invalidate();	// change in value needs to be communicated
@@ -793,64 +1005,99 @@ void ARTdataContainer::SetValue(ARTvariant* var)
 
 void ARTdataContainer::SetVal(const int i, const int ind)
 {
+	_DBG_MSG("const int, const int");
 	// in case we have an array, we have to handle that separately
 	if (typ == C_ART_na)
 	{
-		/*if (len <= ind) throw ARTerror("ARTvariant::SetVal", "Index is out of bounds.");
-			else
-			{
-				ARTdataContainer* arrayElements = dynamic_cast<ARTdataContainer*>(val->na);
-				if (arrayElements != NULL)
-				{
-					arrayElements[ind].SetVal(i);
-				}
-				else
-				{
-					throw ARTerror("ARTvariant::SetVal", "Array of ARTvariant objects has not been initialized!");
-				}
-			}
-		*/
-		(*aval)[ind] = i;
+		array_type* tmpArray = (array_type *) (val->na);
+		ARTdataContainer* tmp = dynamic_cast<ARTdataContainer*>((*tmpArray)[ind]);
+		tmp->SetVal(i);
 	}
 	else
 	{
 		ARTvariant::SetVal(i, ind);
+		valid_ = true;
 	}
 	NotifyClients();
-	valid_ = true;
+
 }
 
 void ARTdataContainer::SetVal(const double d, const int ind)
 {
-	ARTvariant::SetVal(d, ind);
+	_DBG_MSG("const double, const int");
+	if (typ == C_ART_na)
+	{
+		array_type* tmpArray = (array_type *) (val->na);
+		ARTdataContainer* tmp = dynamic_cast<ARTdataContainer*>((*tmpArray)[ind]);
+		tmp->SetVal(d);
+	}
+	else
+	{
+		ARTvariant::SetVal(d, ind);
+		valid_ = true;
+	}
 	NotifyClients();
-	valid_ = true;
+
 }
 
 void ARTdataContainer::SetVal(const float f, const int ind)
 {
-	ARTvariant::SetVal(f, ind);
+	_DBG_MSG("const float, const int");
+	if (typ == C_ART_na)
+	{
+		array_type* tmpArray = (array_type *) (val->na);
+		ARTdataContainer* tmp = dynamic_cast<ARTdataContainer*>((*tmpArray)[ind]);
+		tmp->SetVal(f);
+	}
+	else
+	{
+		ARTvariant::SetVal(f, ind);
+		valid_ = true;
+	}
 	NotifyClients();
-	valid_ = true;
+
 }
 
 void ARTdataContainer::SetVal(std::complex<double> c, const int ind)
 {
-	cout << "setVal(cmplx<" << c.real() << "," << c.imag() << ">, " << ind << ")" << endl;
-	ARTvariant::SetVal(c, ind);
+	_DBG_MSG("std::complex, int");
+	//cout << "setVal(cmplx<" << c.real() << "," << c.imag() << ">, " << ind << ")" << endl;
+	if (typ == C_ART_na)
+	{
+		array_type* tmpArray = (array_type *) (val->na);
+		ARTdataContainer* tmp = dynamic_cast<ARTdataContainer*>((*tmpArray)[ind]);
+		tmp->SetVal(c);
+	}
+	else
+	{
+		ARTvariant::SetVal(c, ind);
+		valid_ = true;
+	}
 	NotifyClients();
-	valid_ = true;
+
 }
 
 void ARTdataContainer::SetVal(const double re, const double im, const int ind)
 {
-	ARTvariant::SetVal(re, im, ind);
+	_DBG_MSG("const double, const double, const int");
+	if (typ == C_ART_na)
+	{
+		array_type* tmpArray = (array_type *) (val->na);
+		ARTdataContainer* tmp = dynamic_cast<ARTdataContainer*>((*tmpArray)[ind]);
+		tmp->SetVal(re, im);
+	}
+	else
+	{
+		ARTvariant::SetVal(re, im, ind);
+		valid_ = true;
+	}
 	NotifyClients();
-	valid_ = true;
+
 }
 
 void ARTdataContainer::SetVal(const char* s)
 {
+	_DBG_MSG("const char*");
 	ARTvariant::SetVal(s);
 	NotifyClients();
 	valid_ = true;
@@ -858,6 +1105,7 @@ void ARTdataContainer::SetVal(const char* s)
 
 void ARTdataContainer::SetVal(const char* s, int ind)
 {
+	_DBG_MSG("const char* s, int");
 	ARTvariant::SetVal(s, ind);
 	NotifyClients();
 	valid_ = true;
@@ -866,6 +1114,7 @@ void ARTdataContainer::SetVal(const char* s, int ind)
 // mark value as invalid and invalidate all dependent data containers
 void ARTdataContainer::Invalidate()
 {
+	_DBG_MSG("");
 //	if (eval_started) throw ARTerror("ARTdataContainer::Invalidate", "Circular reference to dataContainer '%s1'.",varname_); 
 //	eval_started = true;
 	//std::cout << varname_ << " invalidated.\n";										
@@ -877,11 +1126,13 @@ void ARTdataContainer::Invalidate()
 // invalidate clients
 void ARTdataContainer::NotifyClients() 
 {
+	_DBG_MSG("");
 	for (citer_=clientList_.begin();citer_!=clientList_.end(); citer_++) {(*citer_)->Invalidate();};
 }	
 
 int ARTdataContainer::GetEvaluationCost() 
 {
+	_DBG_MSG("");
 	//Display debug information
 	//DebugDepTree("|-");
 	//first set the counted_ flag in all dependencies to false
@@ -894,6 +1145,7 @@ int ARTdataContainer::GetEvaluationCost()
 // enter calling object into clientList if it is not already there
 void ARTdataContainer::AddNotify(ARTdataContainer* client) 
 {		
+	_DBG_MSG("ARTdataContainer*");
 	for (citer_=clientList_.begin();citer_!=clientList_.end(); citer_++) {if ((*citer_) == client) break;}
 	if (citer_ == clientList_.end()) clientList_.push_back(client);
 }	 
@@ -901,6 +1153,7 @@ void ARTdataContainer::AddNotify(ARTdataContainer* client)
 //observe AND be notified
 void ARTdataContainer::AddDependency(ARTdataContainer* dependency) 
 {		
+	_DBG_MSG("ARTdataContainer*");
 	for (diter_=dependencyList_.begin();diter_!=dependencyList_.end(); diter_++) 
 	{
 		if ((*diter_) == dependency) break;
@@ -912,6 +1165,7 @@ void ARTdataContainer::AddDependency(ARTdataContainer* dependency)
 
 void ARTdataContainer::RemoveAllDependencies()
 {
+	_DBG_MSG("");
 	//std::cout << "DC " << this->varname_ << " (" << this << ") remove all dependencies:\n";
 	//alte abhï¿½ngigkeiten austragen:
 	//allen elementen in dependency list bescheid sagen, dass sie ï¿½nderung nicht mehr melden mï¿½ssen
@@ -932,6 +1186,7 @@ void ARTdataContainer::RemoveAllDependencies()
 // remove calling object from clientList if it is there
 void ARTdataContainer::DoNotNotify(ARTdataContainer* client) 
 {		
+	_DBG_MSG("ARTdataContainer*");
 	/*for (citer_=clientList_.begin();citer_!=clientList_.end(); citer_++) {
 		if ((*citer_) == client) {clientList_.erase(citer_); break;}
 	}*/
@@ -941,6 +1196,7 @@ void ARTdataContainer::DoNotNotify(ARTdataContainer* client)
 
 void ARTdataContainer::RemoveDependency(ARTdataContainer* dependency) 
 {		
+	_DBG_MSG("ARTdataContainer*");
 /*	for (diter_=dependencyList_.begin();diter_!=dependencyList_.end(); diter_++) 
 	{
 		if ((*diter_) == dependency) {dependencyList_.erase(diter_); break;}
@@ -951,6 +1207,7 @@ void ARTdataContainer::RemoveDependency(ARTdataContainer* dependency)
 
 void ARTdataContainer::Rename(const string& newname)
 {
+	_DBG_MSG("const string&");
 	//if there is a definition, change the name in the definition (replace old name with new name)
 	if (definition_ != "")
 	{
@@ -958,7 +1215,7 @@ void ARTdataContainer::Rename(const string& newname)
 		if (pos != std::string::npos) definition_.replace(pos, varname_.length(), newname);
 	}
 	//if there was a parser variable rename it by recreating it
-	if (parserVarDefined)
+	if (parserVarDefined_)
 	{
 		DestroyParserVar();	
 		SetParserVar(newname);
@@ -968,44 +1225,53 @@ void ARTdataContainer::Rename(const string& newname)
 }
 
 void ARTdataContainer::SetParser(mup::ParserX *p){
+	_DBG_MSG("ParserX*");
 	parser_ = p;
-	// in case we have children, set the same parser
-	if (typ == C_ART_na)
-	{
-		ARTdataContainer* arrayElements = dynamic_cast<ARTdataContainer*>(val->na);
-		for (int i = 0; i < len; ++i)
-		{
-			arrayElements[i].parser_ = p;
-		}
-	}
 	// if we have a valid name, register it in parser
 	if (varname_ != "")
 	{
-		cout << "Set parser var: " << endl;
+		//cout << "Set parser var: " << varname_ << endl;
 		SetParserVar(varname_);
+		//cout << "Done." << endl;
 	}
+	// in case we have children, set the same parser for them
+	if (typ == C_ART_na)
+	{
+		array_type* tmpArray = (array_type *) (val->na);
+		ARTdataContainer* tmp;
+		for (int i = 0; i < len; ++i)
+		{
+			tmp = dynamic_cast<ARTdataContainer*>((*tmpArray)[i]);
+			cout << "Set parser of element [" << i << "]" << endl;
+			tmp->parser_ = p;
+			cout << "Done" << endl;
+		}
+	}
+
 }
 
 
 void ARTdataContainer::SetParserVar(const string& varname)
 {
+	_DBG_MSG("const string&");
 	if (!parser_) throw ARTerror("ARTdataContainer::CreateParserVar","A parser variable for datacontainer '%s1' can not be created, because the datacontainer's parser pointer is NULL. Please use SetParser() to specify which parser the data container should use.",varname_);
 	// if we have already a variable created, destroy it
-	if (parserVarDefined)
+	if (parserVarDefined_)
 	{
 		DestroyParserVar();
 	}
 	try 
 	{
+		// cout << "Create new parser variable..." << endl;
 		//connect dataproperty to custom value type (ARTValue is only used by parser).
 		//although we don't need to access the ARTValue again, we have to create it using
 		//new, otherwise it will be destroyed and not usable in the parser after leaving this scope
-		aval = new mup::ARTValue( this );
+		//aval = new mup::ARTValue( this );
 		//create variable out of value
-		avar = new mup::Variable( aval );
+		avar_ = new mup::Variable( this );
 		//and define the variable with the name created above
-		parser_->DefineVar(varname, *avar);
-		parserVarDefined = true;
+		parser_->DefineVar(varname, *avar_);
+		parserVarDefined_ = true;
 		//remember variable name
 		varname_ = varname;
 
@@ -1028,16 +1294,17 @@ void ARTdataContainer::SetParserVar(const string& varname)
 
 void ARTdataContainer::DestroyParserVar()
 {
+	_DBG_MSG("");
 	if (!parser_) throw ARTerror("ARTdataContainer::DestroyParserVar","A parser variable for datacontainer '%s1' was created, but the datacontainers parser pointer is NULL. Please use SetParser() to specify which parser the data container should use.",varname_);
 	try 
 	{
 		//delete value
 		parser_->RemoveVar(varname_);
 		//delete associated storage fields
-		delete aval;
-		delete avar;
+		//delete aval;
+		delete avar_;
 		// we currently have no parser variable defined
-		parserVarDefined = false;
+		parserVarDefined_ = false;
 	}
 	catch(mup::ParserError e)
 	{
@@ -1047,6 +1314,7 @@ void ARTdataContainer::DestroyParserVar()
 
 string ARTdataContainer::DebugInfo()
 {
+	_DBG_MSG("");
 	ARTdataContainer* cd;
 	ARTdataContainer* dc;
 	string t = varname_ + "\n[meldet Aenderungen bei:";
@@ -1074,6 +1342,424 @@ string ARTdataContainer::DebugInfo()
 	t = t + "]\n";
 	return t;
 }
+
+// former ARTValue
+//ARTValue& ARTdataContainer::operator=(const ARTdataContainer &a_Val)
+//	{
+//		_DBG_MSG("const ARTValue&");
+//		//Assign(a_Val);
+//		// TODO
+//		return *this;
+//	}
+
+	//---------------------------------------------------------------------------
+	IValue& ARTdataContainer::operator[](std::size_t i)
+	{
+		_DBG_MSG("std::size_t");
+		array_type* tmpArray = (array_type *) (val->na);
+		ARTdataContainer* tmp;
+		switch (typ)
+		{
+			case C_ART_na:
+				tmp = dynamic_cast<ARTdataContainer*>((*tmpArray)[i]);
+				return *tmp;
+				break;
+			default:
+				throw ParserError();
+				break;
+		}
+		return *this;
+	}
+
+	//---------------------------------------------------------------------------
+	IToken* ARTdataContainer::Clone() const
+	{
+		_DBG_MSG("");
+		return new ARTdataContainer(*this);
+	}
+
+	//---------------------------------------------------------------------------
+	Value* ARTdataContainer::AsValue()
+	{
+		_DBG_MSG("");
+		return new Value(*this);
+	}
+
+	//---------------------------------------------------------------------------
+	IValue* ARTdataContainer::AsIValue()
+	{
+		_DBG_MSG("");
+		return this;
+	}
+
+	//---------------------------------------------------------------------------
+//	void ARTdataContainer::Assign(const ARTValue &ref)
+//	{
+//		_DBG_MSG("const ARTValue&");
+//		if (this==&ref)
+//			return;
+//
+//		// delete variable first
+//		deleteVar();
+//
+//		//copy value
+//		var = new ARTdataContainer(*ref.var);
+//		own = true;
+//
+//		m_iFlags = ref.m_iFlags;
+//
+//		// in case the other variable is a container
+//		if (var->typ == C_ART_na)
+//		{
+//			// create a new array and copy contents
+//			arrayVals = new array_type(*(ref.arrayVals));
+//			for (int i = 0; i < arrayVals->size(); ++i)
+//			{
+//				ARTValue* tmp = dynamic_cast<ARTValue*>((*(ref.arrayVals))[i]);
+//				(*arrayVals)[i] = new ARTValue(*tmp);
+//			}
+//		}
+//
+//		// Do not copy the ARTValue cache pointer!
+//		// ARTValue cache should be assigned explicitely and
+//		// not implicitely (i.e. when retrieving the final result.)
+//		//m_pCache = ref.m_pCache;
+//	}
+
+	//---------------------------------------------------------------------------
+	IValue& ARTdataContainer::operator=(bool val) //should I even care about booleans?
+	{
+		_DBG_MSG("bool");
+		SetVal(val);
+		return *this;
+
+		/*		If Parser errors are prefered, catch ARTerrors here and throw parser errors (Design the methods
+				as shown here.) Parser errors might contain more information on where to find the problem...
+
+		try
+		{
+			var->SetVal(val);
+		}
+		catch (ARTerror dummy)
+		{
+			ErrorContext err;
+			err.Errc	= ecTYPE_CONFLICT;
+			err.Type1 = GetType();
+			err.Type2 = 'b';
+			if (GetIdent().length())
+			{
+				err.Ident = GetIdent();
+			}
+			else
+			{
+				stringstream_type ss;
+				ss << *this;
+				err.Ident = ss.str();
+			}
+
+			throw ParserError(err);
+
+		}
+		return *this;
+	*/
+	}
+
+	//---------------------------------------------------------------------------
+	IValue& ARTdataContainer::operator=(int_type a_iVal)
+	{
+		_DBG_MSG("int_type");
+		SetVal(a_iVal);
+		return *this;
+	}
+
+	//---------------------------------------------------------------------------
+	IValue& ARTdataContainer::operator=(float_type val)
+	{
+		_DBG_MSG("float_type");
+		SetVal(val);
+		return *this;
+	}
+
+	//---------------------------------------------------------------------------
+	IValue& ARTdataContainer::operator=(string_type a_sVal)
+	{
+		_DBG_MSG("string_type");
+		SetVal(a_sVal.c_str());
+		return *this;
+	}
+
+	//---------------------------------------------------------------------------
+	IValue& ARTdataContainer::operator=(const char_type *a_szVal)
+	{
+		_DBG_MSG("const char_type*");
+		SetVal(a_szVal);
+		return *this;
+	}
+
+	//---------------------------------------------------------------------------
+	IValue& ARTdataContainer::operator=(const array_type &a_vVal)
+	{
+		_DBG_MSG("const array_type&");
+		// TODO
+		return *this;
+	}
+
+	//---------------------------------------------------------------------------
+	IValue& ARTdataContainer::operator=(const cmplx_type &val)
+	{
+		_DBG_MSG("const cmplx_type&");
+		SetVal(val);
+		return *this;
+	}
+
+	//---------------------------------------------------------------------------
+	char_type ARTdataContainer::GetType() const
+	{
+		_DBG_MSG("");
+		switch (typ)
+		{
+			case C_ART_str: return 's';
+			case C_ART_enum: return ' ';
+			case C_ART_int: return 'i';
+			case C_ART_dbl: return 'f';
+			case C_ART_flo: return 'f';
+			case C_ART_cpx: return 'c';
+			case C_ART_tri: return ' ';
+			case C_ART_mat: return ' ';
+			case C_ART_matx: return ' ';
+			case C_ART_nstr: return 'a';
+			case C_ART_nint: return 'a';
+			case C_ART_nflo: return 'a';
+			case C_ART_ndbl: return 'a';
+			case C_ART_ncpx: return 'a';
+			case C_ART_ntri: return 'a';
+			case C_ART_nmat: return 'a';
+			case C_ART_nmatx: return 'a';
+			case C_ART_na: return 'a';
+			case C_ART_undef:
+			default: return ' ';
+		}
+
+	}
+
+	//---------------------------------------------------------------------------
+	float_type ARTdataContainer::GetImag() const
+	{
+		_DBG_MSG("");
+		try
+		{
+			switch(typ)
+			{
+				//simple types: copy orig.value
+				case C_ART_int:
+				case C_ART_flo:
+				case C_ART_dbl: return 0; break;
+				case C_ART_cpx: return val->c.im; break; //Imaginärteil der komplexen Zahl
+
+				case C_ART_nint:
+				case C_ART_nflo:
+				case C_ART_ndbl:
+					if (len > 1) throw ParserError();
+					else return 0;
+					break;
+
+				case C_ART_ncpx:
+					if (len > 1) throw ParserError();
+					else return val->nc->im;
+					break;
+
+				// in case of C_ART_na we have to get to first element
+				// of array
+				case C_ART_na:
+					if (len > 1) throw ParserError();
+					else
+					{
+						// TODO
+						return 0;
+					}
+
+				default: throw ParserError();
+			}
+		}
+		catch (ParserError dummy)
+		{
+			ErrorContext err;
+			err.Errc	= ecTYPE_CONFLICT;
+			err.Type1 = GetType();
+			err.Type2 = 'c';
+
+			if (GetIdent().length())
+			{
+				err.Ident = GetIdent();
+			}
+			else
+			{
+				stringstream_type ss;
+				ss << *this;
+				err.Ident = ss.str();
+			}
+
+			throw ParserError(err);
+
+		}
+	}
+
+	//---------------------------------------------------------------------------
+	const cmplx_type& ARTdataContainer::GetComplex() const
+	{
+		_DBG_MSG("");
+//		return m_val;
+		static cmplx_type tmp = cmplx_type(1,0);
+		return tmp;
+	}
+
+	//---------------------------------------------------------------------------
+	const string_type& ARTdataContainer::GetString() const
+	{
+		_DBG_MSG("");
+/*		CheckType('s');
+		assert(m_psVal!=NULL);
+		return *m_psVal;*/
+		static string tmp = "test";
+		return tmp;
+
+	}
+
+	//---------------------------------------------------------------------------
+	bool ARTdataContainer::GetBool() const
+	{
+		_DBG_MSG("");
+/*		CheckType('b');
+		return m_val.real()==1;*/
+		return false;
+	}
+
+	//---------------------------------------------------------------------------
+	const array_type& ARTdataContainer::GetArray() const
+	{
+		_DBG_MSG("");
+		/*CheckType('a');
+		assert(m_pvVal!=NULL);
+		return *m_pvVal;*/
+		array_type* tmpArray = (array_type *) (val->na);
+		if (typ == C_ART_na)
+		{
+			return *tmpArray;
+		}
+		else
+		{
+			ErrorContext err;
+			err.Errc	= ecTYPE_CONFLICT;
+			err.Type1 = GetType();
+			err.Type2 = 'a';
+
+			if (GetIdent().length())
+			{
+				err.Ident = GetIdent();
+			}
+			else
+			{
+				stringstream_type ss;
+				ss << *this;
+				err.Ident = ss.str();
+			}
+
+			throw ParserError(err);
+
+		}
+	}
+
+	//---------------------------------------------------------------------------
+	void ARTdataContainer::CheckType(char_type a_cType) const
+	{
+		_DBG_MSG("char_type");
+		if (GetType()!=a_cType)
+		{
+			ErrorContext err;
+			err.Errc	= ecTYPE_CONFLICT;
+			err.Type1 = GetType();
+			err.Type2 = a_cType;
+
+			if (GetIdent().length())
+			{
+				err.Ident = GetIdent();
+			}
+			else
+			{
+				stringstream_type ss;
+				ss << *this;
+				err.Ident = ss.str();
+			}
+
+			throw ParserError(err);
+		}
+	}
+
+	//---------------------------------------------------------------------------
+	bool ARTdataContainer::IsVolatile() const
+	{
+		_DBG_MSG("");
+		return IsFlagSet(IValue::flVOLATILE);
+//		return true;
+	}
+
+//	//---------------------------------------------------------------------------
+//	string_type ARTdataContainer::AsciiDump() const
+//	{
+//		_DBG_MSG("");
+//		stringstream_type ss;
+//
+//		ss << g_sCmdCode[ GetCode() ];
+//		ss << _T(" [addr=0x") << std::hex << this << std::dec;
+//		ss << _T("; type=\"") << GetType() << _T("\"");
+//		ss << _T("; val=");
+//
+//		switch(typ)
+//		{
+//			case C_ART_str: ss << val->s; break;
+//			case C_ART_enum: ss << val->e; break;
+//			case C_ART_int:  ss << val->i; break;
+//			case C_ART_dbl:  ss << val->d; break;
+//			case C_ART_flo:  ss << val->f; break;
+//			case C_ART_cpx:  ss << val->c.re << "+" << val->c.im << "i"; break;
+//			case C_ART_tri:  ss << _T("(tri)"); break;
+//			case C_ART_mat:  ss << _T("(matrix)"); break;
+//			case C_ART_matx:  ss << _T("(matrix)"); break;
+//			case C_ART_nstr: ss << _T("(array)"); break;
+//			case C_ART_nint: ss << _T("(array)"); break;
+//			case C_ART_nflo: ss << _T("(array)"); break;
+//			case C_ART_ndbl: ss << _T("(array)"); break;
+//			case C_ART_ncpx: ss << _T("(array)"); break;
+//			case C_ART_ntri: ss << _T("(array)"); break;
+//			case C_ART_nmat: ss << _T("(array)"); break;
+//			case C_ART_nmatx: ss << _T("(array)"); break;
+//			case C_ART_na: ss << _T("(array)"); break;
+//			case C_ART_undef: ss << _T("(undef)"); break;
+//		}
+//
+//		ss << ((IsFlagSet(IToken::flVOLATILE)) ? _T("; ") : _T("; not ")) << _T("volatile");
+//		ss << _T("]");
+//
+//		return ss.str();
+//	}
+//
+//	//---------------------------------------------------------------------------
+//	void ARTdataContainer::Release()
+//	{
+//		_DBG_MSG("");
+//		if (m_pCache_)
+//			std::cout << "ReleaseToCache not implemented\n";
+//			//m_pCache->ReleaseToCache(this);
+//		else
+//			delete this;
+//	}
+//
+//	//---------------------------------------------------------------------------
+//	void ARTdataContainer::BindToCache(ValueCache *pCache)
+//	{
+//		_DBG_MSG("");
+//		m_pCache_ = pCache;
+//	}
 
 
 #endif

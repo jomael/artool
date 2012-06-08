@@ -33,9 +33,9 @@ void ARTfrqGridFunc::ApplyFunction()
 //	if (ARTdataContainer* cd = dynamic_cast<ARTdataContainer*>(out_))
 //		cout << "\n" << out_->GetVarName();// << ":\n";
 
-	double fmax = highfrq_->GetValueAsDouble();
-	double fmin = lowfrq_->GetValueAsDouble();
-	double fstep = frqStep_->GetValueAsDouble();
+	double fmax = highfrq_->GetFloat();
+	double fmin = lowfrq_->GetFloat();
+	double fstep = frqStep_->GetFloat();
 	//calculate length of frq array
 	int flen = (fmax - (fmin + fstep*(fmin==0.0))) / fstep + 1;
 /*
@@ -61,9 +61,9 @@ void ARTfrqGridFunc::ApplyFunction()
 
 int ARTfrqGridFunc::GetIterationNumber()
 {
-	double fmax = highfrq_->GetValueAsDouble();
-	double fmin = lowfrq_->GetValueAsDouble();
-	double fstep = frqStep_->GetValueAsDouble();
+	double fmax = highfrq_->GetFloat();
+	double fmin = lowfrq_->GetFloat();
+	double fstep = frqStep_->GetFloat();
 	//cout << " frq" << (fmax - (fmin + fstep*(fmin==0.0))) / fstep << "\n";
 	//calculate length of frq array
 	return (fmax - (fmin + fstep*(fmin==0.0))) / fstep + 1;
