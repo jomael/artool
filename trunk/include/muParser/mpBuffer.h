@@ -57,13 +57,22 @@ protected:
   /** Attribute deciding whether the current buffer implements a ringbuffer. */
   bool _is_ringbuffer;
 
-  /** In case of a ring buffer, this is the index to the first valid element. */
+  /**
+    * In case of a ring buffer, this is the index to the first valid element.
+    * Initial value is 0.
+    */
   size_type _first;
-  /** In case of a ring buffer, this is the index to the last valid element. */
+  /**
+    * In case of a ring buffer, this is the index to the last valid element.
+    * Initial value is _size - 1.
+    */
   size_type _last;
 
-  /**  */
-  size_type _current_idx;
+  /** Saves the current index of  */
+  //size_type _current_idx;
+
+  /** Saves the number of currently used elements for a ring buffer. */
+  size_type _used_elements;
 
   /**
    * @brief Releases all elements by calling the destructor of the saved elements
@@ -91,8 +100,9 @@ public:
     _fields(0),
     _is_ringbuffer(false),
     _first(0),
-    _last(0),
-    _current_idx(0)
+    _last(-1),
+    //_current_idx(0),
+    _used_elements(0)
   {}
 
   explicit mpBuffer(size_type n,
@@ -109,8 +119,9 @@ public:
 #endif
     _is_ringbuffer(rb),
     _first(0),
-    _last(0),
-    _current_idx(0)
+    _last(-1),
+    //_current_idx(0),
+    _used_elements(0)
   {
     // construct objects
     for (size_type i = 0; i < _size; ++i)
@@ -134,7 +145,8 @@ public:
     _is_ringbuffer(buf._is_ringbuffer),
     _first(buf._first),
     _last(buf._last),
-    _current_idx(buf._current_idx)
+    //_current_idx(buf._current_idx),
+    _used_elements(buf._used_elements)
   {
     // copy all elements
     for (size_type i = 0; i < _size; ++i)
@@ -158,7 +170,8 @@ public:
     _is_ringbuffer = buf._is_ringbuffer;
     _first = buf._first;
     _last = buf._last;
-    _current_idx = buf._current_idx;
+    //_current_idx = buf._current_idx;
+    _used_elements = buf._used_elements;
     // copy all elements
     for (size_type i = 0; i < _size; ++i)
     {
@@ -198,12 +211,11 @@ public:
     pointer newFields = _allocator.allocate(sz);
 #endif
 
-	size_type i;
-
     // if we do not have a ring buffer, just copy the first elements to
     // the newly allocated array
     if (!_is_ringbuffer)
     {
+    	size_type i;
       // number of fields to copy is minimum of current size and new size
       size_type copy_fields = (sz > _size) ? _size : sz;
       // copy all existing fields
@@ -217,30 +229,37 @@ public:
       {
         _allocator.construct(&(newFields[i]), c);
       }
-      _last = _size - 1;
+      _last = sz - 1;
     }
     else
     // if we have a ring buffer, copy all elements from first to last
     {
-      // calculate number of elements to copy
-      size_type copy_fields = (sz > _size) ?
-          ((_first - _last + 1 + _size) % _size) : (sz);
-      size_type bufPointer = (sz > _size) ? _last : ((_first - sz + _size) % _size);
-      for (i = 0; i < copy_fields; ++i)
-      {
-        _allocator.construct(&(newFields[i]), _fields[bufPointer]);
-        bufPointer = (bufPointer + 1) % _size;
-      }
+    	size_type newElementPtr, oldElementPtr, copySize;
+    	int elementsCopied;
 
-      // initialize all new elements if any
-      for (i = copy_fields; i < sz; ++i)
-      {
-        _allocator.construct(&(newFields[i]), c);
-      }
+    	if (sz < _used_elements)
+    	{
+    		// TODO: change exception type
+    		throw std::out_of_range("Can not decrease size of ring buffer: too much elements in use!");
+    	}
 
-      // set new element pointers for first and last
-      _first = (sz > _size) ? (copy_fields) : (sz);
-      _last = (_last > sz) ? (sz - 1) : 0;
+    	copySize = (sz > _size) ? _size : sz;
+    	newElementPtr = _first % sz;
+    	oldElementPtr = _first % _size;
+
+    	for (elementsCopied = 0; elementsCopied < copySize; ++elementsCopied)
+    	{
+    		_allocator.construct(&(newFields[newElementPtr]), _fields[oldElementPtr]);
+    		newElementPtr = (newElementPtr + sz - 1) % sz;
+    		oldElementPtr = (oldElementPtr + _size - 1) % _size;
+    	}
+
+    	for (elementsCopied = _size; elementsCopied < sz; ++elementsCopied)
+    	{
+    		_allocator.construct(&(newFields[newElementPtr]), c);
+    		newElementPtr = (newElementPtr + sz - 1) % sz;
+    	}
+
 
     }
 
@@ -271,50 +290,65 @@ public:
 
   inline virtual reference at(size_type n)
   {
-    if (!_is_ringbuffer && n >= _size)
+    if ((n >= _size) || (n < 0))
       throw std::out_of_range("mpBuffer has not been accessed properly");
 
-    reference retVal = (_is_ringbuffer) ?
-        _fields[n % _size] : _fields[n];
-
-    // save the lowest index of the current array access:
-    // if the currently used buffer size is less than the
-    // difference between current index and
-    if (((_first - _last + _size + 1) % _size) > (_current_idx - n))
-    {
-      // if we cannot increase the number of used elements, throw
-      // an out of range exception
-      if ((_current_idx - n) > _size)
-        throw std::out_of_range("Ring buffer access to element which is currently in use");
-
-      _last = n % _size;
-    }
-
-    return retVal;
+    return _fields[n];
   }
 
   inline virtual const_reference at(size_type n) const
   {
-    if (!_is_ringbuffer && n >= _size)
+    if ((n >= _size) || (n < 0))
       throw std::out_of_range("mpBuffer has not been accessed properly");
-
-    const_reference retVal = (_is_ringbuffer) ?
-        _fields[n % _size] : _fields[n];
 
     // as we cannot change the size of a constant buffer, we do
     // not need to track the size of actually accessed elements
 
-    return retVal;
+    return _fields[n];
   }
 
   inline virtual reference operator[](size_type n)
   {
-    return at(n);
+  	if (!_is_ringbuffer && (n >= _size || n < 0))
+			throw std::out_of_range("mpBuffer has not been accessed properly");
+
+		// save original index
+		size_type idx = n;
+
+		n = n % _size;
+		n = (n < 0) ? (n + _size) : n;
+		reference retVal = _fields[n];
+
+		// save the lowest index of the current array access:
+		// if the currently used buffer size is less than the
+		// difference between current index and
+		if ((_first - idx) > _used_elements)
+		{
+			// if we cannot increase the number of used elements, throw
+			// an out of range exception
+			if ((_first - idx) > _size)
+				throw std::out_of_range("Ring buffer access to element which is currently in use");
+
+			_used_elements = (_first - idx) + 1;
+
+			_last = idx;
+		}
+
+		return retVal;
   }
 
   inline virtual const_reference operator[](size_type n) const
   {
-    return at(n);
+  	if (!_is_ringbuffer && ((n >= _size) ||(n < 0)))
+			throw std::out_of_range("mpBuffer has not been accessed properly");
+
+		n = n % _size;
+		n = (n < 0) ? (n + _size) : n;
+
+		// as we cannot change the size of a constant buffer, we do
+		// not need to track the size of actually accessed elements
+
+		return _fields[n];
   }
 
   inline virtual reference front()
@@ -363,26 +397,44 @@ public:
    */
   inline virtual void setCurrentIdx(size_type n)
   {
-    // the first element points to the given index modulo available buffer size
-    _first = n % _size;
-    // the last index is calculated based on the previous values of last and
-    // current_idx.
-    _last = (_last + (n - _current_idx) + _size) % _size;
-    // sets the current index to the given index.
-    _current_idx = n;
+  	// the last index is calculated based on the previous values of last and
+		// current_idx.
+  	_last = _last + (n - _first);
+
+    _first = n;
+
   }
+
+  inline virtual size_type getFirst() const
+  {
+  	return _first;
+  }
+
+  inline virtual size_type getLast() const
+	{
+		return _last;
+	}
 
   /**
    * @brief Returns the number of accessed elements of the
    *        ring buffer which is equivalent to the actually
    *        used buffer size.
    */
-  inline virtual size_type getUsedBufferSize(size_type n)
+  inline virtual size_type getUsedBufferSize() const
   {
-    return ((_first - _last + 1 + _size) % _size);
+    //return (_last == -1) ? 0 : ((_first - _last + 1 + _size) % _size);
+  	return _used_elements;
   }
 
 
+  /**
+   * @brief Returns true if the current buffer implements a
+   *        a ring buffer, otherwise false.
+   */
+  inline virtual bool isRingBuffer() const
+  {
+  	return _is_ringbuffer;
+  }
 
 };
 

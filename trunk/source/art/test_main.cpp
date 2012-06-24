@@ -4463,7 +4463,7 @@ int main(int argc, char **argv)
 	
 
 	//Sadjad's test stuff
-	try
+/*	try
 	{
 
 		P_ART_Simulator mySim;
@@ -4505,7 +4505,7 @@ int main(int argc, char **argv)
 		ARTSetFrequencyRange(mySim, 10, 1000, 10);
 		int modes = 1;
 		ARTSetNModes(mySim, modes);
-*/
+
 
 // file bcyl_jump32*
 		P_ART_Element El1;
@@ -4534,7 +4534,7 @@ int main(int argc, char **argv)
 		int modes = 32;
 		ARTSetNModes(mySim, modes);
 
-/*
+
  // file theta2
 		P_ART_Element El1;
 		P_ART_Element El2;
@@ -4605,9 +4605,9 @@ int main(int argc, char **argv)
 		ARTSetParameter(mySim, "El3.r = 2.5; ");
 		//ARTSetParameter(mySim, "El3.humidity = 0; ");
 		//ARTSetParameter(mySim, "El3.bendradius = 10; ");
-*/
 
-/*
+
+
 		ARTvariant* meineImpKurve = ARTInputImpedance(ins);
 
 		
@@ -4629,7 +4629,7 @@ int main(int argc, char **argv)
 		//	std::cout << meineImpKurve->val->nt[i].f << "Hz: " <<  meineImpKurve->val->nt[i].re << " + " << meineImpKurve->val->nt[i].im << " * i\n";
 			std::cout << meineImpKurve->val->nt[i].f << "Hz: " <<  abs(com) << " " << arg(com) << "\n";
 		}
-*/
+
 
 		ARTDestroyCircuit(mySim, ins);
 		//ARTDestroyElement(mySim,El3);
@@ -4639,7 +4639,7 @@ int main(int argc, char **argv)
 		ARTRootDestroy();
 
 		
-/*
+
 		P_ART_Simulator mySim;
 		P_ART_Element Cyl1;
 		P_ART_Element Cyl2;
@@ -4677,7 +4677,7 @@ int main(int argc, char **argv)
 		ARTDestroyElement(mySim,Cyl1);
 		ARTDestroySimulator(mySim);
 		ARTRootDestroy();
-*/		
+
 
 	}
 	catch(ARTerror e)
@@ -4685,12 +4685,14 @@ int main(int argc, char **argv)
 		string err = e.GetErrorMessage();
 		std::cout << "\n\n" << err;
 	}
-/*
 */
+/*
+
 	//AllMyTests->printTree();
 
 	try
 	{
+
 		bool success = AllMyTests->runTests();
 		//bool success = testCircuitAsBranchImpedanceModes2Object->runTests();
 		
@@ -4715,16 +4717,83 @@ int main(int argc, char **argv)
 			#endif
 			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN); 
 		}
+
 	}
 	catch(ARTerror e)
 	{	
 		string err = e.GetErrorMessage();
 		std::cout << "\n\n" << err;
 	}
-/* */
+
 	//print summary, as other messages might drown in debugging output
 	//AllMyTests->printSummary();
-	
+*/
+	// clemens test cases
+	try {
+		ARTdataContainer* timeModule = new ARTdataContainer(C_ART_na, 3, "myTest");
+		mup::ParserX* testParser = new mup::ParserX();
+
+		std::cout << "Initialized timeModule and testParser" << std::endl;
+
+		mup::Value n(0);
+		mup::Variable nVar(&n);
+		testParser->DefineVar("n", nVar);
+//		mup::Value myTest(50, 0.0);
+//		mup::Variable myTestVar(&myTest);
+//		testParser->DefineVar("myTest", myTestVar);
+//		myTest[0] = 0, myTest[1] = 1;
+
+		std::cout << "Initialized external variables and registered them in testParser" << std::endl;
+
+		timeModule->SetParser(testParser);
+
+		timeModule->SetDefinition("myTest[n] = myTest[n - 1] + myTest[n - 2]");
+
+		//testParser->SetExpr("myTest[n] = myTest[n - 1] + myTest[n - 2]");
+
+		std::cout << "Set parser and definition of time module" << std::endl;
+
+		// initialize Fibonacci array
+		/*timeModule->SetVal(0, 0);
+		timeModule->SetVal(1, 1);*/
+		(*timeModule)[-1] = 1;
+		(*timeModule)[-2] = 0;
+
+		//timeModule->SetInvalid(2, 49);
+
+		std::cout << "Initialized first two Fibonacci values" << std::endl;
+
+		//timeModule->DebugDepTree(" ", "\n");
+
+		for (int i = 0; i < 50; ++i)
+		{
+			n = i;
+			timeModule->getArrayElement(i).Invalidate();
+			array_type& tmpArray = const_cast<array_type&>(timeModule->GetArray());
+			tmpArray.setCurrentIdx(i);
+			std::cout << "Fibonacci[" << i << "] = " << (*timeModule)[i].GetFloat() << std::endl;
+			std::cout << "Used buffer size of array: " << tmpArray.getUsedBufferSize() << std::endl;
+			//testParser->Eval();
+			//std::cout << "Fibonacci[" << i << "] = " << myTest[i].GetFloat() << std::endl;
+		}
+
+		delete timeModule;
+//		delete testParser;
+	}
+	catch (ARTerror e)
+	{
+		std::cout << e.GetErrorMessage() << std::endl;
+	}
+	catch (mup::ParserError e)
+	{
+		std::cout << e.GetMsg() << std::endl;
+	}
+	catch (...)
+	{
+		std::cout << "ERROR in Clemens' tests!" << std::endl;
+	}
+
+
 	return 0;
 }
 #endif //if not ARTinterfaceTest

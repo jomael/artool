@@ -69,7 +69,7 @@ private:
 			/// This is the function where the calculation takes place. see ARTfunctionoid::ApplyFunction() for details	
 			virtual void ApplyFunction()
 				{
-					int modes = modes_->GetValueAsInt();
+					int modes = modes_->GetInt();
 					//prepare hornelement
 					host_->PrepareCalculation(modes);
 
@@ -152,7 +152,7 @@ private:
 			/// This is the function where the calculation takes place. see ARTfunctionoid::ApplyFunction() for details	
 			virtual void ApplyFunction()
 				{
-					int modes = modes_->GetValueAsInt();
+					int modes = modes_->GetInt();
 					//prepare hornelement
 					//std::cout << "lesen von DC " << prop_z_ << "\n";
 					host_->PrepareCalculation(modes); //HIER
@@ -388,7 +388,7 @@ private:
 			/// This is the function where the calculation takes place. see ARTfunctionoid::ApplyFunction() for details	
 			virtual void ApplyFunction()
 				{
-					int modes = modes_->GetValueAsInt();
+					int modes = modes_->GetInt();
 					//prepare hornelement
 					host_->PrepareCalculation(modes); 
 					out_->SetType(C_ART_nmatx);
@@ -727,7 +727,7 @@ private:
 			/// This is the function where the calculation takes place. see ARTfunctionoid::ApplyFunction() for details	
 			virtual void ApplyFunction()
 				{
-					int modes = modes_->GetValueAsInt();
+					int modes = modes_->GetInt();
 					//make sure output matrix is big enough to hold all results
 					out_->SetType(C_ART_nmatx);
 					out_->SetArrayLength(wfrequencies_->len);
@@ -921,7 +921,7 @@ private:
 			/// This is the function where the calculation takes place. see ARTfunctionoid::ApplyFunction() for details	
 			virtual void ApplyFunction()
 				{
-					int modes = modes_->GetValueAsInt();
+					int modes = modes_->GetInt();
 					//prepare hornelement
 					host_->PrepareCalculation(modes); 
 					out_->SetType(C_ART_nmatx);

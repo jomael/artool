@@ -141,6 +141,12 @@ protected:
 	 * AddDependency.
 	 */	 
 	void AddNotify(ARTdataContainer* client);
+	/**
+	 * @brief Resizes the used array in case the current data container is
+	 *        of type C_ART_na.
+	 * @param[in] newSize New size of the array.
+	 */
+	virtual void resizeArray(int newSize);
 
 private:
 	//used for parser
@@ -151,7 +157,7 @@ private:
 
 private:
 
-	array_type* arrayVals_;
+	//array_type* arrayVals_;
 	//EFlags 			m_iFlags_; ///< Additional flags
 	ValueCache	*m_pCache_; ///< Pointer to the ARTValue Cache
 
@@ -218,7 +224,7 @@ public:
 
 	//void SetInvalid(int st, int end);
 
-	int GetValueAsInt(); 
+	int GetInt(); 
 
 	const string& GetDefinition();
 
@@ -299,6 +305,8 @@ public:
 	list<ARTdataContainer*>	GetClientList(){return clientList_;}
 	bool CheckValidity() ;
 
+	ARTdataContainer& getArrayElement(int idx);
+
 	// former ARTValue
 
 	/** Array constructor */
@@ -311,6 +319,7 @@ public:
 	void deleteVar();
 
 	virtual IValue& operator[](std::size_t idx);
+	virtual IValue& operator[](int idx);
 
 	virtual IValue& operator=(int_type a_iVal);
 	virtual IValue& operator=(float_type a_fVal);
