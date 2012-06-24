@@ -33,7 +33,7 @@ ARTdataContainer::ARTdataContainer() :
 		avar_(NULL),
 		parserVarDefined_(false),
 		tempDef_(""),
-		arrayVals_(NULL),
+		//arrayVals_(NULL),
 		m_pCache_(NULL)
 {
 	_DBG_MSG("");
@@ -57,20 +57,22 @@ ARTdataContainer::ARTdataContainer(const T_ART_Type dtyp, const int dlen, const 
 		avar_(NULL),
 		parserVarDefined_(false),
 		tempDef_(""),
-		arrayVals_(NULL),
+		//arrayVals_(NULL),
 		m_pCache_(NULL)
 {
 	_DBG_MSG("const T_ART_Type, const int, const string");
 	// we have to handle array of data containers
 	if (typ == C_ART_na)
 	{
-		array_type* tmpArray = new array_type(len);
+		array_type* tmpArray = new array_type(len, true);
 		ARTdataContainer* tmpARTdataContainer;
 		for (int i = 0; i < len; ++i)
 		{
 			// create empty ARTdataContainers of type complex
 			tmpARTdataContainer = new ARTdataContainer();
 			tmpARTdataContainer->SetType(C_ART_cpx);
+			// initialize all values of ARTdataContainer to zero...
+			tmpARTdataContainer->SetVal(std::complex<double>(0,0));
 			(*tmpArray)[i] = tmpARTdataContainer;
 		}
 		// save pointer to na field of val
@@ -96,7 +98,7 @@ ARTdataContainer::ARTdataContainer(std::string name, ARTfunctionoid* func) :
 		avar_(NULL),
 		parserVarDefined_(false),
 		tempDef_(""),
-		arrayVals_(NULL),
+		//arrayVals_(NULL),
 		m_pCache_(NULL)
 {
 	_DBG_MSG("string, ARTfunctionoid*");
@@ -125,7 +127,7 @@ ARTdataContainer::ARTdataContainer(const int i) :
 		avar_(NULL),
 		parserVarDefined_(false),
 		tempDef_(""),
-		arrayVals_(NULL),
+		//arrayVals_(NULL),
 		m_pCache_(NULL)
 {
 	_DBG_MSG("int");
@@ -149,7 +151,7 @@ ARTdataContainer::ARTdataContainer(const double d) :
 		avar_(NULL),
 		parserVarDefined_(false),
 		tempDef_(""),
-		arrayVals_(NULL),
+		//arrayVals_(NULL),
 		m_pCache_(NULL)
 {
 	_DBG_MSG("double");
@@ -173,7 +175,7 @@ ARTdataContainer::ARTdataContainer(const float f) :
 		avar_(NULL),
 		parserVarDefined_(false),
 		tempDef_(""),
-		arrayVals_(NULL),
+		//arrayVals_(NULL),
 		m_pCache_(NULL)
 {
 	_DBG_MSG("float");
@@ -197,7 +199,7 @@ ARTdataContainer::ARTdataContainer(const char* s) :
 		avar_(NULL),
 		parserVarDefined_(false),
 		tempDef_(""),
-		arrayVals_(NULL),
+		//arrayVals_(NULL),
 		m_pCache_(NULL)
 {
 	_DBG_MSG("const char*");
@@ -221,7 +223,7 @@ ARTdataContainer::ARTdataContainer(const char* s1, const char* s2) :
 		avar_(NULL),
 		parserVarDefined_(false),
 		tempDef_(""),
-		arrayVals_(NULL),
+		//arrayVals_(NULL),
 		m_pCache_(NULL)
 {
 	_DBG_MSG("const char*, const char*");
@@ -245,7 +247,7 @@ ARTdataContainer::ARTdataContainer(const char* s1, const char* s2, const char* s
 		avar_(NULL),
 		parserVarDefined_(false),
 		tempDef_(""),
-		arrayVals_(NULL),
+		//arrayVals_(NULL),
 		m_pCache_(NULL)
 {
 	_DBG_MSG("const char*, const char*, const char*");
@@ -269,7 +271,7 @@ ARTdataContainer::ARTdataContainer(const char* s1, const char* s2, const char* s
 		avar_(NULL),
 		parserVarDefined_(false),
 		tempDef_(""),
-		arrayVals_(NULL),
+		//arrayVals_(NULL),
 		m_pCache_(NULL)
 {
 	_DBG_MSG("const char*, const char*, const char*, const char*");
@@ -294,14 +296,14 @@ ARTdataContainer::ARTdataContainer(const ARTdataContainer& orig) :
 	avar_(NULL),
 	parserVarDefined_(false),
 	tempDef_(orig.tempDef_),
-	arrayVals_(NULL), // TODO copy values!
+	//arrayVals_(NULL), // TODO copy values!
 	m_pCache_(NULL)
 {
 	_DBG_MSG("const ARTdataContainer&");
 	// we have to handle array of data containers
 	if (typ == C_ART_na)
 	{
-		array_type* tmpArray = new array_type(len);
+		array_type* tmpArray = new array_type(len, true);
 		array_type* oldArray = (array_type*) (orig.val->na);
 
 		ARTdataContainer* tmpARTdataContainer;
@@ -336,6 +338,8 @@ ARTdataContainer::~ARTdataContainer()
 	// "Dependencies, do not notify this object anymore!"
 	RemoveAllDependencies();
 
+
+
 	// Release memory of all array elements in case we have
 	// a container of type C_ART_na
 	if (typ == C_ART_na)
@@ -344,7 +348,10 @@ ARTdataContainer::~ARTdataContainer()
 		ARTdataContainer* tmpARTdataContainer;
 		for (int i = 0; i < tmpArray->size(); ++i)
 		{
-			tmpARTdataContainer = dynamic_cast<ARTdataContainer*>((*tmpArray)[i]);
+			// we have to set the current array index, otherwise
+			// we might get an out of range error
+			//tmpArray->setCurrentIdx(i);
+			tmpARTdataContainer = dynamic_cast<ARTdataContainer*>(tmpArray->at(i));
 			delete tmpARTdataContainer;
 		}
 	}
@@ -844,7 +851,7 @@ float_type ARTdataContainer::GetFloat() const
 	float_type d;
 	array_type* tmpArray = (array_type *) (val->na);
 	ARTdataContainer* tmp;
-    switch(typ)
+	switch(typ)
 	{
 		//simple types: copy orig.value
 		case C_ART_int: d = val->i; break;
@@ -874,7 +881,8 @@ float_type ARTdataContainer::GetFloat() const
 
 
 		case C_ART_na:
-			if (len > 1) {
+			if (len > 1)
+			{
 				throw ARTerror("ARTdataContainer::GetValueAsDouble", "Invalid type conversion: ndbl with len>1 to double.");
 			}
 			else
@@ -929,7 +937,7 @@ float_type ARTdataContainer::GetFloat() const
 //	}
 //}
 
-int ARTdataContainer::GetValueAsInt() 
+int ARTdataContainer::GetInt() 
 {
 	_DBG_MSG("");
 	if (!valid_) Evaluate(); 
@@ -1011,7 +1019,7 @@ void ARTdataContainer::SetVal(const int i, const int ind)
 	{
 		array_type* tmpArray = (array_type *) (val->na);
 		ARTdataContainer* tmp = dynamic_cast<ARTdataContainer*>((*tmpArray)[ind]);
-		tmp->SetVal(i);
+		tmp->SetVal(std::complex<double>((double) i,0));
 	}
 	else
 	{
@@ -1029,7 +1037,7 @@ void ARTdataContainer::SetVal(const double d, const int ind)
 	{
 		array_type* tmpArray = (array_type *) (val->na);
 		ARTdataContainer* tmp = dynamic_cast<ARTdataContainer*>((*tmpArray)[ind]);
-		tmp->SetVal(d);
+		tmp->SetVal(std::complex<double>(d,0));
 	}
 	else
 	{
@@ -1047,7 +1055,7 @@ void ARTdataContainer::SetVal(const float f, const int ind)
 	{
 		array_type* tmpArray = (array_type *) (val->na);
 		ARTdataContainer* tmp = dynamic_cast<ARTdataContainer*>((*tmpArray)[ind]);
-		tmp->SetVal(f);
+		tmp->SetVal(std::complex<double>(f,0));
 	}
 	else
 	{
@@ -1242,9 +1250,9 @@ void ARTdataContainer::SetParser(mup::ParserX *p){
 		for (int i = 0; i < len; ++i)
 		{
 			tmp = dynamic_cast<ARTdataContainer*>((*tmpArray)[i]);
-			cout << "Set parser of element [" << i << "]" << endl;
+			//cout << "Set parser of element [" << i << "]" << endl;
 			tmp->parser_ = p;
-			cout << "Done" << endl;
+			//cout << "Done" << endl;
 		}
 	}
 
@@ -1343,6 +1351,61 @@ string ARTdataContainer::DebugInfo()
 	return t;
 }
 
+ARTdataContainer& ARTdataContainer::getArrayElement(int idx)
+{
+	array_type* tmpArray = (array_type *) (val->na);
+	ARTdataContainer* tmp;
+	switch (typ)
+	{
+		case C_ART_na:
+			tmp = dynamic_cast<ARTdataContainer*>((*tmpArray)[idx]);
+			return *tmp;
+			break;
+		default:
+			throw ParserError();
+			break;
+	}
+	return *this;
+}
+
+void ARTdataContainer::resizeArray(int newSize)
+{
+	_DBG_MSG("int");
+	array_type* tmpArray = (array_type *) (val->na);
+	ARTdataContainer* tmp;
+	array_type::size_type oldSize, elementPtr, idx;
+	oldSize = tmpArray->size();
+
+//	for (idx = 0; idx < tmpArray->size(); ++idx)
+//	{
+//		tmp = dynamic_cast<ARTdataContainer*>(tmpArray->at(idx));
+//		cout << "Content[" << idx << "] = " << tmp->val->c.re << endl;
+//	}
+
+	tmpArray->resize(newSize);
+	elementPtr = (tmpArray->getFirst() + 1) % newSize;
+
+	for (idx = oldSize; idx < newSize; ++idx)
+	{
+		tmp = new ARTdataContainer();
+		tmp->SetType(C_ART_cpx);
+		tmp->SetVal(std::complex<double>(0,0));
+		tmp->parser_ = parser_;
+		tmp->definition_ = definition_;
+		tmpArray->at(elementPtr) = tmp;
+		elementPtr = (elementPtr + newSize + 1) % newSize;
+	}
+
+//	for (idx = 0; idx < tmpArray->size(); ++idx)
+//	{
+//		tmp = dynamic_cast<ARTdataContainer*>(tmpArray->at(idx));
+//		cout << "Content[" << idx << "] = " << tmp->val->c.re << endl;
+//	}
+//
+//	cout << "Resized array from " << oldSize << " to " << newSize << " elements." << endl;
+
+}
+
 // former ARTValue
 //ARTValue& ARTdataContainer::operator=(const ARTdataContainer &a_Val)
 //	{
@@ -1358,9 +1421,41 @@ string ARTdataContainer::DebugInfo()
 		_DBG_MSG("std::size_t");
 		array_type* tmpArray = (array_type *) (val->na);
 		ARTdataContainer* tmp;
+		array_type::size_type arraySize;
 		switch (typ)
 		{
 			case C_ART_na:
+				arraySize = tmpArray->size();
+				if (arraySize - 5 <= tmpArray->getUsedBufferSize())
+				{
+					resizeArray(arraySize + 5);
+				}
+				tmp = dynamic_cast<ARTdataContainer*>((*tmpArray)[i]);
+				return *tmp;
+				break;
+			default:
+				throw ParserError();
+				break;
+		}
+		return *this;
+	}
+
+	//---------------------------------------------------------------------------
+	IValue& ARTdataContainer::operator[](int i)
+	{
+		_DBG_MSG("int");
+		array_type* tmpArray = (array_type *) (val->na);
+		ARTdataContainer* tmp;
+		array_type::size_type arraySize;
+		switch (typ)
+		{
+			case C_ART_na:
+				// size check
+				arraySize = tmpArray->size();
+				if (arraySize - 5 <= tmpArray->getUsedBufferSize())
+				{
+					resizeArray(arraySize + 5);
+				}
 				tmp = dynamic_cast<ARTdataContainer*>((*tmpArray)[i]);
 				return *tmp;
 				break;
@@ -1546,6 +1641,8 @@ string ARTdataContainer::DebugInfo()
 	float_type ARTdataContainer::GetImag() const
 	{
 		_DBG_MSG("");
+		ARTdataContainer* tmp;
+		array_type* tmpArray = (array_type*) (val->na);
 		try
 		{
 			switch(typ)
@@ -1574,8 +1671,8 @@ string ARTdataContainer::DebugInfo()
 					if (len > 1) throw ParserError();
 					else
 					{
-						// TODO
-						return 0;
+						tmp = dynamic_cast<ARTdataContainer*>((*tmpArray)[0]);
+						return tmp->val->c.im;
 					}
 
 				default: throw ParserError();
@@ -1609,7 +1706,15 @@ string ARTdataContainer::DebugInfo()
 	{
 		_DBG_MSG("");
 //		return m_val;
-		static cmplx_type tmp = cmplx_type(1,0);
+		static cmplx_type tmp;
+		if (typ == C_ART_cpx)
+		{
+			tmp = cmplx_type(val->c.re,val->c.im);
+		}
+		else
+		{
+			tmp = cmplx_type(0,0);
+		}
 		return tmp;
 	}
 
@@ -1620,7 +1725,15 @@ string ARTdataContainer::DebugInfo()
 /*		CheckType('s');
 		assert(m_psVal!=NULL);
 		return *m_psVal;*/
-		static string tmp = "test";
+		static string tmp;
+		if (typ == C_ART_str)
+		{
+			tmp = val->s;
+		}
+		else
+		{
+			tmp = "";
+		}
 		return tmp;
 
 	}

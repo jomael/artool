@@ -784,14 +784,14 @@ using std::make_pair;
                 MUP_ASSERT(stVal.size()>=2);
                 ptr_val_type idx = stVal.pop();
 
-                if (!idx->IsInteger() || idx->GetFloat()<0)
+                if (!idx->IsInteger()) // || idx->GetFloat()<0)
                   Error(ecTYPE_CONFLICT_IDX, m_pTokenReader->GetPos(), stVal.top().Get());
 
                 ptr_val_type val = stVal.pop();
                 if (!val->IsArray())
                   Error(ecNOT_AN_ARRAY, m_pTokenReader->GetPos(), val.Get()); 
 
-                if (idx->GetFloat() >= val->GetArray().size() || idx->GetFloat() < 0 )
+                if ((idx->GetFloat() >= val->GetArray().size()) || (!(val->GetArray().isRingBuffer()) && idx->GetFloat() < 0))
                   Error(ecINDEX_OUT_OF_BOUNDS, m_pTokenReader->GetPos(), val.Get()); 
 
                 if (val->AsValue()!=NULL)
