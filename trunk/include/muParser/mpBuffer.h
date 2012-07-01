@@ -64,15 +64,12 @@ protected:
   size_type _first;
   /**
     * In case of a ring buffer, this is the index to the last valid element.
-    * Initial value is _size - 1.
+    * Initial value is -1.
     */
-  size_type _last;
-
-  /** Saves the current index of  */
-  //size_type _current_idx;
+  mutable size_type _last;
 
   /** Saves the number of currently used elements for a ring buffer. */
-  size_type _used_elements;
+  mutable size_type _used_elements;
 
   /**
    * @brief Releases all elements by calling the destructor of the saved elements
@@ -239,8 +236,7 @@ public:
 
     	if (sz < _used_elements)
     	{
-    		// TODO: change exception type
-    		throw std::out_of_range("Can not decrease size of ring buffer: too much elements in use!");
+    		throw std::length_error("Can not decrease size of ring buffer: too much elements in use!");
     	}
 
     	copySize = (sz > _size) ? _size : sz;
@@ -319,6 +315,9 @@ public:
 		n = (n < 0) ? (n + _size) : n;
 		reference retVal = _fields[n];
 
+		std::cout << "operator[]: _first = " << _first << ", idx = " << idx
+				<< ", _used_elements = " << _used_elements << std::endl;
+
 		// save the lowest index of the current array access:
 		// if the currently used buffer size is less than the
 		// difference between current index and
@@ -342,11 +341,25 @@ public:
   	if (!_is_ringbuffer && ((n >= _size) ||(n < 0)))
 			throw std::out_of_range("mpBuffer has not been accessed properly");
 
+  	size_type idx = n;
+
 		n = n % _size;
 		n = (n < 0) ? (n + _size) : n;
 
-		// as we cannot change the size of a constant buffer, we do
-		// not need to track the size of actually accessed elements
+		// save the lowest index of the current array access:
+		// if the currently used buffer size is less than the
+		// difference between current index and
+		if ((_first - idx) > _used_elements)
+		{
+			// if we cannot increase the number of used elements, throw
+			// an out of range exception
+			if ((_first - idx) > _size)
+				throw std::out_of_range("Ring buffer access to element which is currently in use");
+
+			_used_elements = (_first - idx) + 1;
+
+			_last = idx;
+		}
 
 		return _fields[n];
   }
@@ -402,6 +415,9 @@ public:
   	_last = _last + (n - _first);
 
     _first = n;
+
+    std::cout << "Setting current idx to " << n << ", _last = "
+    		<< _last << ", _first = " << _first << std::endl;
 
   }
 
