@@ -4730,7 +4730,7 @@ int main(int argc, char **argv)
 */
 	// clemens test cases
 	try {
-		ARTdataContainer* timeModule = new ARTdataContainer(C_ART_na, 3, "myTest");
+		ARTdataContainer* timeModule = new ARTdataContainer(C_ART_na, 1, "myTest");
 		mup::ParserX* testParser = new mup::ParserX();
 
 		std::cout << "Initialized timeModule and testParser" << std::endl;
@@ -4757,7 +4757,7 @@ int main(int argc, char **argv)
 		/*timeModule->SetVal(0, 0);
 		timeModule->SetVal(1, 1);*/
 		(*timeModule)[-1] = 1;
-		(*timeModule)[-2] = 0;
+		//(*timeModule)[-2] = 0;
 
 		//timeModule->SetInvalid(2, 49);
 

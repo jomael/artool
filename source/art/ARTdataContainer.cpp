@@ -75,6 +75,11 @@ ARTdataContainer::ARTdataContainer(const T_ART_Type dtyp, const int dlen, const 
 			tmpARTdataContainer->SetVal(std::complex<double>(0,0));
 			(*tmpArray)[i] = tmpARTdataContainer;
 		}
+		// set current index to 0 indicating that it is now
+		// ready for external access
+		// don't forget to do this, otherwise you will get
+		// a segmentation fault!
+		tmpArray->setCurrentIdx(0);
 		// save pointer to na field of val
 		val->na = (void *) tmpArray;
 	}
@@ -314,7 +319,7 @@ ARTdataContainer::ARTdataContainer(const ARTdataContainer& orig) :
 			// create empty ARTdataContainers of type complex
 			tmpARTdataContainer = new ARTdataContainer(*oldARTdataContainer);
 			tmpARTdataContainer->SetType(C_ART_cpx);
-			(*tmpArray)[i] = tmpARTdataContainer;
+			tmpArray->at(i) = tmpARTdataContainer;
 		}
 		// save pointer to na field of val
 		val->na = (void *) tmpArray;
@@ -348,9 +353,8 @@ ARTdataContainer::~ARTdataContainer()
 		ARTdataContainer* tmpARTdataContainer;
 		for (int i = 0; i < tmpArray->size(); ++i)
 		{
-			// we have to set the current array index, otherwise
+			// we have to use the "at"-operator, otherwise
 			// we might get an out of range error
-			//tmpArray->setCurrentIdx(i);
 			tmpARTdataContainer = dynamic_cast<ARTdataContainer*>(tmpArray->at(i));
 			delete tmpARTdataContainer;
 		}
@@ -529,7 +533,7 @@ void ARTdataContainer::SetDefinition(const string& s, ARTsimulator* scope)
 				}
 			}
 		}
-		catch( mup::ParserError e )
+		catch( mup::ParserError& e )
 		{
 			throw ARTerror("ARTdataContainer::SetDefinition", "Error in Parser: '%s1'", e.GetMsg().c_str());;
 		}
@@ -556,7 +560,7 @@ void ARTdataContainer::SetDefinition(const string& s)
 			ARTdataContainer* tmp;
 			for (int i = 0; i < len; ++i)
 			{
-				tmp = dynamic_cast<ARTdataContainer*>((*tmpArray)[i]);
+				tmp = dynamic_cast<ARTdataContainer*>(tmpArray->at(i));
 				tmp->definition_ = s;
 			}
 		}
@@ -653,7 +657,7 @@ void ARTdataContainer::RedoDefinitionDependencies()
 				}
 			}
 		}
-		catch( mup::ParserError e )
+		catch( mup::ParserError& e )
 		{
 			throw ARTerror("ARTdataContainer::SetDefinition", "Error in Parser: '%s1'", e.GetMsg().c_str());;
 		}
@@ -759,7 +763,7 @@ void ARTdataContainer::Evaluate() const
 			//cout << "Evaluate the following expression: " << parser_->GetExpr() << endl;
 			parser_->Eval();
 		}
-		catch( mup::ParserError e )
+		catch( mup::ParserError& e )
 		{
 			throw ARTerror("ARTdataContainer::Evaluate", "Error in Parser when processing dataContainer: '%s1'", e.GetMsg().c_str());
 		}
@@ -983,7 +987,7 @@ int ARTdataContainer::GetInt()
 				//i = tmp->GetValueAsInt();
 				i = tmp->GetFloat();
 			}
-
+			break;
 		default: throw ARTerror("ARTdataContainer::GetValueAsInt", "Invalid type conversion to int: type is non-numeric, complex or triple.");
 	}//end switch
 	return i;
@@ -1018,7 +1022,7 @@ void ARTdataContainer::SetVal(const int i, const int ind)
 	if (typ == C_ART_na)
 	{
 		array_type* tmpArray = (array_type *) (val->na);
-		ARTdataContainer* tmp = dynamic_cast<ARTdataContainer*>((*tmpArray)[ind]);
+		ARTdataContainer* tmp = dynamic_cast<ARTdataContainer*>(tmpArray->at(ind));
 		tmp->SetVal(std::complex<double>((double) i,0));
 	}
 	else
@@ -1036,7 +1040,7 @@ void ARTdataContainer::SetVal(const double d, const int ind)
 	if (typ == C_ART_na)
 	{
 		array_type* tmpArray = (array_type *) (val->na);
-		ARTdataContainer* tmp = dynamic_cast<ARTdataContainer*>((*tmpArray)[ind]);
+		ARTdataContainer* tmp = dynamic_cast<ARTdataContainer*>(tmpArray->at(ind));
 		tmp->SetVal(std::complex<double>(d,0));
 	}
 	else
@@ -1054,7 +1058,7 @@ void ARTdataContainer::SetVal(const float f, const int ind)
 	if (typ == C_ART_na)
 	{
 		array_type* tmpArray = (array_type *) (val->na);
-		ARTdataContainer* tmp = dynamic_cast<ARTdataContainer*>((*tmpArray)[ind]);
+		ARTdataContainer* tmp = dynamic_cast<ARTdataContainer*>(tmpArray->at(ind));
 		tmp->SetVal(std::complex<double>(f,0));
 	}
 	else
@@ -1073,7 +1077,7 @@ void ARTdataContainer::SetVal(std::complex<double> c, const int ind)
 	if (typ == C_ART_na)
 	{
 		array_type* tmpArray = (array_type *) (val->na);
-		ARTdataContainer* tmp = dynamic_cast<ARTdataContainer*>((*tmpArray)[ind]);
+		ARTdataContainer* tmp = dynamic_cast<ARTdataContainer*>(tmpArray->at(ind));
 		tmp->SetVal(c);
 	}
 	else
@@ -1091,7 +1095,7 @@ void ARTdataContainer::SetVal(const double re, const double im, const int ind)
 	if (typ == C_ART_na)
 	{
 		array_type* tmpArray = (array_type *) (val->na);
-		ARTdataContainer* tmp = dynamic_cast<ARTdataContainer*>((*tmpArray)[ind]);
+		ARTdataContainer* tmp = dynamic_cast<ARTdataContainer*>(tmpArray->at(ind));
 		tmp->SetVal(re, im);
 	}
 	else
@@ -1249,7 +1253,7 @@ void ARTdataContainer::SetParser(mup::ParserX *p){
 		ARTdataContainer* tmp;
 		for (int i = 0; i < len; ++i)
 		{
-			tmp = dynamic_cast<ARTdataContainer*>((*tmpArray)[i]);
+			tmp = dynamic_cast<ARTdataContainer*>(tmpArray->at(i));
 			//cout << "Set parser of element [" << i << "]" << endl;
 			tmp->parser_ = p;
 			//cout << "Done" << endl;
@@ -1293,7 +1297,7 @@ void ARTdataContainer::SetParserVar(const string& varname)
 		//written and read directely to/from the dp. nice, isn't it!
 
 	}
-	catch(mup::ParserError e)
+	catch(mup::ParserError& e)
 	{
 		throw ARTerror("ARTdataContainer::CreateParserVar", "Error in Parser: '%s1'", e.GetMsg());
 	}
@@ -1314,7 +1318,7 @@ void ARTdataContainer::DestroyParserVar()
 		// we currently have no parser variable defined
 		parserVarDefined_ = false;
 	}
-	catch(mup::ParserError e)
+	catch(mup::ParserError& e)
 	{
 		throw ARTerror("ARTdataContainer::DestroyParserVar", "Error in Parser: '%s1'", e.GetMsg());
 	}
@@ -1402,7 +1406,7 @@ void ARTdataContainer::resizeArray(int newSize)
 //		cout << "Content[" << idx << "] = " << tmp->val->c.re << endl;
 //	}
 //
-//	cout << "Resized array from " << oldSize << " to " << newSize << " elements." << endl;
+	cout << "Resized array from " << oldSize << " to " << newSize << " elements." << endl;
 
 }
 
@@ -1426,7 +1430,7 @@ void ARTdataContainer::resizeArray(int newSize)
 		{
 			case C_ART_na:
 				arraySize = tmpArray->size();
-				if (arraySize - 5 <= tmpArray->getUsedBufferSize())
+				if (arraySize - 3 <= tmpArray->getUsedBufferSize())
 				{
 					resizeArray(arraySize + 5);
 				}
@@ -1452,7 +1456,7 @@ void ARTdataContainer::resizeArray(int newSize)
 			case C_ART_na:
 				// size check
 				arraySize = tmpArray->size();
-				if (arraySize - 5 <= tmpArray->getUsedBufferSize())
+				if (arraySize - 3 <= tmpArray->getUsedBufferSize())
 				{
 					resizeArray(arraySize + 5);
 				}
@@ -1595,7 +1599,7 @@ void ARTdataContainer::resizeArray(int newSize)
 	IValue& ARTdataContainer::operator=(const array_type &a_vVal)
 	{
 		_DBG_MSG("const array_type&");
-		// TODO
+		// TODO: implement this correctly
 		return *this;
 	}
 
@@ -1678,7 +1682,7 @@ void ARTdataContainer::resizeArray(int newSize)
 				default: throw ParserError();
 			}
 		}
-		catch (ParserError dummy)
+		catch (ParserError& dummy)
 		{
 			ErrorContext err;
 			err.Errc	= ecTYPE_CONFLICT;
@@ -1699,6 +1703,8 @@ void ARTdataContainer::resizeArray(int newSize)
 			throw ParserError(err);
 
 		}
+		// never to be reached, just to suppress compiler warnings
+		return 0;
 	}
 
 	//---------------------------------------------------------------------------
