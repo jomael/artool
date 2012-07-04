@@ -59,7 +59,7 @@ protected:
 
   /**
     * In case of a ring buffer, this is the index to the first valid element.
-    * Initial value is 0.
+    * Initial value is -1.
     */
   size_type _first;
   /**
@@ -96,7 +96,7 @@ public:
     _allocator(a),
     _fields(0),
     _is_ringbuffer(false),
-    _first(0),
+    _first(-1),
     _last(-1),
     //_current_idx(0),
     _used_elements(0)
@@ -115,7 +115,7 @@ public:
     _fields(_allocator.allocate(_size)),
 #endif
     _is_ringbuffer(rb),
-    _first(0),
+    _first(-1),
     _last(-1),
     //_current_idx(0),
     _used_elements(0)
@@ -321,7 +321,7 @@ public:
 		// save the lowest index of the current array access:
 		// if the currently used buffer size is less than the
 		// difference between current index and
-		if ((_first - idx) > _used_elements)
+		if ((_first - idx) >= _used_elements)
 		{
 			// if we cannot increase the number of used elements, throw
 			// an out of range exception
@@ -349,7 +349,7 @@ public:
 		// save the lowest index of the current array access:
 		// if the currently used buffer size is less than the
 		// difference between current index and
-		if ((_first - idx) > _used_elements)
+		if ((_first - idx) >= _used_elements)
 		{
 			// if we cannot increase the number of used elements, throw
 			// an out of range exception
