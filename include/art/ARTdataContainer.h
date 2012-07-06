@@ -279,6 +279,7 @@ public:
 	void Rename(const string& newname);
 
 	void SetParserVar(const string& varname);
+	const Variable& GetParserVar() const;
 
 	void DestroyParserVar();
 

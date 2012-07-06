@@ -1303,6 +1303,10 @@ void ARTdataContainer::SetParserVar(const string& varname)
 	}
 }
 
+const Variable& ARTdataContainer::GetParserVar() const
+{
+	return *avar_;
+}
 
 void ARTdataContainer::DestroyParserVar()
 {
