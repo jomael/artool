@@ -16,11 +16,14 @@
 // cbg: workaround for unix time measurements
 #define GetTickCount() 0
 #endif
+
 #include "art.clp"
 #include "Interface.h"
 #include "ART.h"
 #include "ARTwaveObject.h"
 #include "ARTmodel.h"
+
+#include "ARTtimeModule.h"
 
 #define TEST_DEF_START(test_id, suite) \
 	class test_id : public TestClass \
@@ -4730,63 +4733,93 @@ int main(int argc, char **argv)
 */
 	// clemens test cases
 	try {
-		ARTdataContainer* timeModule = new ARTdataContainer(C_ART_na, 1, "myTest");
-		mup::ParserX* testParser = new mup::ParserX();
+//		ARTdataContainer* timeModule = new ARTdataContainer(C_ART_na, 1, "myTest");
+//		mup::ParserX* testParser = new mup::ParserX();
+//
+//		std::cout << "Initialized timeModule and testParser" << std::endl;
+//
+//		mup::Value n(0);
+//		mup::Variable nVar(&n);
+//		testParser->DefineVar("n", nVar);
+////		mup::Value myTest(50, 0.0);
+////		mup::Variable myTestVar(&myTest);
+////		testParser->DefineVar("myTest", myTestVar);
+////		myTest[0] = 0, myTest[1] = 1;
+//
+//		std::cout << "Initialized external variables and registered them in testParser" << std::endl;
+//
+//		timeModule->SetParser(testParser);
+//
+//		timeModule->SetDefinition("myTest[n] = myTest[n - 1] + myTest[n - 2]");
+//
+//		//testParser->SetExpr("myTest[n] = myTest[n - 1] + myTest[n - 2]");
+//
+//		std::cout << "Set parser and definition of time module" << std::endl;
+//
+//		// initialize Fibonacci array
+//		/*timeModule->SetVal(0, 0);
+//		timeModule->SetVal(1, 1);*/
+//		(*timeModule)[-1] = 1;
+//		//(*timeModule)[-2] = 0;
+//
+//		//timeModule->SetInvalid(2, 49);
+//
+//		std::cout << "Initialized first two Fibonacci values" << std::endl;
+//
+//		//timeModule->DebugDepTree(" ", "\n");
 
-		std::cout << "Initialized timeModule and testParser" << std::endl;
-
+		ARTtimeModule* timeModule = new ARTtimeModule("myModule");
+		ARTtimeModule* timeModule2 = new ARTtimeModule("myModule2");
 		mup::Value n(0);
 		mup::Variable nVar(&n);
-		testParser->DefineVar("n", nVar);
-//		mup::Value myTest(50, 0.0);
-//		mup::Variable myTestVar(&myTest);
-//		testParser->DefineVar("myTest", myTestVar);
-//		myTest[0] = 0, myTest[1] = 1;
 
-		std::cout << "Initialized external variables and registered them in testParser" << std::endl;
+		timeModule->addOPort("fib", "fib[n] = fib[n-1] + fib[n-2]");
+		timeModule->addGlobalParameter("n", nVar);
 
-		timeModule->SetParser(testParser);
+		timeModule2->addOPort("test", "test[n] = fib[n]");
 
-		timeModule->SetDefinition("myTest[n] = myTest[n - 1] + myTest[n - 2]");
+		const ARTOPortType& testPort = dynamic_cast<const ARTOPortType&>(timeModule->getPort("fib"));
+		timeModule2->addIPort("fib",testPort);
+		timeModule2->addGlobalParameter("n", nVar);
 
-		//testParser->SetExpr("myTest[n] = myTest[n - 1] + myTest[n - 2]");
+		testPort.initPortValue(std::complex<double>(1,0), -1);
+		testPort.initPortValue(std::complex<double>(0,0), -2);
 
-		std::cout << "Set parser and definition of time module" << std::endl;
+		const ARTOPortType& outputPort = dynamic_cast<const ARTOPortType&>(timeModule2->getPort("test"));
 
-		// initialize Fibonacci array
-		/*timeModule->SetVal(0, 0);
-		timeModule->SetVal(1, 1);*/
-		(*timeModule)[-1] = 1;
-		//(*timeModule)[-2] = 0;
-
-		//timeModule->SetInvalid(2, 49);
-
-		std::cout << "Initialized first two Fibonacci values" << std::endl;
-
-		//timeModule->DebugDepTree(" ", "\n");
-
+//		ARTdataContainer& testPort = timeModule->getOPort("fib");
+//		testPort[-1] = 1;
+//
+//		timeModule->addOPort("fib", "fib[n] = n");
+//
 		for (int i = 0; i < 50; ++i)
 		{
 			n = i;
-			timeModule->getArrayElement(i).Invalidate();
-			array_type& tmpArray = const_cast<array_type&>(timeModule->GetArray());
-			tmpArray.setCurrentIdx(i);
-			std::cout << "Fibonacci[" << i << "] = " << (*timeModule)[i].GetFloat() << std::endl;
-			std::cout << "Used buffer size of array: " << tmpArray.getUsedBufferSize() << std::endl;
+//			timeModule->getArrayElement(i).Invalidate();
+//			array_type& tmpArray = const_cast<array_type&>(testPort.GetArray());
+//			tmpArray.setCurrentIdx(i);
+//			testPort.getArrayElement(i).Invalidate();
+			std::cout << "Fibonacci[" << i << "] = " << testPort[i].real() << std::endl;
+			//std::cout << "Used buffer size of array: " << tmpArray.getUsedBufferSize() << std::endl;
 			//testParser->Eval();
 			//std::cout << "Fibonacci[" << i << "] = " << myTest[i].GetFloat() << std::endl;
 		}
 
 		delete timeModule;
+		delete timeModule2;
 //		delete testParser;
 	}
-	catch (ARTerror e)
+	catch (ARTerror& e)
 	{
 		std::cout << e.GetErrorMessage() << std::endl;
 	}
-	catch (mup::ParserError e)
+	catch (mup::ParserError& e)
 	{
 		std::cout << e.GetMsg() << std::endl;
+	}
+	catch (string& errorMsg)
+	{
+		std::cout << "Error occurred: " << errorMsg << std::endl;
 	}
 	catch (...)
 	{

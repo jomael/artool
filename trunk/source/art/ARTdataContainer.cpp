@@ -9,6 +9,9 @@
 
 //#define _DBG_MSG(a) {cout << __FILE__ << "::" <<__func__ << "("<< a << ")" << endl;}
 #define _DBG_MSG(a)
+#define _DBG_MSG2(a) {cout << __FILE__ << "::" <<__func__ << "("<< a << ")" << endl;}
+//#define _DBG_MSG2(a)
+
 
 namespace std
 {
@@ -73,6 +76,8 @@ ARTdataContainer::ARTdataContainer(const T_ART_Type dtyp, const int dlen, const 
 			tmpARTdataContainer->SetType(C_ART_cpx);
 			// initialize all values of ARTdataContainer to zero...
 			tmpARTdataContainer->SetVal(std::complex<double>(0,0));
+			// set all values to invalid
+			tmpARTdataContainer->valid_ = false;
 			(*tmpArray)[i] = tmpARTdataContainer;
 		}
 		// set current index to 0 indicating that it is now
@@ -1359,8 +1364,9 @@ string ARTdataContainer::DebugInfo()
 	return t;
 }
 
-ARTdataContainer& ARTdataContainer::getArrayElement(int idx)
+ARTdataContainer& ARTdataContainer::GetArrayElement(int idx)
 {
+	_DBG_MSG("int");
 	array_type* tmpArray = (array_type *) (val->na);
 	ARTdataContainer* tmp;
 	switch (typ)
@@ -1374,6 +1380,21 @@ ARTdataContainer& ARTdataContainer::getArrayElement(int idx)
 			break;
 	}
 	return *this;
+}
+
+void ARTdataContainer::SetCurrentIndex(int idx)
+{
+	_DBG_MSG("int");
+	array_type* tmpArray = (array_type *) (val->na);
+	switch (typ)
+	{
+		case C_ART_na:
+			tmpArray->setCurrentIdx(idx);
+			break;
+		default:
+			throw ParserError();
+			break;
+	}
 }
 
 void ARTdataContainer::resizeArray(int newSize)
@@ -1651,6 +1672,7 @@ void ARTdataContainer::resizeArray(int newSize)
 		_DBG_MSG("");
 		ARTdataContainer* tmp;
 		array_type* tmpArray = (array_type*) (val->na);
+		if (!valid_) Evaluate();
 		try
 		{
 			switch(typ)
@@ -1717,6 +1739,7 @@ void ARTdataContainer::resizeArray(int newSize)
 		_DBG_MSG("");
 //		return m_val;
 		static cmplx_type tmp;
+		if (!valid_) Evaluate();
 		if (typ == C_ART_cpx)
 		{
 			tmp = cmplx_type(val->c.re,val->c.im);
