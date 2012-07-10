@@ -306,7 +306,8 @@ public:
 	list<ARTdataContainer*>	GetClientList(){return clientList_;}
 	bool CheckValidity() ;
 
-	ARTdataContainer& getArrayElement(int idx);
+	ARTdataContainer& GetArrayElement(int idx);
+	void SetCurrentIndex(int idx);
 
 	// former ARTValue
 

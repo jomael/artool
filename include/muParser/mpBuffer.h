@@ -315,8 +315,8 @@ public:
 		n = (n < 0) ? (n + _size) : n;
 		reference retVal = _fields[n];
 
-		std::cout << "operator[]: _first = " << _first << ", idx = " << idx
-				<< ", _used_elements = " << _used_elements << std::endl;
+//		std::cout << "operator[]: _first = " << _first << ", idx = " << idx
+//				<< ", _used_elements = " << _used_elements << std::endl;
 
 		// save the lowest index of the current array access:
 		// if the currently used buffer size is less than the
@@ -416,8 +416,8 @@ public:
 
     _first = n;
 
-    std::cout << "Setting current idx to " << n << ", _last = "
-    		<< _last << ", _first = " << _first << std::endl;
+//    std::cout << "Setting current idx to " << n << ", _last = "
+//    		<< _last << ", _first = " << _first << std::endl;
 
   }
 
