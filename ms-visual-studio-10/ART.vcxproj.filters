@@ -177,9 +177,6 @@
     <ClCompile Include="..\source\ga\GATreeGenome.cpp">
       <Filter>SourceFiles\ga</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\muParser\mpARTValue.cpp">
-      <Filter>SourceFiles\muParser</Filter>
-    </ClCompile>
     <ClCompile Include="..\source\muParser\mpError.cpp">
       <Filter>SourceFiles\muParser</Filter>
     </ClCompile>
@@ -299,6 +296,9 @@
     </ClCompile>
     <ClCompile Include="..\source\fortran\pythag.c">
       <Filter>SourceFiles\fortran</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\art\ARTtimeModule.cpp">
+      <Filter>SourceFiles\art</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -521,9 +521,6 @@
     <ClInclude Include="..\include\muParser\memory.h">
       <Filter>HeaderFiles\muParser</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\muParser\mpARTValue.h">
-      <Filter>HeaderFiles\muParser</Filter>
-    </ClInclude>
     <ClInclude Include="..\include\muParser\mpDefines.h">
       <Filter>HeaderFiles\muParser</Filter>
     </ClInclude>
@@ -637,6 +634,9 @@
     </ClInclude>
     <ClInclude Include="..\include\fortran\f2c.h">
       <Filter>HeaderFiles\fortran</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\art\ARTtimeModule.h">
+      <Filter>HeaderFiles\art</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
