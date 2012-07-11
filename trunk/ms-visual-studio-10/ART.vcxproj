@@ -253,6 +253,7 @@
     <ClCompile Include="..\source\art\ARTerror.cpp" />
     <ClCompile Include="..\source\art\ARTfunctionoid.cpp" />
     <ClCompile Include="..\source\art\ARTlink.cpp" />
+    <ClCompile Include="..\source\art\ARTtimeModule.cpp" />
     <ClCompile Include="..\source\art\hornelement.cpp" />
     <ClCompile Include="..\source\art\impedancecurve.cpp" />
     <ClCompile Include="..\source\art\interface.cpp" />
@@ -305,7 +306,6 @@
     <ClCompile Include="..\source\ga\GATree.cpp" />
     <ClCompile Include="..\source\ga\GATreeBASE.cpp" />
     <ClCompile Include="..\source\ga\GATreeGenome.cpp" />
-    <ClCompile Include="..\source\muParser\mpARTValue.cpp" />
     <ClCompile Include="..\source\muParser\mpError.cpp" />
     <ClCompile Include="..\source\muParser\mpFuncCmplx.cpp" />
     <ClCompile Include="..\source\muParser\mpFuncCommon.cpp" />
@@ -346,6 +346,7 @@
     <ClInclude Include="..\include\art\ARTlink.h" />
     <ClInclude Include="..\include\art\ARTmodel.h" />
     <ClInclude Include="..\include\art\ARTmodelinterface.h" />
+    <ClInclude Include="..\include\art\ARTtimeModule.h" />
     <ClInclude Include="..\include\art\ARTwaveObject.h" />
     <ClInclude Include="..\include\art\autoinit.hpp" />
     <ClInclude Include="..\include\art\binary.hpp" />
@@ -413,7 +414,6 @@
     <ClInclude Include="..\include\ga\gaversion.h" />
     <ClInclude Include="..\include\ga\std_stream.h" />
     <ClInclude Include="..\include\muParser\memory.h" />
-    <ClInclude Include="..\include\muParser\mpARTValue.h" />
     <ClInclude Include="..\include\muParser\mpDefines.h" />
     <ClInclude Include="..\include\muParser\mpError.h" />
     <ClInclude Include="..\include\muParser\mpFuncCmplx.h" />
