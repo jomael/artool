@@ -256,6 +256,18 @@ void ARTtimeModule::removeGlobalParameter(const string& name)
 	}
 }
 
+void ARTtimeModule::setCurrentIndex(int idx)
+{
+	oPortIterator iter;
+	ARTdataContainer* tmpContainer;
+	for (iter = _oPorts.begin(); iter != _oPorts.end(); ++iter)
+	{
+		tmpContainer = getContainerFromPort(*(iter->second));
+		tmpContainer->SetCurrentIndex(idx);
+		tmpContainer->GetArrayElement(idx).Invalidate();
+	}
+}
+
 ARTtimeModule& ARTtimeModule::operator=(const ARTtimeModule& orig)
 {
 	copy(orig);

@@ -425,7 +425,7 @@ TEST_DEF_START(createDataContainerParserVars, ARTdataContainerTests)
 
 			//Check if variable exists
 			//cout << "testDC value = " << testDC->GetValueAsDouble() << endl;
-			parser->SetExpr("meineTestVar = 2 + 2");
+			parser->SetExpr("meineTestVar = 2 + 2 ");
 			parser->Eval(); //will throw an error if the variable does not exist
 
 			//cout << "testDC value (should be 4) = " << testDC->GetValueAsDouble() << endl;
@@ -434,7 +434,7 @@ TEST_DEF_START(createDataContainerParserVars, ARTdataContainerTests)
 
 			try
 			{
-				parser->SetExpr("meineTestVar = 2 + 2");
+				parser->SetExpr("meineTestVar = 2 + 2 ");
 				parser->Eval(); //will throw an error if the variable does not exist -> it should NOT exist anymore
 			}
 			catch(mup::ParserError e)
@@ -4689,7 +4689,7 @@ int main(int argc, char **argv)
 		std::cout << "\n\n" << err;
 	}
 */
-/*
+
 
 	//AllMyTests->printTree();
 
@@ -4730,9 +4730,9 @@ int main(int argc, char **argv)
 
 	//print summary, as other messages might drown in debugging output
 	//AllMyTests->printSummary();
-*/
+
 	// clemens test cases
-	try {
+//	try {
 //		ARTdataContainer* timeModule = new ARTdataContainer(C_ART_na, 1, "myTest");
 //		mup::ParserX* testParser = new mup::ParserX();
 //
@@ -4768,63 +4768,65 @@ int main(int argc, char **argv)
 //
 //		//timeModule->DebugDepTree(" ", "\n");
 
-		ARTtimeModule* timeModule = new ARTtimeModule("myModule");
-		ARTtimeModule* timeModule2 = new ARTtimeModule("myModule2");
-		mup::Value n(0);
-		mup::Variable nVar(&n);
-
-		timeModule->addOPort("fib", "fib[n] = fib[n-1] + fib[n-2]");
-		timeModule->addGlobalParameter("n", nVar);
-
-		timeModule2->addOPort("test", "test[n] = fib[n]");
-
-		const ARTOPortType& testPort = dynamic_cast<const ARTOPortType&>(timeModule->getPort("fib"));
-		timeModule2->addIPort("fib",testPort);
-		timeModule2->addGlobalParameter("n", nVar);
-
-		testPort.initPortValue(std::complex<double>(1,0), -1);
-		testPort.initPortValue(std::complex<double>(0,0), -2);
-
-		const ARTOPortType& outputPort = dynamic_cast<const ARTOPortType&>(timeModule2->getPort("test"));
-
-//		ARTdataContainer& testPort = timeModule->getOPort("fib");
-//		testPort[-1] = 1;
+//		ARTtimeModule* timeModule = new ARTtimeModule("myModule");
+//		ARTtimeModule* timeModule2 = new ARTtimeModule("myModule2");
+//		mup::Value t(0);
+//		mup::Variable tVar(&t);
 //
-//		timeModule->addOPort("fib", "fib[n] = n");
+//		timeModule->addOPort("fib", "fib[t] = fib[t-1] + fib[t-2]");
+//		timeModule->addGlobalParameter("t", tVar);
 //
-		for (int i = 0; i < 50; ++i)
-		{
-			n = i;
-//			timeModule->getArrayElement(i).Invalidate();
-//			array_type& tmpArray = const_cast<array_type&>(testPort.GetArray());
-//			tmpArray.setCurrentIdx(i);
-//			testPort.getArrayElement(i).Invalidate();
-			std::cout << "Fibonacci[" << i << "] = " << testPort[i].real() << std::endl;
-			//std::cout << "Used buffer size of array: " << tmpArray.getUsedBufferSize() << std::endl;
-			//testParser->Eval();
-			//std::cout << "Fibonacci[" << i << "] = " << myTest[i].GetFloat() << std::endl;
-		}
-
-		delete timeModule;
-		delete timeModule2;
-//		delete testParser;
-	}
-	catch (ARTerror& e)
-	{
-		std::cout << e.GetErrorMessage() << std::endl;
-	}
-	catch (mup::ParserError& e)
-	{
-		std::cout << e.GetMsg() << std::endl;
-	}
-	catch (string& errorMsg)
-	{
-		std::cout << "Error occurred: " << errorMsg << std::endl;
-	}
-	catch (...)
-	{
-		std::cout << "ERROR in Clemens' tests!" << std::endl;
-	}
+//		timeModule2->addOPort("test", "test[t] = (fib[t] + fib[t-1]) / fib[t]");
+//
+//		const ARTOPortType& testPort = dynamic_cast<const ARTOPortType&>(timeModule->getPort("fib"));
+//		timeModule2->addIPort("fib",testPort);
+//		timeModule2->addGlobalParameter("t", tVar);
+//
+//		testPort.initPortValue(std::complex<double>(1,0), -1);
+//		testPort.initPortValue(std::complex<double>(0,0), -2);
+//
+//		const ARTOPortType& outputPort = dynamic_cast<const ARTOPortType&>(timeModule2->getPort("test"));
+//
+////		ARTdataContainer& testPort = timeModule->getOPort("fib");
+////		testPort[-1] = 1;
+////
+////		timeModule->addOPort("fib", "fib[n] = n");
+////
+//		for (int i = 0; i < 50; ++i)
+//		{
+//			t = i;
+////			timeModule->getArrayElement(i).Invalidate();
+////			array_type& tmpArray = const_cast<array_type&>(testPort.GetArray());
+////			tmpArray.setCurrentIdx(i);
+////			testPort.getArrayElement(i).Invalidate();
+//			timeModule->setCurrentIndex(i);
+//			timeModule2->setCurrentIndex(i);
+//			std::cout << "Fibonacci[" << i << "] = " << outputPort[i].real() << std::endl;
+//			//std::cout << "Used buffer size of array: " << tmpArray.getUsedBufferSize() << std::endl;
+//			//testParser->Eval();
+//			//std::cout << "Fibonacci[" << i << "] = " << myTest[i].GetFloat() << std::endl;
+//		}
+//
+//		delete timeModule;
+//		delete timeModule2;
+////		delete testParser;
+//	}
+//	catch (ARTerror& e)
+//	{
+//		std::cout << e.GetErrorMessage() << std::endl;
+//	}
+//	catch (mup::ParserError& e)
+//	{
+//		std::cout << e.GetMsg() << std::endl;
+//	}
+//	catch (string& errorMsg)
+//	{
+//		std::cout << "Error occurred: " << errorMsg << std::endl;
+//	}
+//	catch (...)
+//	{
+//		std::cout << "ERROR in Clemens' tests!" << std::endl;
+//	}
 
 
 	return 0;

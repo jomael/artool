@@ -124,6 +124,7 @@ source_group(muparser_src FILES
 set(ART_SOURCES
 	${ART_SOURCE_DIR}/art.cpp # y (w)
 	${ART_SOURCE_DIR}/ARTdataContainer.cpp # y
+#	${ART_SOURCE_DIR}/ARTSimulator.cpp # y
 	${ART_SOURCE_DIR}/ARTtimeModule.cpp # y
 	${ART_SOURCE_DIR}/ARTerror.cpp # y
 	${ART_SOURCE_DIR}/ARTfunctionoid.cpp # y
