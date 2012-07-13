@@ -49,7 +49,11 @@ MUP_NAMESPACE_START
   //------------------------------------------------------------------------------
   bool DblValReader::IsValue(const char_type *a_szExpr, int &a_iPos, Value &a_Val)
   {
-    stringstream_type stream(a_szExpr + a_iPos);
+    // added by CBG due to a bug in stringstream library
+    string_type tmpString(a_szExpr);
+    // add space at end of string to avoid bug in case of eof (bug in stringstream)
+    tmpString += " ";
+    stringstream_type stream(tmpString.c_str() + a_iPos);
     float_type fVal(0);
     std::streamoff iStart(0), iEnd(0);
 

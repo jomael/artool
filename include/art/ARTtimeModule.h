@@ -77,19 +77,19 @@ public:
 	virtual void addGlobalParameter(const string& name, const Variable& parameter) = 0;
 	virtual void removeGlobalParameter(const string& name) = 0;
 
+	virtual void setCurrentIndex(int idx) = 0;
+
 	virtual ~ARTItimeModule() {}
 
 protected:
 	inline static ARTdataContainer* getContainerFromPort(const ARTPortType& port)
 	{
 		ARTdataContainer* tmpContainer = const_cast<ARTdataContainer*>(port._port);
-		//std::cout << "Getting address of Container of port: " << tmpContainer << std::endl;
 		return tmpContainer;
 	}
 
 	inline static void setContainerForPort(ARTPortType& port, const ARTdataContainer* container)
 	{
-		//std::cout << "Setting container of Port to address " << container << std::endl;
 		port._port = container;
 	}
 
@@ -127,6 +127,8 @@ public:
 
 	virtual void addGlobalParameter(const string& name, const Variable& parameter);
 	virtual void removeGlobalParameter(const string& name);
+
+	virtual void setCurrentIndex(int idx);
 
 	virtual ARTtimeModule& operator=(const ARTtimeModule& orig);
 
