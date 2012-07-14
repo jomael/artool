@@ -42,6 +42,7 @@
 
 #include <time.h>
 #include "Interface.h"
+#include "ARTsimulator.h"
 #include "ARTwaveObject.h"
 #include "ARTmodel.h"
 #include "ARTdataContainer.h"
@@ -298,6 +299,14 @@ void ARTobject::CopyMethodListEntries(ARTobject* obj)
 	}
 }
 
+void ARTmodelInterface::SetSimulator(ARTsimulator* sim)
+{
+//	if (sim->GetDomain()->GetName() == "FrequencyDomain")
+//	{
+		simulator = dynamic_cast<ARTfreqSimulator*>(sim);
+//	}
+}
+
 
 //**************************************************************************************************************
 // ARTlistProp
@@ -334,7 +343,7 @@ ARTobject* ARTlistProp::FindObject(const string nam)
 ARTobject* ARTlistProp::GetObjects(ARTobject* pos) 
 {
 	if (pos == NULL) {
-		oiter_ = objectList_.begin(); 
+		oiter_ = objectList_.begin();
 		return (oiter_ == objectList_.end()) ? NULL : *oiter_++;
 	}
 	else if (oiter_ == objectList_.end()) {
@@ -370,6 +379,51 @@ int ARTlistProp::ReplaceObject(ARTobject* obj,ARTobject* newobj)
 	return i;
 }
 
+ARTelement::ARTelement(const string name, const string sds, const string lds, const string htm, ARTmodelInterface* prototype, ARTsimulator* sim)
+: ARTmodelInterface(name,sds,lds,htm),
+  //propMatrix(NULL),
+  model(NULL),
+  wavefrontOut(NULL),
+  wavefrontIn(NULL)
+{
+
+	ParserX* parser = NULL;
+	if (sim) parser = sim->GetParser();
+
+	if (prototype)
+	{
+		model = prototype->CloneModel();
+		model->SetSimulator(sim);
+		model->CopyPropertyListEntries(prototype);
+		model->CopyMethodListEntries(prototype);
+		//Create Parser variables
+		if ( parser )
+		{
+			ARTproperty* prop = model->GetProperties(NULL);
+			while (prop)
+			{
+				//if it is a data property
+				ARTdataProp* dprop = dynamic_cast<ARTdataProp*>(prop);
+				if (dprop)
+				{
+					string varname = name_ + "." + dprop->GetName();
+					dprop->SetParser(parser);
+					dprop->SetParserVar(varname);
+					//std::cout << "Created Parser Var: " << varname << "\n";
+				}
+				prop = model->GetProperties(prop);
+			}
+		}
+	}
+	//Matrix und Impedanz ohne Funktion erstmal
+	//propMatrix = AppendDataProp("M_" + name, NULL, "The transmission matrix of this element.");
+
+	//Set the output data container of the wave object to a property we append to the object
+	z_inp = AppendDataProp("Z_" + name, NULL, "The propagated impedance at this element's or circuit's entry.");
+	z_rad = AppendDataProp("ZR_" + name, NULL, "The radiation impedance at this element's or circuit's opening.");
+	wavefrontOut = new WaveObjectMMImpedance(z_inp, NULL, NULL);
+}
+
 //removes all dependencies
 void ARTelement::PrepareCalculation()
 {
@@ -387,6 +441,22 @@ void ARTelement::PrepareCalculation()
 				}
 	} 
 	while(prop); //until no prop. is found, it's NULL then...
+}
+
+void ARTelement::SetScope(ARTsimulator* sim)
+{
+	if (sim == NULL)
+		throw ARTerror("ARTelement::SetScope", "The specified simulator is invalid.");
+
+	piter_ = propertyList_.begin();
+	ARTdataProp* p;
+
+	while (piter_ != propertyList_.end())
+	{
+		p = dynamic_cast<ARTdataProp*>(*piter_);
+		if (p) ((ARTdataContainer*)p)->SetParser(sim->GetParser());
+		piter_++;
+	}
 }
 
 bool ARTelement::HasBends()
@@ -652,63 +722,63 @@ void ARTcircuit::InputImpedance(WaveObjectInterface* in, WaveObjectInterface*& o
 
 
 
-//**************************************************************************************************************
-// ARTsimulator
-ARTsimulator::ARTsimulator(const string name,const string domain, const string wavetype,
-             const string sds, const string lds, const string htm) :
-			 ARTobject(name,sds,lds,htm), domain_(domain), wavetype_(wavetype)
-{
-	parser_ = new ParserX(mup::pckCOMPLEX_NO_STRING);
-	/*	
-	The frequency grids are not supposed to be edited by the user and therefore no properties!
-	frqGrid = AppendDataProp("frqGrid", new ARTvariant(C_ART_ndbl), "The list of frequencies (in Hz) for which this simulator will calculate the impedance.");
-	wfrqGrid = AppendDataProp("wfrqGrid", new ARTvariant(C_ART_ndbl), "The list of frequencies (angular frequency) for which this simulator will calcualte the impedance.");
-	*/
-	modes = AppendDataProp("NumberOfModes", 1, "The number of modes for which this simulator will calculate the impedance.");
-
-	ARTdataProp* fmin = AppendDataProp("LowerFrequencyLimit", 50.0, "The lower frequency (in Hz) of the range for which this simulator will calculate the impedance.");
-	ARTdataProp* fmax = AppendDataProp("HigherFrequencyLimit", 1800.0, "The higher frequency (in Hz) of the range for which this simulator will calculate the impedance.");
-	ARTdataProp* fstep = AppendDataProp("FrequencyStep", 5.0, "The frequency step (in Hz) used to go through the range for which this simulator will calculate the impedance.");
-
-	//add properties to parser
-	ARTproperty* prop = GetProperties(NULL);
-	while (prop)
-	{
-		//if it is a data property 
-		ARTdataProp* dprop = dynamic_cast<ARTdataProp*>(prop);
-		if (dprop)
-		{
-			string varname = dprop->GetName();
-			dprop->SetParser(parser_);
-			dprop->SetParserVar(varname);
-			//std::cout << "Created Parser Var: " << varname << "\n";
-		}
-		prop = GetProperties(prop);
-	}
-
-	frqGrid = new ARTdataContainer("frqGrid", new ARTfrqGridFunc(fmin, fmax, fstep));
-	wfrqGrid = new ARTdataContainer("wfrqGrid", new ARTwfrqGridFunc(frqGrid));
-
-}
-
-
-/// Finds the data property represented by the string exp; This can be a data property of an element or model in the simulator (then the string is something like "Cyl.length") or a data property of the simulator itself.
-ARTdataProp* ARTsimulator::FindDataPropInSimulator(string exp)
-{
-	ARTdataProp* prop;
-	//try to find a property of the simulator with name *exp*
-	prop = dynamic_cast<ARTdataProp*>( FindProperty( strcrop( exp ) ));
-	//if not found, try to find a property *exp* in the element list
-	if (!prop)
-	{
-		vector<string> nameparts = strsplit(exp,'.');
-		ARTelement* element = dynamic_cast<ARTelement*>(userElements->FindObject( strcrop(nameparts[0]).c_str() ));
-		if (element == NULL) throw ARTerror("FindDataPropInSimulator", "An element of the specified name '%s1' does not exist and '%s1' is not recognized as a data property of the simulator.", strcrop(nameparts[0]).c_str() );
-		prop = dynamic_cast<ARTdataProp*>(element->model->FindProperty( strcrop(nameparts[1]).c_str() ));
-		if (prop == NULL) throw ARTerror("FindDataPropInSimulator", "The element '%s1' does not have the specified data property '%s2'.",  strcrop(nameparts[0]).c_str() ,  strcrop(nameparts[1]).c_str() );
-	}
-	return prop;
-}
+////**************************************************************************************************************
+//// ARTsimulator
+//ARTsimulator::ARTsimulator(const string name,const string domain, const string wavetype,
+//             const string sds, const string lds, const string htm) :
+//			 ARTobject(name,sds,lds,htm), domain_(domain), wavetype_(wavetype)
+//{
+//	parser_ = new ParserX(mup::pckCOMPLEX_NO_STRING);
+//	/*
+//	The frequency grids are not supposed to be edited by the user and therefore no properties!
+//	frqGrid = AppendDataProp("frqGrid", new ARTvariant(C_ART_ndbl), "The list of frequencies (in Hz) for which this simulator will calculate the impedance.");
+//	wfrqGrid = AppendDataProp("wfrqGrid", new ARTvariant(C_ART_ndbl), "The list of frequencies (angular frequency) for which this simulator will calcualte the impedance.");
+//	*/
+//	modes = AppendDataProp("NumberOfModes", 1, "The number of modes for which this simulator will calculate the impedance.");
+//
+//	ARTdataProp* fmin = AppendDataProp("LowerFrequencyLimit", 50.0, "The lower frequency (in Hz) of the range for which this simulator will calculate the impedance.");
+//	ARTdataProp* fmax = AppendDataProp("HigherFrequencyLimit", 1800.0, "The higher frequency (in Hz) of the range for which this simulator will calculate the impedance.");
+//	ARTdataProp* fstep = AppendDataProp("FrequencyStep", 5.0, "The frequency step (in Hz) used to go through the range for which this simulator will calculate the impedance.");
+//
+//	//add properties to parser
+//	ARTproperty* prop = GetProperties(NULL);
+//	while (prop)
+//	{
+//		//if it is a data property
+//		ARTdataProp* dprop = dynamic_cast<ARTdataProp*>(prop);
+//		if (dprop)
+//		{
+//			string varname = dprop->GetName();
+//			dprop->SetParser(parser_);
+//			dprop->SetParserVar(varname);
+//			//std::cout << "Created Parser Var: " << varname << "\n";
+//		}
+//		prop = GetProperties(prop);
+//	}
+//
+//	frqGrid = new ARTdataContainer("frqGrid", new ARTfrqGridFunc(fmin, fmax, fstep));
+//	wfrqGrid = new ARTdataContainer("wfrqGrid", new ARTwfrqGridFunc(frqGrid));
+//
+//}
+//
+//
+///// Finds the data property represented by the string exp; This can be a data property of an element or model in the simulator (then the string is something like "Cyl.length") or a data property of the simulator itself.
+//ARTdataProp* ARTsimulator::FindDataPropInSimulator(string exp)
+//{
+//	ARTdataProp* prop;
+//	//try to find a property of the simulator with name *exp*
+//	prop = dynamic_cast<ARTdataProp*>( FindProperty( strcrop( exp ) ));
+//	//if not found, try to find a property *exp* in the element list
+//	if (!prop)
+//	{
+//		vector<string> nameparts = strsplit(exp,'.');
+//		ARTelement* element = dynamic_cast<ARTelement*>(userElements->FindObject( strcrop(nameparts[0]).c_str() ));
+//		if (element == NULL) throw ARTerror("FindDataPropInSimulator", "An element of the specified name '%s1' does not exist and '%s1' is not recognized as a data property of the simulator.", strcrop(nameparts[0]).c_str() );
+//		prop = dynamic_cast<ARTdataProp*>(element->model->FindProperty( strcrop(nameparts[1]).c_str() ));
+//		if (prop == NULL) throw ARTerror("FindDataPropInSimulator", "The element '%s1' does not have the specified data property '%s2'.",  strcrop(nameparts[0]).c_str() ,  strcrop(nameparts[1]).c_str() );
+//	}
+//	return prop;
+//}
 
 //**************************************************************************************************************
 // AcousticResearchTool (top level object)

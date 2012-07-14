@@ -50,6 +50,7 @@
 #include "ARTlink.h"
 #include "ARTfunctionoid.h"
 #include "ARTdataContainer.h"
+//#include "ARTsimulator.h"
 
 using mup::ParserX;
 
@@ -350,42 +351,42 @@ public:
 };
 
 
-/**
- * Simulators belong to a simulation domain (frequency, time) and simulate waves of a 
- * certain type (plain, spherical, multimodal).
- */
-class ARTsimulator : public ARTobject {
-private:
-	ARTproperty domain_; //frequency or (some day) time 
-	ARTproperty wavetype_; //plain, spherical, multimodal
-	ParserX* parser_;
-	ARTdataContainer* frqGrid;
-	ARTdataContainer* wfrqGrid;
-	ARTdataContainer* modes;
-	
-public:
-
-	ARTsimulator(const string name,const string domain="FrequencyDomain", const string wavetype="MultiModal",
-                 const string sds="", const string lds="", const string htm="");
-
-	//void SetMultimodeParameters(ARTdataProp* fmin, ARTdataProp* fmax, ARTdataProp* fstep, ARTdataProp* modes);
-
-	ARTdataContainer* GetFrequencyGrid() {return frqGrid;}
-	ARTdataContainer* GetAngularFrequencyGrid() {return wfrqGrid;}
-	ARTdataContainer* GetNumberOfModes() {return modes;}
-
-	ARTproperty* GetDomain() {return &domain_;}
-	ARTproperty* GetWavetype() {return &wavetype_;}
-
-
-	ParserX* GetParser() {return parser_;}
-
-	ARTdataProp* FindDataPropInSimulator(string exp);	
-	virtual ~ARTsimulator() {}
-	//these lists point into list of AcousticResearchTool Object
-	ARTlistProp* userElements;
-	ARTlistProp* circuits; 
-};
+///**
+// * Simulators belong to a simulation domain (frequency, time) and simulate waves of a
+// * certain type (plain, spherical, multimodal).
+// */
+//class ARTsimulator : public ARTobject {
+//private:
+//	ARTproperty domain_; //frequency or (some day) time
+//	ARTproperty wavetype_; //plain, spherical, multimodal
+//	ParserX* parser_;
+//	ARTdataContainer* frqGrid;
+//	ARTdataContainer* wfrqGrid;
+//	ARTdataContainer* modes;
+//
+//public:
+//
+//	ARTsimulator(const string name,const string domain="FrequencyDomain", const string wavetype="MultiModal",
+//                 const string sds="", const string lds="", const string htm="");
+//
+//	//void SetMultimodeParameters(ARTdataProp* fmin, ARTdataProp* fmax, ARTdataProp* fstep, ARTdataProp* modes);
+//
+//	ARTdataContainer* GetFrequencyGrid() {return frqGrid;}
+//	ARTdataContainer* GetAngularFrequencyGrid() {return wfrqGrid;}
+//	ARTdataContainer* GetNumberOfModes() {return modes;}
+//
+//	ARTproperty* GetDomain() {return &domain_;}
+//	ARTproperty* GetWavetype() {return &wavetype_;}
+//
+//
+//	ParserX* GetParser() {return parser_;}
+//
+//	ARTdataProp* FindDataPropInSimulator(string exp);
+//	virtual ~ARTsimulator() {}
+//	//these lists point into list of AcousticResearchTool Object
+//	ARTlistProp* userElements;
+//	ARTlistProp* circuits;
+//};
 
 /**
  * Objects of this class represent acoustic elements. They are created in a simulator and 
@@ -406,50 +407,50 @@ public:
 	WaveObjectInterface* wavefrontIn;
 
    
-	ARTelement(const string name, const string sds="", const string lds="", const string htm="", ARTmodelInterface* prototype=NULL, ARTsimulator* sim=NULL)
-	: ARTmodelInterface(name,sds,lds,htm),
-	  //propMatrix(NULL),
-	  model(NULL),
-	  wavefrontOut(NULL),
-	  wavefrontIn(NULL)
-	{
-	
-		ParserX* parser = NULL;
-		if (sim) parser = sim->GetParser();
-
-		if (prototype)
-		{
-		    model = prototype->CloneModel();
-			model->SetSimulator(sim);
-			model->CopyPropertyListEntries(prototype);
-			model->CopyMethodListEntries(prototype);
-			//Create Parser variables
-			if ( parser )
-			{
-				ARTproperty* prop = model->GetProperties(NULL);
-				while (prop)
-				{
-					//if it is a data property 
-					ARTdataProp* dprop = dynamic_cast<ARTdataProp*>(prop);
-					if (dprop)
-					{
-						string varname = name_ + "." + dprop->GetName();
-						dprop->SetParser(parser);
-						dprop->SetParserVar(varname);
-						//std::cout << "Created Parser Var: " << varname << "\n";
-					}
-					prop = model->GetProperties(prop);
-				}
-			}
-		}
-		//Matrix und Impedanz ohne Funktion erstmal
-		//propMatrix = AppendDataProp("M_" + name, NULL, "The transmission matrix of this element.");
-		
-		//Set the output data container of the wave object to a property we append to the object
-		z_inp = AppendDataProp("Z_" + name, NULL, "The propagated impedance at this element's or circuit's entry.");
-		z_rad = AppendDataProp("ZR_" + name, NULL, "The radiation impedance at this element's or circuit's opening.");
-		wavefrontOut = new WaveObjectMMImpedance(z_inp, NULL, NULL);
-	}
+	ARTelement(const string name, const string sds="", const string lds="", const string htm="", ARTmodelInterface* prototype=NULL, ARTsimulator* sim=NULL);
+//	: ARTmodelInterface(name,sds,lds,htm),
+//	  //propMatrix(NULL),
+//	  model(NULL),
+//	  wavefrontOut(NULL),
+//	  wavefrontIn(NULL)
+//	{
+//
+//		ParserX* parser = NULL;
+//		if (sim) parser = sim->GetParser();
+//
+//		if (prototype)
+//		{
+//		    model = prototype->CloneModel();
+//			model->SetSimulator(sim);
+//			model->CopyPropertyListEntries(prototype);
+//			model->CopyMethodListEntries(prototype);
+//			//Create Parser variables
+//			if ( parser )
+//			{
+//				ARTproperty* prop = model->GetProperties(NULL);
+//				while (prop)
+//				{
+//					//if it is a data property
+//					ARTdataProp* dprop = dynamic_cast<ARTdataProp*>(prop);
+//					if (dprop)
+//					{
+//						string varname = name_ + "." + dprop->GetName();
+//						dprop->SetParser(parser);
+//						dprop->SetParserVar(varname);
+//						//std::cout << "Created Parser Var: " << varname << "\n";
+//					}
+//					prop = model->GetProperties(prop);
+//				}
+//			}
+//		}
+//		//Matrix und Impedanz ohne Funktion erstmal
+//		//propMatrix = AppendDataProp("M_" + name, NULL, "The transmission matrix of this element.");
+//
+//		//Set the output data container of the wave object to a property we append to the object
+//		z_inp = AppendDataProp("Z_" + name, NULL, "The propagated impedance at this element's or circuit's entry.");
+//		z_rad = AppendDataProp("ZR_" + name, NULL, "The radiation impedance at this element's or circuit's opening.");
+//		wavefrontOut = new WaveObjectMMImpedance(z_inp, NULL, NULL);
+//	}
 
 
 	virtual void Rename(const string newname)
@@ -489,21 +490,21 @@ public:
 
 	virtual void Pressure(WaveObjectInterface*, WaveObjectInterface*&) {throw ARTerror("ARTelement::Pressure","The function is not implemented.");};
 
-    void SetScope(ARTsimulator* sim)
-	{
-		if (sim == NULL)
-			throw ARTerror("ARTelement::SetScope", "The specified simulator is invalid.");
-
-		piter_ = propertyList_.begin();
-		ARTdataProp* p;
-
-		while (piter_ != propertyList_.end()) 
-		{
-			p = dynamic_cast<ARTdataProp*>(*piter_);
-			if (p) ((ARTdataContainer*)p)->SetParser(sim->GetParser()); 
-			piter_++;
-		}
-	}
+    void SetScope(ARTsimulator* sim);
+//	{
+//		if (sim == NULL)
+//			throw ARTerror("ARTelement::SetScope", "The specified simulator is invalid.");
+//
+//		piter_ = propertyList_.begin();
+//		ARTdataProp* p;
+//
+//		while (piter_ != propertyList_.end())
+//		{
+//			p = dynamic_cast<ARTdataProp*>(*piter_);
+//			if (p) ((ARTdataContainer*)p)->SetParser(sim->GetParser());
+//			piter_++;
+//		}
+//	}
 
 	virtual ARTmodelInterface* CloneModel() {return NULL;}
 

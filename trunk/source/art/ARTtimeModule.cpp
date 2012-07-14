@@ -32,12 +32,18 @@ std::complex<double> ARTOPortType::operator[](int idx) const
 	if (_port != NULL)
 	{
 		ARTdataContainer& port = const_cast<ARTdataContainer&>(*_port);
-		port.SetCurrentIndex(idx);
-		port.GetArrayElement(idx).Invalidate();
-
-//		std::cout << "index operator of container at address " << &port << std::endl;
-//		std::cerr << "OPort::Operator[](" << idx << ") = " << port.GetArrayElement(idx).GetComplex().imag() <<
-//				";" << std::endl;
+		/* port.SetCurrentIndex(idx);
+		port.GetArrayElement(idx).Invalidate(); */
+		// TODO: set current index of all simulator elements invalid
+		if (*_simulator)
+		{
+			(*_simulator)->SetModulesToCurrentTimeIndex(idx);
+		}
+		else
+		{
+			// TODO: use a feasible exception type
+			throw string("No simulator set for current port");
+		}
 
 		return port.GetArrayElement(idx).GetComplex();
 	}
@@ -46,6 +52,11 @@ std::complex<double> ARTOPortType::operator[](int idx) const
 		// TODO: use a feasible exception type
 		throw string("No associated data container found");
 	}
+}
+
+void ARTItimeModule::setSimulator(ARTsimulator* sim)
+{
+	_simulator = dynamic_cast<ARTtimeSimulator*>(sim);
 }
 
 ARTtimeModule::ARTtimeModule(const string& name, const string& sds, const string& lds, const string& htm) :
@@ -72,15 +83,10 @@ void ARTtimeModule::addIPort(const string& name, const ARTPortType& port)
 		ARTIPortType* newIPort = new ARTIPortType();
 		const ARTdataContainer* tmpContainer = getContainerFromPort(port);
 		setContainerForPort(*newIPort, tmpContainer);
-		//newIPort->_port = port._port;
-		//newIPort->portVariable = new Variable(&port);
+		setSimulatorForPort(*newIPort, _simulator);
 		_iPorts[name] = newIPort;
 
 		addVariableToParsers(name, tmpContainer->GetParserVar());
-
-		std::cout << "Address of new IPort \"" << name << "\": " << tmpContainer << std::endl;
-		std::cout << "Address of variable: " << &(tmpContainer->GetParserVar()) << std::endl;
-
 	}
 	else
 	{
@@ -98,10 +104,8 @@ void ARTtimeModule::addOPort(const string& name, const string& expr)
 		// create new ARTdataContainer with 20 elements array size
 		ARTdataContainer* tmpContainer = new ARTdataContainer(C_ART_na, 20, name);
 
-		std::cout << "Address of new OPort \"" << name << "\": " << tmpContainer << std::endl;
-
 		// create new parser for output port
-		ParserX* newParser = new ParserX();
+		ParserX* newParser = new ParserX(mup::pckCOMPLEX_NO_STRING);
 		// setting parser of new output port
 		tmpContainer->SetParser(newParser);
 		// set definition of new output port
@@ -113,13 +117,14 @@ void ARTtimeModule::addOPort(const string& name, const string& expr)
 		setParserForOPort(*newOPort, newParser);
 		// save data container for port
 		setContainerForPort(*newOPort, tmpContainer);
+		// save simulator of current module to output port
+		setSimulatorForPort(*newOPort, _simulator);
 
 		// register new output port
 		_oPorts[name] = newOPort;
 
 		// add variable to all available parsers
 		addVariableToParsers(name, tmpContainer->GetParserVar());
-		std::cout << "Address of variable: " << &(tmpContainer->GetParserVar()) << std::endl;
 
 	}
 	else

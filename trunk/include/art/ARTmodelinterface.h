@@ -2,8 +2,10 @@
 #define ARTMODELINTERFACE_H
 
 #include "ARTwaveObject.h"
+//#include "ARTsimulator.h"
+
 // forward declaration
-//class WaveObjectInterface;
+class ARTfreqSimulator;
 
 //prototype: a blueprint of a model (same class), but without simulator (NULL).
 //model: a copy of a prototype used by an element
@@ -96,7 +98,7 @@ class ARTmodelInterface : public ARTobject
 		 *  Prototypes need to write formulas for impedance calculation and must therefore have access to some 
 		 *  properties of the simulator and circuit (which will in turn give access to some properties of the simulator)
 		 */     		
-    void SetSimulator(ARTsimulator* sim) {simulator = sim;};
+		void SetSimulator(ARTsimulator* sim);
 
 		/**
 		 *  Sets the circuit of the model to cir. The circuit must be set to the circuit which should be evaluated before evaluation.
@@ -118,7 +120,7 @@ class ARTmodelInterface : public ARTobject
 		 * Prototypes need to write formulas for impedance calculation and must therefore have access to some 
 		 * properties of the simulator and circuit (which will in turn give access to some properties of the simulator)
 		 */     
-		ARTsimulator* simulator;
+		ARTfreqSimulator* simulator;
 };
 /** @}
  * End of documentation group ARTmodelInterface

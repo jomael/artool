@@ -58,6 +58,7 @@
 //#include "strparsing.h"
 //#include "ARTmodel.h"
 #include "ARTdataContainer.h"
+#include "ARTsimulator.h"
 
 #define NOERROR_ 0
 #define ERROR_ -1
@@ -215,7 +216,14 @@ P_ART_Simulator __CALLCONV ARTCreateSimulator    (const char* name, const char* 
 		throw ARTerror("ARTCreateSimulator", "The specified wave type is invalid.");
 
 	//create simulator
-	simulator = new ARTsimulator(name,domain,wavetype);
+	if (!std::strcmp(domain, "FrequencyDomain"))
+	{
+		simulator = new ARTfreqSimulator(name, domain, wavetype);
+	}
+	else if (!std::strcmp(domain, "TimeDomain"))
+	{
+		simulator = new ARTtimeSimulator(name, domain);
+	}
 
 	simulator->userElements = simulator->AppendListProp("UserElements");
 	simulator->circuits = simulator->AppendListProp("Circuits"); 
@@ -238,6 +246,15 @@ bool    __CALLCONV ARTDestroySimulator     (P_ART_Simulator simulator)
 
 	if (!art->simulators->DeleteObject(simulator))
 		throw ARTerror("ARTDestroySimulator", "The simulator specified was not found.");
+
+//	if (simulator->GetDomain()->GetName() == "FrequencyDomain")
+//	{
+//		delete dynamic_cast<ARTfreqSimulator*>(simulator);
+//	}
+//	else if (simulator->GetDomain()->GetName() == "TimeDomain")
+//	{
+//		delete dynamic_cast<ARTtimeSimulator*>(simulator);
+//	}
 	delete simulator;
 	return 1; //No error
 	DLL_ERRORHANDLING_END
@@ -298,8 +315,12 @@ P_ART_Element    __CALLCONV ARTCreateElement     (P_ART_Simulator simulator, con
 		ARTmethod* method = prototype->FindMethod(simulator->GetDomain()->GetName().c_str());
 		if (method == NULL) throw ARTerror("ARTCreateElement", "The prototype model does not support the domain of the simulator.");
 
-		method = prototype->FindMethod(simulator->GetWavetype()->GetName().c_str());
-		if (method == NULL) throw ARTerror("ARTCreateElement", "The prototype model does not support the wavetype of the simulator.");
+		if (simulator->GetDomain()->GetName() == "FrequencyDomain")
+		{
+			ARTfreqSimulator* freqSimulator = dynamic_cast<ARTfreqSimulator*>(simulator);
+			method = prototype->FindMethod(freqSimulator->GetWavetype()->GetName().c_str());
+			if (method == NULL) throw ARTerror("ARTCreateElement", "The prototype model does not support the wavetype of the simulator.");
+		}
 
 		ARTelement* newElement = new ARTelement(name,"","","",(ARTmodelInterface*)prototype, simulator);
 		
@@ -348,8 +369,12 @@ P_ART_Element    __CALLCONV ARTChangeElementModel     (P_ART_Simulator simulator
 		ARTmethod* method = prototype->FindMethod(simulator->GetDomain()->GetName().c_str());
 		if (method == NULL) throw ARTerror("ARTChangeElementType", "The prototype model does not support the domain of the simulator.");
 
-		method = prototype->FindMethod(simulator->GetWavetype()->GetName().c_str());
-		if (method == NULL) throw ARTerror("ARTChangeElementType", "The prototype model does not support the wavetype of the simulator.");
+		if (simulator->GetDomain()->GetName() == "FrequencyDomain")
+		{
+			ARTfreqSimulator* freqSimulator = dynamic_cast<ARTfreqSimulator*>(simulator);
+			method = prototype->FindMethod(freqSimulator->GetWavetype()->GetName().c_str());
+			if (method == NULL) throw ARTerror("ARTChangeElementType", "The prototype model does not support the wavetype of the simulator.");
+		}
 
 		//save list of all datacontainers dependent on properties of this one
 		list<ARTdataContainer*> allclients;

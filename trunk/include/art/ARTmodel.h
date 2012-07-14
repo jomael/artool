@@ -6,6 +6,7 @@
 #include "ARTlink.h"
 #include "ART.h"
 #include "Interface.h"
+#include "ARTsimulator.h"
 #include "strparsing.h"
 #include "ARTmodelinterface.h"
 

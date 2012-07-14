@@ -19,6 +19,7 @@
 
 #include "art.clp"
 #include "Interface.h"
+#include "ARTsimulator.h"
 #include "ART.h"
 #include "ARTwaveObject.h"
 #include "ARTmodel.h"
@@ -4475,7 +4476,7 @@ int main(int argc, char **argv)
 		ARTRootObject();
 		mySim = ARTCreateSimulator("MeinSimulator", "FrequencyDomain", "MultiModal");
 		ins = ARTCreateCircuit(mySim, "MeinInstrument");
-/*
+
 //	file sarc_clar.ins
 		P_ART_Element El1;
 		P_ART_Element El2;
@@ -4692,7 +4693,7 @@ int main(int argc, char **argv)
 
 
 	//AllMyTests->printTree();
-
+/*
 	try
 	{
 
@@ -4727,12 +4728,12 @@ int main(int argc, char **argv)
 		string err = e.GetErrorMessage();
 		std::cout << "\n\n" << err;
 	}
-
+*/
 	//print summary, as other messages might drown in debugging output
 	//AllMyTests->printSummary();
 
-	// clemens test cases
-//	try {
+	// clemens' test cases
+	try {
 //		ARTdataContainer* timeModule = new ARTdataContainer(C_ART_na, 1, "myTest");
 //		mup::ParserX* testParser = new mup::ParserX();
 //
@@ -4768,65 +4769,80 @@ int main(int argc, char **argv)
 //
 //		//timeModule->DebugDepTree(" ", "\n");
 
-//		ARTtimeModule* timeModule = new ARTtimeModule("myModule");
-//		ARTtimeModule* timeModule2 = new ARTtimeModule("myModule2");
-//		mup::Value t(0);
-//		mup::Variable tVar(&t);
+		ARTtimeSimulator* myTimeSimulator = new ARTtimeSimulator("TestSim");
+
+		myTimeSimulator->userElements = new ARTlistProp("bla");
+
+		ARTtimeModule* timeModule = new ARTtimeModule("myModule");
+		ARTtimeModule* timeModule2 = new ARTtimeModule("myModule2");
+
+		myTimeSimulator->userElements->AppendObject(timeModule);
+		myTimeSimulator->userElements->AppendObject(timeModule2);
+
+		mup::Value t(0);
+		mup::Variable tVar(&t);
+
+		timeModule->addOPort("fib", "fib[t] = fib[t-1] + fib[t-2]");
+		timeModule->addGlobalParameter("t", tVar);
+		timeModule->setSimulator(myTimeSimulator);
+
+		//timeModule2->addOPort("test", "test[t] = (fib[t] + fib[t-1]) / fib[t] + 1");
+		timeModule2->addOPort("test", "test[t] = fib[t]");
+
+		const ARTOPortType& testPort = dynamic_cast<const ARTOPortType&>(timeModule->getPort("fib"));
+		timeModule2->addIPort("fib",testPort);
+		timeModule2->addGlobalParameter("t", tVar);
+
+
+		testPort.initPortValue(std::complex<double>(1,0), -1);
+		testPort.initPortValue(std::complex<double>(0,0), -2);
+
+		const ARTOPortType& outputPort = dynamic_cast<const ARTOPortType&>(timeModule2->getPort("test"));
+		timeModule2->setSimulator(myTimeSimulator);
+
+//		ARTdataContainer& testPort = timeModule->getOPort("fib");
+//		testPort[-1] = 1;
 //
-//		timeModule->addOPort("fib", "fib[t] = fib[t-1] + fib[t-2]");
-//		timeModule->addGlobalParameter("t", tVar);
+//		timeModule->addOPort("fib", "fib[n] = n");
 //
-//		timeModule2->addOPort("test", "test[t] = (fib[t] + fib[t-1]) / fib[t]");
-//
-//		const ARTOPortType& testPort = dynamic_cast<const ARTOPortType&>(timeModule->getPort("fib"));
-//		timeModule2->addIPort("fib",testPort);
-//		timeModule2->addGlobalParameter("t", tVar);
-//
-//		testPort.initPortValue(std::complex<double>(1,0), -1);
-//		testPort.initPortValue(std::complex<double>(0,0), -2);
-//
-//		const ARTOPortType& outputPort = dynamic_cast<const ARTOPortType&>(timeModule2->getPort("test"));
-//
-////		ARTdataContainer& testPort = timeModule->getOPort("fib");
-////		testPort[-1] = 1;
-////
-////		timeModule->addOPort("fib", "fib[n] = n");
-////
-//		for (int i = 0; i < 50; ++i)
-//		{
-//			t = i;
-////			timeModule->getArrayElement(i).Invalidate();
-////			array_type& tmpArray = const_cast<array_type&>(testPort.GetArray());
-////			tmpArray.setCurrentIdx(i);
-////			testPort.getArrayElement(i).Invalidate();
-//			timeModule->setCurrentIndex(i);
-//			timeModule2->setCurrentIndex(i);
-//			std::cout << "Fibonacci[" << i << "] = " << outputPort[i].real() << std::endl;
-//			//std::cout << "Used buffer size of array: " << tmpArray.getUsedBufferSize() << std::endl;
-//			//testParser->Eval();
-//			//std::cout << "Fibonacci[" << i << "] = " << myTest[i].GetFloat() << std::endl;
-//		}
-//
-//		delete timeModule;
-//		delete timeModule2;
-////		delete testParser;
-//	}
-//	catch (ARTerror& e)
-//	{
-//		std::cout << e.GetErrorMessage() << std::endl;
-//	}
-//	catch (mup::ParserError& e)
-//	{
-//		std::cout << e.GetMsg() << std::endl;
-//	}
-//	catch (string& errorMsg)
-//	{
-//		std::cout << "Error occurred: " << errorMsg << std::endl;
-//	}
-//	catch (...)
-//	{
-//		std::cout << "ERROR in Clemens' tests!" << std::endl;
-//	}
+		for (int i = 0; i < 50; ++i)
+		{
+			t = i;
+//			timeModule->getArrayElement(i).Invalidate();
+//			array_type& tmpArray = const_cast<array_type&>(testPort.GetArray());
+//			tmpArray.setCurrentIdx(i);
+//			testPort.getArrayElement(i).Invalidate();
+			/*timeModule->setCurrentIndex(i);
+			timeModule2->setCurrentIndex(i);*/
+			std::cout << "Fibonacci[" << i << "] = " << outputPort[i].real() << std::endl;
+			//std::cout << "Used buffer size of array: " << tmpArray.getUsedBufferSize() << std::endl;
+			//testParser->Eval();
+			//std::cout << "Fibonacci[" << i << "] = " << myTest[i].GetFloat() << std::endl;
+		}
+
+		delete (myTimeSimulator->userElements);
+		//delete timeModule;
+		//delete timeModule2;
+		delete myTimeSimulator;
+
+//		delete testParser;
+	}
+	catch (ARTerror& e)
+	{
+		std::cout << e.GetErrorMessage() << std::endl;
+	}
+	catch (mup::ParserError& e)
+	{
+		std::cout << e.GetMsg() << std::endl;
+	}
+	catch (string& errorMsg)
+	{
+		std::cout << "Error occurred: " << errorMsg << std::endl;
+	}
+	catch (...)
+	{
+		std::cout << "ERROR in Clemens' tests!" << std::endl;
+	}
 
 
 	return 0;
