@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include "Interface.h"
+#include "ARTsimulator.h"
 #include "ARTdataContainer.h"
 #include "ARTlink.h"
 

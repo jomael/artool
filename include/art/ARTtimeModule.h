@@ -14,6 +14,7 @@
 #include <complex>
 
 #include "Interface.h"
+#include "ARTsimulator.h"
 #include "mpParser.h"
 
 using std::string;
@@ -34,6 +35,7 @@ public:
 	friend class ARTItimeModule;
 protected:
 	const ARTdataContainer* _port;
+	ARTtimeSimulator** _simulator;
 };
 
 class ARTIPortType : public ARTPortType
@@ -61,11 +63,11 @@ class ARTItimeModule : public ARTobject
 public:
 
 	explicit ARTItimeModule(const string& name, const string& sds="", const string& lds="", const string& htm="") :
-		ARTobject(name, sds, lds, htm)
+		ARTobject(name, sds, lds, htm), _simulator(NULL)
 	{}
 
 	ARTItimeModule(const ARTItimeModule& orig) :
-		ARTobject(orig)
+		ARTobject(orig), _simulator(orig._simulator)
 	{}
 
 	virtual void addIPort(const string& name, const ARTPortType& port) = 0;
@@ -77,11 +79,15 @@ public:
 	virtual void addGlobalParameter(const string& name, const Variable& parameter) = 0;
 	virtual void removeGlobalParameter(const string& name) = 0;
 
+	virtual void setSimulator(ARTsimulator* sim);
 	virtual void setCurrentIndex(int idx) = 0;
 
 	virtual ~ARTItimeModule() {}
 
 protected:
+
+	ARTtimeSimulator* _simulator;
+
 	inline static ARTdataContainer* getContainerFromPort(const ARTPortType& port)
 	{
 		ARTdataContainer* tmpContainer = const_cast<ARTdataContainer*>(port._port);
@@ -91,6 +97,11 @@ protected:
 	inline static void setContainerForPort(ARTPortType& port, const ARTdataContainer* container)
 	{
 		port._port = container;
+	}
+
+	inline static void setSimulatorForPort(ARTPortType& port, ARTtimeSimulator*& sim)
+	{
+		port._simulator = &sim;
 	}
 
 	inline static ParserX* getParserFromOPort(const ARTOPortType& port)
@@ -104,7 +115,6 @@ protected:
 	{
 		port._parser = const_cast<ParserX*>(parser);
 	}
-
 
 };
 
