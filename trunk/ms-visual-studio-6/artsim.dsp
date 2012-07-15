@@ -119,6 +119,14 @@ SOURCE=..\source\art\ARTlink.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\source\art\ARTsimulator.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\source\art\ARTtimeModule.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\source\art\HornElement.cpp
 # End Source File
 # Begin Source File
@@ -165,10 +173,6 @@ SOURCE=..\source\art\WindInstrument.cpp
 # Begin Group "muparser_src"
 
 # PROP Default_Filter ""
-# Begin Source File
-
-SOURCE=..\source\muParser\mpARTValue.cpp
-# End Source File
 # Begin Source File
 
 SOURCE=..\source\muParser\mpError.cpp
@@ -463,6 +467,14 @@ SOURCE=..\include\art\ARTmodelinterface.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\include\art\ARTsimulator.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\include\art\ARTtimeModule.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\include\art\ARTwaveObject.h
 # End Source File
 # Begin Source File
@@ -708,6 +720,10 @@ SOURCE=..\include\muParser\memory.h
 # Begin Source File
 
 SOURCE=..\include\muParser\mpARTValue.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\include\muParser\mpBuffer.h
 # End Source File
 # Begin Source File
 

@@ -148,6 +148,14 @@ SOURCE=..\source\art\ARTlink.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\source\art\ARTsimulator.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\source\art\ARTtimeModule.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\source\art\hornelement.cpp
 # End Source File
 # Begin Source File
@@ -353,6 +361,14 @@ SOURCE=..\include\art\ARTmodel.h
 # Begin Source File
 
 SOURCE=..\include\art\ARTmodelinterface.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\include\art\ARTsimulator.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\include\art\ARTtimeModule.h
 # End Source File
 # Begin Source File
 
