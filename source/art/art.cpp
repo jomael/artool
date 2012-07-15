@@ -48,8 +48,10 @@
 
 #if defined (_MSC_VER) && _MSC_VER <= 1200
 	#include "common_vs6.hpp"
+	#include <cstring>
 #else
 	#include "common.hpp"
+	using std::strcmp;
 #endif
 #include "art.clp"
 
@@ -216,11 +218,11 @@ P_ART_Simulator __CALLCONV ARTCreateSimulator    (const char* name, const char* 
 		throw ARTerror("ARTCreateSimulator", "The specified wave type is invalid.");
 
 	//create simulator
-	if (!std::strcmp(domain, "FrequencyDomain"))
+	if (!strcmp(domain, "FrequencyDomain"))
 	{
 		simulator = new ARTfreqSimulator(name, domain, wavetype);
 	}
-	else if (!std::strcmp(domain, "TimeDomain"))
+	else if (!strcmp(domain, "TimeDomain"))
 	{
 		simulator = new ARTtimeSimulator(name, domain);
 	}
