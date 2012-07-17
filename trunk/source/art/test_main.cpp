@@ -4734,98 +4734,51 @@ int main(int argc, char **argv)
 
 	// clemens' test cases
 	try {
-//		ARTdataContainer* timeModule = new ARTdataContainer(C_ART_na, 1, "myTest");
-//		mup::ParserX* testParser = new mup::ParserX();
-//
-//		std::cout << "Initialized timeModule and testParser" << std::endl;
-//
-//		mup::Value n(0);
-//		mup::Variable nVar(&n);
-//		testParser->DefineVar("n", nVar);
-////		mup::Value myTest(50, 0.0);
-////		mup::Variable myTestVar(&myTest);
-////		testParser->DefineVar("myTest", myTestVar);
-////		myTest[0] = 0, myTest[1] = 1;
-//
-//		std::cout << "Initialized external variables and registered them in testParser" << std::endl;
-//
-//		timeModule->SetParser(testParser);
-//
-//		timeModule->SetDefinition("myTest[n] = myTest[n - 1] + myTest[n - 2]");
-//
-//		//testParser->SetExpr("myTest[n] = myTest[n - 1] + myTest[n - 2]");
-//
-//		std::cout << "Set parser and definition of time module" << std::endl;
-//
-//		// initialize Fibonacci array
-//		/*timeModule->SetVal(0, 0);
-//		timeModule->SetVal(1, 1);*/
-//		(*timeModule)[-1] = 1;
-//		//(*timeModule)[-2] = 0;
-//
-//		//timeModule->SetInvalid(2, 49);
-//
-//		std::cout << "Initialized first two Fibonacci values" << std::endl;
-//
-//		//timeModule->DebugDepTree(" ", "\n");
 
 		ARTtimeSimulator* myTimeSimulator = new ARTtimeSimulator("TestSim");
-
 		myTimeSimulator->userElements = new ARTlistProp("bla");
 
 		ARTtimeModule* timeModule = new ARTtimeModule("myModule");
 		ARTtimeModule* timeModule2 = new ARTtimeModule("myModule2");
 
-		myTimeSimulator->userElements->AppendObject(timeModule);
-		myTimeSimulator->userElements->AppendObject(timeModule2);
-
-		mup::Value t(0);
-		mup::Variable tVar(&t);
+		cout << "Created simulator and time modules." << endl;
 
 		timeModule->addOPort("fib", "fib[t] = fib[t-1] + fib[t-2]");
-		timeModule->addGlobalParameter("t", tVar);
-		timeModule->setSimulator(myTimeSimulator);
+		timeModule2->addOPort("test", "test[t] = (fib[t] + fib[t-1]) / fib[t] + 1");
+//		timeModule2->addOPort("test", "test[t] = fib[t]");
 
-		//timeModule2->addOPort("test", "test[t] = (fib[t] + fib[t-1]) / fib[t] + 1");
-		timeModule2->addOPort("test", "test[t] = fib[t]");
+		cout << "Set definition of output ports." << endl;
+
+		myTimeSimulator->addTimeModule(timeModule);
+		myTimeSimulator->addTimeModule(timeModule2);
+
+		cout << "Added time modules to simulator." << endl;
 
 		const ARTOPortType& testPort = dynamic_cast<const ARTOPortType&>(timeModule->getPort("fib"));
 		timeModule2->addIPort("fib",testPort);
-		timeModule2->addGlobalParameter("t", tVar);
-
-
-		testPort.initPortValue(std::complex<double>(1,0), -1);
-		testPort.initPortValue(std::complex<double>(0,0), -2);
 
 		const ARTOPortType& outputPort = dynamic_cast<const ARTOPortType&>(timeModule2->getPort("test"));
-		timeModule2->setSimulator(myTimeSimulator);
+//		timeModule2->setSimulator(myTimeSimulator);
 
-//		ARTdataContainer& testPort = timeModule->getOPort("fib");
-//		testPort[-1] = 1;
-//
-//		timeModule->addOPort("fib", "fib[n] = n");
-//
+		cout << "Added port from module1 as input port to module2." << endl;
+
+		/*testPort.initPortValue(std::complex<double>(1,0), -1);
+		testPort.initPortValue(std::complex<double>(0,0), -2);*/
+		/*testPort.initPortValue(1, -1);
+		testPort.initPortValue(0, -2);*/
+		testPort.initPortValue("fib[-1] = 1, fib[-2] = 0");
+//		outputPort.initPortValue("fib[-1] = 1, fib[-2] = 0");
+
+		cout << "Initialized port values. Starting calculation..." << endl;
+
 		for (int i = 0; i < 50; ++i)
 		{
-			t = i;
-//			timeModule->getArrayElement(i).Invalidate();
-//			array_type& tmpArray = const_cast<array_type&>(testPort.GetArray());
-//			tmpArray.setCurrentIdx(i);
-//			testPort.getArrayElement(i).Invalidate();
-			/*timeModule->setCurrentIndex(i);
-			timeModule2->setCurrentIndex(i);*/
 			std::cout << "Fibonacci[" << i << "] = " << outputPort[i].real() << std::endl;
-			//std::cout << "Used buffer size of array: " << tmpArray.getUsedBufferSize() << std::endl;
-			//testParser->Eval();
-			//std::cout << "Fibonacci[" << i << "] = " << myTest[i].GetFloat() << std::endl;
 		}
 
 		delete (myTimeSimulator->userElements);
-		//delete timeModule;
-		//delete timeModule2;
 		delete myTimeSimulator;
 
-//		delete testParser;
 	}
 	catch (ARTerror& e)
 	{

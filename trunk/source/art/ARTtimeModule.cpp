@@ -11,7 +11,52 @@
 
 using namespace mup;
 
-void ARTPortType::initPortValue(std::complex<double> value, int idx) const
+void ARTPortType::initPortValue(const string& expr) const
+{
+	if (_port != NULL)
+	{
+		ParserX* tmpParser = new ParserX(mup::pckCOMPLEX_NO_STRING);
+		try
+		{
+			ARTdataContainer& port = const_cast<ARTdataContainer&>(*_port);
+			tmpParser->DefineVar(port.GetVarName(), port.GetParserVar());
+			tmpParser->SetExpr(expr);
+			tmpParser->Eval();
+			delete tmpParser;
+		}
+		catch (ParserError& error)
+		{
+			delete tmpParser;
+			throw ARTerror("ARTPortType::initPortValue", "Error in evaluation of parser expression: %s1",
+					error.GetMsg());
+		}
+
+//		std::cout << "initPortValue of container at address " << &port << std::endl;
+//		port[idx] = value;
+	}
+	else
+	{
+		// TODO: use a feasible exception type
+		throw string("No associated data container found");
+	}
+}
+
+void ARTPortType::initPortValue(double value, int idx) const
+{
+	if (_port != NULL)
+	{
+		ARTdataContainer& port = const_cast<ARTdataContainer&>(*_port);
+//		std::cout << "initPortValue of container at address " << &port << std::endl;
+		port[idx] = value;
+	}
+	else
+	{
+		// TODO: use a feasible exception type
+		throw string("No associated data container found");
+	}
+}
+
+void ARTPortType::initPortValue(std::complex<double>& value, int idx) const
 {
 	if (_port != NULL)
 	{

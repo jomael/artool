@@ -8,12 +8,16 @@
 #ifndef ARTSIMULATOR_H_
 #define ARTSIMULATOR_H_
 
-#include <list>
+//#include <list>
+#include <map>
 #include "mpParser.h"
 #include "Interface.h"
 
 using namespace mup;
-using std::list;
+//using std::list;
+
+// forward declaration
+class ARTtimeModule;
 
 /**
  * Simulators belong to a simulation domain (frequency, time) and simulate waves of a
@@ -64,16 +68,36 @@ public:
 
 class ARTtimeSimulator : public ARTsimulator
 {
-protected:
-
 public:
 
 	ARTtimeSimulator(const string name, const string domain="TimeDomain",
 					 const string sds="", const string lds="", const string htm="");
 
+	virtual void addTimeModule(ARTtimeModule* timeModule);
+
 	virtual void SetModulesToCurrentTimeIndex(int idx);
 
-	virtual ~ARTtimeSimulator() {}
+	virtual void SetSimulationParameter(const string& name, const string& expr);
+	virtual void SetSimulationParameter(const string& name, const std::complex<double>& val);
+	virtual void SetSimulationParameter(const string& name, double val);
+
+	virtual ~ARTtimeSimulator();
+protected:
+	struct simulParameterType
+	{
+		ARTdataContainer* _val;
+		ParserX* _parser;
+	};
+	typedef std::map<const string, simulParameterType*> simulParameterMap;
+	typedef simulParameterMap::iterator simulParameterMapIterator;
+
+	simulParameterMap _simulParams;
+
+	virtual void initStandardSimulParams();
+
+	virtual void clean();
+	virtual void addParamsToModule(ARTtimeModule* timeModule);
+
 };
 
 #endif /* ARTSIMULATOR_H_ */

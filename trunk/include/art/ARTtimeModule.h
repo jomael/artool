@@ -28,7 +28,9 @@ class ARTItimeModule;
 class ARTPortType
 {
 public:
-	virtual void initPortValue(std::complex<double> value, int idx) const;
+	virtual void initPortValue(const string& expr) const;
+	virtual void initPortValue(double value, int idx) const;
+	virtual void initPortValue(std::complex<double>& value, int idx) const;
 
 	// make class ARTPortType polymorphic
 	virtual ~ARTPortType() {}
@@ -74,6 +76,7 @@ public:
 	virtual const ARTPortType& getPort(const string& name) = 0;
 
 	virtual void setLocalParameter(const string& name, const string& expr) = 0;
+	virtual void setLocalParameter(const string& name, const std::complex<double>& val) = 0;
 	virtual void setLocalParameter(const string& name, const double val) = 0;
 
 	virtual void addGlobalParameter(const string& name, const Variable& parameter) = 0;
