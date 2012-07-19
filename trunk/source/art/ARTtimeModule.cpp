@@ -30,14 +30,10 @@ void ARTPortType::initPortValue(const string& expr) const
 			throw ARTerror("ARTPortType::initPortValue", "Error in evaluation of parser expression: %s1",
 					error.GetMsg());
 		}
-
-//		std::cout << "initPortValue of container at address " << &port << std::endl;
-//		port[idx] = value;
 	}
 	else
 	{
-		// TODO: use a feasible exception type
-		throw string("No associated data container found");
+		throw ARTerror("ARTPortType::initPortValue", "No associated data container found for current port.");
 	}
 }
 
@@ -46,13 +42,11 @@ void ARTPortType::initPortValue(double value, int idx) const
 	if (_port != NULL)
 	{
 		ARTdataContainer& port = const_cast<ARTdataContainer&>(*_port);
-//		std::cout << "initPortValue of container at address " << &port << std::endl;
 		port[idx] = value;
 	}
 	else
 	{
-		// TODO: use a feasible exception type
-		throw string("No associated data container found");
+		throw ARTerror("ARTPortType::initPortValue", "No associated data container found for current port.");
 	}
 }
 
@@ -61,13 +55,11 @@ void ARTPortType::initPortValue(std::complex<double>& value, int idx) const
 	if (_port != NULL)
 	{
 		ARTdataContainer& port = const_cast<ARTdataContainer&>(*_port);
-//		std::cout << "initPortValue of container at address " << &port << std::endl;
 		port[idx] = value;
 	}
 	else
 	{
-		// TODO: use a feasible exception type
-		throw string("No associated data container found");
+		throw ARTerror("ARTPortType::initPortValue", "No associated data container found for current port.");
 	}
 }
 
@@ -77,25 +69,20 @@ std::complex<double> ARTOPortType::operator[](int idx) const
 	if (_port != NULL)
 	{
 		ARTdataContainer& port = const_cast<ARTdataContainer&>(*_port);
-		/* port.SetCurrentIndex(idx);
-		port.GetArrayElement(idx).Invalidate(); */
-		// TODO: set current index of all simulator elements invalid
 		if (*_simulator)
 		{
 			(*_simulator)->SetModulesToCurrentTimeIndex(idx);
 		}
 		else
 		{
-			// TODO: use a feasible exception type
-			throw string("No simulator set for current port");
+			throw ARTerror("ARTPortType::initPortValue", "No simulator set for current port.");
 		}
 
 		return port.GetArrayElement(idx).GetComplex();
 	}
 	else
 	{
-		// TODO: use a feasible exception type
-		throw string("No associated data container found");
+		throw ARTerror("ARTPortType::operator[]", "No associated data container found for current port.");
 	}
 }
 
@@ -107,18 +94,22 @@ void ARTItimeModule::setSimulator(ARTsimulator* sim)
 ARTtimeModule::ARTtimeModule(const string& name, const string& sds, const string& lds, const string& htm) :
 	ARTItimeModule(name, sds, lds, htm),
 	_iPorts(),
-	_oPorts()
+	_oPorts(),
+	_lParams(),
+	_gParams()
 {
 
 }
 
-ARTtimeModule::ARTtimeModule(const ARTtimeModule& orig) :
-	ARTItimeModule(orig),
-	_iPorts(),
-	_oPorts()
-{
-	copy(orig);
-}
+//ARTtimeModule::ARTtimeModule(const ARTtimeModule& orig) :
+//	ARTItimeModule(orig),
+//	_iPorts(),
+//	_oPorts(),
+//	_lParams(),
+//	_gParams()
+//{
+//	copy(orig);
+//}
 
 void ARTtimeModule::addIPort(const string& name, const ARTPortType& port)
 {
@@ -135,19 +126,19 @@ void ARTtimeModule::addIPort(const string& name, const ARTPortType& port)
 	}
 	else
 	{
-		// TODO: use a feasible exception type
-		throw string("Input port name already in use");
+		throw ARTerror("ARTtimeModule::addIPort", "Port name '%s1' is already in use in current time module '%s2'.",
+				name, name_);
 	}
 }
 
-void ARTtimeModule::addOPort(const string& name, const string& expr)
+void ARTtimeModule::addOPort(const string& name, const string& expr, unsigned int size)
 {
 	// the name of the given output port has to be unique
 	if (!checkVarNameExists(name))
 	{
 		ARTOPortType* newOPort = new ARTOPortType();
 		// create new ARTdataContainer with 20 elements array size
-		ARTdataContainer* tmpContainer = new ARTdataContainer(C_ART_na, 20, name);
+		ARTdataContainer* tmpContainer = new ARTdataContainer(C_ART_na, size, name);
 
 		// create new parser for output port
 		ParserX* newParser = new ParserX(mup::pckCOMPLEX_NO_STRING);
@@ -174,8 +165,8 @@ void ARTtimeModule::addOPort(const string& name, const string& expr)
 	}
 	else
 	{
-		// TODO: use a feasible exception type
-		throw string("Output port name already in use");
+		throw ARTerror("ARTtimeModule::addOPort", "Port name '%s1' is already in use in current time module '%s2'.",
+				name, name_);
 	}
 }
 
@@ -191,8 +182,8 @@ const ARTPortType& ARTtimeModule::getPort(const string& name)
 		return *(_oPorts[name]);
 	}
 
-	// TODO: use a feasible exception type
-	throw string("Output port name has not been found");
+	throw ARTerror("ARTtimeModule::getPort", "No port with name '%s1' has been found in current time module '%s2'.",
+			name, name_);
 
 }
 
@@ -237,8 +228,8 @@ void ARTtimeModule::setLocalParameter(const string& name, const string& expr)
 	}
 	else
 	{
-		// TODO: use a feasible exception type
-		throw string("Name of local parameter already in use");
+		throw ARTerror("ARTtimeModule::setLocalParameter", "Name '%s1' of local parameter is already in use in current time module '%s2'.",
+				name, name_);
 	}
 
 }
@@ -255,8 +246,8 @@ void ARTtimeModule::setLocalParameter(const string& name, const double val)
 	}
 	else
 	{
-		// TODO: use a feasible exception type
-		throw string("Name of local parameter already in use");
+		throw ARTerror("ARTtimeModule::setLocalParameter", "Name '%s1' of local parameter is already in use in current time module '%s2'.",
+				name, name_);
 	}
 }
 
@@ -272,8 +263,8 @@ void ARTtimeModule::setLocalParameter(const string& name, const std::complex<dou
 	}
 	else
 	{
-		// TODO: use a feasible exception type
-		throw string("Name of local parameter already in use");
+		throw ARTerror("ARTtimeModule::setLocalParameter", "Name '%s1' of local parameter is already in use in current time module '%s2'.",
+				name, name_);
 	}
 
 }
@@ -287,8 +278,8 @@ void ARTtimeModule::addGlobalParameter(const string& name, const Variable& param
 	}
 	else
 	{
-		// TODO: use a feasible exception type
-		throw string("Name of global parameter already in use");
+		throw ARTerror("ARTtimeModule::addGlobalParameter", "Name '%s1' of global parameter is already in use in current time module '%s2'.",
+				name, name_);
 	}
 }
 
@@ -301,8 +292,8 @@ void ARTtimeModule::removeGlobalParameter(const string& name)
 	}
 	else
 	{
-		// TODO: use a feasible exception type
-		throw string("Name of specified global parameter is currently not in use");
+		throw ARTerror("ARTtimeModule::removeGlobalParameter", "Name '%s1' of global parameter could not be found in current time module '%s2'.",
+				name, name_);
 	}
 }
 
@@ -318,11 +309,13 @@ void ARTtimeModule::setCurrentIndex(int idx)
 	}
 }
 
-ARTtimeModule& ARTtimeModule::operator=(const ARTtimeModule& orig)
-{
-	copy(orig);
-	return *this;
-}
+//ARTtimeModule& ARTtimeModule::operator=(const ARTtimeModule& orig)
+//{
+//	clean();
+//	_simulator = orig._simulator;
+//	copy(orig);
+//	return *this;
+//}
 
 ARTtimeModule::~ARTtimeModule()
 {
@@ -455,10 +448,10 @@ void ARTtimeModule::clean()
 
 }
 
-void ARTtimeModule::copy(const ARTtimeModule& orig)
-{
-	/* TODO: implement copy function */
-}
+//void ARTtimeModule::copy(const ARTtimeModule& orig)
+//{
+//	/* TODO: implement copy function */
+//}
 
 
 

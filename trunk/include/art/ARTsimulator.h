@@ -73,7 +73,10 @@ public:
 	ARTtimeSimulator(const string name, const string domain="TimeDomain",
 					 const string sds="", const string lds="", const string htm="");
 
-	virtual void addTimeModule(ARTtimeModule* timeModule);
+	virtual void AddTimeModule(ARTtimeModule* timeModule);
+	virtual void AddGlobalParameter(const string& name, const string& expr);
+	virtual void AddGlobalParameter(const string& name, const std::complex<double>& val);
+	virtual void AddGlobalParameter(const string& name, double val);
 
 	virtual void SetModulesToCurrentTimeIndex(int idx);
 
@@ -97,6 +100,7 @@ protected:
 
 	virtual void clean();
 	virtual void addParamsToModule(ARTtimeModule* timeModule);
+	virtual void addParamToCurrentModules(const string& name, simulParameterType* newParam);
 
 };
 
