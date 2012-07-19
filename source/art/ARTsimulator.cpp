@@ -99,12 +99,12 @@ ARTtimeSimulator::ARTtimeSimulator(const string name, const string domain,
 	initStandardSimulParams();
 }
 
-void ARTtimeSimulator::addTimeModule(ARTtimeModule* timeModule)
+void ARTtimeSimulator::AddTimeModule(ARTtimeModule* timeModule)
 {
-	const string& moduleName = timeModule->GetName();
 
-	if (userElements != NULL)
+	if (timeModule != NULL && userElements != NULL)
 	{
+		const string& moduleName = timeModule->GetName();
 		ARTobject* iter = userElements->GetObjects(NULL);
 
 		// go through user elements list
@@ -113,7 +113,7 @@ void ARTtimeSimulator::addTimeModule(ARTtimeModule* timeModule)
 			// if we find a module with the same name, throw an error
 			if (iter->GetName() == moduleName)
 			{
-				throw ARTerror("ARTtimeSimulator::addTimeModule", "An element of the specified name '%s1' is already registered in the current simulator.", moduleName);
+				throw ARTerror("ARTtimeSimulator::addTimeModule", "An element of the specified name '%s1' is already registered in the current simulator '%s2'.", moduleName, name_);
 			}
 			iter = userElements->GetObjects(iter);
 		}
@@ -125,6 +125,69 @@ void ARTtimeSimulator::addTimeModule(ARTtimeModule* timeModule)
 		// register simulator to time module
 		timeModule->setSimulator(this);
 	}
+}
+
+void ARTtimeSimulator::AddGlobalParameter(const string& name, const string& expr)
+{
+	if (_simulParams.find(name) == _simulParams.end())
+	{
+		simulParameterType* newParam = new simulParameterType();
+		newParam->_parser = new ParserX(mup::pckCOMPLEX_NO_STRING);
+		newParam->_val = new ARTdataContainer(C_ART_cpx, 0, name);
+		newParam->_val->SetParser(newParam->_parser);
+		newParam->_val->SetDefinition(expr);
+		_simulParams[name] = newParam;
+		addParamToCurrentModules(name, newParam);
+	}
+	else
+	{
+		throw ARTerror("ARTtimeSimulator::AddGlobalParameter",
+				"Could not add global parameter '%s1': Parameter with same name already exists in current simulator.",
+				name);
+	}
+
+}
+
+void ARTtimeSimulator::AddGlobalParameter(const string& name, const std::complex<double>& val)
+{
+	if (_simulParams.find(name) == _simulParams.end())
+	{
+		simulParameterType* newParam = new simulParameterType();
+		newParam->_parser = new ParserX(mup::pckCOMPLEX_NO_STRING);
+		newParam->_val = new ARTdataContainer(C_ART_cpx, 0, name);
+		newParam->_val->SetParser(newParam->_parser);
+		newParam->_val->SetVal(val);
+		_simulParams[name] = newParam;
+		addParamToCurrentModules(name, newParam);
+	}
+	else
+	{
+		throw ARTerror("ARTtimeSimulator::AddGlobalParameter",
+				"Could not add global parameter '%s1': Parameter with same name already exists in current simulator.",
+				name);
+	}
+
+}
+
+void ARTtimeSimulator::AddGlobalParameter(const string& name, double val)
+{
+	if (_simulParams.find(name) == _simulParams.end())
+	{
+		simulParameterType* newParam = new simulParameterType();
+		newParam->_parser = new ParserX(mup::pckCOMPLEX_NO_STRING);
+		newParam->_val = new ARTdataContainer(C_ART_cpx, 0, name);
+		newParam->_val->SetParser(newParam->_parser);
+		newParam->_val->SetVal(val);
+		_simulParams[name] = newParam;
+		addParamToCurrentModules(name, newParam);
+	}
+	else
+	{
+		throw ARTerror("ARTtimeSimulator::AddGlobalParameter",
+				"Could not add global parameter '%s1': Parameter with same name already exists in current simulator.",
+				name);
+	}
+
 }
 
 void ARTtimeSimulator::SetModulesToCurrentTimeIndex(int idx)
@@ -264,9 +327,17 @@ void ARTtimeSimulator::addParamsToModule(ARTtimeModule* timeModule)
 	simulParameterMapIterator iter;
 	for (iter = _simulParams.begin(); iter != _simulParams.end(); ++iter)
 	{
-//		std::cout << "Adding simulation parameter \"" << iter->first << "\" to timeModule \""
-//				<< timeModule->GetName() << "\"." << std::endl;
 		timeModule->addGlobalParameter(iter->first,
 				iter->second->_val->GetParserVar());
+	}
+}
+
+void ARTtimeSimulator::addParamToCurrentModules(const string& name, simulParameterType* newParam)
+{
+	ARTtimeModule* iter = dynamic_cast<ARTtimeModule*>(userElements->GetObjects(NULL));
+	while (iter != NULL)
+	{
+		iter->addGlobalParameter(name, newParam->_val->GetParserVar());
+		iter = dynamic_cast<ARTtimeModule*>(userElements->GetObjects(iter));
 	}
 }

@@ -127,10 +127,10 @@ class ARTtimeModule : public ARTItimeModule
 public:
 
 	explicit ARTtimeModule(const string& name, const string& sds="", const string& lds="", const string& htm="");
-	explicit ARTtimeModule(const ARTtimeModule& orig);
+//	explicit ARTtimeModule(const ARTtimeModule& orig);
 
 	virtual void addIPort(const string& name, const ARTPortType& port);
-	virtual void addOPort(const string& name, const string& expr);
+	virtual void addOPort(const string& name, const string& expr, unsigned int size = 20);
 	virtual const ARTPortType& getPort(const string& name);
 	//virtual const ARTOPortType& getOPort(const string& name);
 
@@ -143,7 +143,7 @@ public:
 
 	virtual void setCurrentIndex(int idx);
 
-	virtual ARTtimeModule& operator=(const ARTtimeModule& orig);
+//	virtual ARTtimeModule& operator=(const ARTtimeModule& orig);
 
 	virtual ~ARTtimeModule();
 
@@ -157,7 +157,7 @@ protected:
 	inline virtual void registerAllVariablesToParser(ParserX* parser);
 
 	inline virtual void clean();
-	inline virtual void copy(const ARTtimeModule& orig);
+//	inline virtual void copy(const ARTtimeModule& orig);
 
 //	struct IPortType
 //	{

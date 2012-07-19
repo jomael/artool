@@ -812,6 +812,8 @@ TEST_DEF_END(getDataPropFromObjectWhereNoDataProp)
 TEST_DEF_START(createElementTwice, ARTpreperationFunctions)
 
 	P_ART_Simulator mySim;
+	P_ART_Element El1;
+	P_ART_Element El2;
 
 	virtual void prepare()
 	{
@@ -823,8 +825,8 @@ TEST_DEF_START(createElementTwice, ARTpreperationFunctions)
 	{
 		try
 		{
-			P_ART_Element El1 = ARTCreateElement(mySim, "Twice", "BentCylinder");
-			P_ART_Element El2 = ARTCreateElement(mySim, "Twice", "Cylinder");
+			El1 = ARTCreateElement(mySim, "Twice", "BentCylinder");
+			El2 = ARTCreateElement(mySim, "Twice", "Cylinder");
 		}
 		catch(ARTerror e)
 		{	
@@ -836,8 +838,16 @@ TEST_DEF_START(createElementTwice, ARTpreperationFunctions)
 
 	virtual void unprepare()
 	{
-			ARTDestroySimulator(mySim);
-			ARTRootDestroy();
+		if (El1 != NULL)
+		{
+			ARTDestroyElement(mySim, El1);
+		}
+		if (El2 != NULL)
+		{
+			ARTDestroyElement(mySim, El2);
+		}
+		ARTDestroySimulator(mySim);
+		ARTRootDestroy();
 	}
 
 TEST_DEF_END(createElementTwice)
@@ -846,19 +856,22 @@ TEST_DEF_END(createElementTwice)
 TEST_DEF_START(createElements, ARTpreperationFunctions)
 
 	P_ART_Simulator mySim;
+	P_ART_Element El1;
+	P_ART_Element El2;
 
 	virtual void prepare()
 	{
 			ARTRootObject();
 			mySim = ARTCreateSimulator("MeinSimulator", "FrequencyDomain", "MultiModal");
+
 	}
 
 	virtual bool run() //test creating elements
 	{
 		try
 		{
-			P_ART_Element El1 = ARTCreateElement(mySim, "BC", "BentCylinder");
-			P_ART_Element El2 = ARTCreateElement(mySim, "C", "Cylinder");
+			El1 = ARTCreateElement(mySim, "BC", "BentCylinder");
+			El2 = ARTCreateElement(mySim, "C", "Cylinder");
 		}
 		catch(ARTerror e)
 		{	
@@ -870,8 +883,16 @@ TEST_DEF_START(createElements, ARTpreperationFunctions)
 
 	virtual void unprepare()
 	{
-			ARTDestroySimulator(mySim);
-			ARTRootDestroy();
+		if (El1 != NULL)
+		{
+			ARTDestroyElement(mySim, El1);
+		}
+		if (El2 != NULL)
+		{
+			ARTDestroyElement(mySim, El2);
+		}
+		ARTDestroySimulator(mySim);
+		ARTRootDestroy();
 	}
 
 TEST_DEF_END(createElements)
@@ -4450,6 +4471,217 @@ TEST_DEF_START(testCircuitAsBranchImpedanceModes2, BranchTests)
 TEST_DEF_END(testCircuitAsBranchImpedanceModes2)
 //******************************************************************************************************************************************
 
+TestClass* ARTtimeSimulatorTests = new TestClass("ARTtimeSimulatorTests", AllMyTests);
+
+TEST_DEF_START(DoublePortInitialization, ARTtimeSimulatorTests)
+
+	ARTtimeModule* timeModule;
+
+	virtual void prepare()
+	{
+		timeModule = new ARTtimeModule("myModule");
+	}
+
+	virtual bool run()
+	{
+
+		try
+		{
+			timeModule->addOPort("fib", "fib[t] = fib[t-1] + fib[t-2]");
+			timeModule->addOPort("fib", "fib[t] = t");
+
+			return false;
+		}
+		catch (ARTerror& e)
+		{
+//			string err = e.GetErrorMessage();
+//			std::cout << "\n\n" << err;
+			return true;
+		}
+
+	}
+
+	virtual void unprepare()
+	{
+		delete timeModule;
+	}
+
+TEST_DEF_END(DoublePortInitialization)
+
+
+TEST_DEF_START(DoubleModuleCreation, ARTtimeSimulatorTests)
+
+	ARTtimeSimulator* myTimeSimulator;
+	ARTtimeModule* timeModule1;
+	ARTtimeModule* timeModule2;
+
+
+	virtual void prepare()
+	{
+		myTimeSimulator = new ARTtimeSimulator("TestSim");
+		myTimeSimulator->userElements = new ARTlistProp("testList");
+		timeModule1 = new ARTtimeModule("myModule");
+		timeModule2 = new ARTtimeModule("myModule");
+	}
+
+	virtual bool run()
+	{
+
+		try
+		{
+			myTimeSimulator->AddTimeModule(timeModule1);
+			myTimeSimulator->AddTimeModule(timeModule2);
+
+			return false;
+		}
+		catch (ARTerror& e)
+		{
+//			string err = e.GetErrorMessage();
+//			std::cout << "\n\n" << err;
+			return true;
+		}
+
+	}
+
+	virtual void unprepare()
+	{
+		delete (myTimeSimulator->userElements);
+		delete myTimeSimulator;
+	}
+
+TEST_DEF_END(DoubleModuleCreation)
+
+TEST_DEF_START(ChangeGlobalParameter, ARTtimeSimulatorTests)
+
+	ARTtimeSimulator* myTimeSimulator;
+	ARTtimeModule* timeModule;
+
+	virtual void prepare()
+	{
+		myTimeSimulator = new ARTtimeSimulator("TestSim");
+		myTimeSimulator->userElements = new ARTlistProp("testList");
+		timeModule = new ARTtimeModule("myModule");
+	}
+
+	virtual bool run()
+	{
+
+		try
+		{
+
+			timeModule->addOPort("test", "test[t] = T");
+			myTimeSimulator->AddTimeModule(timeModule);
+
+			const ARTOPortType& testPort = dynamic_cast<const ARTOPortType&>(timeModule->getPort("test"));
+
+			myTimeSimulator->SetSimulationParameter("T", 0.1);
+
+			if (testPort[0].real() != 0.1)
+			{
+				return false;
+			}
+
+			myTimeSimulator->SetSimulationParameter("T", 0.2);
+
+			if (testPort[1].real() != 0.2)
+			{
+				return false;
+			}
+
+			return true;
+		}
+		catch (ARTerror& e)
+		{
+			string err = e.GetErrorMessage();
+			std::cout << "\n\n" << err;
+			return false;
+		}
+
+//		if ()
+
+
+	}
+
+	virtual void unprepare()
+	{
+		delete (myTimeSimulator->userElements);
+		delete myTimeSimulator;
+	}
+
+TEST_DEF_END(ChangeGlobalParameter)
+
+
+TEST_DEF_START(FibonacciNumbers, ARTtimeSimulatorTests)
+
+	ARTtimeSimulator* myTimeSimulator;
+
+	virtual void prepare()
+	{
+		myTimeSimulator = new ARTtimeSimulator("TestSim");
+		myTimeSimulator->userElements = new ARTlistProp("testList");
+
+	}
+
+	virtual bool run()
+	{
+
+		try
+		{
+
+			ARTtimeModule* timeModule = new ARTtimeModule("myModule");
+			ARTtimeModule* timeModule2 = new ARTtimeModule("myModule2");
+
+			timeModule->addOPort("fib", "fib[t] = fib[t-1] + fib[t-2]");
+//			timeModule2->addOPort("test", "test[t] = (fib[t] + fib[t-1]) / fib[t] + 1");
+			timeModule2->addOPort("test", "test[t] = fib[t]");
+
+			myTimeSimulator->AddTimeModule(timeModule);
+			myTimeSimulator->AddTimeModule(timeModule2);
+
+			const ARTOPortType& testPort = dynamic_cast<const ARTOPortType&>(timeModule->getPort("fib"));
+			timeModule2->addIPort("fib",testPort);
+
+			const ARTOPortType& outputPort = dynamic_cast<const ARTOPortType&>(timeModule2->getPort("test"));
+
+
+			testPort.initPortValue("fib[-1] = 1, fib[-2] = 0");
+
+			for (int i = 0; i < 50; ++i)
+			{
+//				std::cout << "Fibonacci[" << i << "] = " << outputPort[i].real() << std::endl;
+				outputPort[i];
+			}
+
+			// test 51st fibonacci number
+			if (outputPort[49].real() == (2.0*1597.0*6376021.0))
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		catch (ARTerror& e)
+		{
+			string err = e.GetErrorMessage();
+			std::cout << "\n\n" << err;
+			return false;
+		}
+
+	}
+
+	virtual void unprepare()
+	{
+		delete (myTimeSimulator->userElements);
+		delete myTimeSimulator;
+	}
+
+TEST_DEF_END(FibonacciNumbers)
+
+//******************************************************************************************************************************************
+
+
 obinary   binary_out;
 
 bool percent(double p, const char* msg)
@@ -4464,236 +4696,8 @@ bool percent(double p, const char* msg)
 
 int main(int argc, char **argv) 
 {	
-	
-
-	//Sadjad's test stuff
-/*	try
-	{
-
-		P_ART_Simulator mySim;
-		P_ART_Circuit ins;
-
-		ARTRootObject();
-		mySim = ARTCreateSimulator("MeinSimulator", "FrequencyDomain", "MultiModal");
-		ins = ARTCreateCircuit(mySim, "MeinInstrument");
-
-//	file sarc_clar.ins
-		P_ART_Element El1;
-		P_ART_Element El2;
-		P_ART_Element El3;
-		P_ART_Element El4;
-
-//1, 3.16, 0.55, 21., 1.
-		El1 = ARTCreateElement(mySim, "El1", "Cylinder");
-		ARTSetParameter(mySim, "El1.length = 3.16; ");
-		ARTSetParameter(mySim, "El1.r = 0.55; ");
-//2, 5.1, 0.635, 0.75, 21., 1.
-		El2 = ARTCreateElement(mySim, "El2", "Cone");
-		ARTSetParameter(mySim, "El2.length = 5.1; ");
-		ARTSetParameter(mySim, "El2.r1 = 0.635; ");
-		ARTSetParameter(mySim, "El2.r2 = 0.75; ");
-//1, 23.8, 0.75, 21., 1.
-		El3 = ARTCreateElement(mySim, "El3", "Cylinder");
-		ARTSetParameter(mySim, "El3.length = 23.8; ");
-		ARTSetParameter(mySim, "El3.r = 0.75; ");
-//7, 1
-		El4 = ARTCreateElement(mySim, "El4", "TerminationModel");
-		ARTSetParameter(mySim, "El4.radiation = Zorumski; ");
-		ARTSetParameter(mySim, "El4.radiationradius = 0.75; ");
-
-		ARTAppendReference(ins, El1);
-		ARTAppendReference(ins, El2);
-		ARTAppendReference(ins, El3);
-		ARTAppendReference(ins, El4);
-
-		ARTSetFrequencyRange(mySim, 10, 1000, 10);
-		int modes = 1;
-		ARTSetNModes(mySim, modes);
-
-
-// file bcyl_jump32*
-		P_ART_Element El1;
-		P_ART_Element El2;
-		P_ART_Element El3;
-
-//5, 50., 1.5, 10., 21., 1.
-		El1 = ARTCreateElement(mySim, "El1", "BentCylinder");
-		ARTSetParameter(mySim, "El1.length = 50; ");
-		ARTSetParameter(mySim, "El1.r = 1.5; ");
-		ARTSetParameter(mySim, "El1.bendradius = 10; ");
-//0, 1.5, 2.5, 21.
-		El2 = ARTCreateElement(mySim, "El2", "BoreJump");
-		ARTSetParameter(mySim, "El2.r1 = 1.5; ");
-		ARTSetParameter(mySim, "El2.r2 = 2.5; ");
-//5, 50., 2.5, 10., 21., 1.
-		El3 = ARTCreateElement(mySim, "El3", "BentCylinder");
-		ARTSetParameter(mySim, "El3.length = 50; ");
-		ARTSetParameter(mySim, "El3.r = 2.5; ");
-		ARTSetParameter(mySim, "El3.bendradius = 10; ");
-
-		ARTAppendReference(ins, El1);
-		ARTAppendReference(ins, El2);
-		ARTAppendReference(ins, El3);
-		ARTSetFrequencyRange(mySim, 10, 1000, 10);
-		int modes = 32;
-		ARTSetNModes(mySim, modes);
-
-
- // file theta2
-		P_ART_Element El1;
-		P_ART_Element El2;
-		P_ART_Element El3;
-		P_ART_Element El4;
-		P_ART_Element El5;
-		P_ART_Element El6;
-		P_ART_Element El7;
-
-//1, 0.66, 0.19, 21., 1., first
-		El1 = ARTCreateElement(mySim, "El1", "Cylinder");
-		ARTSetParameter(mySim, "El1.length = 0.66; ");
-		ARTSetParameter(mySim, "El1.r = 0.19; ");
-
-//2, 2.18, 0.16, 0.18, 21., 1.,
-		El2 = ARTCreateElement(mySim, "El2", "Cone");
-		ARTSetParameter(mySim, "El2.length = 2.18; ");
-		ARTSetParameter(mySim, "El2.r1 = 0.16; ");
-		ARTSetParameter(mySim, "El2.r2 = 0.18; ");
-
-//2, 0.88, 0.275, 0.21, 21., 1.,
-		El3 = ARTCreateElement(mySim, "El3", "Cone");
-		ARTSetParameter(mySim, "El3.length = 0.88; ");
-		ARTSetParameter(mySim, "El3.r1 = 0.275; ");
-		ARTSetParameter(mySim, "El3.r2 = 0.21; ");
-
-//1, 2.07, 0.21, 21., 1.,
-		El4 = ARTCreateElement(mySim, "El4", "Cylinder");
-		ARTSetParameter(mySim, "El4.length = 2.07; ");
-		ARTSetParameter(mySim, "El4.r = 0.21; ");
-
-//2, 11.85, 0.21, 0.417, 21., 1.
-		El5 = ARTCreateElement(mySim, "El5", "Cone");
-		ARTSetParameter(mySim, "El5.length = 11.85; ");
-		ARTSetParameter(mySim, "El5.r1 = 0.21; ");
-		ARTSetParameter(mySim, "El5.r2 =  0.417; ");
-
-//2, 21.2, 0.417, 0.7865, 21., 1.
-		El6 = ARTCreateElement(mySim, "El6", "Cone");
-		ARTSetParameter(mySim, "El6.length = 21.2; ");
-		ARTSetParameter(mySim, "El6.r1 =  0.417; ");
-		ARTSetParameter(mySim, "El6.r2 = 0.7865; ");
-
-//7, 1
-		El7 = ARTCreateElement(mySim, "El7", "TerminationModel");
-		ARTSetParameter(mySim, "El7.radiation = Zorumski; ");
-		ARTSetParameter(mySim, "El7.radiationradius = 0.7865; ");
-
-		ARTAppendReference(ins, El1);
-		ARTAppendReference(ins, El2);
-		ARTAppendReference(ins, El3);
-		ARTAppendReference(ins, El4);
-		ARTAppendReference(ins, El5);
-		ARTAppendReference(ins, El6);
-		ARTAppendReference(ins, El7);
-		ARTSetFrequencyRange(mySim, 10, 1000, 10);
-		int modes = 1;
-		ARTSetNModes(mySim, modes);
-	
-
-		El2 = ARTCreateElement(mySim, "El2", "BoreJump");
-		ARTSetParameter(mySim, "El2.r1 = 1.5; ");
-		ARTSetParameter(mySim, "El2.r2 = 2.5; ");
-		//ARTSetParameter(mySim, "El2.humidity = 0; ");
-
-		El3 = ARTCreateElement(mySim, "El3", "Cylinder");
-		ARTSetParameter(mySim, "El3.length = 50; ");
-		ARTSetParameter(mySim, "El3.r = 2.5; ");
-		//ARTSetParameter(mySim, "El3.humidity = 0; ");
-		//ARTSetParameter(mySim, "El3.bendradius = 10; ");
-
-
-
-		ARTvariant* meineImpKurve = ARTInputImpedance(ins);
-
-		
-		//Bin�rausgabe
-		binary_out <= cmdln.osignal;
-		Checked (binary_out << (1+2*cmdln.modes*cmdln.modes) * (meineImpKurve->len));
-		for (int i=0; i<meineImpKurve->len; i++)
-		{
-			dcomp com = dcomp(meineImpKurve->val->nt[i].re, meineImpKurve->val->nt[i].im);
-			Checked (binary_out << meineImpKurve->val->nt[i].f << abs(com) << arg(com));
-		}
-	
-
-		//Text Ausgabe
-		std::cout <<  ((1+2*modes*modes) * (meineImpKurve->len)) << " L�nge\n";
-		for (int i=0; i<meineImpKurve->len; i++)
-		{
-			dcomp com = dcomp(meineImpKurve->val->nt[i].re, meineImpKurve->val->nt[i].im);
-		//	std::cout << meineImpKurve->val->nt[i].f << "Hz: " <<  meineImpKurve->val->nt[i].re << " + " << meineImpKurve->val->nt[i].im << " * i\n";
-			std::cout << meineImpKurve->val->nt[i].f << "Hz: " <<  abs(com) << " " << arg(com) << "\n";
-		}
-
-
-		ARTDestroyCircuit(mySim, ins);
-		//ARTDestroyElement(mySim,El3);
-		//ARTDestroyElement(mySim,El2);
-		ARTDestroyElement(mySim,El1);
-		ARTDestroySimulator(mySim);
-		ARTRootDestroy();
-
-		
-
-		P_ART_Simulator mySim;
-		P_ART_Element Cyl1;
-		P_ART_Element Cyl2;
-		P_ART_Element Th;
-		P_ART_Circuit meinIns;
-
-		ARTRootObject();
-		mySim = ARTCreateSimulator("MeinSimulator", "FrequencyDomain", "MultiModal");
-		Cyl1 = ARTCreateElement(mySim, "Cyl1", "Cylinder");
-		Th = ARTCreateElement(mySim, "myToneHole", "ToneHole");
-		Cyl2 = ARTCreateElement(mySim, "Cyl2", "Cylinder");
-		ARTSetParameter(mySim, "Cyl1.length = 50; ");
-		ARTSetParameter(mySim, "Cyl1.r = 1;");
-		ARTSetParameter(mySim, "myToneHole.length = 2; ");
-		ARTSetParameter(mySim, "myToneHole.r = 2;");
-		//ARTSetParameter(mySim, "myToneHole.radiation = Reflecting;");
-		ARTSetParameter(mySim, "Cyl2.length = 25; ");
-		ARTSetParameter(mySim, "Cyl2.r = 1;");
-		meinIns = ARTCreateCircuit(mySim, "MeinInstrument");
-		ARTSetFrequencyRange(mySim, 10, 1000, 10);
-		ARTSetNModes(mySim, 1);
-			ARTAppendReference(meinIns, Cyl1);
-			ARTAppendReference(meinIns, Th);
-			ARTAppendReference(meinIns,Cyl2);
-			ARTvariant* meineImpKurve = ARTInputImpedance(meinIns);
-			meineImpKurve = ARTInputImpedance(meinIns);
-		//Bin�rausgabe
-		binary_out <= cmdln.osignal;
-		Checked (binary_out << (1+2*cmdln.modes*cmdln.modes) * (meineImpKurve->len-1));
-		for (int i=0; i<meineImpKurve->len; i++) 
-			Checked (binary_out << meineImpKurve->val->nt[i].f << sqrt((meineImpKurve->val->nt[i].re)*(meineImpKurve->val->nt[i].re) + (meineImpKurve->val->nt[i].im)*(meineImpKurve->val->nt[i].im)) << 0.0);
-		ARTDestroyCircuit(mySim, meinIns);
-		ARTDestroyElement(mySim,Cyl2);
-		ARTDestroyElement(mySim,Th);
-		ARTDestroyElement(mySim,Cyl1);
-		ARTDestroySimulator(mySim);
-		ARTRootDestroy();
-
-
-	}
-	catch(ARTerror e)
-	{	
-		string err = e.GetErrorMessage();
-		std::cout << "\n\n" << err;
-	}
-*/
-
-
 	//AllMyTests->printTree();
-/*
+
 	try
 	{
 
@@ -4728,74 +4732,74 @@ int main(int argc, char **argv)
 		string err = e.GetErrorMessage();
 		std::cout << "\n\n" << err;
 	}
-*/
+
 	//print summary, as other messages might drown in debugging output
 	//AllMyTests->printSummary();
 
 	// clemens' test cases
-	try {
-
-		ARTtimeSimulator* myTimeSimulator = new ARTtimeSimulator("TestSim");
-		myTimeSimulator->userElements = new ARTlistProp("bla");
-
-		ARTtimeModule* timeModule = new ARTtimeModule("myModule");
-		ARTtimeModule* timeModule2 = new ARTtimeModule("myModule2");
-
-		cout << "Created simulator and time modules." << endl;
-
-		timeModule->addOPort("fib", "fib[t] = fib[t-1] + fib[t-2]");
-		timeModule2->addOPort("test", "test[t] = (fib[t] + fib[t-1]) / fib[t] + 1");
-//		timeModule2->addOPort("test", "test[t] = fib[t]");
-
-		cout << "Set definition of output ports." << endl;
-
-		myTimeSimulator->addTimeModule(timeModule);
-		myTimeSimulator->addTimeModule(timeModule2);
-
-		cout << "Added time modules to simulator." << endl;
-
-		const ARTOPortType& testPort = dynamic_cast<const ARTOPortType&>(timeModule->getPort("fib"));
-		timeModule2->addIPort("fib",testPort);
-
-		const ARTOPortType& outputPort = dynamic_cast<const ARTOPortType&>(timeModule2->getPort("test"));
-//		timeModule2->setSimulator(myTimeSimulator);
-
-		cout << "Added port from module1 as input port to module2." << endl;
-
-		/*testPort.initPortValue(std::complex<double>(1,0), -1);
-		testPort.initPortValue(std::complex<double>(0,0), -2);*/
-		/*testPort.initPortValue(1, -1);
-		testPort.initPortValue(0, -2);*/
-		testPort.initPortValue("fib[-1] = 1, fib[-2] = 0");
-//		outputPort.initPortValue("fib[-1] = 1, fib[-2] = 0");
-
-		cout << "Initialized port values. Starting calculation..." << endl;
-
-		for (int i = 0; i < 50; ++i)
-		{
-			std::cout << "Fibonacci[" << i << "] = " << outputPort[i].real() << std::endl;
-		}
-
-		delete (myTimeSimulator->userElements);
-		delete myTimeSimulator;
-
-	}
-	catch (ARTerror& e)
-	{
-		std::cout << e.GetErrorMessage() << std::endl;
-	}
-	catch (mup::ParserError& e)
-	{
-		std::cout << e.GetMsg() << std::endl;
-	}
-	catch (string& errorMsg)
-	{
-		std::cout << "Error occurred: " << errorMsg << std::endl;
-	}
-	catch (...)
-	{
-		std::cout << "ERROR in Clemens' tests!" << std::endl;
-	}
+//	try {
+//
+//		ARTtimeSimulator* myTimeSimulator = new ARTtimeSimulator("TestSim");
+//		myTimeSimulator->userElements = new ARTlistProp("bla");
+//
+//		ARTtimeModule* timeModule = new ARTtimeModule("myModule");
+//		ARTtimeModule* timeModule2 = new ARTtimeModule("myModule2");
+//
+//		cout << "Created simulator and time modules." << endl;
+//
+//		timeModule->addOPort("fib", "fib[t] = fib[t-1] + fib[t-2]");
+//		timeModule2->addOPort("test", "test[t] = (fib[t] + fib[t-1]) / fib[t] + 1");
+////		timeModule2->addOPort("test", "test[t] = fib[t]");
+//
+//		cout << "Set definition of output ports." << endl;
+//
+//		myTimeSimulator->addTimeModule(timeModule);
+//		myTimeSimulator->addTimeModule(timeModule2);
+//
+//		cout << "Added time modules to simulator." << endl;
+//
+//		const ARTOPortType& testPort = dynamic_cast<const ARTOPortType&>(timeModule->getPort("fib"));
+//		timeModule2->addIPort("fib",testPort);
+//
+//		const ARTOPortType& outputPort = dynamic_cast<const ARTOPortType&>(timeModule2->getPort("test"));
+////		timeModule2->setSimulator(myTimeSimulator);
+//
+//		cout << "Added port from module1 as input port to module2." << endl;
+//
+//		/*testPort.initPortValue(std::complex<double>(1,0), -1);
+//		testPort.initPortValue(std::complex<double>(0,0), -2);*/
+//		/*testPort.initPortValue(1, -1);
+//		testPort.initPortValue(0, -2);*/
+//		testPort.initPortValue("fib[-1] = 1, fib[-2] = 0");
+////		outputPort.initPortValue("fib[-1] = 1, fib[-2] = 0");
+//
+//		cout << "Initialized port values. Starting calculation..." << endl;
+//
+//		for (int i = 0; i < 50; ++i)
+//		{
+//			std::cout << "Fibonacci[" << i << "] = " << outputPort[i].real() << std::endl;
+//		}
+//
+//		delete (myTimeSimulator->userElements);
+//		delete myTimeSimulator;
+//
+//	}
+//	catch (ARTerror& e)
+//	{
+//		std::cout << e.GetErrorMessage() << std::endl;
+//	}
+//	catch (mup::ParserError& e)
+//	{
+//		std::cout << e.GetMsg() << std::endl;
+//	}
+//	catch (string& errorMsg)
+//	{
+//		std::cout << "Error occurred: " << errorMsg << std::endl;
+//	}
+//	catch (...)
+//	{
+//		std::cout << "ERROR in Clemens' tests!" << std::endl;
+//	}
 
 
 	return 0;
