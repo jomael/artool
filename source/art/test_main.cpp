@@ -819,6 +819,8 @@ TEST_DEF_START(createElementTwice, ARTpreperationFunctions)
 	{
 			ARTRootObject();
 			mySim = ARTCreateSimulator("MeinSimulator", "FrequencyDomain", "MultiModal");
+			El1 = NULL;
+			El2 = NULL;
 	}
 
 	virtual bool run() //test using the same element name twice

@@ -253,6 +253,7 @@
     <ClCompile Include="..\source\art\ARTerror.cpp" />
     <ClCompile Include="..\source\art\ARTfunctionoid.cpp" />
     <ClCompile Include="..\source\art\ARTlink.cpp" />
+    <ClCompile Include="..\source\art\ARTsimulator.cpp" />
     <ClCompile Include="..\source\art\ARTtimeModule.cpp" />
     <ClCompile Include="..\source\art\hornelement.cpp" />
     <ClCompile Include="..\source\art\impedancecurve.cpp" />
@@ -346,6 +347,7 @@
     <ClInclude Include="..\include\art\ARTlink.h" />
     <ClInclude Include="..\include\art\ARTmodel.h" />
     <ClInclude Include="..\include\art\ARTmodelinterface.h" />
+    <ClInclude Include="..\include\art\ARTsimulator.h" />
     <ClInclude Include="..\include\art\ARTtimeModule.h" />
     <ClInclude Include="..\include\art\ARTwaveObject.h" />
     <ClInclude Include="..\include\art\autoinit.hpp" />
