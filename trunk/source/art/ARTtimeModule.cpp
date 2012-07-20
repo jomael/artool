@@ -200,10 +200,70 @@ const ARTPortType& ARTtimeModule::getPort(const string& name)
 
 void ARTtimeModule::setLocalParameter(const string& name, const string& expr)
 {
+
+	if (_lParams.find(name) != _lParams.end())
+	{
+		ParserX tmpParser(mup::pckCOMPLEX_NO_STRING);
+
+		LocalParameterType* localParam = _lParams[name];
+
+		tmpParser.DefineVar(name, *(localParam->var));
+		tmpParser.SetExpr(expr);
+		try
+		{
+			*(localParam->val) = tmpParser.Eval();
+		}
+		catch (ParserError& error)
+		{
+			// pass error on to next instance
+			throw ARTerror("ARTtimeModule::setLocalParameter", "Could not set local parameter '%s1' of time module '%s2': %s3",
+					name, name_, error.GetMsg());
+		}
+	}
+	else
+	{
+		throw ARTerror("ARTtimeModule::setLocalParameter", "Name '%s1' of local parameter is already in use in current time module '%s2'.",
+				name, name_);
+	}
+
+
+}
+
+void ARTtimeModule::setLocalParameter(const string& name, const double val)
+{
+	if (_lParams.find(name) != _lParams.end())
+	{
+		LocalParameterType* localParam = _lParams[name];
+		*(localParam->val) = val;
+	}
+	else
+	{
+		throw ARTerror("ARTtimeModule::setLocalParameter", "Local parameter '%s1' could not be found in current time module '%s2'.",
+				name, name_);
+	}
+}
+
+void ARTtimeModule::setLocalParameter(const string& name, const std::complex<double>& val)
+{
+	if (_lParams.find(name) != _lParams.end())
+	{
+		LocalParameterType* localParam = _lParams[name];
+		*(localParam->val) = val;
+	}
+	else
+	{
+		throw ARTerror("ARTtimeModule::setLocalParameter", "Local parameter '%s1' could not be found in current time module '%s2'.",
+				name, name_);
+	}
+
+}
+
+void ARTtimeModule::addLocalParameter(const string& name, const string& expr)
+{
+
 	if (!checkVarNameExists(name))
 	{
-		ParserX tmpParser;
-
+		ParserX tmpParser(mup::pckCOMPLEX_NO_STRING);
 		LocalParameterType* newParam = new LocalParameterType();
 		newParam->val = new Value();
 		newParam->var = new Variable(newParam->val);
@@ -220,7 +280,8 @@ void ARTtimeModule::setLocalParameter(const string& name, const string& expr)
 			delete (newParam->val);
 			delete (newParam->var);
 			// pass error on to next instance
-			throw;
+			throw ARTerror("ARTtimeModule::setLocalParameter", "Could not set local parameter '%s1' of time module '%s2': %s3",
+					name, name_, error.GetMsg());
 		}
 
 		_lParams[name] = newParam;
@@ -228,13 +289,13 @@ void ARTtimeModule::setLocalParameter(const string& name, const string& expr)
 	}
 	else
 	{
-		throw ARTerror("ARTtimeModule::setLocalParameter", "Name '%s1' of local parameter is already in use in current time module '%s2'.",
+		throw ARTerror("ARTtimeModule::addLocalParameter", "Name '%s1' of local parameter is already in use in current time module '%s2'.",
 				name, name_);
 	}
 
 }
 
-void ARTtimeModule::setLocalParameter(const string& name, const double val)
+void ARTtimeModule::addLocalParameter(const string& name, const double val)
 {
 	if (!checkVarNameExists(name))
 	{
@@ -247,11 +308,11 @@ void ARTtimeModule::setLocalParameter(const string& name, const double val)
 	else
 	{
 		throw ARTerror("ARTtimeModule::setLocalParameter", "Name '%s1' of local parameter is already in use in current time module '%s2'.",
-				name, name_);
+			name, name_);
 	}
 }
 
-void ARTtimeModule::setLocalParameter(const string& name, const std::complex<double>& val)
+void ARTtimeModule::addLocalParameter(const string& name, const std::complex<double>& val)
 {
 	if (!checkVarNameExists(name))
 	{
@@ -264,9 +325,8 @@ void ARTtimeModule::setLocalParameter(const string& name, const std::complex<dou
 	else
 	{
 		throw ARTerror("ARTtimeModule::setLocalParameter", "Name '%s1' of local parameter is already in use in current time module '%s2'.",
-				name, name_);
+			name, name_);
 	}
-
 }
 
 void ARTtimeModule::addGlobalParameter(const string& name, const Variable& parameter)

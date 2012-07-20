@@ -1311,6 +1311,19 @@ void ARTdataContainer::SetParserVar(const string& varname)
 
 const Variable& ARTdataContainer::GetParserVar() const
 {
+	if (avar_ == NULL)
+	{
+		throw ARTerror("ARTdataContainer::GetParserVar", "Current variable of data container '%s1' not defined!", varname_);
+	}
+	return *avar_;
+}
+
+const Variable& ARTdataContainer::GetParserVar()
+{
+	if (avar_ == NULL)
+	{
+		SetParserVar(varname_);
+	}
 	return *avar_;
 }
 
