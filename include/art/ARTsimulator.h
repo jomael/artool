@@ -74,15 +74,18 @@ public:
 					 const string sds="", const string lds="", const string htm="");
 
 	virtual void AddTimeModule(ARTtimeModule* timeModule);
-	virtual void AddGlobalParameter(const string& name, const string& expr);
-	virtual void AddGlobalParameter(const string& name, const std::complex<double>& val);
-	virtual void AddGlobalParameter(const string& name, double val);
+	virtual void AddSimulationParameter(const string& name, const string& expr);
+	virtual void AddSimulationParameter(const string& name, const std::complex<double>& val);
+	virtual void AddSimulationParameter(const string& name, double val);
 
 	virtual void SetModulesToCurrentTimeIndex(int idx);
 
 	virtual void SetSimulationParameter(const string& name, const string& expr);
 	virtual void SetSimulationParameter(const string& name, const std::complex<double>& val);
 	virtual void SetSimulationParameter(const string& name, double val);
+
+	virtual ARTdataProp* FindDataPropInSimulator(string exp);
+	virtual ARTtimeModule* FindTimeModuleInSimulator(string exp);
 
 	virtual ~ARTtimeSimulator();
 protected:
@@ -94,13 +97,14 @@ protected:
 	typedef std::map<const string, simulParameterType*> simulParameterMap;
 	typedef simulParameterMap::iterator simulParameterMapIterator;
 
-	simulParameterMap _simulParams;
+	//simulParameterMap _simulParams;
 
 	virtual void initStandardSimulParams();
 
 	virtual void clean();
 	virtual void addParamsToModule(ARTtimeModule* timeModule);
-	virtual void addParamToCurrentModules(const string& name, simulParameterType* newParam);
+	//virtual void addParamToCurrentModules(const string& name, simulParameterType* newParam);
+	virtual void addParamToCurrentModules(ARTdataProp* newParam);
 
 };
 

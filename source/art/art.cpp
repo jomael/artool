@@ -61,6 +61,7 @@
 //#include "ARTmodel.h"
 #include "ARTdataContainer.h"
 #include "ARTsimulator.h"
+#include "ARTtimeModule.h"
 
 #define NOERROR_ 0
 #define ERROR_ -1
@@ -142,8 +143,8 @@ P_ART_Object    __CALLCONV ARTRootObject         ()
 		std::cout << "ARTRootObject()\n";
 	#endif
 	lastError = "";
-  if (art == NULL) art = new AcousticResearchTool();
-  return art;
+	if (art == NULL) art = new AcousticResearchTool();
+	return art;
 	DLL_ERRORHANDLING_END
 }
 
@@ -152,9 +153,9 @@ P_ART_Object    __CALLCONV ARTRootObject         ()
 bool            __CALLCONV ARTRootDestroy        ()
 {
 	DLL_ERRORHANDLING_BEGIN
-  delete art;
-  art = NULL;
-  return 1; //No error
+	delete art;
+	art = NULL;
+	return 1; //No error
 	DLL_ERRORHANDLING_END
 }
 
@@ -212,23 +213,24 @@ P_ART_Simulator __CALLCONV ARTCreateSimulator    (const char* name, const char* 
 	//check if domain is valid 
 	if (! ARTCheckPropertyCapability("SimulationDomain", domain)) 
 		throw ARTerror("ARTCreateSimulator", "The specified domain is invalid.");
-	
-	//check if wavetype is valid
-	if (! ARTCheckPropertyCapability("WaveType", wavetype)) 
-		throw ARTerror("ARTCreateSimulator", "The specified wave type is invalid.");
 
 	//create simulator
 	if (!strcmp(domain, "FrequencyDomain"))
 	{
+		//check if wavetype is valid
+		if (! ARTCheckPropertyCapability("WaveType", wavetype))
+			throw ARTerror("ARTCreateSimulator", "The specified wave type is invalid.");
 		simulator = new ARTfreqSimulator(name, domain, wavetype);
+		simulator->userElements = simulator->AppendListProp("UserElements");
+		simulator->circuits = simulator->AppendListProp("Circuits");
 	}
 	else if (!strcmp(domain, "TimeDomain"))
 	{
 		simulator = new ARTtimeSimulator(name, domain);
+		simulator->userElements = simulator->AppendListProp("TimeModules");
 	}
 
-	simulator->userElements = simulator->AppendListProp("UserElements");
-	simulator->circuits = simulator->AppendListProp("Circuits"); 
+
 
 	//add simulator to the list of simulators in the root object
 	art->simulators->AppendObject(simulator);
@@ -523,17 +525,36 @@ P_ART_DataProp    __CALLCONV ARTSetParameter     (P_ART_Simulator simulator, con
 		//check if the string has some content
 		if (s != "")
 		{
-			prop = simulator->FindDataPropInSimulator(s); //this func. will throw error if not found
-			ARTdataContainer* dc = (ARTdataContainer*)prop;
-			//if the datacontainer is of type C_ART_str or C_ART_str, set the value of the string
-			if ((dc->GetDatatype() == C_ART_str) || (dc->GetDatatype() == C_ART_nstr))
+			ARTtimeSimulator* tSim = dynamic_cast<ARTtimeSimulator*>(simulator);
+			// in case of a frequency simulator
+			if (tSim == NULL)
 			{
-				ARTSetString(prop, 0, strcrop(expressions[1]).c_str());
-				dc->NotifyClients(); //and tell dependent data containers there's a new value here!
+				prop = simulator->FindDataPropInSimulator(s); //this func. will throw error if not found
+				//if the datacontainer is of type C_ART_str or C_ART_str, set the value of the string
+				if ((prop->GetDatatype() == C_ART_str) || (prop->GetDatatype() == C_ART_nstr))
+				{
+					ARTSetString(prop, 0, strcrop(expressions[1]).c_str());
+					prop->NotifyClients(); //and tell dependent data containers there's a new value here!
+				}
+				//otherwise set the parser definition of the string
+				else
+					prop->SetDefinition(commands[i], simulator);
 			}
-			//otherwise set the parser definition of the string
 			else
-				dc->SetDefinition(commands[i], simulator);
+			// in case of a time domain simulator
+			{
+				vector<string> names = strsplit(s, '.');
+				::size_t pos;
+				pos = names[1].find('[');
+				ARTtimeModule* timeModule = tSim->FindTimeModuleInSimulator(strcrop(names[0]));
+				names[1].erase(pos);
+				string initCommand = commands[i];
+				pos = initCommand.find('.');
+				initCommand.erase(0, pos + 1);
+				std::cout << "Try to set port \"" << strcrop(names[1]) << "\" of time module \"" << strcrop(names[0])
+						<< "\" to expression \"" << initCommand << "\"." << std::endl;
+				timeModule->getPort(strcrop(names[1])).initPortValue(initCommand);
+			}
 		}
 	}
 	return prop;

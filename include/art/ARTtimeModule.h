@@ -138,6 +138,10 @@ public:
 	virtual void setLocalParameter(const string& name, const double val);
 	virtual void setLocalParameter(const string& name, const std::complex<double>& val);
 
+	virtual void addLocalParameter(const string& name, const string& expr);
+	virtual void addLocalParameter(const string& name, const double val);
+	virtual void addLocalParameter(const string& name, const std::complex<double>& val);
+
 	virtual void addGlobalParameter(const string& name, const Variable& parameter);
 	virtual void removeGlobalParameter(const string& name);
 

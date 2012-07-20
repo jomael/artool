@@ -18,7 +18,8 @@ using std::stringstream;
 
 ARTsimulator::ARTsimulator(const string name, const string domain,
 		const string sds, const string lds, const string htm) :
-		ARTobject(name,sds,lds,htm), domain_(domain), parser_(new ParserX(mup::pckCOMPLEX_NO_STRING))
+		ARTobject(name,sds,lds,htm), domain_(domain), parser_(new ParserX(mup::pckCOMPLEX_NO_STRING)),
+		userElements(NULL)
 {
 }
 
@@ -34,9 +35,9 @@ ARTdataProp* ARTsimulator::FindDataPropInSimulator(string exp)
 	{
 		vector<string> nameparts = strsplit(exp,'.');
 		ARTelement* element = dynamic_cast<ARTelement*>(userElements->FindObject( strcrop(nameparts[0]).c_str() ));
-		if (element == NULL) throw ARTerror("FindDataPropInSimulator", "An element of the specified name '%s1' does not exist and '%s1' is not recognized as a data property of the simulator.", strcrop(nameparts[0]).c_str() );
+		if (element == NULL) throw ARTerror("ARTsimulator::FindDataPropInSimulator", "An element of the specified name '%s1' does not exist and '%s1' is not recognized as a data property of the simulator.", strcrop(nameparts[0]).c_str() );
 		prop = dynamic_cast<ARTdataProp*>(element->model->FindProperty( strcrop(nameparts[1]).c_str() ));
-		if (prop == NULL) throw ARTerror("FindDataPropInSimulator", "The element '%s1' does not have the specified data property '%s2'.",  strcrop(nameparts[0]).c_str() ,  strcrop(nameparts[1]).c_str() );
+		if (prop == NULL) throw ARTerror("ARTsimulator::FindDataPropInSimulator", "The element '%s1' does not have the specified data property '%s2'.",  strcrop(nameparts[0]).c_str() ,  strcrop(nameparts[1]).c_str() );
 	}
 	return prop;
 }
@@ -45,6 +46,7 @@ ARTsimulator::~ARTsimulator()
 {
 	// IMPORTANT: do NOT free the memory of the parser here!
 	//delete (parser_);
+	//delete userElements;
 }
 
 
@@ -93,8 +95,8 @@ ARTfreqSimulator::ARTfreqSimulator(const string name, const string domain, const
 
 ARTtimeSimulator::ARTtimeSimulator(const string name, const string domain,
 								   const string sds, const string lds, const string htm) :
-	ARTsimulator(name, domain, sds, lds, htm),
-	_simulParams()
+	ARTsimulator(name, domain, sds, lds, htm)
+//	_simulParams()
 {
 	initStandardSimulParams();
 }
@@ -105,17 +107,9 @@ void ARTtimeSimulator::AddTimeModule(ARTtimeModule* timeModule)
 	if (timeModule != NULL && userElements != NULL)
 	{
 		const string& moduleName = timeModule->GetName();
-		ARTobject* iter = userElements->GetObjects(NULL);
-
-		// go through user elements list
-		while (iter)
+		if(userElements->FindObject(moduleName) != NULL)
 		{
-			// if we find a module with the same name, throw an error
-			if (iter->GetName() == moduleName)
-			{
-				throw ARTerror("ARTtimeSimulator::addTimeModule", "An element of the specified name '%s1' is already registered in the current simulator '%s2'.", moduleName, name_);
-			}
-			iter = userElements->GetObjects(iter);
+			throw ARTerror("ARTtimeSimulator::addTimeModule", "An element of the specified name '%s1' is already registered in the current simulator '%s2'.", moduleName, name_);
 		}
 		// if we are here, no module with the same name has been found
 		// => register module in current simulator
@@ -127,66 +121,97 @@ void ARTtimeSimulator::AddTimeModule(ARTtimeModule* timeModule)
 	}
 }
 
-void ARTtimeSimulator::AddGlobalParameter(const string& name, const string& expr)
+void ARTtimeSimulator::AddSimulationParameter(const string& name, const string& expr)
 {
-	if (_simulParams.find(name) == _simulParams.end())
+//	if (_simulParams.find(name) == _simulParams.end())
+//	{
+//		simulParameterType* newParam = new simulParameterType();
+//		newParam->_parser = new ParserX(mup::pckCOMPLEX_NO_STRING);
+//		newParam->_val = new ARTdataContainer(C_ART_cpx, 0, name);
+//		newParam->_val->SetParser(newParam->_parser);
+//		newParam->_val->SetDefinition(expr);
+//		_simulParams[name] = newParam;
+//		addParamToCurrentModules(name, newParam);
+//	}
+	ARTdataProp* prop = NULL;
+	try
 	{
-		simulParameterType* newParam = new simulParameterType();
-		newParam->_parser = new ParserX(mup::pckCOMPLEX_NO_STRING);
-		newParam->_val = new ARTdataContainer(C_ART_cpx, 0, name);
-		newParam->_val->SetParser(newParam->_parser);
-		newParam->_val->SetDefinition(expr);
-		_simulParams[name] = newParam;
-		addParamToCurrentModules(name, newParam);
+		prop = FindDataPropInSimulator(name);
 	}
-	else
+	catch(ARTerror& e)
 	{
-		throw ARTerror("ARTtimeSimulator::AddGlobalParameter",
-				"Could not add global parameter '%s1': Parameter with same name already exists in current simulator.",
-				name);
+		prop = new ARTdataProp(C_ART_cpx, 0, name);
+		prop->SetParser(parser_);
+		prop->SetDefinition(expr, this);
+		AppendDataProp(prop);
+		return;
 	}
+	throw ARTerror("ARTtimeSimulator::AddGlobalParameter",
+			"Could not add global parameter '%s1': Parameter with same name already exists in current simulator.",
+			name);
+}
+
+void ARTtimeSimulator::AddSimulationParameter(const string& name, const std::complex<double>& val)
+{
+//	if (_simulParams.find(name) == _simulParams.end())
+//	{
+//		simulParameterType* newParam = new simulParameterType();
+//		newParam->_parser = new ParserX(mup::pckCOMPLEX_NO_STRING);
+//		newParam->_val = new ARTdataContainer(C_ART_cpx, 0, name);
+//		newParam->_val->SetParser(newParam->_parser);
+//		newParam->_val->SetVal(val);
+//		_simulParams[name] = newParam;
+//		addParamToCurrentModules(name, newParam);
+//	}
+	ARTdataProp* prop = NULL;
+	try
+	{
+		prop = FindDataPropInSimulator(name);
+	}
+	catch(ARTerror& e)
+	{
+		prop = new ARTdataProp(C_ART_cpx, 0, name);
+		prop->SetParser(parser_);
+		prop->SetVal(val);
+		AppendDataProp(prop);
+		return;
+	}
+	throw ARTerror("ARTtimeSimulator::AddGlobalParameter",
+			"Could not add global parameter '%s1': Parameter with same name already exists in current simulator.",
+			name);
 
 }
 
-void ARTtimeSimulator::AddGlobalParameter(const string& name, const std::complex<double>& val)
+void ARTtimeSimulator::AddSimulationParameter(const string& name, double val)
 {
-	if (_simulParams.find(name) == _simulParams.end())
+	ARTdataProp* prop = NULL;
+	try
 	{
-		simulParameterType* newParam = new simulParameterType();
-		newParam->_parser = new ParserX(mup::pckCOMPLEX_NO_STRING);
-		newParam->_val = new ARTdataContainer(C_ART_cpx, 0, name);
-		newParam->_val->SetParser(newParam->_parser);
-		newParam->_val->SetVal(val);
-		_simulParams[name] = newParam;
-		addParamToCurrentModules(name, newParam);
+		prop = FindDataPropInSimulator(name);
 	}
-	else
+	catch(ARTerror& e)
 	{
-		throw ARTerror("ARTtimeSimulator::AddGlobalParameter",
-				"Could not add global parameter '%s1': Parameter with same name already exists in current simulator.",
-				name);
+		prop = new ARTdataProp(C_ART_cpx, 0, name);
+		prop->SetParser(parser_);
+		prop->SetVal(val);
+		AppendDataProp(prop);
+		addParamToCurrentModules(prop);
+		return;
 	}
+	throw ARTerror("ARTtimeSimulator::AddGlobalParameter",
+		"Could not add global parameter '%s1': Parameter with same name already exists in current simulator.",
+		name);
 
-}
-
-void ARTtimeSimulator::AddGlobalParameter(const string& name, double val)
-{
-	if (_simulParams.find(name) == _simulParams.end())
-	{
-		simulParameterType* newParam = new simulParameterType();
-		newParam->_parser = new ParserX(mup::pckCOMPLEX_NO_STRING);
-		newParam->_val = new ARTdataContainer(C_ART_cpx, 0, name);
-		newParam->_val->SetParser(newParam->_parser);
-		newParam->_val->SetVal(val);
-		_simulParams[name] = newParam;
-		addParamToCurrentModules(name, newParam);
-	}
-	else
-	{
-		throw ARTerror("ARTtimeSimulator::AddGlobalParameter",
-				"Could not add global parameter '%s1': Parameter with same name already exists in current simulator.",
-				name);
-	}
+//	if (_simulParams.find(name) == _simulParams.end())
+//	{
+//		simulParameterType* newParam = new simulParameterType();
+//		newParam->_parser = new ParserX(mup::pckCOMPLEX_NO_STRING);
+//		newParam->_val = new ARTdataContainer(C_ART_cpx, 0, name);
+//		newParam->_val->SetParser(newParam->_parser);
+//		newParam->_val->SetVal(val);
+//		_simulParams[name] = newParam;
+//		addParamToCurrentModules(name, newParam);
+//	}
 
 }
 
@@ -194,10 +219,20 @@ void ARTtimeSimulator::SetModulesToCurrentTimeIndex(int idx)
 {
 
 	// set current time index parameter if it exists
-	if (_simulParams.find("t") != _simulParams.end())
+	ARTdataProp* prop = FindDataPropInSimulator("t");
+//	if (_simulParams.find("t") != _simulParams.end())
+//	{
+//		ARTdataContainer& tmpContainer = *(_simulParams["t"]->_val);
+//		tmpContainer.SetVal(idx);
+//	}
+	if (prop != NULL)
 	{
-		ARTdataContainer& tmpContainer = *(_simulParams["t"]->_val);
-		tmpContainer.SetVal(idx);
+		prop->SetVal(idx);
+	}
+	else
+	{
+		throw ARTerror("ARTtimeSimulator::SetModulesToCurrentTimeIndex", "Could not find global simulation parameter 't' in simulator '%s1' which is needed for time domain simulation.",
+				name_);
 	}
 
 	// iterate through all time modules of the simulator
@@ -220,10 +255,15 @@ void ARTtimeSimulator::SetModulesToCurrentTimeIndex(int idx)
 
 void ARTtimeSimulator::SetSimulationParameter(const string& name, const string& expr)
 {
-	if (_simulParams.find(name) != _simulParams.end())
+	ARTdataProp* prop = FindDataPropInSimulator(name);
+//	if (_simulParams.find(name) != _simulParams.end())
+//	{
+//		ARTdataContainer* tmpContainer = (_simulParams[name])->_val;
+//		tmpContainer->SetDefinition(expr);
+//	}
+	if (prop != NULL)
 	{
-		ARTdataContainer* tmpContainer = (_simulParams[name])->_val;
-		tmpContainer->SetDefinition(expr);
+		prop->SetDefinition(expr);
 	}
 	else
 	{
@@ -236,10 +276,15 @@ void ARTtimeSimulator::SetSimulationParameter(const string& name, const string& 
 
 void ARTtimeSimulator::SetSimulationParameter(const string& name, const std::complex<double>& val)
 {
-	if (_simulParams.find(name) != _simulParams.end())
+	ARTdataProp* prop = FindDataPropInSimulator(name);
+//	if (_simulParams.find(name) != _simulParams.end())
+//	{
+//		ARTdataContainer* tmpContainer = (_simulParams[name])->_val;
+//		tmpContainer->SetVal(val);
+//	}
+	if (prop != NULL)
 	{
-		ARTdataContainer* tmpContainer = (_simulParams[name])->_val;
-		tmpContainer->SetVal(val);
+		prop->SetVal(val);
 	}
 	else
 	{
@@ -254,10 +299,15 @@ void ARTtimeSimulator::SetSimulationParameter(const string& name, const std::com
 
 void ARTtimeSimulator::SetSimulationParameter(const string& name, double val)
 {
-	if (_simulParams.find(name) != _simulParams.end())
+	ARTdataProp* prop = FindDataPropInSimulator(name);
+//	if (_simulParams.find(name) != _simulParams.end())
+//	{
+//		ARTdataContainer* tmpContainer = (_simulParams[name])->_val;
+//		tmpContainer->SetVal(val);
+//	}
+	if (prop != NULL)
 	{
-		ARTdataContainer* tmpContainer = (_simulParams[name])->_val;
-		tmpContainer->SetVal(val);
+		prop->SetVal(val);
 	}
 	else
 	{
@@ -270,6 +320,26 @@ void ARTtimeSimulator::SetSimulationParameter(const string& name, double val)
 	}
 }
 
+ARTdataProp* ARTtimeSimulator::FindDataPropInSimulator(string exp)
+{
+	ARTdataProp* prop;
+	//try to find a property of the simulator with name *exp*
+	prop = dynamic_cast<ARTdataProp*>( FindProperty( strcrop( exp ) ));
+	if (prop == NULL) throw ARTerror("ARTtimeSimulator::FindDataPropInSimulator", "The specified data element '%s1' does not exist in current simulator.",  exp);
+	return prop;
+}
+
+ARTtimeModule* ARTtimeSimulator::FindTimeModuleInSimulator(string exp)
+{
+	ARTtimeModule* tmpModule = dynamic_cast<ARTtimeModule*>(userElements->FindObject(exp));
+	if (tmpModule == NULL)
+	{
+		throw ARTerror("ARTtimeSimulator::FindTimeModuleInSimulator", "No time module with name '%s1' exists in simulator '%s2'.",
+				exp, name_);
+	}
+	return tmpModule;
+}
+
 ARTtimeSimulator::~ARTtimeSimulator()
 {
 	clean();
@@ -277,33 +347,43 @@ ARTtimeSimulator::~ARTtimeSimulator()
 
 void ARTtimeSimulator::initStandardSimulParams()
 {
-	ARTdataContainer* tmpContainer;
-	ParserX* tmpParser;
-	simulParameterType* tmpParam;
+//	ARTdataContainer* tmpContainer;
+//	ParserX* tmpParser;
+//	simulParameterType* tmpParam;
+
+	ARTdataProp* tmpProp;
 
 	// create new simulation parameter for sampling period
-	tmpContainer = new ARTdataContainer(C_ART_cpx, 0, "T");
-	tmpParser = new ParserX(mup::pckCOMPLEX_NO_STRING);
-	tmpContainer->SetParser(tmpParser);
-	tmpContainer->SetVal(1/44100);
+	tmpProp = new ARTdataProp(C_ART_cpx, 0, "T");
+//	tmpParser = new ParserX(mup::pckCOMPLEX_NO_STRING);
+	tmpProp->SetParser(parser_);
+	tmpProp->SetVal(1/44100);
 
-	tmpParam = new simulParameterType();
-	tmpParam->_val = tmpContainer;
-	tmpParam->_parser = tmpParser;
+	AppendDataProp(tmpProp);
 
-	_simulParams["T"] = tmpParam;
+//	tmpParam = new simulParameterType();
+//	tmpParam->_val = tmpContainer;
+//	tmpParam->_parser = tmpParser;
+
+//	_simulParams["T"] = tmpParam;
 
 	// create new simulation parameter time index
-	tmpContainer = new ARTdataContainer(C_ART_int, 0, "t");
-	tmpParser = new ParserX(mup::pckCOMPLEX_NO_STRING);
-	tmpContainer->SetParser(tmpParser);
-	tmpContainer->SetVal(0);
+//	tmpContainer = new ARTdataContainer(C_ART_int, 0, "t");
+//	tmpParser = new ParserX(mup::pckCOMPLEX_NO_STRING);
+//	tmpContainer->SetParser(tmpParser);
+//	tmpContainer->SetVal(0);
+//
+//	tmpParam = new simulParameterType();
+//	tmpParam->_val = tmpContainer;
+//	tmpParam->_parser = tmpParser;
+//
+//	_simulParams["t"] = tmpParam;
 
-	tmpParam = new simulParameterType();
-	tmpParam->_val = tmpContainer;
-	tmpParam->_parser = tmpParser;
+	tmpProp = new ARTdataProp(C_ART_int, 0, "t");
+	tmpProp->SetParser(parser_);
+	tmpProp->SetVal(0);
 
-	_simulParams["t"] = tmpParam;
+	AppendDataProp(tmpProp);
 }
 
 void ARTtimeSimulator::clean()
@@ -311,33 +391,44 @@ void ARTtimeSimulator::clean()
 	simulParameterMapIterator iter;
 
 	// deallocate memory for all saved simulation parameters
-	for (iter = _simulParams.begin(); iter != _simulParams.end(); ++iter)
-	{
-		delete (iter->second->_val);
-		delete (iter->second->_parser);
-		delete (iter->second);
-	}
-
-	_simulParams.clear();
+//	for (iter = _simulParams.begin(); iter != _simulParams.end(); ++iter)
+//	{
+//		delete (iter->second->_val);
+//		delete (iter->second->_parser);
+//		delete (iter->second);
+//	}
+//
+//	_simulParams.clear();
 }
 
 
 void ARTtimeSimulator::addParamsToModule(ARTtimeModule* timeModule)
 {
-	simulParameterMapIterator iter;
-	for (iter = _simulParams.begin(); iter != _simulParams.end(); ++iter)
+//	simulParameterMapIterator iter;
+//	for (iter = _simulParams.begin(); iter != _simulParams.end(); ++iter)
+//	{
+//		timeModule->addGlobalParameter(iter->first,
+//				iter->second->_val->GetParserVar());
+//	}
+	ARTdataProp* iter = dynamic_cast<ARTdataProp*>(GetProperties(NULL));
+	while (iter != NULL)
 	{
-		timeModule->addGlobalParameter(iter->first,
-				iter->second->_val->GetParserVar());
+		timeModule->addGlobalParameter(iter->GetName(),iter->GetParserVar());
+		iter = dynamic_cast<ARTdataProp*>(GetProperties(iter));
 	}
 }
 
-void ARTtimeSimulator::addParamToCurrentModules(const string& name, simulParameterType* newParam)
+//void ARTtimeSimulator::addParamToCurrentModules(const string& name, simulParameterType* newParam)
+void ARTtimeSimulator::addParamToCurrentModules(ARTdataProp* newParam)
 {
-	ARTtimeModule* iter = dynamic_cast<ARTtimeModule*>(userElements->GetObjects(NULL));
-	while (iter != NULL)
+	if (userElements)
 	{
-		iter->addGlobalParameter(name, newParam->_val->GetParserVar());
-		iter = dynamic_cast<ARTtimeModule*>(userElements->GetObjects(iter));
+		ARTtimeModule* iter = dynamic_cast<ARTtimeModule*>(userElements->GetObjects(NULL));
+		while (iter != NULL)
+		{
+//			std::cout << "Adding parameter '" << newParam->GetName() << "' to time module '" << iter->GetName() << "'." << std::endl;
+			iter->addGlobalParameter(newParam->GetName(), newParam->GetParserVar());
+			iter = dynamic_cast<ARTtimeModule*>(userElements->GetObjects(iter));
+		}
 	}
 }

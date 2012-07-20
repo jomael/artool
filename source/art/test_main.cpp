@@ -4599,8 +4599,6 @@ TEST_DEF_START(ChangeGlobalParameter, ARTtimeSimulatorTests)
 			return false;
 		}
 
-//		if ()
-
 
 	}
 
@@ -4613,7 +4611,173 @@ TEST_DEF_START(ChangeGlobalParameter, ARTtimeSimulatorTests)
 TEST_DEF_END(ChangeGlobalParameter)
 
 
-TEST_DEF_START(FibonacciNumbers, ARTtimeSimulatorTests)
+TEST_DEF_START(CreateGlobalParameter, ARTtimeSimulatorTests)
+
+	ARTtimeSimulator* myTimeSimulator;
+	ARTtimeModule* timeModule;
+
+	virtual void prepare()
+	{
+		myTimeSimulator = new ARTtimeSimulator("TestSim");
+		myTimeSimulator->userElements = new ARTlistProp("testList");
+		timeModule = new ARTtimeModule("myModule");
+	}
+
+	virtual bool run()
+	{
+
+		try
+		{
+
+			timeModule->addOPort("test", "test[t] = TEMP");
+			myTimeSimulator->AddTimeModule(timeModule);
+
+			const ARTOPortType& testPort = dynamic_cast<const ARTOPortType&>(timeModule->getPort("test"));
+
+			myTimeSimulator->AddSimulationParameter("TEMP", 40.0);
+
+			if (testPort[0].real() != 40.0)
+			{
+				return false;
+			}
+
+			myTimeSimulator->SetSimulationParameter("TEMP", "TEMP = sqrt(2)");
+
+			if (testPort[1].real() != std::sqrt(2.0))
+			{
+				return false;
+			}
+
+			// adding a new global parameter with same name should raise an error
+			try
+			{
+				myTimeSimulator->AddSimulationParameter("TEMP", 0.0);
+			}
+			catch (ARTerror& e)
+			{
+				return true;
+			}
+
+			return false;
+		}
+		catch (ARTerror& e)
+		{
+			string err = e.GetErrorMessage();
+			std::cout << "\n\n" << err;
+			return false;
+		}
+
+	}
+
+	virtual void unprepare()
+	{
+		delete (myTimeSimulator->userElements);
+		delete myTimeSimulator;
+	}
+
+TEST_DEF_END(CreateGlobalParameter)
+
+TEST_DEF_START(SetNonExistingGlobalParameter, ARTtimeSimulatorTests)
+
+	ARTtimeSimulator* myTimeSimulator;
+
+	virtual void prepare()
+	{
+		myTimeSimulator = new ARTtimeSimulator("TestSim");
+	}
+
+	virtual bool run()
+	{
+
+		try
+		{
+
+			// setting a new global parameter should raise an error
+			myTimeSimulator->SetSimulationParameter("unknown", 0.0);
+
+			return false;
+		}
+		catch (ARTerror& e)
+		{
+//			string err = e.GetErrorMessage();
+//			std::cout << "\n\n" << err;
+			return true;
+		}
+
+	}
+
+	virtual void unprepare()
+	{
+//		delete (myTimeSimulator->userElements);
+		delete myTimeSimulator;
+	}
+
+TEST_DEF_END(SetNonExistingGlobalParameter)
+
+
+TEST_DEF_START(FibonacciNumbers1, ARTtimeSimulatorTests)
+
+	ARTtimeSimulator* myTimeSimulator;
+
+	virtual void prepare()
+	{
+		myTimeSimulator = new ARTtimeSimulator("TestSim");
+		myTimeSimulator->userElements = new ARTlistProp("testList");
+
+	}
+
+	virtual bool run()
+	{
+
+		try
+		{
+
+			ARTtimeModule* timeModule = new ARTtimeModule("myModule");
+
+			timeModule->addOPort("fib", "fib[t] = fib[t-1] + fib[t-2]");
+			timeModule->addOPort("test", "test[t] = fib[t]");
+
+			myTimeSimulator->AddTimeModule(timeModule);
+
+			const ARTPortType& fibPort = timeModule->getPort("fib");
+			const ARTOPortType& outputPort = dynamic_cast<const ARTOPortType&>(timeModule->getPort("test"));
+
+			fibPort.initPortValue("fib[-1] = 1, fib[-2] = 0");
+
+			for (int i = 0; i < 50; ++i)
+			{
+				outputPort[i];
+			}
+
+			// test 51st fibonacci number
+			if (outputPort[49].real() == (2.0*1597.0*6376021.0))
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		catch (ARTerror& e)
+		{
+			string err = e.GetErrorMessage();
+			std::cout << "\n\n" << err;
+			return false;
+		}
+
+	}
+
+	virtual void unprepare()
+	{
+		delete (myTimeSimulator->userElements);
+		delete myTimeSimulator;
+	}
+
+TEST_DEF_END(FibonacciNumbers1)
+
+
+TEST_DEF_START(FibonacciNumbers2, ARTtimeSimulatorTests)
 
 	ARTtimeSimulator* myTimeSimulator;
 
@@ -4679,7 +4843,76 @@ TEST_DEF_START(FibonacciNumbers, ARTtimeSimulatorTests)
 		delete myTimeSimulator;
 	}
 
-TEST_DEF_END(FibonacciNumbers)
+TEST_DEF_END(FibonacciNumbers2)
+
+TEST_DEF_START(FibonacciNumbers3, ARTtimeSimulatorTests)
+
+	ARTtimeSimulator* myTimeSimulator;
+
+	virtual void prepare()
+	{
+		myTimeSimulator = dynamic_cast<ARTtimeSimulator*>(ARTCreateSimulator("TestSim", "TimeDomain", ""));
+	}
+
+	virtual bool run()
+	{
+
+		try
+		{
+
+			ARTtimeModule* timeModule = new ARTtimeModule("myModule");
+			ARTtimeModule* timeModule2 = new ARTtimeModule("myModule2");
+
+			timeModule->addOPort("fib", "fib[t] = fib[t-1] + fib[t-2]");
+//			timeModule2->addOPort("test", "test[t] = (fib[t] + fib[t-1]) / fib[t] + 1");
+			timeModule2->addOPort("test", "test[t] = fib[t]");
+
+			myTimeSimulator->AddTimeModule(timeModule);
+			myTimeSimulator->AddTimeModule(timeModule2);
+
+			const ARTOPortType& testPort = dynamic_cast<const ARTOPortType&>(timeModule->getPort("fib"));
+			timeModule2->addIPort("fib",testPort);
+
+			const ARTOPortType& outputPort = dynamic_cast<const ARTOPortType&>(timeModule2->getPort("test"));
+
+			ARTSetParameter(myTimeSimulator, "myModule.fib[-1] = 1; myModule.fib[-2] = 0");
+
+//			testPort.initPortValue("fib[-1] = 1, fib[-2] = 0");
+
+			for (int i = 0; i < 50; ++i)
+			{
+//				std::cout << "Fibonacci[" << i << "] = " << outputPort[i].real() << std::endl;
+				outputPort[i];
+			}
+
+			// test 51st fibonacci number
+			if (outputPort[49].real() == (2.0*1597.0*6376021.0))
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		catch (ARTerror& e)
+		{
+			string err = e.GetErrorMessage();
+			std::cout << "\n\n" << err;
+			return false;
+		}
+
+	}
+
+	virtual void unprepare()
+	{
+//		delete (myTimeSimulator->userElements);
+//		delete myTimeSimulator;
+		ARTDestroySimulator(myTimeSimulator);
+
+	}
+
+TEST_DEF_END(FibonacciNumbers3)
 
 //******************************************************************************************************************************************
 

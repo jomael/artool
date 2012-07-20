@@ -280,6 +280,7 @@ public:
 
 	void SetParserVar(const string& varname);
 	const Variable& GetParserVar() const;
+	const Variable& GetParserVar();
 
 	void DestroyParserVar();
 
