@@ -820,7 +820,8 @@ typedef struct ARTvariant ARTvariant;
 typedef struct ARTsimulator ARTsimulator;
 typedef struct ARTcircuit ARTcircuit;
 typedef struct ARTelement ARTelement;
-
+typedef struct ARTItimeModule ARTItimeModule;
+typedef struct ARTPortType ARTPortType;
 typedef int bool;
 
 #else
@@ -836,6 +837,8 @@ class ARTvariant;
 class ARTsimulator;
 class ARTcircuit;
 class ARTelement;
+class ARTItimeModule;
+class ARTPortType;
 /*
 #include "Interface.h"
 #include "strparsing.h"
@@ -854,6 +857,8 @@ typedef ARTvariant*	P_ART_Variant;
 typedef ARTsimulator*   P_ART_Simulator;
 typedef ARTcircuit*	P_ART_Circuit;
 typedef ARTelement*	P_ART_Element;
+typedef ARTItimeModule* P_ART_TModule;
+typedef ARTPortType* P_ART_TPort;
 
 typedef bool (* TprogressFunction)(double, const char*);
 
@@ -1078,6 +1083,68 @@ __DECLSPEC P_ART_Circuit	__CALLCONV	ARTCreateCircuit	(P_ART_Simulator simulator,
 __DECLSPEC bool	__CALLCONV	ARTDestroyCircuit	(P_ART_Simulator simulator,P_ART_Circuit circuit);
 //void	__CALLCONV	ARTDestroyCircuit	(char* name);
 //DLL needs unique match, so only one function with this name
+
+
+/**
+ * Creates a time simulation module.
+ * @param simulator The simulator within which the circuit should be created.
+ * @param name The name of the time module.
+ * @returns A pointer to the created time module. The DLL interface returns NULL if an error occurs.
+ *    Use ARTGetLastErrorMessage to get the error message.
+ * @throws ARTerror, if not using the DLL interface.
+ */
+__DECLSPEC P_ART_TModule __CALLCONV ARTCreateTModule	(P_ART_Simulator simulator, const char* name);
+
+/**
+ * Destroys a time simulation module.
+ * @param simulator A pointer to the simulator to which the circuit belongs.
+ * @param module A pointer to the time module to be destroyed.
+ * @returns true if successful, the DLL interface returns false if an error occurs,
+ *   use ARTGetLastErrorMessage to get the error message.
+ * @throws ARTerror, if not using the DLL interface.
+ */
+__DECLSPEC bool __CALLCONV ARTDestroyTModule	(P_ART_Simulator simulator, P_ART_TModule module);
+
+
+/**
+ * Adds a new output port to the given time module.
+ * @param module A pointer to the time module to which the port will be added.
+ * @param name Name of the new output port.
+ * @param expr The calculation expression of the new output port.
+ * @returns true if successful, the DLL interface returns false if an error occurs,
+ *   use ARTGetLastErrorMessage to get the error message.
+ * @throws ARTerror, if not using the DLL interface.
+ */
+__DECLSPEC bool __CALLCONV ARTAddOPortToTModule	(P_ART_TModule module, const char* name, const char* expr);
+
+/**
+ * Connects the ports of the given modules.
+ * @param simulator A pointer to the simulator containing the related time modules.
+ * @param expr The calculation expression of the port connection. Example: "module1.in = module2.out".
+ * @returns true if successful, the DLL interface returns false if an error occurs,
+ *   use ARTGetLastErrorMessage to get the error message.
+ * @throws ARTerror, if not using the DLL interface.
+ */
+__DECLSPEC bool __CALLCONV ARTConnectPorts	(P_ART_Simulator simulator, const char* expr);
+
+/**
+ * Connects the ports of the given modules.
+ * @param module A pointer to the time module containing the specified port.
+ * @param name The name of the port.
+ * @returns The corresponding port object or NULL if an error occurs. Use ARTGetLastErrorMessage to get
+ *   the error message.
+ * @throws ARTerror, if not using the DLL interface.
+ */
+__DECLSPEC P_ART_TPort __CALLCONV ARTGetPortFromTModule	(P_ART_TModule module, const char* name);
+
+/**
+ * Calculates the output value of the given port at the specified time index.s
+ * @param port Port object, of which the timing value shall be calculated.
+ * @idx Time index of the interested value.
+ * @returns T_ART_Cmplx value or <0,0> in case of an error.
+ * @throws ARTerror, if not using the DLL interface.
+ */
+__DECLSPEC T_ART_Cmplx __CALLCONV ARTGetComplexFromPort(P_ART_TPort port, int idx);
 
 /**
  * Finds the element in the circuit and returns is position. The first element (nearest to

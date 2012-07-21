@@ -101,7 +101,7 @@ ARTtimeSimulator::ARTtimeSimulator(const string name, const string domain,
 	initStandardSimulParams();
 }
 
-void ARTtimeSimulator::AddTimeModule(ARTtimeModule* timeModule)
+void ARTtimeSimulator::AddTimeModule(ARTItimeModule* timeModule)
 {
 
 	if (timeModule != NULL && userElements != NULL)
@@ -329,9 +329,9 @@ ARTdataProp* ARTtimeSimulator::FindDataPropInSimulator(string exp)
 	return prop;
 }
 
-ARTtimeModule* ARTtimeSimulator::FindTimeModuleInSimulator(string exp)
+ARTItimeModule* ARTtimeSimulator::FindTimeModuleInSimulator(string exp)
 {
-	ARTtimeModule* tmpModule = dynamic_cast<ARTtimeModule*>(userElements->FindObject(exp));
+	ARTItimeModule* tmpModule = dynamic_cast<ARTItimeModule*>(userElements->FindObject(exp));
 	if (tmpModule == NULL)
 	{
 		throw ARTerror("ARTtimeSimulator::FindTimeModuleInSimulator", "No time module with name '%s1' exists in simulator '%s2'.",
@@ -402,7 +402,7 @@ void ARTtimeSimulator::clean()
 }
 
 
-void ARTtimeSimulator::addParamsToModule(ARTtimeModule* timeModule)
+void ARTtimeSimulator::addParamsToModule(ARTItimeModule* timeModule)
 {
 //	simulParameterMapIterator iter;
 //	for (iter = _simulParams.begin(); iter != _simulParams.end(); ++iter)

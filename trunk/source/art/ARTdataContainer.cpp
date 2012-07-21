@@ -73,7 +73,7 @@ ARTdataContainer::ARTdataContainer(const T_ART_Type dtyp, const int dlen, const 
 		for (int i = 0; i < len; ++i)
 		{
 			// create empty ARTdataContainers of type complex
-			tmpARTdataContainer = new ARTdataContainer();
+			tmpARTdataContainer = new ARTdataContainer(varname);
 			tmpARTdataContainer->SetType(C_ART_cpx);
 			// initialize all values of ARTdataContainer to zero...
 			tmpARTdataContainer->SetVal(std::complex<double>(0,0));
