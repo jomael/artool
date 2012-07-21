@@ -4847,11 +4847,13 @@ TEST_DEF_END(FibonacciNumbers2)
 
 TEST_DEF_START(FibonacciNumbers3, ARTtimeSimulatorTests)
 
-	ARTtimeSimulator* myTimeSimulator;
+	ARTsimulator* myTimeSimulator;
+	ARTItimeModule* timeModule;
+	ARTItimeModule* timeModule2;
 
 	virtual void prepare()
 	{
-		myTimeSimulator = dynamic_cast<ARTtimeSimulator*>(ARTCreateSimulator("TestSim", "TimeDomain", ""));
+		myTimeSimulator = ARTCreateSimulator("TestSim", "TimeDomain", "PlaneWave");
 	}
 
 	virtual bool run()
@@ -4860,33 +4862,28 @@ TEST_DEF_START(FibonacciNumbers3, ARTtimeSimulatorTests)
 		try
 		{
 
-			ARTtimeModule* timeModule = new ARTtimeModule("myModule");
-			ARTtimeModule* timeModule2 = new ARTtimeModule("myModule2");
+			timeModule = ARTCreateTModule(myTimeSimulator, "myModule");
+			timeModule2 = ARTCreateTModule(myTimeSimulator, "myModule2");
 
-			timeModule->addOPort("fib", "fib[t] = fib[t-1] + fib[t-2]");
-//			timeModule2->addOPort("test", "test[t] = (fib[t] + fib[t-1]) / fib[t] + 1");
-			timeModule2->addOPort("test", "test[t] = fib[t]");
+			ARTAddOPortToTModule(timeModule, "fib", "fib[t] = fib[t-1] + fib[t-2]");
+			ARTAddOPortToTModule(timeModule2, "test", "test[t] = fib[t]");
 
-			myTimeSimulator->AddTimeModule(timeModule);
-			myTimeSimulator->AddTimeModule(timeModule2);
-
-			const ARTOPortType& testPort = dynamic_cast<const ARTOPortType&>(timeModule->getPort("fib"));
-			timeModule2->addIPort("fib",testPort);
-
-			const ARTOPortType& outputPort = dynamic_cast<const ARTOPortType&>(timeModule2->getPort("test"));
+			ARTConnectPorts(myTimeSimulator, "myModule2.fib = myModule.fib");
 
 			ARTSetParameter(myTimeSimulator, "myModule.fib[-1] = 1; myModule.fib[-2] = 0");
 
-//			testPort.initPortValue("fib[-1] = 1, fib[-2] = 0");
+			P_ART_TPort testPort = ARTGetPortFromTModule(timeModule2, "test");
+
+			T_ART_Cmplx outVal;
 
 			for (int i = 0; i < 50; ++i)
 			{
-//				std::cout << "Fibonacci[" << i << "] = " << outputPort[i].real() << std::endl;
-				outputPort[i];
+				outVal = ARTGetComplexFromPort(testPort, i);
+//				std::cout << "Fibonacci[" << i << "] = " << outVal.re << std::endl;
 			}
 
 			// test 51st fibonacci number
-			if (outputPort[49].real() == (2.0*1597.0*6376021.0))
+			if (outVal.re == (2.0*1597.0*6376021.0))
 			{
 				return true;
 			}
@@ -4908,6 +4905,8 @@ TEST_DEF_START(FibonacciNumbers3, ARTtimeSimulatorTests)
 	{
 //		delete (myTimeSimulator->userElements);
 //		delete myTimeSimulator;
+		ARTDestroyTModule(myTimeSimulator, timeModule);
+		ARTDestroyTModule(myTimeSimulator, timeModule2);
 		ARTDestroySimulator(myTimeSimulator);
 
 	}
@@ -4970,72 +4969,6 @@ int main(int argc, char **argv)
 
 	//print summary, as other messages might drown in debugging output
 	//AllMyTests->printSummary();
-
-	// clemens' test cases
-//	try {
-//
-//		ARTtimeSimulator* myTimeSimulator = new ARTtimeSimulator("TestSim");
-//		myTimeSimulator->userElements = new ARTlistProp("bla");
-//
-//		ARTtimeModule* timeModule = new ARTtimeModule("myModule");
-//		ARTtimeModule* timeModule2 = new ARTtimeModule("myModule2");
-//
-//		cout << "Created simulator and time modules." << endl;
-//
-//		timeModule->addOPort("fib", "fib[t] = fib[t-1] + fib[t-2]");
-//		timeModule2->addOPort("test", "test[t] = (fib[t] + fib[t-1]) / fib[t] + 1");
-////		timeModule2->addOPort("test", "test[t] = fib[t]");
-//
-//		cout << "Set definition of output ports." << endl;
-//
-//		myTimeSimulator->addTimeModule(timeModule);
-//		myTimeSimulator->addTimeModule(timeModule2);
-//
-//		cout << "Added time modules to simulator." << endl;
-//
-//		const ARTOPortType& testPort = dynamic_cast<const ARTOPortType&>(timeModule->getPort("fib"));
-//		timeModule2->addIPort("fib",testPort);
-//
-//		const ARTOPortType& outputPort = dynamic_cast<const ARTOPortType&>(timeModule2->getPort("test"));
-////		timeModule2->setSimulator(myTimeSimulator);
-//
-//		cout << "Added port from module1 as input port to module2." << endl;
-//
-//		/*testPort.initPortValue(std::complex<double>(1,0), -1);
-//		testPort.initPortValue(std::complex<double>(0,0), -2);*/
-//		/*testPort.initPortValue(1, -1);
-//		testPort.initPortValue(0, -2);*/
-//		testPort.initPortValue("fib[-1] = 1, fib[-2] = 0");
-////		outputPort.initPortValue("fib[-1] = 1, fib[-2] = 0");
-//
-//		cout << "Initialized port values. Starting calculation..." << endl;
-//
-//		for (int i = 0; i < 50; ++i)
-//		{
-//			std::cout << "Fibonacci[" << i << "] = " << outputPort[i].real() << std::endl;
-//		}
-//
-//		delete (myTimeSimulator->userElements);
-//		delete myTimeSimulator;
-//
-//	}
-//	catch (ARTerror& e)
-//	{
-//		std::cout << e.GetErrorMessage() << std::endl;
-//	}
-//	catch (mup::ParserError& e)
-//	{
-//		std::cout << e.GetMsg() << std::endl;
-//	}
-//	catch (string& errorMsg)
-//	{
-//		std::cout << "Error occurred: " << errorMsg << std::endl;
-//	}
-//	catch (...)
-//	{
-//		std::cout << "ERROR in Clemens' tests!" << std::endl;
-//	}
-
 
 	return 0;
 }

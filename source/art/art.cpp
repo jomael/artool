@@ -546,7 +546,7 @@ P_ART_DataProp    __CALLCONV ARTSetParameter     (P_ART_Simulator simulator, con
 				vector<string> names = strsplit(s, '.');
 				::size_t pos;
 				pos = names[1].find('[');
-				ARTtimeModule* timeModule = tSim->FindTimeModuleInSimulator(strcrop(names[0]));
+				ARTItimeModule* timeModule = tSim->FindTimeModuleInSimulator(strcrop(names[0]));
 				names[1].erase(pos);
 				string initCommand = commands[i];
 				pos = initCommand.find('.');
@@ -596,6 +596,111 @@ bool    __CALLCONV ARTDestroyCircuit     (P_ART_Simulator simulator,P_ART_Circui
 	DLL_ERRORHANDLING_END
 }
 
+P_ART_TModule __CALLCONV ARTCreateTModule	(P_ART_Simulator simulator, const char* name)
+{
+	DLL_ERRORHANDLING_BEGIN
+	ARTtimeSimulator* sim = dynamic_cast<ARTtimeSimulator*>(simulator);
+	//check if the simulator is a valid object
+	if (sim == NULL) throw ARTerror("ARTCreateTModule", "Invalid time domain simulator");
+
+	//Circuits with the same name will cause problems later on, so check that the name is free
+	ARTItimeModule* newModule = dynamic_cast<ARTItimeModule*>(sim->userElements->FindObject(name));
+	if (newModule) throw ARTerror("ARTCreateCircuit", "A time module with the name '%s1' already exists.", name);
+
+	newModule = new ARTtimeModule(name);
+
+	sim->AddTimeModule(newModule);
+
+	return newModule;
+
+	DLL_ERRORHANDLING_END
+}
+
+bool __CALLCONV ARTDestroyTModule	(P_ART_Simulator simulator, P_ART_TModule module)
+{
+	DLL_ERRORHANDLING_BEGIN
+	if (!simulator->userElements->DeleteObject(module))
+		throw ARTerror("ARTDestroyTModule", "The circuit specified was not found.");
+	delete module;
+	return 1; //No error
+	DLL_ERRORHANDLING_END
+}
+
+
+bool __CALLCONV ARTAddOPortToTModule	(P_ART_TModule module, const char* name, const char* expr)
+{
+	DLL_ERRORHANDLING_BEGIN
+	ARTtimeModule* mod = dynamic_cast<ARTtimeModule*>(module);
+	if (mod == NULL)
+	{
+		throw ARTerror("ARTAddOPortToTModule", "The specified time module does not support adding output ports.");
+	}
+	mod->addOPort(name, expr);
+	return 1; //No error
+	DLL_ERRORHANDLING_END
+}
+
+bool __CALLCONV ARTConnectPorts	(P_ART_Simulator simulator, const char* expr)
+{
+	DLL_ERRORHANDLING_BEGIN
+	vector<string> commands = strsplit(expr, ';');
+	::size_t commandIter;
+	ARTItimeModule *inModule, *outModule;
+	ARTtimeSimulator* sim = dynamic_cast<ARTtimeSimulator*>(simulator);
+	//check if the simulator is a valid object
+	if (sim == NULL) throw ARTerror("ARTCreateTModule", "Invalid time domain simulator");
+	for (commandIter = 0; commandIter < commands.size(); ++commandIter)
+	{
+		vector<string> moduleNames = strsplit(strcrop(commands[commandIter]), '=');
+		if (moduleNames.size() != 2)
+		{
+			throw ARTerror("ARTConnectPorts", "Invalid expression '%s1'. All commands must have the form 'module1.in = module2.out' and may only be separated by semicolons.",
+					commands[commandIter]);
+		}
+		vector<string> module1 = strsplit(moduleNames[0], '.');
+		vector<string> module2 = strsplit(moduleNames[1], '.');
+
+		if (module1.size() != 2 || module2.size() != 2)
+		{
+			throw ARTerror("ARTConnectPorts", "Invalid expression '%s1'. All commands must have the form 'module1.in = module2.out' and may only be separated by semicolons.",
+					commands[commandIter]);
+		}
+
+		std::cout << "Connect port '" << strcrop(module1[1]) << "' of module '" << strcrop(module1[0]) << "' with port '" <<
+				strcrop(module2[1]) << "' of module '" << strcrop(module2[0]) << "'." << std::endl;
+		inModule = sim->FindTimeModuleInSimulator(strcrop(module1[0]));
+		outModule = sim->FindTimeModuleInSimulator(strcrop(module2[0]));
+		inModule->addIPort(strcrop(module1[1]), outModule->getPort(module2[1]));
+	}
+	return 1;
+	DLL_ERRORHANDLING_END
+}
+
+P_ART_TPort __CALLCONV ARTGetPortFromTModule	(P_ART_TModule module, const char* name)
+{
+	DLL_ERRORHANDLING_BEGIN
+	ARTPortType* tmpPort = const_cast<ARTPortType*>(&(module->getPort(name)));
+	return tmpPort;
+	DLL_ERRORHANDLING_END
+}
+
+T_ART_Cmplx __CALLCONV ARTGetComplexFromPort(P_ART_TPort port, int idx)
+{
+	DLL_ERRORHANDLING_BEGIN
+	T_ART_Cmplx result;
+	std::complex<double> tempResult;
+	ARTOPortType* oPort = dynamic_cast<ARTOPortType*>(port);
+	if (oPort == NULL)
+	{
+		throw ARTerror("ARTGetComplexFromPort", "The specified port is no valid output port!");
+	}
+	tempResult = (*oPort)[idx];
+	result.re = tempResult.real();
+	result.im = tempResult.imag();
+	return result;
+	DLL_ERRORHANDLING_END_CUSTOM_RETURN(result)
+
+}
 
 //int	__CALLCONV	ARTGetReferencePosition	(P_ART_Simulator simulator, P_ART_Circuit circuit, char* name)
 int	__CALLCONV	ARTGetReferencePosition	(P_ART_Circuit circuit, P_ART_Element element)
