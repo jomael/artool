@@ -517,7 +517,7 @@ P_ART_DataProp    __CALLCONV ARTSetParameter     (P_ART_Simulator simulator, con
  	if (simulator->GetParser() == NULL) throw ARTerror("ARTSetParameter", "The simulator's parser is NULL");
 	//command string can contain more than one command sperated by ; -> cut string into commands
 	vector<string> commands = strsplit(command,';');
-	ARTdataProp* prop;
+	ARTdataProp* prop = NULL;
 	for (::size_t i = 0; i < commands.size(); i++)
 	{
 		vector<string> expressions = strsplit(commands[i],'=');
