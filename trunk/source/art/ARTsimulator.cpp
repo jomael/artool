@@ -103,22 +103,29 @@ ARTtimeSimulator::ARTtimeSimulator(const string name, const string domain,
 
 void ARTtimeSimulator::AddTimeModule(ARTItimeModule* timeModule)
 {
-
-	if (timeModule != NULL && userElements != NULL)
+	if (!timeModule)
 	{
-		const string& moduleName = timeModule->GetName();
-		if(userElements->FindObject(moduleName) != NULL)
-		{
-			throw ARTerror("ARTtimeSimulator::addTimeModule", "An element of the specified name '%s1' is already registered in the current simulator '%s2'.", moduleName, name_);
-		}
-		// if we are here, no module with the same name has been found
-		// => register module in current simulator
-		userElements->AppendObject(timeModule);
-		// add all global properties to time module
-		addParamsToModule(timeModule);
-		// register simulator to time module
-		timeModule->setSimulator(this);
+		throw ARTerror("ARTtimeSimulator::AddTimeModule", "Could not add time module to current simulator '%s1': invalid time module!",
+				name_);
 	}
+	if (!userElements)
+	{
+		throw ARTerror("ARTtimeSimulator::AddTimeModule", "Could not add time module '%s1' to current simulator '%s2': no memory allocated for userElements!",
+				timeModule->GetName(), name_);
+	}
+
+	const string& moduleName = timeModule->GetName();
+	if(userElements->FindObject(moduleName) != NULL)
+	{
+		throw ARTerror("ARTtimeSimulator::addTimeModule", "An element of the specified name '%s1' is already registered in the current simulator '%s2'.", moduleName, name_);
+	}
+	// if we are here, no module with the same name has been found
+	// => register module in current simulator
+	userElements->AppendObject(timeModule);
+	// add all global properties to time module
+	addParamsToModule(timeModule);
+	// register simulator to time module
+	timeModule->setSimulator(this);
 }
 
 void ARTtimeSimulator::AddSimulationParameter(const string& name, const string& expr)
@@ -227,6 +234,7 @@ void ARTtimeSimulator::SetModulesToCurrentTimeIndex(int idx)
 //	}
 	if (prop != NULL)
 	{
+//		std::cout << "Setting current global parameter 't' to " << idx << "." << std::endl;
 		prop->SetVal(idx);
 	}
 	else
@@ -240,12 +248,13 @@ void ARTtimeSimulator::SetModulesToCurrentTimeIndex(int idx)
 	if (userElements != NULL)
 	{
 		ARTobject* iter = userElements->GetObjects(NULL);
-		ARTtimeModule* tModule;
+		ARTItimeModule* tModule;
 		while (iter != NULL)
 		{
-			tModule = dynamic_cast<ARTtimeModule*>(iter);
+			tModule = dynamic_cast<ARTItimeModule*>(iter);
 			if (tModule)
 			{
+//				std::cout << "Setting time module '" << tModule->GetName() << "' to time index " << idx << "." << std::endl;
 				tModule->setCurrentIndex(idx);
 			}
 			iter = userElements->GetObjects(iter);
@@ -325,7 +334,21 @@ ARTdataProp* ARTtimeSimulator::FindDataPropInSimulator(string exp)
 	ARTdataProp* prop;
 	//try to find a property of the simulator with name *exp*
 	prop = dynamic_cast<ARTdataProp*>( FindProperty( strcrop( exp ) ));
-	if (prop == NULL) throw ARTerror("ARTtimeSimulator::FindDataPropInSimulator", "The specified data element '%s1' does not exist in current simulator.",  exp);
+	// if we have not found a property of the simulator,
+	// perhaps we find a property of an internal time module
+	if (!prop)
+	{
+//		vector<string> names = strsplit(exp, '.');
+//		ARTItimeModule* timeModule = dynamic_cast<ARTItimeModule*>(userElements->FindObject(strcrop(names[0])));
+//		if (!timeModule)
+//		{
+//			throw ARTerror("ARTtimeSimulator::FindDataPropInSimulator", "The specified data property '%s1' does not exist in current simulator.",  strcrop(names[0]));
+		throw ARTerror("ARTtimeSimulator::FindDataPropInSimulator", "The specified data property '%s1' does not exist in current simulator.",  exp);
+//		}
+
+//		prop = ;
+
+	}
 	return prop;
 }
 
@@ -413,7 +436,8 @@ void ARTtimeSimulator::addParamsToModule(ARTItimeModule* timeModule)
 	ARTdataProp* iter = dynamic_cast<ARTdataProp*>(GetProperties(NULL));
 	while (iter != NULL)
 	{
-		timeModule->addGlobalParameter(iter->GetName(),iter->GetParserVar());
+//		timeModule->addGlobalParameter(iter->GetName(),iter->GetParserVar());
+		timeModule->addGlobalParameter(iter);
 		iter = dynamic_cast<ARTdataProp*>(GetProperties(iter));
 	}
 }
@@ -427,7 +451,8 @@ void ARTtimeSimulator::addParamToCurrentModules(ARTdataProp* newParam)
 		while (iter != NULL)
 		{
 //			std::cout << "Adding parameter '" << newParam->GetName() << "' to time module '" << iter->GetName() << "'." << std::endl;
-			iter->addGlobalParameter(newParam->GetName(), newParam->GetParserVar());
+//			iter->addGlobalParameter(newParam->GetName(), newParam->GetParserVar());
+			iter->addGlobalParameter(newParam);
 			iter = dynamic_cast<ARTtimeModule*>(userElements->GetObjects(iter));
 		}
 	}

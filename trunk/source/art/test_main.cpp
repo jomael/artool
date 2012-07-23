@@ -230,33 +230,33 @@ TEST_DEF_START(initDataContainers, ARTdataContainerTests)
 	{
 		try
 		{
-			ARTvariant* av_int = new ARTvariant(1); 
+			ARTvariant* av_int = new ARTvariant(1);
 			if (av_int->typ != C_ART_int) return false;
 			if (av_int->val->i != 1) return false;
 			if (av_int->len != -1) return false;
 
-			ARTvariant* av_dbl = new ARTvariant(1.1); 
+			ARTvariant* av_dbl = new ARTvariant(1.1);
 			if (av_dbl->typ != C_ART_dbl) return false;
 			if (av_dbl->val->d != 1.1) return false;
 			if (av_dbl->len != -1) return false;
 
-			ARTvariant* av_flo = new ARTvariant(1.1f);  
+			ARTvariant* av_flo = new ARTvariant(1.1f);
 			if (av_flo->typ != C_ART_flo) return false;
 			if (av_flo->val->f != 1.1f) return false;
 			if (av_flo->len != -1) return false;
 
-			ARTvariant* av_str = new ARTvariant("Ich bin ein Berliner");  
+			ARTvariant* av_str = new ARTvariant("Ich bin ein Berliner");
 			if (av_str->typ != C_ART_str) return false;
 			if (strcmp(av_str->val->s,"Ich bin ein Berliner")) return false;
 			if (av_str->len != -1) return false;
 
-			ARTvariant* av_nstr1 = new ARTvariant("Ich bin ein Wiener", "Ich bin ein Berliner");  
+			ARTvariant* av_nstr1 = new ARTvariant("Ich bin ein Wiener", "Ich bin ein Berliner");
 			if (av_nstr1->typ != C_ART_nstr) return false;
 			if (strcmp(av_nstr1->val->ns[0],"Ich bin ein Wiener")) return false;
 			if (strcmp(av_nstr1->val->ns[1],"Ich bin ein Berliner")) return false;
 			if (av_nstr1->len != 2) return false;
 
-			ARTvariant* av_nstr2 = new ARTvariant("Ich bin ein String", "Ich auch", "Ich nicht");  
+			ARTvariant* av_nstr2 = new ARTvariant("Ich bin ein String", "Ich auch", "Ich nicht");
 			if (av_nstr2->typ != C_ART_nstr) return false;
 			if (strcmp(av_nstr2->val->ns[0],"Ich bin ein String")) return false;
 			if (strcmp(av_nstr2->val->ns[1],"Ich auch")) return false;
@@ -270,10 +270,10 @@ TEST_DEF_START(initDataContainers, ARTdataContainerTests)
 			if (strcmp(av_nstr3->val->ns[2],"kolme")) return false;
 			if (strcmp(av_nstr3->val->ns[3],"nelj�")) return false;
 			if (av_nstr3->len != 4) return false;
-			
+
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage() << "\n";
 			return false;
 		}
@@ -286,39 +286,39 @@ TEST_DEF_START(copyDataContainers, ARTdataContainerTests)
 	{
 		try
 		{
-			ARTvariant* av_int = new ARTvariant(1); 
-			ARTvariant* av_copy_int = new ARTvariant(*av_int); 
+			ARTvariant* av_int = new ARTvariant(1);
+			ARTvariant* av_copy_int = new ARTvariant(*av_int);
 			if (av_copy_int->typ != C_ART_int) return false;
 			if (av_copy_int->val->i != 1) return false;
 			if (av_copy_int->len != -1) return false;
 
-			ARTvariant* av_dbl = new ARTvariant(1.1); 
-			ARTvariant* av_copy_dbl = new ARTvariant(*av_dbl); 
+			ARTvariant* av_dbl = new ARTvariant(1.1);
+			ARTvariant* av_copy_dbl = new ARTvariant(*av_dbl);
 			if (av_copy_dbl->typ != C_ART_dbl) return false;
 			if (av_copy_dbl->val->d != 1.1) return false;
 			if (av_copy_dbl->len != -1) return false;
 
-			ARTvariant* av_flo = new ARTvariant(1.1f);  
-			ARTvariant* av_copy_flo = new ARTvariant(*av_flo);  
+			ARTvariant* av_flo = new ARTvariant(1.1f);
+			ARTvariant* av_copy_flo = new ARTvariant(*av_flo);
 			if (av_copy_flo->typ != C_ART_flo) return false;
 			if (av_copy_flo->val->f != 1.1f) return false;
 			if (av_copy_flo->len != -1) return false;
 
-			ARTvariant* av_str = new ARTvariant("Ich bin ein Berliner");  
-			ARTvariant* av_copy_str = new ARTvariant(*av_str);  
+			ARTvariant* av_str = new ARTvariant("Ich bin ein Berliner");
+			ARTvariant* av_copy_str = new ARTvariant(*av_str);
 			if (av_copy_str->typ != C_ART_str) return false;
 			if (strcmp(av_copy_str->val->s,"Ich bin ein Berliner")) return false;
 			if (av_copy_str->len != -1) return false;
 
-			ARTvariant* av_nstr1 = new ARTvariant("Ich bin ein Wiener", "Ich bin ein Berliner");  
-			ARTvariant* av_copy_nstr1 = new ARTvariant(*av_nstr1);  
+			ARTvariant* av_nstr1 = new ARTvariant("Ich bin ein Wiener", "Ich bin ein Berliner");
+			ARTvariant* av_copy_nstr1 = new ARTvariant(*av_nstr1);
 			if (av_copy_nstr1->typ != C_ART_nstr) return false;
 			if (strcmp(av_copy_nstr1->val->ns[0],"Ich bin ein Wiener")) return false;
 			if (strcmp(av_copy_nstr1->val->ns[1],"Ich bin ein Berliner")) return false;
 			if (av_copy_nstr1->len != 2) return false;
 
-			ARTvariant* av_nstr2 = new ARTvariant("Ich bin ein String", "Ich auch", "Ich nicht");  
-			ARTvariant* av_copy_nstr2 = new ARTvariant(*av_nstr2);  
+			ARTvariant* av_nstr2 = new ARTvariant("Ich bin ein String", "Ich auch", "Ich nicht");
+			ARTvariant* av_copy_nstr2 = new ARTvariant(*av_nstr2);
 			if (av_copy_nstr2->typ != C_ART_nstr) return false;
 			if (strcmp(av_copy_nstr2->val->ns[0],"Ich bin ein String")) return false;
 			if (strcmp(av_copy_nstr2->val->ns[1],"Ich auch")) return false;
@@ -326,7 +326,7 @@ TEST_DEF_START(copyDataContainers, ARTdataContainerTests)
 			if (av_copy_nstr2->len != 3) return false;
 
 			ARTvariant* av_nstr3 = new ARTvariant("yksi", "kaksi", "kolme", "nelj�");
-			ARTvariant* av_copy_nstr3 = new ARTvariant(*av_nstr3);  
+			ARTvariant* av_copy_nstr3 = new ARTvariant(*av_nstr3);
 			if (av_copy_nstr3->typ != C_ART_nstr) return false;
 			if (strcmp(av_copy_nstr3->val->ns[0],"yksi")) return false;
 			if (strcmp(av_copy_nstr3->val->ns[1],"kaksi")) return false;
@@ -336,7 +336,7 @@ TEST_DEF_START(copyDataContainers, ARTdataContainerTests)
 
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage() << "\n";
 			return false;
 		}
@@ -349,33 +349,33 @@ TEST_DEF_START(compareDataContainers, ARTdataContainerTests)
 	{
 		try
 		{
-			ARTvariant* av_int = new ARTvariant(1); 
-			ARTvariant* av_copy_int = new ARTvariant(*av_int); 
+			ARTvariant* av_int = new ARTvariant(1);
+			ARTvariant* av_copy_int = new ARTvariant(*av_int);
 			if ( !av_copy_int->IsEqual(av_int) ) return false;
 			if ( !av_int->IsEqual(av_copy_int) ) return false;
 
-			ARTvariant* av_dbl = new ARTvariant(1.1); 
-			ARTvariant* av_copy_dbl = new ARTvariant(*av_dbl); 
+			ARTvariant* av_dbl = new ARTvariant(1.1);
+			ARTvariant* av_copy_dbl = new ARTvariant(*av_dbl);
 			if ( !av_copy_dbl->IsEqual(av_dbl) ) return false;
 
-			ARTvariant* av_flo = new ARTvariant(1.1f);  
-			ARTvariant* av_copy_flo = new ARTvariant(*av_flo);  
+			ARTvariant* av_flo = new ARTvariant(1.1f);
+			ARTvariant* av_copy_flo = new ARTvariant(*av_flo);
 			if ( !av_flo->IsEqual(av_copy_flo) ) return false;
 
-			ARTvariant* av_str = new ARTvariant("Ich bin ein Berliner");  
-			ARTvariant* av_copy_str = new ARTvariant(*av_str);  
+			ARTvariant* av_str = new ARTvariant("Ich bin ein Berliner");
+			ARTvariant* av_copy_str = new ARTvariant(*av_str);
 			if ( !av_copy_str->IsEqual(av_str) ) return false;
 
-			ARTvariant* av_nstr1 = new ARTvariant("Ich bin ein Wiener", "Ich bin ein Berliner");  
-			ARTvariant* av_copy_nstr1 = new ARTvariant(*av_nstr1);  
+			ARTvariant* av_nstr1 = new ARTvariant("Ich bin ein Wiener", "Ich bin ein Berliner");
+			ARTvariant* av_copy_nstr1 = new ARTvariant(*av_nstr1);
 			if ( !av_nstr1->IsEqual(av_copy_nstr1) ) return false;
 
-			ARTvariant* av_nstr2 = new ARTvariant("Ich bin ein String", "Ich auch", "Ich nicht");  
-			ARTvariant* av_copy_nstr2 = new ARTvariant(*av_nstr2);  
+			ARTvariant* av_nstr2 = new ARTvariant("Ich bin ein String", "Ich auch", "Ich nicht");
+			ARTvariant* av_copy_nstr2 = new ARTvariant(*av_nstr2);
 			if ( !av_nstr2->IsEqual(av_copy_nstr2) ) return false;
 
 			ARTvariant* av_nstr3 = new ARTvariant("yksi", "kaksi", "kolme", "nelj�");
-			ARTvariant* av_copy_nstr3 = new ARTvariant(*av_nstr3);  
+			ARTvariant* av_copy_nstr3 = new ARTvariant(*av_nstr3);
 			if ( !av_copy_nstr3->IsEqual(av_nstr3) ) return false;
 
 			//if it is the same it should be equal:
@@ -405,7 +405,7 @@ TEST_DEF_START(compareDataContainers, ARTdataContainerTests)
 
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage() << "\n";
 			return false;
 		}
@@ -439,18 +439,18 @@ TEST_DEF_START(createDataContainerParserVars, ARTdataContainerTests)
 				parser->Eval(); //will throw an error if the variable does not exist -> it should NOT exist anymore
 			}
 			catch(mup::ParserError e)
-			{	
+			{
 				return true;
 			}
 
 		}
 		catch(mup::ParserError e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetMsg() << "\n";
 			return false;
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage() << "\n";
 			return false;
 		}
@@ -471,7 +471,7 @@ TEST_DEF_START(initRootObject, ARTpreperationFunctions)
 			ARTRootDestroy();
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage() << "\n";
 			return false;
 		}
@@ -512,7 +512,7 @@ TEST_DEF_START(addTopLevelProps, ARTpreperationFunctions)
 			art->AppendDataProp(numbers2);
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage() << "\n";
 			return false;
 		}
@@ -545,7 +545,7 @@ TEST_DEF_START(addTopLevelPropsTwice, ARTpreperationFunctions)
 			art->AppendDataProp("Authors", authors); //should fail, we already have a prop "Authors"
 		}
 		catch(ARTerror e)
-		{	
+		{
 			return true;
 		}
 		return false;
@@ -570,10 +570,10 @@ TEST_DEF_START(initSimulator, ARTpreperationFunctions)
 			ARTRootObject();
 			P_ART_Simulator mySim = ARTCreateSimulator("MeinSimulator", "FrequencyDomain", "MultiModal");
 			ARTDestroySimulator(mySim);
-			ARTRootDestroy(); 
+			ARTRootDestroy();
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage() << "\n";
 			return false;
 		}
@@ -597,7 +597,7 @@ TEST_DEF_START(initWrongSimulator, ARTpreperationFunctions)
 			ARTRootDestroy();
 		}
 		catch(ARTerror e)
-		{	
+		{
 			return true;
 		}
 		return false; //should not be successfull!
@@ -605,15 +605,15 @@ TEST_DEF_START(initWrongSimulator, ARTpreperationFunctions)
 TEST_DEF_END(initWrongSimulator)
 
 TEST_DEF_START(initSimulatorTwice, ARTpreperationFunctions)
-	
+
 	P_ART_Simulator mySim;
-	
-	virtual void prepare() 
+
+	virtual void prepare()
 	{
 		ARTRootObject();
 		mySim = ARTCreateSimulator("MeinSimulator", "FrequencyDomain", "MultiModal");
 	}
-	
+
 	virtual bool run() //test creating and destroying simulator with same name twice
 	{
 		try
@@ -622,13 +622,13 @@ TEST_DEF_START(initSimulatorTwice, ARTpreperationFunctions)
 			ARTDestroySimulator(mySim2);
 		}
 		catch(ARTerror e)
-		{	
+		{
 			return true;
 		}
 		return false; //should not be successfull!
 	}
-	
-	virtual void unprepare() 
+
+	virtual void unprepare()
 	{
 		ARTDestroySimulator(mySim);
 		ARTRootDestroy();
@@ -637,16 +637,16 @@ TEST_DEF_END(initSimulatorTwice)
 
 
 TEST_DEF_START(changeSimulatorParams, ARTpreperationFunctions)
-	
+
 	P_ART_Simulator mySim;
-	
-	virtual void prepare() 
+
+	virtual void prepare()
 	{
 		ARTRootObject();
 		mySim = ARTCreateSimulator("MeinSimulator", "FrequencyDomain", "MultiModal");
 	}
-	
-	virtual bool run() 
+
+	virtual bool run()
 	{
 		try
 		{
@@ -666,14 +666,14 @@ TEST_DEF_START(changeSimulatorParams, ARTpreperationFunctions)
 			if (p->GetFloat() != 2) return false;
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage();;
 			return false;
 		}
 		return true;
 	}
-	
-	virtual void unprepare() 
+
+	virtual void unprepare()
 	{
 		ARTDestroySimulator(mySim);
 		ARTRootDestroy();
@@ -682,16 +682,16 @@ TEST_DEF_END(changeSimulatorParams)
 
 
 TEST_DEF_START(getSimulatorParamsDef, ARTpreperationFunctions)
-	
+
 	P_ART_Simulator mySim;
-	
-	virtual void prepare() 
+
+	virtual void prepare()
 	{
 		ARTRootObject();
 		mySim = ARTCreateSimulator("MeinSimulator", "FrequencyDomain", "MultiModal");
 	}
-	
-	virtual bool run() 
+
+	virtual bool run()
 	{
 		try
 		{
@@ -710,14 +710,14 @@ TEST_DEF_START(getSimulatorParamsDef, ARTpreperationFunctions)
 
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage();;
 			return false;
 		}
 		return true;
 	}
-	
-	virtual void unprepare() 
+
+	virtual void unprepare()
 	{
 		ARTDestroySimulator(mySim);
 		ARTRootDestroy();
@@ -726,16 +726,16 @@ TEST_DEF_END(getSimulatorParamsDef)
 
 
 TEST_DEF_START(getSimulatorParamsVal, ARTpreperationFunctions)
-	
+
 	P_ART_Simulator mySim;
-	
-	virtual void prepare() 
+
+	virtual void prepare()
 	{
 		ARTRootObject();
 		mySim = ARTCreateSimulator("MeinSimulator", "FrequencyDomain", "MultiModal");
 	}
-	
-	virtual bool run() 
+
+	virtual bool run()
 	{
 		try
 		{
@@ -751,17 +751,17 @@ TEST_DEF_START(getSimulatorParamsVal, ARTpreperationFunctions)
 			if (f_min != 50) return false;
 			if (f_max != 1800) return false;
 			//std::cout << f_min << " " << f_max << "\n";;
-			
+
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage();;
 			return false;
 		}
 		return true;
 	}
-	
-	virtual void unprepare() 
+
+	virtual void unprepare()
 	{
 		ARTDestroySimulator(mySim);
 		ARTRootDestroy();
@@ -770,11 +770,11 @@ TEST_DEF_END(getSimulatorParamsVal)
 
 
 TEST_DEF_START(getDataPropFromObjectWhereNoDataProp, ARTpreperationFunctions)
-	
+
 	P_ART_Simulator mySim;
 	P_ART_Object o;
-	
-	virtual void prepare() 
+
+	virtual void prepare()
 	{
 		ARTRootObject();
 		mySim = ARTCreateSimulator("MeinSimulator", "FrequencyDomain", "MultiModal");
@@ -783,7 +783,7 @@ TEST_DEF_START(getDataPropFromObjectWhereNoDataProp, ARTpreperationFunctions)
 		o->AppendProperty("A property");
 		o->AppendProperty("Another property");
 	}
-	
+
 	virtual bool run() //test creating and destroying simulator with same name twice
 	{
 		try
@@ -793,14 +793,14 @@ TEST_DEF_START(getDataPropFromObjectWhereNoDataProp, ARTpreperationFunctions)
 			if (prop) return false;
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage();;
 			return false;
 		}
 		return true;
 	}
-	
-	virtual void unprepare() 
+
+	virtual void unprepare()
 	{
 		delete o;
 		ARTDestroySimulator(mySim);
@@ -831,7 +831,7 @@ TEST_DEF_START(createElementTwice, ARTpreperationFunctions)
 			El2 = ARTCreateElement(mySim, "Twice", "Cylinder");
 		}
 		catch(ARTerror e)
-		{	
+		{
 			return true;
 		}
 		return false; //should not be successfull!
@@ -876,10 +876,10 @@ TEST_DEF_START(createElements, ARTpreperationFunctions)
 			El2 = ARTCreateElement(mySim, "C", "Cylinder");
 		}
 		catch(ARTerror e)
-		{	
+		{
 			return false;
 		}
-		return true; 
+		return true;
 	}
 
 
@@ -922,14 +922,14 @@ TEST_DEF_START(createAndDestroyElements, ARTpreperationFunctions)
 			ARTDestroyElement(mySim,El2);
 		}
 		catch(mup::ParserError e)
-		{	
+		{
 			return false;
 		}
 		catch(ARTerror e)
-		{	
+		{
 			return false;
 		}
-		return true; 
+		return true;
 
 		//check if the parser vars are destroyed
 		try
@@ -939,7 +939,7 @@ TEST_DEF_START(createAndDestroyElements, ARTpreperationFunctions)
 
 		}
 		catch(mup::ParserError e)
-		{	
+		{
 			return true; //error expected!
 		}
 		return false;
@@ -980,8 +980,8 @@ TEST_DEF_START(changeElementModelType, ARTpreperationFunctions)
 			parser->Eval(); //will throw an error if the variable does not exist
 
 			//check that parser variable does not exist
-			try 
-			{	
+			try
+			{
 				exceptionsExpected++;
 				parser->SetExpr("Wandler.length = 2 + 2"); //Cyl has length, BoreJump does not
 				parser->Eval(); //will throw an error if the variable does not exist
@@ -990,12 +990,12 @@ TEST_DEF_START(changeElementModelType, ARTpreperationFunctions)
 			ARTChangeElementModel(mySim, El2, "Cylinder");
 
 			//check if parser variables exist
-			parser->SetExpr("Wandler.length = 2 + 2"); 
+			parser->SetExpr("Wandler.length = 2 + 2");
 			parser->Eval(); //will throw an error if the variable does not exist
 
 			//check that parser variable does not exist
-			try 
-			{	
+			try
+			{
 				exceptionsExpected++;
 				parser->SetExpr("Wandler.r1 = 2 + 2");
 				parser->Eval(); //will throw an error if the variable does not exist
@@ -1005,16 +1005,16 @@ TEST_DEF_START(changeElementModelType, ARTpreperationFunctions)
 			ARTDestroyElement(mySim,El2);
 
 			//check that parser variable does not exist
-			try 
-			{	
+			try
+			{
 				exceptionsExpected++;
 				parser->SetExpr("Wandler.r1 = 2 + 2");
 				parser->Eval(); //will throw an error if the variable does not exist
 			} catch (mup::ParserError e) {exceptionsCaught++;}
 
 						//check that parser variable does not exist
-			try 
-			{	
+			try
+			{
 				exceptionsExpected++;
 				parser->SetExpr("Wandler.length = 2 + 2");
 				parser->Eval(); //will throw an error if the variable does not exist
@@ -1023,16 +1023,16 @@ TEST_DEF_START(changeElementModelType, ARTpreperationFunctions)
 			if (exceptionsCaught != exceptionsExpected) return false;
 		}
 		catch(mup::ParserError e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetMsg() << "\n";
 			return false;
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage() << "\n";
 			return false;
 		}
-		return true; 
+		return true;
 
 	}
 
@@ -1056,7 +1056,7 @@ TEST_DEF_START(changeElementName, ARTpreperationFunctions)
 			mySim = ARTCreateSimulator("MeinSimulator", "FrequencyDomain", "MultiModal");
 	}
 
-	virtual bool run() 
+	virtual bool run()
 	{
 		int exceptionsCaught = 0;
 		int exceptionsExpected = 0;
@@ -1066,12 +1066,12 @@ TEST_DEF_START(changeElementName, ARTpreperationFunctions)
 			P_ART_Element El2 = ARTCreateElement(mySim, "Wandler", "Cylinder");
 			//change a parameter, so that a definition string is created internally
 			ARTSetParameter(mySim, "Wandler.temp = 20");
-			
+
 			ARTChangeName( El2, "Cyl");
-			
+
 			//check that a parser variable (with "Wandler") does not exist after name change
-			try 
-			{	
+			try
+			{
 				exceptionsExpected++;
 				parser->SetExpr("Wandler.length = 2 + 2"); //Wandler does not exist anymore -> error expected
 				parser->Eval(); //will throw an error if the variable does not exist
@@ -1084,12 +1084,12 @@ TEST_DEF_START(changeElementName, ARTpreperationFunctions)
 			ARTChangeName( El2, "Cylin");
 
 			//check if parser variable with "Cylin" exist
-			parser->SetExpr("Cylin.r = 2 + 2"); 
+			parser->SetExpr("Cylin.r = 2 + 2");
 			parser->Eval(); //will throw an error if the variable does not exist
 
 			//check that parser variable with "Cyl" does not exist anymore
-			try 
-			{	
+			try
+			{
 				exceptionsExpected++;
 				parser->SetExpr("Cyl.r = 2 + 2");
 				parser->Eval(); //will throw an error if the variable does not exist
@@ -1102,22 +1102,22 @@ TEST_DEF_START(changeElementName, ARTpreperationFunctions)
 			ARTDestroyElement(mySim,El2);
 
 			//check that no old parser variable exists anymore
-			try 
-			{	
+			try
+			{
 				exceptionsExpected++;
 				parser->SetExpr("Wandler.r = 2 + 2");
 				parser->Eval(); //will throw an error if the variable does not exist
 			} catch (mup::ParserError e) {exceptionsCaught++;}
 
-			try 
-			{	
+			try
+			{
 				exceptionsExpected++;
 				parser->SetExpr("Cyl.length = 2 + 2");
 				parser->Eval(); //will throw an error if the variable does not exist
 			} catch (mup::ParserError e) {exceptionsCaught++;}
 
-			try 
-			{	
+			try
+			{
 				exceptionsExpected++;
 				parser->SetExpr("Cylin.length = 2 + 2");
 				parser->Eval(); //will throw an error if the variable does not exist
@@ -1126,16 +1126,16 @@ TEST_DEF_START(changeElementName, ARTpreperationFunctions)
 			if (exceptionsCaught != exceptionsExpected) return false;
 		}
 		catch(mup::ParserError e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetMsg() << "\n";
 			return false;
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage() << "\n";
 			return false;
 		}
-		return true; 
+		return true;
 
 	}
 
@@ -1176,7 +1176,7 @@ class ARTsettingElementParametersClass : public TestClass
 			ARTDestroyElement(mySim, Zyl1);
 			ARTDestroyElement(mySim, BZyl1);
 			ARTDestroySimulator(mySim);
-			ARTRootDestroy(); 	
+			ARTRootDestroy();
 		}
 };
 // ... and instantiate one object of that class
@@ -1200,7 +1200,7 @@ TEST_DEF_START(setValidParameters, ARTsettingElementParameters)
 			ARTSetParameter(mySim, "  BZyl.bendradius= 13124;BZyl.temp=Zyl.temp;");
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage();;
 			return false;
 		}
@@ -1227,7 +1227,7 @@ TEST_DEF_START(getDefString, ARTsettingElementParameters)
 			if (s1 != s2) return false;
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage();;
 			return false;
 		}
@@ -1253,7 +1253,7 @@ TEST_DEF_START(getAllDefStrings, ARTsettingElementParameters)
 		try
 		{
 			ARTSetParameter(mySim, "TestCon.r1 = TestCon.r2*0.34");
-			
+
 			P_ART_Object model = ARTGetModel(TestCon);
 
 			P_ART_DataProp dp = ARTGetDataProperties(model, NULL);
@@ -1268,10 +1268,10 @@ TEST_DEF_START(getAllDefStrings, ARTsettingElementParameters)
 
 			if (s != "TestCon.length = 50;TestCon.r1 = TestCon.r2*0.34;TestCon.r2 = 5;TestCon.temp = 21;TestCon.loss = 1;TestCon.humidity = 0.8;TestCon.xc = 0.000382;")
 				return false;
-			
+
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage();;
 			return false;
 		}
@@ -1309,11 +1309,11 @@ TEST_DEF_START(getModelDataProps, ARTsettingElementParameters)
 			}
 			while (dp);
 			//compare with what we expect (this is a fragile test... the order and number of properties could change, then this test would fail...)
-			if (s=="length,r1,r2,temp,loss,humidity,xc,") return true; 
-			
+			if (s=="length,r1,r2,temp,loss,humidity,xc,") return true;
+
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage();;
 			return false;
 		}
@@ -1340,7 +1340,7 @@ TEST_DEF_START(setStringParameters, ARTsettingElementParameters)
 			ARTSetParameter(mySim, "Term.radiation = Reflecting;");
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage();;
 			return false;
 		}
@@ -1372,7 +1372,7 @@ TEST_DEF_START(setInvalidParameters, ARTsettingElementParameters)
 			ARTSetParameter(mySim, "Con.LENGT = 11.123; ");
 		}
 		catch(ARTerror e)
-		{	
+		{
 			exceptionsCaught++;
 		}
 		try
@@ -1381,7 +1381,7 @@ TEST_DEF_START(setInvalidParameters, ARTsettingElementParameters)
 			ARTSetParameter(mySim, "Con.r2  4");
 		}
 		catch(ARTerror e)
-		{	
+		{
 			exceptionsCaught++;
 		}
 		try
@@ -1390,7 +1390,7 @@ TEST_DEF_START(setInvalidParameters, ARTsettingElementParameters)
 			ARTSetParameter(mySim, "Zyl.r = 4 Zyl.temp=20");
 		}
 		catch(ARTerror e)
-		{	
+		{
 			exceptionsCaught++;
 		}
 		try
@@ -1399,7 +1399,7 @@ TEST_DEF_START(setInvalidParameters, ARTsettingElementParameters)
 			ARTSetParameter(mySim, "Con.r1 = Ccon.r2*0.34;");
 		}
 		catch(ARTerror e)
-		{	
+		{
 			exceptionsCaught++;
 		}
 		try
@@ -1408,7 +1408,7 @@ TEST_DEF_START(setInvalidParameters, ARTsettingElementParameters)
 			ARTSetParameter(mySim, "  BZyl.bendradius= ;BZyl.temp=Zyl.temp;");
 		}
 		catch(ARTerror e)
-		{	
+		{
 			exceptionsCaught++;
 		}
 
@@ -1460,7 +1460,7 @@ class ARTreferencesInCircuitsSuperClass : public TestClass
 			ARTDestroyElement(mySim, Zyl2);
 			ARTDestroyElement(mySim, Kon2);
 			ARTDestroySimulator(mySim);
-			ARTRootDestroy(); 	
+			ARTRootDestroy();
 		}
 };
 
@@ -1468,14 +1468,14 @@ CUSTOM_TEST_DEF_START(getReferencePosition, ARTreferencesInCircuits, ARTreferenc
 	virtual bool run() //test destroying a referenced element, then evaluating the circuits impedance -> should generate error
 	{
 		try
-		{	
+		{
 			if (ARTGetReferencePosition( meinIns,Zyl1) != 0) return false;
 			if (ARTGetReferencePosition( meinIns,Zyl2) != 1) return false;
 			if (ARTGetReferencePosition( meinIns,Kon1) != 2) return false;
 			if (ARTGetReferencePosition( meinIns,Kon2) != 3) return false;
 		}
 		catch(ARTerror e)
-		{	
+		{
 			return false;
 		}
 		return true;
@@ -1486,7 +1486,7 @@ CUSTOM_TEST_DEF_START(getReferencePosition2, ARTreferencesInCircuits, ARTreferen
 	virtual bool run() //test destroying a referenced element, then evaluating the circuits impedance -> should generate error
 	{
 		try
-		{	
+		{
 			ARTRemoveReference( meinIns,Zyl2);
 			if (ARTGetReferencePosition( meinIns,Zyl1) != 0) return false;
 			if (ARTGetReferencePosition( meinIns,Zyl2) != -1) return false;
@@ -1494,7 +1494,7 @@ CUSTOM_TEST_DEF_START(getReferencePosition2, ARTreferencesInCircuits, ARTreferen
 			if (ARTGetReferencePosition( meinIns,Kon2) != 2) return false;
 		}
 		catch(ARTerror e)
-		{	
+		{
 			return false;
 		}
 		return true;
@@ -1505,7 +1505,7 @@ CUSTOM_TEST_DEF_START(replaceReference, ARTreferencesInCircuits, ARTreferencesIn
 	virtual bool run() //test destroying a referenced element, then evaluating the circuits impedance -> should generate error
 	{
 		try
-		{	
+		{
 			ARTRemoveReference( meinIns,Kon1);
 			ARTReplaceReference( meinIns,Zyl1,Kon1);
 			if (ARTGetReferencePosition( meinIns,Kon1) != 0) return false;
@@ -1514,7 +1514,7 @@ CUSTOM_TEST_DEF_START(replaceReference, ARTreferencesInCircuits, ARTreferencesIn
 			if (ARTGetReferencePosition( meinIns,Kon2) != 2) return false;
 		}
 		catch(ARTerror e)
-		{	
+		{
 			return false;
 		}
 		return true;
@@ -1525,7 +1525,7 @@ CUSTOM_TEST_DEF_START(appendReferenceBeforeAndAfter, ARTreferencesInCircuits, AR
 	virtual bool run() //test destroying a referenced element, then evaluating the circuits impedance -> should generate error
 	{
 		try
-		{	
+		{
 			ARTRemoveReference( meinIns,Kon1);
 			ARTRemoveReference( meinIns,Kon2);
 			ARTAppendReferenceBefore( meinIns,Zyl2,Kon2);
@@ -1536,7 +1536,7 @@ CUSTOM_TEST_DEF_START(appendReferenceBeforeAndAfter, ARTreferencesInCircuits, AR
 			if (ARTGetReferencePosition( meinIns,Zyl2) != 3) return false;
 		}
 		catch(ARTerror e)
-		{	
+		{
 			return false;
 		}
 		return true;
@@ -1547,12 +1547,12 @@ CUSTOM_TEST_DEF_START(destroyElementThenEvaluate, ARTreferencesInCircuits, ARTre
 	virtual bool run() //test destroying a referenced element, then evaluating the circuits impedance -> should generate error
 	{
 		try
-		{	
+		{
 			ARTDestroyElement(mySim,Kon1);
-			ARTvariant* meineImpKurve = ARTInputImpedance(meinIns); 
+			ARTvariant* meineImpKurve = ARTInputImpedance(meinIns);
 		}
 		catch(ARTerror e)
-		{	
+		{
 			Kon1 = ARTCreateElement(mySim, "Replacement_for_unprepare_method", "Cone");
 			return true;
 		}
@@ -1565,14 +1565,14 @@ CUSTOM_TEST_DEF_START(destroyElementRecreateThenEvaluate, ARTreferencesInCircuit
 	virtual bool run() //test destroying a referenced element, then recreating an element with the same name, then evaluating the circuits impedance -> should generate error
 	{
 		try
-		{	
+		{
 			ARTDestroyElement(mySim,Kon1);
 			//recreate element with the same name
 			Kon1 = ARTCreateElement(mySim, "Kon1", "Cone");
-			ARTvariant* meineImpKurve = ARTInputImpedance(meinIns); 
+			ARTvariant* meineImpKurve = ARTInputImpedance(meinIns);
 		}
 		catch(ARTerror e)
-		{	
+		{
 			return true;
 		}
 		return false;
@@ -1583,7 +1583,7 @@ CUSTOM_TEST_DEF_START(addAndReplace, ARTreferencesInCircuits, ARTreferencesInCir
 	virtual bool run() //test adding and replacing references
 	{
 		try
-		{	
+		{
 
 			//replace Kon2 with Kon1 -> there should be one occurence
 			if (1 != ARTReplaceReference( meinIns, Kon2,Kon1))
@@ -1595,7 +1595,7 @@ CUSTOM_TEST_DEF_START(addAndReplace, ARTreferencesInCircuits, ARTreferencesInCir
 
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage();;
 			return false;
 		}
@@ -1608,24 +1608,24 @@ CUSTOM_TEST_DEF_START(addAndReplaceNonExisting, ARTreferencesInCircuits, ARTrefe
 	virtual bool run() //test adding and replacing references
 	{
 		try
-		{	
+		{
 			//replace null reference with Kon1 -> there should be an error
 			ARTReplaceReference( meinIns, NULL, Kon1);
 			return false;
 		}
 		catch(ARTerror e)
-		{	
+		{
 			return true;
 		}
 
 		try
-		{	
+		{
 			//replace Kon1 with null reference -> there should be an error thrown
 			ARTReplaceReference( meinIns, Kon1, NULL);
 			return false;
 		}
 		catch(ARTerror e)
-		{	
+		{
 			return true;
 		}
 	}
@@ -1635,13 +1635,13 @@ CUSTOM_TEST_DEF_START(removeElement, ARTreferencesInCircuits, ARTreferencesInCir
 	virtual bool run() //test adding and replacing references
 	{
 		try
-		{	
+		{
 			//remove Kon1 -> there should be one occurence
 			if (1 != ARTRemoveReference( meinIns, Kon1))
 				return false;
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage();;
 			return false;
 		}
@@ -1653,13 +1653,13 @@ CUSTOM_TEST_DEF_START(removeAllElements, ARTreferencesInCircuits, ARTreferencesI
 	virtual bool run() //test adding and replacing references
 	{
 		try
-		{	
+		{
 			//remove all -> there should be one occurence
 			if (4 != ARTRemoveAllReferences(meinIns))
 				return false;
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage();;
 			return false;
 		}
@@ -1687,7 +1687,7 @@ class ARTdependencyTreeClass : public TestClass
 		virtual void unprepare()
 		{
 			ARTDestroySimulator(mySim);
-			ARTRootDestroy(); 	
+			ARTRootDestroy();
 		}
 };
 ARTdependencyTreeClass* ARTdependencyTree = new ARTdependencyTreeClass();
@@ -1707,24 +1707,24 @@ TEST_DEF_START(changeElementAndCalculateImpedance2, ARTdependencyTree) //viellei
 	virtual bool run() //test calculating impedance
 	{
 		try
-		{	
+		{
 			ARTAppendReference( meinIns, Cyl);
 			ARTAppendReference(meinIns, Bes);
 
 			ARTSetParameter(ARTdependencyTree->mySim, "Cyl1.length = Bes1.r1 * 2;");
-			
+
 			ARTvariant* meineImpKurve = ARTInputImpedance(meinIns);
 
 			//Now change element to cylinder.
 			ARTChangeElementModel(ARTdependencyTree->mySim, Bes, "Cylinder");
-			
+
 			//this should throw an exception, because "Cyl.length = Bes.r1 * 2;" is not valid anymore (Cylinders don't have R1)
 			try {
 			meineImpKurve = ARTInputImpedance(meinIns);
 			} catch (ARTerror e) {return true;} //exception expected!
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage();
 			return false;
 		}
@@ -1745,7 +1745,7 @@ TEST_DEF_START(deleteElementAndCalculateImpedance, ARTdependencyTree) //vielleic
 //element of circuit is deleted, then impedance calculated for second time -> should give error
 	P_ART_Circuit meinIns;
 	P_ART_Element Cyl;
-	
+
 	virtual void prepare()
 	{
 		meinIns = ARTCreateCircuit(ARTdependencyTree->mySim, "MeinInstrument");
@@ -1755,7 +1755,7 @@ TEST_DEF_START(deleteElementAndCalculateImpedance, ARTdependencyTree) //vielleic
 	virtual bool run()
 	{
 		try
-		{	
+		{
 			P_ART_Element Bes = ARTCreateElement(ARTdependencyTree->mySim, "Bes1", "Besselhorn");
 			ARTAppendReference(meinIns, Cyl);
 			ARTAppendReference( meinIns, Bes);
@@ -1769,7 +1769,7 @@ TEST_DEF_START(deleteElementAndCalculateImpedance, ARTdependencyTree) //vielleic
 			} catch (ARTerror e) {return true;} //exception expected!
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage();
 			return false;
 		}
@@ -1789,7 +1789,7 @@ TEST_DEF_START(deleteElementAndCalculateImpedance2, ARTdependencyTree) //viellei
 //same as above with additional inter-parameter dependencies
 	P_ART_Circuit meinIns;
 	P_ART_Element Cyl;
-	
+
 	virtual void prepare()
 	{
 		meinIns = ARTCreateCircuit(ARTdependencyTree->mySim, "MeinInstrument");
@@ -1799,7 +1799,7 @@ TEST_DEF_START(deleteElementAndCalculateImpedance2, ARTdependencyTree) //viellei
 	virtual bool run() //test calculating impedance
 	{
 		try
-		{	
+		{
 			P_ART_Element Bes = ARTCreateElement(ARTdependencyTree->mySim, "Bes1", "Besselhorn");
 			ARTAppendReference(meinIns, Cyl);
 			ARTAppendReference(meinIns, Bes);
@@ -1815,7 +1815,7 @@ TEST_DEF_START(deleteElementAndCalculateImpedance2, ARTdependencyTree) //viellei
 			} catch (ARTerror e) {return true;} //exception expected!
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage();
 			return false;
 		}
@@ -1846,7 +1846,7 @@ TEST_DEF_START(changeElementAndCalculateImpedance3, ARTdependencyTree) //viellei
 	virtual bool run() //test calculating impedance
 	{
 		try
-		{	
+		{
 			ARTAppendReference(meinIns, Cyl);
 			ARTAppendReference(meinIns, Bes);
 
@@ -1859,7 +1859,7 @@ TEST_DEF_START(changeElementAndCalculateImpedance3, ARTdependencyTree) //viellei
 			meineImpKurve = ARTInputImpedance(meinIns);
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage();
 			return false;
 		}
@@ -1898,33 +1898,33 @@ TEST_DEF_START(testEvaluationCost, ARTdependencyTree)
 			meinIns->PrepareCalculation();
 			ARTdataContainer* impCurveProp = (ARTdataProp*)(meinIns->FindProperty("InputImpedanceCurve"));
 
-			if (impCurveProp == NULL) throw ARTerror("ARTInputImpedance", "Invalid impedance curve"); 
+			if (impCurveProp == NULL) throw ARTerror("ARTInputImpedance", "Invalid impedance curve");
 
 			//now the cost should be greater than zero (depending on the properties of the model cylinder)
 			int ec_begin = impCurveProp->GetEvaluationCost();
 			if (ec_begin==0) return false;
 			//asking for the evaluation cost a second time should return exactly the same
 			if (ec_begin!=impCurveProp->GetEvaluationCost()) return false;
-	
+
 			//evaluate
 			ARTvariant* meineImpKurve = ARTInputImpedance(meinIns);
 
 			//now the cost should be zero
 			if (0!=impCurveProp->GetEvaluationCost()) return false;
-			
+
 			//after changing one parameter the ev. cost should be non zero...
 			ARTSetParameter(ARTdependencyTree->mySim,"Cyl.length = 123;");
 			meinIns->PrepareCalculation();
 			int ec = impCurveProp->GetEvaluationCost();
 			if (0==ec) return false;
 			//...but smaller than the first value (where also frequency grid etc. had to be evaluated)
-			if (ec_begin<=ec) return false; //is this true??? I have introduced the complexity memory, 
+			if (ec_begin<=ec) return false; //is this true??? I have introduced the complexity memory,
 			//so the datacontainers try to remember how complex the calculation was... --> complexity turned off
 			//and do we still get exactly the same when asking twice?
 			if (ec != impCurveProp->GetEvaluationCost()) return false;
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage();;
 			return false;
 		}
@@ -1973,7 +1973,7 @@ TEST_DEF_START(testEvaluationCounter, ARTdependencyTree)
 			if (!reached_one) return false;
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage();;
 			return false;
 		}
@@ -2008,7 +2008,7 @@ TEST_DEF_START(testAbortAndEvaluate, ARTdependencyTree)
 		return true;
 	}
 
-	virtual bool run() 
+	virtual bool run()
 	{
 		try
 		{
@@ -2022,7 +2022,7 @@ TEST_DEF_START(testAbortAndEvaluate, ARTdependencyTree)
 			meineImpKurve = ARTInputImpedance(meinIns);
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage();;
 			return false;
 		}
@@ -2040,7 +2040,7 @@ TEST_DEF_END(testAbortAndEvaluate)
 
 TEST_DEF_START(testARTReEvaluation, ARTdependencyTree)
 //Test evaluate and (re)evaluate using the DLL functions
-	//P_ART_Object psim 
+	//P_ART_Object psim
 	P_ART_Simulator mySim;
 	P_ART_Circuit myIns;
 	P_ART_Element Bes;
@@ -2099,7 +2099,7 @@ TEST_DEF_START(testARTReEvaluation, ARTdependencyTree)
 
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage();;
 			return false;
 		}
@@ -2120,7 +2120,7 @@ TEST_DEF_END(testARTReEvaluation)
 
 TEST_DEF_START(testARTRemoveElement, ARTdependencyTree)
 //Test evaluate and (re)evaluate using the DLL functions
-	//P_ART_Object psim 
+	//P_ART_Object psim
 	P_ART_Simulator mySim;
 	P_ART_Circuit myIns;
 	P_ART_Element Bes;
@@ -2156,7 +2156,7 @@ TEST_DEF_START(testARTRemoveElement, ARTdependencyTree)
 			ARTRemoveReference(myIns,Con);
 			//int time2 = GetTickCount();
 			myImpCurve = ARTInputImpedance(myIns);
-			//time2 = GetTickCount() - time2; 
+			//time2 = GetTickCount() - time2;
 			//myImpCurve->DebugDepTree(""); std::cout << "***\n\n";
 
 			if (f != int(myImpCurve->val->nt[0].f)) return false;
@@ -2164,7 +2164,7 @@ TEST_DEF_START(testARTRemoveElement, ARTdependencyTree)
 
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage();;
 			return false;
 		}
@@ -2204,7 +2204,7 @@ TEST_DEF_START(testARTDepTreeStruct, ARTdependencyTree)
 		ARTSetNModes(mySim, 1);
 	}
 
-	virtual bool run() 
+	virtual bool run()
 	{
 		try
 		{
@@ -2212,7 +2212,7 @@ TEST_DEF_START(testARTDepTreeStruct, ARTdependencyTree)
 			string test = "";
 			string test2 = "";
 
-	
+
 			ARTAppendReference(myIns, Cyl);
 			P_ART_DataProp myImpCurve = ARTInputImpedance(myIns);
 			test = myImpCurve->WriteDepTree("","*");
@@ -2222,7 +2222,7 @@ TEST_DEF_START(testARTDepTreeStruct, ARTdependencyTree)
 
 			ARTAppendReference( myIns, Con);
 			myImpCurve = ARTInputImpedance(myIns);
-			test = myImpCurve->WriteDepTree("","*"); 
+			test = myImpCurve->WriteDepTree("","*");
 			//std::cout << test << "\n\n";
 			test2 = "InputImpedanceCurve*. Z_Cyl*. . wfrqGrid*. . . frqGrid*. . . . LowerFrequencyLimit*. . . . HigherFrequencyLimit*. . . . FrequencyStep*. . Z_Con*. . . wfrqGrid*. . . . frqGrid*. . . . . LowerFrequencyLimit*. . . . . HigherFrequencyLimit*. . . . . FrequencyStep*. . . ZR_Con*. . . . wfrqGrid*. . . . . frqGrid*. . . . . . LowerFrequencyLimit*. . . . . . HigherFrequencyLimit*. . . . . . FrequencyStep*. . . . NumberOfModes*. . . . Con.length*. . . . Con.r1*. . . . Con.r2*. . . . Con.temp*. . . . Con.loss*. . . . Con.humidity*. . . . Con.xc*. . . Con.length*. . . Con.r1*. . . Con.r2*. . . Con.temp*. . . Con.loss*. . . Con.humidity*. . . Con.xc*. . . NumberOfModes*. . Cyl.length*. . Cyl.r*. . Cyl.temp*. . Cyl.loss*. . Cyl.humidity*. . Cyl.xc*. . NumberOfModes*";
 			if (test.compare(test2) != 0) return false;
@@ -2243,7 +2243,7 @@ TEST_DEF_START(testARTDepTreeStruct, ARTdependencyTree)
 
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage();;
 			return false;
 		}
@@ -2282,7 +2282,7 @@ TEST_DEF_START(testReCreateCircuit, ARTdependencyTree)
 		ARTSetNModes(mySim, 1);
 	}
 
-	virtual bool run() 
+	virtual bool run()
 	{
 		try
 		{
@@ -2368,7 +2368,7 @@ TEST_DEF_START(testReCreateCircuit, ARTdependencyTree)
 
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage();;
 			return false;
 		}
@@ -2412,7 +2412,7 @@ class ARTcalculatingImpedanceClass : public TestClass
 			ARTDestroyElement(mySim, Zyl1);
 			ARTDestroyElement(mySim, BZyl1);
 			ARTDestroySimulator(mySim);
-			ARTRootDestroy(); 	
+			ARTRootDestroy();
 		}
 };
 ARTcalculatingImpedanceClass* ARTcalculatingImpedance = new ARTcalculatingImpedanceClass();
@@ -2431,7 +2431,7 @@ TEST_DEF_START(calculateImpedance, ARTcalculatingImpedance)
 	virtual bool run() //test calculating impedance
 	{
 		try
-		{	
+		{
 			ARTAppendReference(meinIns, ARTcalculatingImpedance->BZyl1);
 			ARTAppendReference(meinIns, ARTcalculatingImpedance->Zyl1);
 			ARTvariant* meineImpKurve = ARTInputImpedance(meinIns);
@@ -2451,7 +2451,7 @@ TEST_DEF_START(calculateImpedance, ARTcalculatingImpedance)
 			if (int(meineImpKurve->val->nt[1].im) != 823605) return false;
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage();;
 			return false;
 		}
@@ -2480,7 +2480,7 @@ TEST_DEF_START(changeElementAndCalculateImpedance, ARTcalculatingImpedance)
 	virtual bool run() //test calculating impedance
 	{
 		try
-		{	
+		{
 			P_ART_Element El = ARTCreateElement(ARTcalculatingImpedance->mySim, "Wandler", "Cylinder");
 			ARTAppendReference(meinIns, El);
 
@@ -2501,7 +2501,7 @@ TEST_DEF_START(changeElementAndCalculateImpedance, ARTcalculatingImpedance)
 			if (int(meineImpKurve->val->nt[0].im) != 24732) return false;
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage();;
 			return false;
 		}
@@ -2529,7 +2529,7 @@ TEST_DEF_START(calculateImpedance2, ARTcalculatingImpedance)
 	virtual bool run() //test calculating impedance
 	{
 		try
-		{	
+		{
 			ARTAppendReference( meinIns, ARTcalculatingImpedance->Zyl1);
 			ARTAppendReference( meinIns, ARTcalculatingImpedance->Kon1);
 			ARTSetParameter(ARTcalculatingImpedance->mySim, "Kon.length = 11.123; ");
@@ -2554,7 +2554,7 @@ TEST_DEF_START(calculateImpedance2, ARTcalculatingImpedance)
 			if (int(meineImpKurve->val->nt[1].im) != 384065) return false;
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage();;
 			return false;
 		}
@@ -2576,15 +2576,15 @@ TEST_DEF_START(changeNumberOfModes, ARTcalculatingImpedance)
 	P_ART_Circuit meinIns2;
 	P_ART_Element BZyl2;
 
-	virtual bool run() 
+	virtual bool run()
 	{
 		meinIns = ARTCreateCircuit(ARTcalculatingImpedance->mySim, "MeinInstrument");
 		meinIns2 = ARTCreateCircuit(ARTcalculatingImpedance->mySim, "MeinInstrument2");
 		BZyl2 = ARTCreateElement(ARTcalculatingImpedance->mySim, "BZyl2", "BentCylinder");
 
 		try
-		{	
-	
+		{
+
 			ARTSetFrequencyRange    (ARTcalculatingImpedance->mySim, 599, 601, 1);
 			ARTSetNModes    (ARTcalculatingImpedance->mySim, 32);
 			ARTSetParameter(ARTcalculatingImpedance->mySim, "BZyl2.length = 100; ");
@@ -2596,7 +2596,7 @@ TEST_DEF_START(changeNumberOfModes, ARTcalculatingImpedance)
 
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage();;
 			return false;
 		}
@@ -2622,13 +2622,13 @@ TEST_DEF_START(changeNumberOfModes, ARTcalculatingImpedance)
 			ARTAppendReference(meinIns2, ARTcalculatingImpedance->Zyl1);
 			ARTAppendReference(meinIns2, ARTcalculatingImpedance->BZyl1);
 			ARTAppendReference(meinIns2, BZyl2);
-			ARTvariant* meineImpKurve2 = ARTInputImpedance(meinIns2); 
+			ARTvariant* meineImpKurve2 = ARTInputImpedance(meinIns2);
 			meineImpKurve = ARTInputImpedance(meinIns2);
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage();;
-			return false; 
+			return false;
 		}
 
 		ARTDestroyElement(ARTcalculatingImpedance->mySim, BZyl2);
@@ -2640,7 +2640,7 @@ TEST_DEF_START(changeNumberOfModes, ARTcalculatingImpedance)
 		return true;
 	}
 
-	virtual void unprepare() 
+	virtual void unprepare()
 	{
 		//clear up if there was an error
 		if (BZyl2) ARTDestroyElement(ARTcalculatingImpedance->mySim, BZyl2);
@@ -2677,7 +2677,7 @@ TEST_DEF_START(calculateImpedanceTwice, ARTcalculatingImpedance)
 			meineImpKurve = ARTInputImpedance(meinIns2);
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage();;
 			return false;
 		}
@@ -2708,14 +2708,14 @@ TEST_DEF_START(calculateBentImpedance, ARTcalculatingImpedance)
 	virtual bool run() //test calculating impedance
 	{
 		try
-		{	
-			ARTSetFrequencyRange    (mySim2, 598, 599, 1); 
+		{
+			ARTSetFrequencyRange    (mySim2, 598, 599, 1);
 			ARTSetNModes    (mySim2, 32);
 			ARTSetParameter(mySim2, "BZyl2.length = 100; ");
 			ARTSetParameter(mySim2, "BZyl2.r = 1; ");
 			ARTSetParameter(mySim2, "BZyl2.bendradius = 5; ");
 			ARTAppendReference(meinIns, BZyl2);
-			
+
 			ARTvariant* meineImpKurve = ARTInputImpedance(meinIns);
 			meineImpKurve = ARTInputImpedance(meinIns);
 			int i;
@@ -2731,7 +2731,7 @@ TEST_DEF_START(calculateBentImpedance, ARTcalculatingImpedance)
 
 
 			if (meineImpKurve->len != 2) return false;
-	
+
 			//there should be a peak at 598 Hz
 			i = 0;
 			dcomp c = dcomp(meineImpKurve->val->nt[i].re,meineImpKurve->val->nt[i].im);
@@ -2746,7 +2746,7 @@ TEST_DEF_START(calculateBentImpedance, ARTcalculatingImpedance)
 			if (int(arg(c)) != 0) return false;
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage();;
 			return false;
 		}
@@ -2779,14 +2779,14 @@ TEST_DEF_START(calculateBentImpedanceAndChangeModes, ARTcalculatingImpedance)
 	virtual bool run() //test calculating impedance
 	{
 		try
-		{	
+		{
 			ARTSetFrequencyRange    (mySim2, 598, 599, 1); //nur 600 H2
 			ARTSetNModes    (mySim2, 1);
 			ARTSetParameter(mySim2, "BZyl2.length = 100; ");
 			ARTSetParameter(mySim2, "BZyl2.r = 1; ");
 			ARTSetParameter(mySim2, "BZyl2.bendradius = 5; ");
 			ARTAppendReference(meinIns, BZyl2);
-			
+
 			ARTvariant* meineImpKurve = ARTInputImpedance(meinIns);
 			meineImpKurve = ARTInputImpedance(meinIns);
 			int i;
@@ -2797,9 +2797,9 @@ TEST_DEF_START(calculateBentImpedanceAndChangeModes, ARTcalculatingImpedance)
 			//	std::cout << int(abs(c)) << " ";
 			//	std::cout << int(arg(c)) << "\n";
 			//}
-	
+
 			if (meineImpKurve->len != 2) return false;
-	
+
 			//compare with expected values
 			i = 0;
 			dcomp c = dcomp(meineImpKurve->val->nt[i].re,meineImpKurve->val->nt[i].im);
@@ -2817,9 +2817,9 @@ TEST_DEF_START(calculateBentImpedanceAndChangeModes, ARTcalculatingImpedance)
 			ARTSetNModes    (mySim2, 32);
 			meineImpKurve = ARTInputImpedance(meinIns);
 			meineImpKurve = ARTInputImpedance(meinIns);
-	
+
 			if (meineImpKurve->len != 2) return false;
-	
+
 			//there should be a peak at 598 Hz
 			i = 0;
 			c = dcomp(meineImpKurve->val->nt[i].re,meineImpKurve->val->nt[i].im);
@@ -2835,12 +2835,12 @@ TEST_DEF_START(calculateBentImpedanceAndChangeModes, ARTcalculatingImpedance)
 
 			//Now change the number of modes to 1
 			ARTSetNModes    (mySim2, 1);
-			
+
 			meineImpKurve = ARTInputImpedance(meinIns);
 			meineImpKurve = ARTInputImpedance(meinIns);
-	
+
 			if (meineImpKurve->len != 2) return false;
-	
+
 			//compare with expected values
 			i = 0;
 			c = dcomp(meineImpKurve->val->nt[i].re,meineImpKurve->val->nt[i].im);
@@ -2855,7 +2855,7 @@ TEST_DEF_START(calculateBentImpedanceAndChangeModes, ARTcalculatingImpedance)
 			if (int(arg(c)) != 0) return false;
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage();;
 			return false;
 		}
@@ -2892,13 +2892,13 @@ TEST_DEF_START(calculateTerminationModelImpedance, ARTcalculatingImpedance)
 	virtual bool run() //test calculating impedance
 	{
 		try
-		{	
+		{
 			ARTSetFrequencyRange    (mySim, 598, 599, 1); //nur 600 H2
 			ARTSetNModes    (mySim, 1);
 
 			ARTAppendReference(myIns, Cyl);
 			ARTAppendReference(myIns, Term);
-			
+
 			ARTvariant* meineImpKurve = ARTInputImpedance(myIns);
 
 			int i;
@@ -2913,7 +2913,7 @@ TEST_DEF_START(calculateTerminationModelImpedance, ARTcalculatingImpedance)
 			c = dcomp(meineImpKurve->val->nt[i].re,meineImpKurve->val->nt[i].im);
 			if (int(meineImpKurve->val->nt[i].f) != 599) return false;
 			if (int(abs(c)) != 11647690) return false;
-			if (int(arg(c)) != 0) return false;	
+			if (int(arg(c)) != 0) return false;
 
 			ARTSetParameter(mySim, "Term.radiation = Reflecting;");
 			meineImpKurve = ARTInputImpedance(myIns);
@@ -2929,12 +2929,12 @@ TEST_DEF_START(calculateTerminationModelImpedance, ARTcalculatingImpedance)
 			c = dcomp(meineImpKurve->val->nt[i].re,meineImpKurve->val->nt[i].im);
 			if (int(meineImpKurve->val->nt[i].f) != 599) return false;
 			if (int(abs(c)) != 97470) return false;
-			if (int(arg(c)) != 0) return false;	
+			if (int(arg(c)) != 0) return false;
 
-	
+
 			ARTSetParameter(mySim, "Term.radiation = Zorumski;"); //default -> same results as in first calculation expected!
 			meineImpKurve = ARTInputImpedance(myIns);
-	
+
 			if (meineImpKurve->len != 2) return false;
 			i = 0;
 			c = dcomp(meineImpKurve->val->nt[i].re,meineImpKurve->val->nt[i].im);
@@ -2946,7 +2946,7 @@ TEST_DEF_START(calculateTerminationModelImpedance, ARTcalculatingImpedance)
 			c = dcomp(meineImpKurve->val->nt[i].re,meineImpKurve->val->nt[i].im);
 			if (int(meineImpKurve->val->nt[i].f) != 599) return false;
 			if (int(abs(c)) != 11647690) return false;
-			if (int(arg(c)) != 0) return false;	
+			if (int(arg(c)) != 0) return false;
 
 			//for (i = 0; i < meineImpKurve->len; i++)
 			//{
@@ -2956,10 +2956,10 @@ TEST_DEF_START(calculateTerminationModelImpedance, ARTcalculatingImpedance)
 			//	std::cout << int(arg(c)) << "\n";
 			//}
 
-			
+
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage();;
 			return false;
 		}
@@ -2996,13 +2996,13 @@ TEST_DEF_START(calculateTerminationModelImpedanceModes2, ARTcalculatingImpedance
 	virtual bool run() //test calculating impedance
 	{
 		try
-		{	
+		{
 			ARTSetFrequencyRange    (mySim, 598, 599, 1); //nur 600 H2
 			ARTSetNModes    (mySim, 2);
 
 			ARTAppendReference(myIns, Cyl);
 			ARTAppendReference(myIns, Term);
-			
+
 			ARTvariant* meineImpKurve = ARTInputImpedance(myIns);
 
 			int i;
@@ -3018,7 +3018,7 @@ TEST_DEF_START(calculateTerminationModelImpedanceModes2, ARTcalculatingImpedance
 			c = dcomp(meineImpKurve->val->nt[i].re,meineImpKurve->val->nt[i].im);
 			if (int(meineImpKurve->val->nt[i].f) != 599) return false;
 			if (int(abs(c)) != 11756012) return false;
-			if (int(arg(c)) != 0) return false;	
+			if (int(arg(c)) != 0) return false;
 
 			ARTSetParameter(mySim, "Term.radiation = Reflecting;");
 			meineImpKurve = ARTInputImpedance(myIns);
@@ -3034,9 +3034,9 @@ TEST_DEF_START(calculateTerminationModelImpedanceModes2, ARTcalculatingImpedance
 			c = dcomp(meineImpKurve->val->nt[i].re,meineImpKurve->val->nt[i].im);
 			if (int(meineImpKurve->val->nt[i].f) != 599) return false;
 			if (int(abs(c)) != 97470) return false;
-			if (int(arg(c)) != 0) return false;	
-			
-	
+			if (int(arg(c)) != 0) return false;
+
+
 			ARTSetParameter(mySim, "Term.radiation = Zorumski;"); //default -> same results as in first calculation expected!
 			meineImpKurve = ARTInputImpedance(myIns);
 			if (meineImpKurve->len != 2) return false;
@@ -3050,11 +3050,11 @@ TEST_DEF_START(calculateTerminationModelImpedanceModes2, ARTcalculatingImpedance
 			c = dcomp(meineImpKurve->val->nt[i].re,meineImpKurve->val->nt[i].im);
 			if (int(meineImpKurve->val->nt[i].f) != 599) return false;
 			if (int(abs(c)) != 11756012) return false;
-			if (int(arg(c)) != 0) return false;	
+			if (int(arg(c)) != 0) return false;
 
 			ARTSetNModes    (mySim, 1);
-	
-			ARTSetParameter(mySim, "Term.radiation = Zorumski;"); 
+
+			ARTSetParameter(mySim, "Term.radiation = Zorumski;");
 
 			meineImpKurve = ARTInputImpedance(myIns);
 
@@ -3069,11 +3069,11 @@ TEST_DEF_START(calculateTerminationModelImpedanceModes2, ARTcalculatingImpedance
 			c = dcomp(meineImpKurve->val->nt[i].re,meineImpKurve->val->nt[i].im);
 			if (int(meineImpKurve->val->nt[i].f) != 599) return false;
 			if (int(abs(c)) != 11647690) return false;
-			if (int(arg(c)) != 0) return false;	
-			
+			if (int(arg(c)) != 0) return false;
+
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage();;
 			return false;
 		}
@@ -3089,7 +3089,7 @@ TEST_DEF_START(calculateTerminationModelImpedanceModes2, ARTcalculatingImpedance
 	}
 
 TEST_DEF_END(calculateTerminationModelImpedanceModes2)
-	
+
 
 
 TEST_DEF_START(changeFrqStep, ARTcalculatingImpedance)
@@ -3108,19 +3108,19 @@ TEST_DEF_START(changeFrqStep, ARTcalculatingImpedance)
 	virtual bool run() //test calculating impedance
 	{
 		try
-		{	
+		{
 			ARTSetFrequencyRange    (mySim2, 10, 1800, 100);
 			ARTSetNModes    (mySim2, 1);
 			ARTAppendReference(meinIns, BZyl2);
-			
+
 			ARTvariant* meineImpKurve = ARTInputImpedance(meinIns);
 
 			//Now change the frq step
-			ARTSetFrequencyRange    (mySim2, 10, 1800, 10); 
+			ARTSetFrequencyRange    (mySim2, 10, 1800, 10);
 			meineImpKurve = ARTInputImpedance(meinIns);
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage();;
 			return false;
 		}
@@ -3189,14 +3189,14 @@ TEST_DEF_START(remElementFromBeginning, addAndRemoveElementsCalculateImpedance)
 	virtual bool run()
 	{
 		try
-		{	
+		{
 			ARTSetParameter(mySim, "Cyl2.r = 1; Cyl2.length = 50;");
 
 			ARTAppendReference(myIns, addAndRemoveElementsCalculateImpedance->Cyl2);
 			ARTAppendReference(myIns, addAndRemoveElementsCalculateImpedance->Cyl);
 			ARTAppendReference( myIns, addAndRemoveElementsCalculateImpedance->Con);
 			ARTAppendReference(myIns, addAndRemoveElementsCalculateImpedance->Bes);
-	
+
 			P_ART_DataProp myImpCurve = ARTInputImpedance(myIns);
 
 			if (int(myImpCurve->val->nt[0].f) != 900) return false;
@@ -3211,7 +3211,7 @@ TEST_DEF_START(remElementFromBeginning, addAndRemoveElementsCalculateImpedance)
 			if (int(myImpCurve->val->nt[0].im) != 780980) return false;
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage();;
 			return false;
 		}
@@ -3236,14 +3236,14 @@ TEST_DEF_START(remElementFromEnd, addAndRemoveElementsCalculateImpedance)
 	virtual bool run()
 	{
 		try
-		{	
+		{
 			ARTSetParameter(mySim, "Cyl2.r = 6; Cyl2.length = 10;");
 
 			ARTAppendReference(myIns, addAndRemoveElementsCalculateImpedance->Cyl);
 			ARTAppendReference( myIns, addAndRemoveElementsCalculateImpedance->Con);
 			ARTAppendReference(myIns, addAndRemoveElementsCalculateImpedance->Bes);
 			ARTAppendReference(myIns, addAndRemoveElementsCalculateImpedance->Cyl2);
-	
+
 			P_ART_DataProp myImpCurve = ARTInputImpedance(myIns);
 
 			if (int(myImpCurve->val->nt[0].f) != 900) return false;
@@ -3258,7 +3258,7 @@ TEST_DEF_START(remElementFromEnd, addAndRemoveElementsCalculateImpedance)
 			if (int(myImpCurve->val->nt[0].im) != 780980) return false;
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage();;
 			return false;
 		}
@@ -3284,14 +3284,14 @@ TEST_DEF_START(remElementFromMiddle, addAndRemoveElementsCalculateImpedance)
 	virtual bool run()
 	{
 		try
-		{	
+		{
 			ARTSetParameter(mySim, "Cyl2.r = 1; Cyl2.length = 50;");
 
 			ARTAppendReference(myIns, addAndRemoveElementsCalculateImpedance->Cyl);
 			ARTAppendReference(myIns, addAndRemoveElementsCalculateImpedance->Cyl2);
 			ARTAppendReference( myIns, addAndRemoveElementsCalculateImpedance->Con);
 			ARTAppendReference(myIns, addAndRemoveElementsCalculateImpedance->Bes);
-	
+
 			P_ART_DataProp myImpCurve = ARTInputImpedance(myIns);
 
 			if (int(myImpCurve->val->nt[0].f) != 900) return false;
@@ -3306,7 +3306,7 @@ TEST_DEF_START(remElementFromMiddle, addAndRemoveElementsCalculateImpedance)
 			if (int(myImpCurve->val->nt[0].im) != 780980) return false;
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage();;
 			return false;
 		}
@@ -3333,14 +3333,14 @@ TEST_DEF_START(remElementFromMiddle2, addAndRemoveElementsCalculateImpedance)
 	virtual bool run()
 	{
 		try
-		{	
+		{
 			ARTSetParameter(mySim, "Cyl2.r = 1.5; Cyl2.length = 50;");
 
 			ARTAppendReference(myIns, addAndRemoveElementsCalculateImpedance->Cyl);
 			ARTAppendReference( myIns, addAndRemoveElementsCalculateImpedance->Con);
 			ARTAppendReference(myIns, addAndRemoveElementsCalculateImpedance->Cyl2);
 			ARTAppendReference(myIns, addAndRemoveElementsCalculateImpedance->Bes);
-	
+
 			P_ART_DataProp myImpCurve = ARTInputImpedance(myIns);
 
 			if (int(myImpCurve->val->nt[0].f) != 900) return false;
@@ -3355,7 +3355,7 @@ TEST_DEF_START(remElementFromMiddle2, addAndRemoveElementsCalculateImpedance)
 			if (int(myImpCurve->val->nt[0].im) != 780980) return false;
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage();;
 			return false;
 		}
@@ -3382,13 +3382,13 @@ TEST_DEF_START(addElementToBeginning, addAndRemoveElementsCalculateImpedance)
 	virtual bool run()
 	{
 		try
-		{	
+		{
 			ARTSetParameter(mySim, "Cyl2.r = 1; Cyl2.length = 50;");
 
 			ARTAppendReference(myIns, addAndRemoveElementsCalculateImpedance->Cyl);
 			ARTAppendReference( myIns, addAndRemoveElementsCalculateImpedance->Con);
 			ARTAppendReference(myIns, addAndRemoveElementsCalculateImpedance->Bes);
-	
+
 			P_ART_DataProp myImpCurve = ARTInputImpedance(myIns);
 
 			if (int(myImpCurve->val->nt[0].f) != 900) return false;
@@ -3403,7 +3403,7 @@ TEST_DEF_START(addElementToBeginning, addAndRemoveElementsCalculateImpedance)
 			if (int(myImpCurve->val->nt[0].im) != -822264) return false;
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage();;
 			return false;
 		}
@@ -3428,13 +3428,13 @@ TEST_DEF_START(addElementToEnd, addAndRemoveElementsCalculateImpedance)
 	virtual bool run()
 	{
 		try
-		{	
+		{
 			ARTSetParameter(mySim, "Cyl2.r = 6; Cyl2.length = 10;");
 
 			ARTAppendReference(myIns, addAndRemoveElementsCalculateImpedance->Cyl);
 			ARTAppendReference( myIns, addAndRemoveElementsCalculateImpedance->Con);
 			ARTAppendReference(myIns, addAndRemoveElementsCalculateImpedance->Bes);
-	
+
 			P_ART_DataProp myImpCurve = ARTInputImpedance(myIns);
 
 			if (int(myImpCurve->val->nt[0].f) != 900) return false;
@@ -3449,7 +3449,7 @@ TEST_DEF_START(addElementToEnd, addAndRemoveElementsCalculateImpedance)
 			if (int(myImpCurve->val->nt[0].im) != 207467) return false;
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage();;
 			return false;
 		}
@@ -3475,19 +3475,19 @@ TEST_DEF_START(addElementToMiddle, addAndRemoveElementsCalculateImpedance)
 	virtual bool run()
 	{
 		try
-		{	
+		{
 			ARTSetParameter(mySim, "Cyl2.r = 1; Cyl2.length = 50;");
 
 			ARTAppendReference(myIns, addAndRemoveElementsCalculateImpedance->Cyl);
 			ARTAppendReference( myIns, addAndRemoveElementsCalculateImpedance->Con);
 			ARTAppendReference(myIns, addAndRemoveElementsCalculateImpedance->Bes);
-	
+
 			P_ART_DataProp myImpCurve = ARTInputImpedance(myIns);
 
 			if (int(myImpCurve->val->nt[0].f) != 900) return false;
 			if (int(myImpCurve->val->nt[0].re) != 445944) return false;
 			if (int(myImpCurve->val->nt[0].im) != 780980) return false;
-			
+
 
 			ARTAppendReferenceAfter( myIns, addAndRemoveElementsCalculateImpedance->Cyl, addAndRemoveElementsCalculateImpedance->Cyl2);
 			myImpCurve = ARTInputImpedance(myIns);
@@ -3497,7 +3497,7 @@ TEST_DEF_START(addElementToMiddle, addAndRemoveElementsCalculateImpedance)
 			if (int(myImpCurve->val->nt[0].im) != -822264) return false;
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage();
 			return false;
 		}
@@ -3524,16 +3524,16 @@ TEST_DEF_START(addElementToMiddle2, addAndRemoveElementsCalculateImpedance)
 	virtual bool run()
 	{
 		try
-		{	
+		{
 			ARTSetParameter(mySim, "Cyl2.r = 1.5; Cyl2.length = 50;");
 
 			ARTAppendReference(myIns, addAndRemoveElementsCalculateImpedance->Cyl);
 			ARTAppendReference( myIns, addAndRemoveElementsCalculateImpedance->Con);
 			ARTAppendReference(myIns, addAndRemoveElementsCalculateImpedance->Bes);
-	
+
 			P_ART_DataProp myImpCurve = ARTInputImpedance(myIns);
 
-			
+
 			if (int(myImpCurve->val->nt[0].f) != 900) return false;
 			if (int(myImpCurve->val->nt[0].re) != 445944) return false;
 			if (int(myImpCurve->val->nt[0].im) != 780980) return false;
@@ -3546,7 +3546,7 @@ TEST_DEF_START(addElementToMiddle2, addAndRemoveElementsCalculateImpedance)
 			if (int(myImpCurve->val->nt[0].im) != -741964) return false;
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage();;
 			return false;
 		}
@@ -3588,17 +3588,17 @@ TEST_DEF_START(ARTobjectCopyConstr, ARTobjectsTests)
 			string obj_prp = "";
 			ARTproperty* prp;
 			ARTmethod* mtd;
-			for (prp = obj->GetProperties(NULL); prp != NULL; prp = obj->GetProperties(prp)) 
+			for (prp = obj->GetProperties(NULL); prp != NULL; prp = obj->GetProperties(prp))
 				obj_prp += prp->GetName() + ", ";
 
-			for (mtd = obj->GetMethods(NULL); mtd != NULL; mtd = obj->GetMethods(mtd)) 
+			for (mtd = obj->GetMethods(NULL); mtd != NULL; mtd = obj->GetMethods(mtd))
 				obj_prp += mtd->GetName() + ", ";
 
 			string obj2_prp = "";
-			for (prp = obj2->GetProperties(NULL); prp != NULL; prp = obj2->GetProperties(prp)) 
+			for (prp = obj2->GetProperties(NULL); prp != NULL; prp = obj2->GetProperties(prp))
 				obj2_prp += prp->GetName() + ", ";
 
-			for (mtd = obj2->GetMethods(NULL); mtd != NULL; mtd = obj2->GetMethods(mtd)) 
+			for (mtd = obj2->GetMethods(NULL); mtd != NULL; mtd = obj2->GetMethods(mtd))
 				obj2_prp += mtd->GetName() + ", ";
 
 			//they must be similar
@@ -3609,10 +3609,10 @@ TEST_DEF_START(ARTobjectCopyConstr, ARTobjectsTests)
 			delete obj;
 		}
 		catch(ARTerror e)
-		{	
+		{
 			return false;
 		}
-		return true; 
+		return true;
 	}
 TEST_DEF_END(ARTobjectCopyConstr)
 
@@ -3624,15 +3624,15 @@ TEST_DEF_START(ARTdataPropRange, ARTobjectsTests)
 		{
 			ARTobject* obj = new ARTobject("ARTobjectCopyConstr-Testobject","This is just a test object.");
 
-			ARTdataProp* dp = obj->AppendDataProp("radiation", "Zorumski","The radiation impedance. Can be either 'Reflecting' or 'Zorumski'."); 
+			ARTdataProp* dp = obj->AppendDataProp("radiation", "Zorumski","The radiation impedance. Can be either 'Reflecting' or 'Zorumski'.");
 			dp->SetRange(new ARTvariant("Reflecting", "Zorumski", "Levine"));
 
-			dp = obj->AppendDataProp("length", 100.0,"axial length [cm]"); 
+			dp = obj->AppendDataProp("length", 100.0,"axial length [cm]");
 			ARTvariant* av = new ARTvariant(C_ART_ndbl, 2);
 			av->val->nd[0] = 0;
 			av->val->nd[1] = 999;
 			dp->SetRange(av);
-			
+
 			dp = obj->AppendDataProp("int", 1.0,"some integer parameter"); //is this mm???
 			av = new ARTvariant(C_ART_nint, 2);
 			av->val->ni[0] = 0;
@@ -3661,51 +3661,51 @@ TEST_DEF_START(ARTdataPropRange, ARTobjectsTests)
 			//Check if all the ranges are set
 			dp = static_cast<ARTdataProp*>(obj->FindProperty("radiation"));
 			av = dp->GetRange();
-			if (0 != strcmp(av->val->ns[0], "Reflecting")) return false; 
-			if (0 != strcmp(av->val->ns[1], "Zorumski")) return false; 
-			if (0 != strcmp(av->val->ns[2], "Levine")) return false; 
-			if (C_ART_nstr != av->typ) return false; 
-			if (3 != av->len) return false; 
+			if (0 != strcmp(av->val->ns[0], "Reflecting")) return false;
+			if (0 != strcmp(av->val->ns[1], "Zorumski")) return false;
+			if (0 != strcmp(av->val->ns[2], "Levine")) return false;
+			if (C_ART_nstr != av->typ) return false;
+			if (3 != av->len) return false;
 
 			dp = static_cast<ARTdataProp*>(obj->FindProperty("length"));
 			av = dp->GetRange();
-			if (0 != av->val->nd[0]) return false; 
-			if (999 != av->val->nd[1]) return false; 
-			if (C_ART_ndbl != av->typ) return false; 
-			if (2 != av->len) return false; 
+			if (0 != av->val->nd[0]) return false;
+			if (999 != av->val->nd[1]) return false;
+			if (C_ART_ndbl != av->typ) return false;
+			if (2 != av->len) return false;
 
 			dp = static_cast<ARTdataProp*>(obj->FindProperty("int"));
 			av = dp->GetRange();
-			if (0 != av->val->ni[0]) return false; 
-			if (999 != av->val->ni[1]) return false; 
-			if (C_ART_nint != av->typ) return false; 
-			if (2 != av->len) return false; 
+			if (0 != av->val->ni[0]) return false;
+			if (999 != av->val->ni[1]) return false;
+			if (C_ART_nint != av->typ) return false;
+			if (2 != av->len) return false;
 
 			dp = static_cast<ARTdataProp*>(obj->FindProperty("temp"));
 			av = dp->GetRange();
-			if (-273.15 != av->val->nd[0]) return false; 
-			if (1000 != av->val->nd[1]) return false; 
-			if (C_ART_ndbl != av->typ) return false; 
-			if (2 != av->len) return false; 
+			if (-273.15 != av->val->nd[0]) return false;
+			if (1000 != av->val->nd[1]) return false;
+			if (C_ART_ndbl != av->typ) return false;
+			if (2 != av->len) return false;
 
 			dp = static_cast<ARTdataProp*>(obj->FindProperty("loss"));
 			av = dp->GetRange();
-			if (0 != av->val->nf[0]) return false; 
-			if (10 != av->val->nf[1]) return false; 
-			if (C_ART_nflo != av->typ) return false; 
-			if (2 != av->len) return false; 
+			if (0 != av->val->nf[0]) return false;
+			if (10 != av->val->nf[1]) return false;
+			if (C_ART_nflo != av->typ) return false;
+			if (2 != av->len) return false;
 
 			dp = static_cast<ARTdataProp*>(obj->FindProperty("noRangeProp"));
 			av = dp->GetRange();
 			if (av) return false;  // there's no range specified: range should be NULL!
-			
+
 			delete obj;
 		}
 		catch(ARTerror e)
-		{	
+		{
 			return false;
 		}
-		return true; 
+		return true;
 	}
 TEST_DEF_END(ARTdataPropRange)
 //******************************************************************************************************************************************
@@ -3729,8 +3729,8 @@ TEST_DEF_START(createUnknownHElements, ARTmodelTests)
 			P_ART_Element El1 = ARTCreateElement(mySim, "error", "UnknownZylinder");
 		}
 		catch(ARTerror e)
-		{	
-			return true; 
+		{
+			return true;
 		}
 		return false;
 	}
@@ -3762,10 +3762,10 @@ TEST_DEF_START(createHElements, ARTmodelTests)
 			P_ART_Element El2 = ARTCreateElement(mySim, "SZ2", "Cylinder");
 		}
 		catch(ARTerror e)
-		{	
+		{
 			return false;
 		}
-		return true; 
+		return true;
 	}
 
 
@@ -3796,7 +3796,7 @@ TEST_DEF_START(createHElementTwice, ARTmodelTests)
 			P_ART_Element El2 = ARTCreateElement(mySim, "Twice", "Cylinder");
 		}
 		catch(ARTerror e)
-		{	
+		{
 			return true;
 		}
 		return false; //should not be successfull!
@@ -3824,7 +3824,7 @@ TEST_DEF_START(setHElementParam, ARTmodelTests)
 			El1 = ARTCreateElement(mySim, "SZ", "Cylinder");
 	}
 
-	virtual bool run() 
+	virtual bool run()
 	{
 		try
 		{
@@ -3838,7 +3838,7 @@ TEST_DEF_START(setHElementParam, ARTmodelTests)
 			if (p2->GetFloat() != 250) return false;
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage();;
 			return false;
 		}
@@ -3874,7 +3874,7 @@ TEST_DEF_START(getHElementImpedance, ARTmodelTests)
 		El2 = ARTCreateElement(mySim, "Kon", "Cone");
 	}
 
-	virtual bool run() 
+	virtual bool run()
 	{
 		try
 		{
@@ -3892,10 +3892,10 @@ TEST_DEF_START(getHElementImpedance, ARTmodelTests)
 			((ARTelement*)El1)->RadiationImpedance(Z_R);
 			((ARTelement*)El1)->InputImpedance(Z_R, Z_EL1);
 			((ARTelement*)El2)->InputImpedance(Z_EL1, Z_I);
-			
+
 			ARTdataContainer* z = NULL;
 			Z_I->ImpedanceMatrix(z);
-			
+
 			T_ART_Var* var = z->GetValue();
 
 			//Check some values
@@ -3915,7 +3915,7 @@ TEST_DEF_START(getHElementImpedance, ARTmodelTests)
 
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage();;
 			return false;
 		}
@@ -3948,7 +3948,7 @@ TEST_DEF_START(testToneHole, customModelTests)
 			mySim = ARTCreateSimulator("MeinSimulator", "FrequencyDomain", "MultiModal");
 	}
 
-	virtual bool run() 
+	virtual bool run()
 	{
 		P_ART_Element El1;
 		try
@@ -3956,8 +3956,8 @@ TEST_DEF_START(testToneHole, customModelTests)
 			El1 = ARTCreateElement(mySim, "myToneHole", "ToneHole");
 		}
 		catch(ARTerror e)
-		{	
-			return false; 
+		{
+			return false;
 		}
 
 		ARTDestroyElement(mySim,El1);
@@ -3985,7 +3985,7 @@ TEST_DEF_START(testToneHoleParam, customModelTests)
 			Th = ARTCreateElement(mySim, "myToneHole", "ToneHole");
 	}
 
-	virtual bool run() 
+	virtual bool run()
 	{
 		try
 		{
@@ -3997,8 +3997,8 @@ TEST_DEF_START(testToneHoleParam, customModelTests)
 			if (p2->GetFloat() != 25) return false;
 		}
 		catch(ARTerror e)
-		{	
-			return false; 
+		{
+			return false;
 		}
 
 		return true;
@@ -4042,7 +4042,7 @@ TEST_DEF_START(testToneHoleImp, customModelTests)
 		ARTSetNModes(mySim, 1);
 	}
 
-	virtual bool run() 
+	virtual bool run()
 	{
 		try
 		{
@@ -4069,10 +4069,10 @@ TEST_DEF_START(testToneHoleImp, customModelTests)
 
 		}
 		catch(ARTerror e)
-		{	
+		{
 			string err = e.GetErrorMessage();
 			std::cout << "\n\n" << err;
-			return false; 
+			return false;
 		}
 
 		return true;
@@ -4119,7 +4119,7 @@ TEST_DEF_START(testToneHoleImpModes2, customModelTests)
 		ARTSetNModes(mySim, 2);
 	}
 
-	virtual bool run() 
+	virtual bool run()
 	{
 		try
 		{
@@ -4136,14 +4136,14 @@ TEST_DEF_START(testToneHoleImpModes2, customModelTests)
 			if (int(meineImpKurve->val->nt[1].f) != 15) return false;
 			if (int(meineImpKurve->val->nt[1].re) != 95) return false;
 			if (int(meineImpKurve->val->nt[1].im) != 178539) return false;
-		
-			
+
+
 		}
 		catch(ARTerror e)
-		{	
+		{
 			string err = e.GetErrorMessage();
 			std::cout << "\n\n" << err;
-			return false; 
+			return false;
 		}
 
 		return true;
@@ -4190,7 +4190,7 @@ TEST_DEF_START(testClosedToneHoleImp, customModelTests)
 		ARTSetNModes(mySim, 1);
 	}
 
-	virtual bool run() 
+	virtual bool run()
 	{
 		try
 		{
@@ -4214,13 +4214,13 @@ TEST_DEF_START(testClosedToneHoleImp, customModelTests)
 			if (int(meineImpKurve->val->nt[1].im) != 274463) return false;
 
 
-			
+
 		}
 		catch(ARTerror e)
-		{	
+		{
 			string err = e.GetErrorMessage();
 			std::cout << "\n\n" << err;
-			return false; 
+			return false;
 		}
 
 		return true;
@@ -4274,7 +4274,7 @@ TEST_DEF_START(addCircuitAsReference, BranchTests)
 			//all is ready for the test :)
 	}
 
-	virtual bool run() 
+	virtual bool run()
 	{
 		try
 		{
@@ -4296,7 +4296,7 @@ TEST_DEF_START(addCircuitAsReference, BranchTests)
 
 		}
 		catch(ARTerror e)
-		{	
+		{
 			std::cout << "\n\n" << e.GetErrorMessage();;
 			return false;
 		}
@@ -4348,7 +4348,7 @@ TEST_DEF_START(testCircuitAsBranchImpedance, BranchTests)
 		ARTSetNModes(mySim, 1);
 	}
 
-	virtual bool run() 
+	virtual bool run()
 	{
 		try
 		{
@@ -4374,12 +4374,12 @@ TEST_DEF_START(testCircuitAsBranchImpedance, BranchTests)
 			if (int(meineImpKurve->val->nt[1].im) != 186803) return false;
 		}
 		catch(ARTerror e)
-		{	
+		{
 			string err = e.GetErrorMessage();
 			std::cout << "\n\n" << err;
-			return false; 
+			return false;
 		}
-		
+
 		return true;
 	}
 
@@ -4420,7 +4420,7 @@ TEST_DEF_START(testCircuitAsBranchImpedanceModes2, BranchTests)
 		ARTSetNModes(mySim, 2);
 	}
 
-	virtual bool run() 
+	virtual bool run()
 	{
 		try
 		{
@@ -4431,7 +4431,7 @@ TEST_DEF_START(testCircuitAsBranchImpedanceModes2, BranchTests)
 			ARTAppendReference( mainInst, branch);
 			ARTAppendReference( mainInst, Cyl2);
 			ARTvariant* meineImpKurve = ARTInputImpedance(mainInst);
-			
+
 
 			//for (int i = 0; i < meineImpKurve->len; i++)
 			//{
@@ -4449,12 +4449,12 @@ TEST_DEF_START(testCircuitAsBranchImpedanceModes2, BranchTests)
 
 		}
 		catch(ARTerror e)
-		{	
+		{
 			string err = e.GetErrorMessage();
 			std::cout << "\n\n" << err;
-			return false; 
+			return false;
 		}
-		
+
 		return true;
 	}
 
@@ -4553,6 +4553,66 @@ TEST_DEF_START(DoubleModuleCreation, ARTtimeSimulatorTests)
 
 TEST_DEF_END(DoubleModuleCreation)
 
+TEST_DEF_START(CreateAndChangeLocalParameter, ARTtimeSimulatorTests)
+
+	ARTtimeSimulator* timeSimulator;
+	ARTtimeModule* timeModule;
+
+	virtual void prepare()
+	{
+		timeSimulator = new ARTtimeSimulator("mySimulator");
+		timeSimulator->userElements = new ARTlistProp("testList");
+		timeModule = new ARTtimeModule("myTimeModule");
+	}
+
+	virtual bool run()
+	{
+
+		try
+		{
+
+			timeSimulator->AddTimeModule(timeModule);
+
+			// setting a new global parameter should raise an error
+			timeModule->addLocalParameter("x", 2.0);
+			timeModule->addOPort("test", "test[t] = x * y");
+			timeModule->addLocalParameter("y", "y = 3.0");
+
+			ARTItimeModule::OPortType& outputPort = dynamic_cast<ARTItimeModule::OPortType&>(*(timeModule->getPort("test")));
+
+			if (outputPort.GetPortValue(0).GetFloat() != 6.0)
+			{
+				return false;
+			}
+
+			timeModule->setLocalParameter("y", 0.5);
+			timeModule->setLocalParameter("x", "x = 44100");
+
+			if (outputPort.GetPortValue(1).GetFloat() != 44100.0/2)
+			{
+				return false;
+			}
+
+			return true;
+		}
+		catch (ARTerror& e)
+		{
+			string err = e.GetErrorMessage();
+			std::cout << "\n\n" << err;
+			return false;
+		}
+
+	}
+
+	virtual void unprepare()
+	{
+		delete (timeSimulator->userElements);
+		delete timeSimulator;
+//		delete timeModule;
+	}
+
+TEST_DEF_END(CreateAndChangeLocalParameter)
+
 TEST_DEF_START(ChangeGlobalParameter, ARTtimeSimulatorTests)
 
 	ARTtimeSimulator* myTimeSimulator;
@@ -4574,18 +4634,18 @@ TEST_DEF_START(ChangeGlobalParameter, ARTtimeSimulatorTests)
 			timeModule->addOPort("test", "test[t] = T");
 			myTimeSimulator->AddTimeModule(timeModule);
 
-			const ARTOPortType& testPort = dynamic_cast<const ARTOPortType&>(timeModule->getPort("test"));
+			ARTItimeModule::OPortType& testPort = dynamic_cast<ARTItimeModule::OPortType&>(*(timeModule->getPort("test")));
 
 			myTimeSimulator->SetSimulationParameter("T", 0.1);
 
-			if (testPort[0].real() != 0.1)
+			if (testPort.GetPortValue(0).GetFloat() != 0.1)
 			{
 				return false;
 			}
 
 			myTimeSimulator->SetSimulationParameter("T", 0.2);
 
-			if (testPort[1].real() != 0.2)
+			if (testPort.GetPortValue(1).GetFloat() != 0.2)
 			{
 				return false;
 			}
@@ -4632,18 +4692,18 @@ TEST_DEF_START(CreateGlobalParameter, ARTtimeSimulatorTests)
 			timeModule->addOPort("test", "test[t] = TEMP");
 			myTimeSimulator->AddTimeModule(timeModule);
 
-			const ARTOPortType& testPort = dynamic_cast<const ARTOPortType&>(timeModule->getPort("test"));
+			ARTItimeModule::OPortType& testPort = dynamic_cast<ARTItimeModule::OPortType&>(*(timeModule->getPort("test")));
 
 			myTimeSimulator->AddSimulationParameter("TEMP", 40.0);
 
-			if (testPort[0].real() != 40.0)
+			if (testPort.GetPortValue(0).GetFloat() != 40.0)
 			{
 				return false;
 			}
 
 			myTimeSimulator->SetSimulationParameter("TEMP", "TEMP = sqrt(2)");
 
-			if (testPort[1].real() != std::sqrt(2.0))
+			if (testPort.GetPortValue(1).GetFloat() != std::sqrt(2.0))
 			{
 				return false;
 			}
@@ -4714,7 +4774,6 @@ TEST_DEF_START(SetNonExistingGlobalParameter, ARTtimeSimulatorTests)
 
 TEST_DEF_END(SetNonExistingGlobalParameter)
 
-
 TEST_DEF_START(FibonacciNumbers1, ARTtimeSimulatorTests)
 
 	ARTtimeSimulator* myTimeSimulator;
@@ -4739,18 +4798,18 @@ TEST_DEF_START(FibonacciNumbers1, ARTtimeSimulatorTests)
 
 			myTimeSimulator->AddTimeModule(timeModule);
 
-			const ARTPortType& fibPort = timeModule->getPort("fib");
-			const ARTOPortType& outputPort = dynamic_cast<const ARTOPortType&>(timeModule->getPort("test"));
+			ARTItimeModule::OPortType& fibPort = dynamic_cast<ARTItimeModule::OPortType&>(*(timeModule->getPort("fib")));
+			ARTItimeModule::OPortType& outputPort = dynamic_cast<ARTItimeModule::OPortType&>(*(timeModule->getPort("test")));
 
 			fibPort.initPortValue("fib[-1] = 1, fib[-2] = 0");
 
 			for (int i = 0; i < 50; ++i)
 			{
-				outputPort[i];
+				outputPort.GetPortValue(i).GetFloat();
 			}
 
 			// test 51st fibonacci number
-			if (outputPort[49].real() == (2.0*1597.0*6376021.0))
+			if (outputPort.GetPortValue(49).GetFloat() == (2.0*1597.0*6376021.0))
 			{
 				return true;
 			}
@@ -4804,10 +4863,10 @@ TEST_DEF_START(FibonacciNumbers2, ARTtimeSimulatorTests)
 			myTimeSimulator->AddTimeModule(timeModule);
 			myTimeSimulator->AddTimeModule(timeModule2);
 
-			const ARTOPortType& testPort = dynamic_cast<const ARTOPortType&>(timeModule->getPort("fib"));
-			timeModule2->addIPort("fib",testPort);
+			ARTItimeModule::OPortType& testPort = dynamic_cast<ARTItimeModule::OPortType&>(*(timeModule->getPort("fib")));
+			timeModule2->addIPort("fib",&testPort);
 
-			const ARTOPortType& outputPort = dynamic_cast<const ARTOPortType&>(timeModule2->getPort("test"));
+			ARTItimeModule::OPortType& outputPort = dynamic_cast<ARTItimeModule::OPortType&>(*(timeModule2->getPort("test")));
 
 
 			testPort.initPortValue("fib[-1] = 1, fib[-2] = 0");
@@ -4815,11 +4874,11 @@ TEST_DEF_START(FibonacciNumbers2, ARTtimeSimulatorTests)
 			for (int i = 0; i < 50; ++i)
 			{
 //				std::cout << "Fibonacci[" << i << "] = " << outputPort[i].real() << std::endl;
-				outputPort[i];
+				outputPort.GetPortValue(i).GetFloat();
 			}
 
 			// test 51st fibonacci number
-			if (outputPort[49].real() == (2.0*1597.0*6376021.0))
+			if (outputPort.GetPortValue(49).GetFloat() == (2.0*1597.0*6376021.0))
 			{
 				return true;
 			}

@@ -70,6 +70,7 @@ ARTdataContainer::ARTdataContainer(const T_ART_Type dtyp, const int dlen, const 
 	{
 		array_type* tmpArray = new array_type(len, true);
 		ARTdataContainer* tmpARTdataContainer;
+		parser_ = new ParserX(mup::pckCOMPLEX_NO_STRING);
 		for (int i = 0; i < len; ++i)
 		{
 			// create empty ARTdataContainers of type complex
@@ -79,6 +80,7 @@ ARTdataContainer::ARTdataContainer(const T_ART_Type dtyp, const int dlen, const 
 			tmpARTdataContainer->SetVal(std::complex<double>(0,0));
 			// set all values to invalid
 			tmpARTdataContainer->valid_ = false;
+			tmpARTdataContainer->parser_ = parser_;
 			(*tmpArray)[i] = tmpARTdataContainer;
 		}
 		// set current index to 0 indicating that it is now
@@ -349,7 +351,11 @@ ARTdataContainer::~ARTdataContainer()
 	// "Dependencies, do not notify this object anymore!"
 	RemoveAllDependencies();
 
-
+	//if there was a var in the parser, delete it!
+	if (parserVarDefined_)
+	{
+		DestroyParserVar();
+	}
 
 	// Release memory of all array elements in case we have
 	// a container of type C_ART_na
@@ -364,13 +370,10 @@ ARTdataContainer::~ARTdataContainer()
 			tmpARTdataContainer = dynamic_cast<ARTdataContainer*>(tmpArray->at(i));
 			delete tmpARTdataContainer;
 		}
+		delete parser_;
 	}
 
-	//if there was a var in the parser, delete it!
-	if (parserVarDefined_)
-	{
-		DestroyParserVar();
-	}
+
 
 	// in case of an array, remove all child elements
 	/*if (typ == C_ART_na)
@@ -766,7 +769,7 @@ void ARTdataContainer::Evaluate() const
 				parser_->SetExpr(definition_);
 			}
 			//evaluate value of this data container and save result
-			//cout << "Evaluate the following expression: " << parser_->GetExpr() << endl;
+//			cout << "Evaluate the following expression: " << parser_->GetExpr() << endl;
 			parser_->Eval();
 		}
 		catch( mup::ParserError& e )
@@ -1272,7 +1275,7 @@ void ARTdataContainer::SetParser(mup::ParserX *p){
 void ARTdataContainer::SetParserVar(const string& varname)
 {
 	_DBG_MSG("const string&");
-	if (!parser_) throw ARTerror("ARTdataContainer::CreateParserVar","A parser variable for datacontainer '%s1' can not be created, because the datacontainer's parser pointer is NULL. Please use SetParser() to specify which parser the data container should use.",varname_);
+//	if (!parser_) throw ARTerror("ARTdataContainer::CreateParserVar","A parser variable for datacontainer '%s1' can not be created, because the datacontainer's parser pointer is NULL. Please use SetParser() to specify which parser the data container should use.",varname_);
 	// if we have already a variable created, destroy it
 	if (parserVarDefined_)
 	{
@@ -1288,7 +1291,10 @@ void ARTdataContainer::SetParserVar(const string& varname)
 		//create variable out of value
 		avar_ = new mup::Variable( this );
 		//and define the variable with the name created above
-		parser_->DefineVar(varname, *avar_);
+		if (parser_)
+		{
+			parser_->DefineVar(varname, *avar_);
+		}
 		parserVarDefined_ = true;
 		//remember variable name
 		varname_ = varname;
@@ -1330,11 +1336,14 @@ const Variable& ARTdataContainer::GetParserVar()
 void ARTdataContainer::DestroyParserVar()
 {
 	_DBG_MSG("");
-	if (!parser_) throw ARTerror("ARTdataContainer::DestroyParserVar","A parser variable for datacontainer '%s1' was created, but the datacontainers parser pointer is NULL. Please use SetParser() to specify which parser the data container should use.",varname_);
+//	if (!parser_) throw ARTerror("ARTdataContainer::DestroyParserVar","A parser variable for datacontainer '%s1' was created, but the datacontainers parser pointer is NULL. Please use SetParser() to specify which parser the data container should use.",varname_);
 	try 
 	{
 		//delete value
-		parser_->RemoveVar(varname_);
+		if (parser_)
+		{
+			parser_->RemoveVar(varname_);
+		}
 		//delete associated storage fields
 		//delete aval;
 		delete avar_;

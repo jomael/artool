@@ -858,7 +858,7 @@ typedef ARTsimulator*   P_ART_Simulator;
 typedef ARTcircuit*	P_ART_Circuit;
 typedef ARTelement*	P_ART_Element;
 typedef ARTItimeModule* P_ART_TModule;
-typedef ARTPortType* P_ART_TPort;
+typedef ARTdataProp* P_ART_TPort;
 
 typedef bool (* TprogressFunction)(double, const char*);
 
