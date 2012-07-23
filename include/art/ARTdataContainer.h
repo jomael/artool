@@ -275,16 +275,17 @@ public:
 	void RemoveFromDefinition(ARTdataContainer* dependency);
 
 	void SetParser(ParserX* p);
+	virtual ParserX* GetParser() {return parser_;}
 
 	void Rename(const string& newname);
 
 	void SetParserVar(const string& varname);
-	const Variable& GetParserVar() const;
-	const Variable& GetParserVar();
+	virtual const Variable& GetParserVar() const;
+	virtual const Variable& GetParserVar();
 
 	void DestroyParserVar();
 
-	string GetVarName() {return varname_;}
+	string GetVarName() const {return varname_;}
 
 	// change definition string (no immediate re-evaluation)
 	void SetDefinition(const string& s, ARTsimulator* scope);
@@ -298,6 +299,7 @@ public:
 	//see c-file
 	void ResetEvaluation();
 	//needed for debugging only
+	void SetScope(ARTsimulator* sim) {scope_ = sim;}
 	ARTsimulator* GetScope() {return scope_;}
 
 	void SetFunction(ARTfunctionoid* func);

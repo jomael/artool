@@ -553,7 +553,8 @@ P_ART_DataProp    __CALLCONV ARTSetParameter     (P_ART_Simulator simulator, con
 				initCommand.erase(0, pos + 1);
 				std::cout << "Try to set port \"" << strcrop(names[1]) << "\" of time module \"" << strcrop(names[0])
 						<< "\" to expression \"" << initCommand << "\"." << std::endl;
-				timeModule->getPort(strcrop(names[1])).initPortValue(initCommand);
+				const ARTItimeModule::OPortType* port = dynamic_cast<const ARTItimeModule::OPortType*>(timeModule->getPort(strcrop(names[1])));
+				port->initPortValue(initCommand);
 			}
 		}
 	}
@@ -679,7 +680,7 @@ bool __CALLCONV ARTConnectPorts	(P_ART_Simulator simulator, const char* expr)
 P_ART_TPort __CALLCONV ARTGetPortFromTModule	(P_ART_TModule module, const char* name)
 {
 	DLL_ERRORHANDLING_BEGIN
-	ARTPortType* tmpPort = const_cast<ARTPortType*>(&(module->getPort(name)));
+	ARTdataProp* tmpPort = module->getPort(name);
 	return tmpPort;
 	DLL_ERRORHANDLING_END
 }
@@ -689,12 +690,12 @@ T_ART_Cmplx __CALLCONV ARTGetComplexFromPort(P_ART_TPort port, int idx)
 	DLL_ERRORHANDLING_BEGIN
 	T_ART_Cmplx result;
 	std::complex<double> tempResult;
-	ARTOPortType* oPort = dynamic_cast<ARTOPortType*>(port);
+	ARTItimeModule::OPortType* oPort = dynamic_cast<ARTItimeModule::OPortType*>(port);
 	if (oPort == NULL)
 	{
 		throw ARTerror("ARTGetComplexFromPort", "The specified port is no valid output port!");
 	}
-	tempResult = (*oPort)[idx];
+	tempResult = oPort->GetPortValue(idx).GetComplex();
 	result.re = tempResult.real();
 	result.im = tempResult.imag();
 	return result;
