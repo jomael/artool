@@ -31,6 +31,26 @@ ARTCreateCircuit = artsim.ARTCreateCircuit;
 ARTCreateCircuit.restype = c_void_p;
 ARTCreateCircuit.argtypes = [c_void_p, c_char_p];
 
+ARTCreateTModule = artsim.ARTCreateTModule;
+ARTCreateTModule.restype = c_void_p;
+ARTCreateTModule.argtypes = [c_void_p, c_char_p];
+
+ARTAddOPortToTModule = artsim.ARTAddOPortToTModule;
+ARTAddOPortToTModule.restype = c_int;
+ARTAddOPortToTModule.argtypes = [c_void_p, c_char_p, c_char_p];
+
+ARTAddLocalParamToTModule = artsim.ARTAddLocalParamToTModule;
+ARTAddLocalParamToTModule.restype = c_int;
+ARTAddLocalParamToTModule.argtypes = [c_void_p, c_char_p, c_char_p];
+
+ARTConnectPorts = artsim.ARTConnectPorts;
+ARTConnectPorts.restype = c_int;
+ARTConnectPorts.argtypes = [c_void_p, c_char_p];
+
+ARTGetPortFromTModule = artsim.ARTGetPortFromTModule;
+ARTGetPortFromTModule.restype = c_void_p;
+ARTGetPortFromTModule.argtypes = [c_void_p, c_char_p];
+
 ARTAppendReference = artsim.ARTAppendReference;
 ARTAppendReference.restype = c_void_p;
 ARTAppendReference.argtypes = [c_void_p, c_void_p];
@@ -58,6 +78,9 @@ ARTGetLength.argtypes = [c_void_p];
 ARTGetTriple = artsim.ARTGetTriple;
 ARTGetTriple.argtypes = [c_void_p, c_int];
 
+ARTGetComplexFromPort = artsim.ARTGetComplexFromPort;
+ARTGetComplexFromPort.argtypes = [c_void_p, c_int];
+
 ARTDestroyCircuit = artsim.ARTDestroyCircuit;
 ARTDestroyCircuit.restype = c_int;
 ARTDestroyCircuit.argtypes = [c_void_p, c_void_p];
@@ -82,3 +105,4 @@ class T_ART_Tripl(Structure):
 	_fields_ = [("f", c_double), ("re", c_double), ("im", c_double)];
 
 ARTGetTriple.restype = T_ART_Tripl;
+ARTGetComplexFromPort.restype = T_ART_Cmplx;

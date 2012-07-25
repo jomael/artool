@@ -543,18 +543,32 @@ P_ART_DataProp    __CALLCONV ARTSetParameter     (P_ART_Simulator simulator, con
 			else
 			// in case of a time domain simulator
 			{
-				vector<string> names = strsplit(s, '.');
-				::size_t pos;
-				pos = names[1].find('[');
-				ARTItimeModule* timeModule = tSim->FindTimeModuleInSimulator(strcrop(names[0]));
-				names[1].erase(pos);
-				string initCommand = commands[i];
-				pos = initCommand.find('.');
-				initCommand.erase(0, pos + 1);
-				std::cout << "Try to set port \"" << strcrop(names[1]) << "\" of time module \"" << strcrop(names[0])
-						<< "\" to expression \"" << initCommand << "\"." << std::endl;
-				const ARTItimeModule::OPortType* port = dynamic_cast<const ARTItimeModule::OPortType*>(timeModule->getPort(strcrop(names[1])));
-				port->initPortValue(initCommand);
+				prop = tSim->FindDataPropInSimulator(s);
+				// remove module name if any exists
+				string expression = commands[i];
+				::size_t pos = expression.find('.');
+				if (pos != expression.npos)
+				{
+					expression.erase(0, pos + 1);
+				}
+				// do we have an initialization of a port?
+				if (s.find('[') != s.npos)
+				{
+					ARTItimeModule::OPortType* oPort = dynamic_cast<ARTItimeModule::OPortType*>(prop);
+					if (oPort)
+					{
+						oPort->initPortValue(strcrop(expression));
+					}
+					else
+					{
+						throw ARTerror("ARTSetParameter", "The given expression '%s1' does not access an output port of the given time module.", s);
+					}
+				}
+				else
+				// no => just set the new definition
+				{
+					prop->SetDefinition(strcrop(expression), simulator);
+				}
 			}
 		}
 	}
@@ -641,6 +655,19 @@ bool __CALLCONV ARTAddOPortToTModule	(P_ART_TModule module, const char* name, co
 	DLL_ERRORHANDLING_END
 }
 
+__DECLSPEC bool __CALLCONV ARTAddLocalParamToTModule	(P_ART_TModule module, const char* name, const char* expr)
+{
+	DLL_ERRORHANDLING_BEGIN
+	ARTtimeModule* mod = dynamic_cast<ARTtimeModule*>(module);
+	if (mod == NULL)
+	{
+		throw ARTerror("ARTAddOPortToTModule", "The specified time module does not support adding local parameters.");
+	}
+	mod->addLocalParameter(name, expr);
+	return 1; //No error
+	DLL_ERRORHANDLING_END
+}
+
 bool __CALLCONV ARTConnectPorts	(P_ART_Simulator simulator, const char* expr)
 {
 	DLL_ERRORHANDLING_BEGIN
@@ -667,8 +694,8 @@ bool __CALLCONV ARTConnectPorts	(P_ART_Simulator simulator, const char* expr)
 					commands[commandIter]);
 		}
 
-		std::cout << "Connect port '" << strcrop(module1[1]) << "' of module '" << strcrop(module1[0]) << "' with port '" <<
-				strcrop(module2[1]) << "' of module '" << strcrop(module2[0]) << "'." << std::endl;
+//		std::cout << "Connect port '" << strcrop(module1[1]) << "' of module '" << strcrop(module1[0]) << "' with port '" <<
+//				strcrop(module2[1]) << "' of module '" << strcrop(module2[0]) << "'." << std::endl;
 		inModule = sim->FindTimeModuleInSimulator(strcrop(module1[0]));
 		outModule = sim->FindTimeModuleInSimulator(strcrop(module2[0]));
 		inModule->addIPort(strcrop(module1[1]), outModule->getPort(module2[1]));
@@ -677,7 +704,7 @@ bool __CALLCONV ARTConnectPorts	(P_ART_Simulator simulator, const char* expr)
 	DLL_ERRORHANDLING_END
 }
 
-P_ART_TPort __CALLCONV ARTGetPortFromTModule	(P_ART_TModule module, const char* name)
+P_ART_DataProp __CALLCONV ARTGetPortFromTModule	(P_ART_TModule module, const char* name)
 {
 	DLL_ERRORHANDLING_BEGIN
 	ARTdataProp* tmpPort = module->getPort(name);
@@ -685,10 +712,10 @@ P_ART_TPort __CALLCONV ARTGetPortFromTModule	(P_ART_TModule module, const char* 
 	DLL_ERRORHANDLING_END
 }
 
-T_ART_Cmplx __CALLCONV ARTGetComplexFromPort(P_ART_TPort port, int idx)
+T_ART_Cmplx __CALLCONV ARTGetComplexFromPort(P_ART_DataProp port, int idx)
 {
-	DLL_ERRORHANDLING_BEGIN
 	T_ART_Cmplx result;
+	DLL_ERRORHANDLING_BEGIN
 	std::complex<double> tempResult;
 	ARTItimeModule::OPortType* oPort = dynamic_cast<ARTItimeModule::OPortType*>(port);
 	if (oPort == NULL)

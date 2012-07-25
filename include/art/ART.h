@@ -821,7 +821,6 @@ typedef struct ARTsimulator ARTsimulator;
 typedef struct ARTcircuit ARTcircuit;
 typedef struct ARTelement ARTelement;
 typedef struct ARTItimeModule ARTItimeModule;
-typedef struct ARTPortType ARTPortType;
 typedef int bool;
 
 #else
@@ -838,7 +837,7 @@ class ARTsimulator;
 class ARTcircuit;
 class ARTelement;
 class ARTItimeModule;
-class ARTPortType;
+
 /*
 #include "Interface.h"
 #include "strparsing.h"
@@ -858,7 +857,6 @@ typedef ARTsimulator*   P_ART_Simulator;
 typedef ARTcircuit*	P_ART_Circuit;
 typedef ARTelement*	P_ART_Element;
 typedef ARTItimeModule* P_ART_TModule;
-typedef ARTdataProp* P_ART_TPort;
 
 typedef bool (* TprogressFunction)(double, const char*);
 
@@ -1118,6 +1116,17 @@ __DECLSPEC bool __CALLCONV ARTDestroyTModule	(P_ART_Simulator simulator, P_ART_T
 __DECLSPEC bool __CALLCONV ARTAddOPortToTModule	(P_ART_TModule module, const char* name, const char* expr);
 
 /**
+ * Adds a new local parameter to the given time module.
+ * @param module A pointer to the time module to which the parameter will be added.
+ * @param name Name of the new parameter.
+ * @param expr The calculation expression of the new parameter.
+ * @returns true if successful, the DLL interface returns false if an error occurs,
+ *   use ARTGetLastErrorMessage to get the error message.
+ * @throws ARTerror, if not using the DLL interface.
+ */
+__DECLSPEC bool __CALLCONV ARTAddLocalParamToTModule	(P_ART_TModule module, const char* name, const char* expr);
+
+/**
  * Connects the ports of the given modules.
  * @param simulator A pointer to the simulator containing the related time modules.
  * @param expr The calculation expression of the port connection. Example: "module1.in = module2.out".
@@ -1135,7 +1144,7 @@ __DECLSPEC bool __CALLCONV ARTConnectPorts	(P_ART_Simulator simulator, const cha
  *   the error message.
  * @throws ARTerror, if not using the DLL interface.
  */
-__DECLSPEC P_ART_TPort __CALLCONV ARTGetPortFromTModule	(P_ART_TModule module, const char* name);
+__DECLSPEC P_ART_DataProp __CALLCONV ARTGetPortFromTModule	(P_ART_TModule module, const char* name);
 
 /**
  * Calculates the output value of the given port at the specified time index.s
@@ -1144,7 +1153,7 @@ __DECLSPEC P_ART_TPort __CALLCONV ARTGetPortFromTModule	(P_ART_TModule module, c
  * @returns T_ART_Cmplx value or <0,0> in case of an error.
  * @throws ARTerror, if not using the DLL interface.
  */
-__DECLSPEC T_ART_Cmplx __CALLCONV ARTGetComplexFromPort(P_ART_TPort port, int idx);
+__DECLSPEC T_ART_Cmplx __CALLCONV ARTGetComplexFromPort(P_ART_DataProp port, int idx);
 
 /**
  * Finds the element in the circuit and returns is position. The first element (nearest to

@@ -338,22 +338,43 @@ ARTdataProp* ARTtimeSimulator::FindDataPropInSimulator(string exp)
 	// perhaps we find a property of an internal time module
 	if (!prop)
 	{
-//		vector<string> names = strsplit(exp, '.');
-//		ARTItimeModule* timeModule = dynamic_cast<ARTItimeModule*>(userElements->FindObject(strcrop(names[0])));
-//		if (!timeModule)
-//		{
-//			throw ARTerror("ARTtimeSimulator::FindDataPropInSimulator", "The specified data property '%s1' does not exist in current simulator.",  strcrop(names[0]));
-		throw ARTerror("ARTtimeSimulator::FindDataPropInSimulator", "The specified data property '%s1' does not exist in current simulator.",  exp);
-//		}
-
-//		prop = ;
-
+		if (userElements)
+		{
+			vector<string> names = strsplit(exp, '.');
+			::size_t pos;
+			ARTItimeModule* timeModule = FindTimeModuleInSimulator(strcrop(names[0]));
+			if (!timeModule)
+			{
+				throw ARTerror("ARTtimeSimulator::FindDataPropInSimulator", "The specified time module '%s1' does not exist in current simulator.",  strcrop(names[0]));
+			}
+			// remove any array accesses in case of a port
+			pos = names[1].find('[');
+			if (pos != names[1].npos)
+			{
+				names[1].erase(pos);
+			}
+			prop = dynamic_cast<ARTdataProp*>(timeModule->FindProperty(strcrop(names[1])));
+			if (!prop)
+			{
+				throw ARTerror("ARTtimeSimulator::FindDataPropInSimulator", "The specified data property '%s1' does not exist in time module '%s2'.",
+						strcrop(names[1]), strcrop(names[0]));
+			}
+		}
+		else
+		{
+			throw ARTerror("ARTtimeSimulator::FindDataPropInSimulator", "The specified data property '%s1' does not exist in current simulator.",  exp);
+		}
 	}
 	return prop;
 }
 
 ARTItimeModule* ARTtimeSimulator::FindTimeModuleInSimulator(string exp)
 {
+	if (!userElements)
+	{
+		throw ARTerror("ARTtimeSimulator::FindTimeModuleInSimulator", "No memory has been allocated for userElements of time simulator '%s1'.",
+				name_);
+	}
 	ARTItimeModule* tmpModule = dynamic_cast<ARTItimeModule*>(userElements->FindObject(exp));
 	if (tmpModule == NULL)
 	{
@@ -380,7 +401,7 @@ void ARTtimeSimulator::initStandardSimulParams()
 	tmpProp = new ARTdataProp(C_ART_cpx, 0, "T");
 //	tmpParser = new ParserX(mup::pckCOMPLEX_NO_STRING);
 	tmpProp->SetParser(parser_);
-	tmpProp->SetVal(1/44100);
+	tmpProp->SetVal(1.0/44100.0);
 
 	AppendDataProp(tmpProp);
 
@@ -411,7 +432,7 @@ void ARTtimeSimulator::initStandardSimulParams()
 
 void ARTtimeSimulator::clean()
 {
-	simulParameterMapIterator iter;
+//	simulParameterMapIterator iter;
 
 	// deallocate memory for all saved simulation parameters
 //	for (iter = _simulParams.begin(); iter != _simulParams.end(); ++iter)
@@ -427,12 +448,6 @@ void ARTtimeSimulator::clean()
 
 void ARTtimeSimulator::addParamsToModule(ARTItimeModule* timeModule)
 {
-//	simulParameterMapIterator iter;
-//	for (iter = _simulParams.begin(); iter != _simulParams.end(); ++iter)
-//	{
-//		timeModule->addGlobalParameter(iter->first,
-//				iter->second->_val->GetParserVar());
-//	}
 	ARTdataProp* iter = dynamic_cast<ARTdataProp*>(GetProperties(NULL));
 	while (iter != NULL)
 	{
