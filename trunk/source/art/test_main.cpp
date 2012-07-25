@@ -4703,7 +4703,7 @@ TEST_DEF_START(CreateGlobalParameter, ARTtimeSimulatorTests)
 
 			myTimeSimulator->SetSimulationParameter("TEMP", "TEMP = sqrt(2)");
 
-			if (testPort.GetPortValue(1).GetFloat() != std::sqrt(2.0))
+			if (testPort.GetPortValue(1).GetFloat() != std::sqrt(std::complex<double>(2.0,0)).real())
 			{
 				return false;
 			}
