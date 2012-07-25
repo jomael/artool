@@ -24,38 +24,38 @@ using namespace mup;
 class ARTdataContainer;
 class ARTItimeModule;
 
-class ARTPortType
-{
-public:
-	virtual void initPortValue(const string& expr) const;
-	virtual void initPortValue(double value, int idx) const;
-	virtual void initPortValue(std::complex<double>& value, int idx) const;
-
-	// make class ARTPortType polymorphic
-	virtual ~ARTPortType() {}
-	friend class ARTItimeModule;
-protected:
-	const ARTdataContainer* _port;
-	ARTtimeSimulator** _simulator;
-};
-
-class ARTIPortType : public ARTPortType
-{
-public:
-	virtual ~ARTIPortType() {}
-	friend class ARTItimeModule;
-
-};
-
-class ARTOPortType : public ARTPortType
-{
-public:
-	virtual std::complex<double> operator[](int idx) const;
-	virtual ~ARTOPortType() {}
-	friend class ARTItimeModule;
-protected:
-	ParserX* _parser;
-};
+//class ARTPortType
+//{
+//public:
+//	virtual void initPortValue(const string& expr) const;
+//	virtual void initPortValue(double value, int idx) const;
+//	virtual void initPortValue(std::complex<double>& value, int idx) const;
+//
+//	// make class ARTPortType polymorphic
+//	virtual ~ARTPortType() {}
+//	friend class ARTItimeModule;
+//protected:
+//	const ARTdataContainer* _port;
+//	ARTtimeSimulator** _simulator;
+//};
+//
+//class ARTIPortType : public ARTPortType
+//{
+//public:
+//	virtual ~ARTIPortType() {}
+//	friend class ARTItimeModule;
+//
+//};
+//
+//class ARTOPortType : public ARTPortType
+//{
+//public:
+//	virtual std::complex<double> operator[](int idx) const;
+//	virtual ~ARTOPortType() {}
+//	friend class ARTItimeModule;
+//protected:
+//	ParserX* _parser;
+//};
 
 class ARTItimeModule : public ARTobject
 {
@@ -150,33 +150,33 @@ protected:
 
 	ARTtimeSimulator* _simulator;
 
-	inline static ARTdataContainer* getContainerFromPort(const ARTPortType& port)
-	{
-		ARTdataContainer* tmpContainer = const_cast<ARTdataContainer*>(port._port);
-		return tmpContainer;
-	}
-
-	inline static void setContainerForPort(ARTPortType& port, const ARTdataContainer* container)
-	{
-		port._port = container;
-	}
-
-	inline static void setSimulatorForPort(ARTPortType& port, ARTtimeSimulator*& sim)
-	{
-		port._simulator = &sim;
-	}
-
-	inline static ParserX* getParserFromOPort(const ARTOPortType& port)
-	{
-		ParserX* tmpParser = NULL;
-		tmpParser = const_cast<ParserX*>(port._parser);
-		return tmpParser;
-	}
-
-	inline static void setParserForOPort(ARTOPortType& port, const ParserX* parser)
-	{
-		port._parser = const_cast<ParserX*>(parser);
-	}
+//	inline static ARTdataContainer* getContainerFromPort(const ARTPortType& port)
+//	{
+//		ARTdataContainer* tmpContainer = const_cast<ARTdataContainer*>(port._port);
+//		return tmpContainer;
+//	}
+//
+//	inline static void setContainerForPort(ARTPortType& port, const ARTdataContainer* container)
+//	{
+//		port._port = container;
+//	}
+//
+//	inline static void setSimulatorForPort(ARTPortType& port, ARTtimeSimulator*& sim)
+//	{
+//		port._simulator = &sim;
+//	}
+//
+//	inline static ParserX* getParserFromOPort(const ARTOPortType& port)
+//	{
+//		ParserX* tmpParser = NULL;
+//		tmpParser = const_cast<ParserX*>(port._parser);
+//		return tmpParser;
+//	}
+//
+//	inline static void setParserForOPort(ARTOPortType& port, const ParserX* parser)
+//	{
+//		port._parser = const_cast<ParserX*>(parser);
+//	}
 
 };
 
@@ -214,7 +214,7 @@ public:
 
 protected:
 
-	inline virtual bool checkVarNameExists(const string& name);
+//	inline virtual bool checkVarNameExists(const string& name);
 
 	inline virtual void addVariableToParsers(const string& name, const Variable& var);
 	inline virtual void removeVariableFromParsers(const string& name);

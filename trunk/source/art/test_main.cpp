@@ -4925,13 +4925,17 @@ TEST_DEF_START(FibonacciNumbers3, ARTtimeSimulatorTests)
 			timeModule2 = ARTCreateTModule(myTimeSimulator, "myModule2");
 
 			ARTAddOPortToTModule(timeModule, "fib", "fib[t] = fib[t-1] + fib[t-2]");
-			ARTAddOPortToTModule(timeModule2, "test", "test[t] = fib[t]");
+			ARTAddOPortToTModule(timeModule2, "test", "test[t] = fib[t] * l * T");
+
+			ARTAddLocalParamToTModule(timeModule2, "l", "l = 0.0");
+
+			ARTSetParameter(myTimeSimulator, "myModule2.l = 2.0/T");
 
 			ARTConnectPorts(myTimeSimulator, "myModule2.fib = myModule.fib");
 
 			ARTSetParameter(myTimeSimulator, "myModule.fib[-1] = 1; myModule.fib[-2] = 0");
 
-			P_ART_TPort testPort = ARTGetPortFromTModule(timeModule2, "test");
+			P_ART_DataProp testPort = ARTGetPortFromTModule(timeModule2, "test");
 
 			T_ART_Cmplx outVal;
 
@@ -4942,7 +4946,7 @@ TEST_DEF_START(FibonacciNumbers3, ARTtimeSimulatorTests)
 			}
 
 			// test 51st fibonacci number
-			if (outVal.re == (2.0*1597.0*6376021.0))
+			if (outVal.re == (2.0*2.0*1597.0*6376021.0))
 			{
 				return true;
 			}
