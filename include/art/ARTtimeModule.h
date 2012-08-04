@@ -98,15 +98,19 @@ public:
 
 	class OPortType : public PortType
 	{
+	protected:
+		Value tVal_;
+		Variable* tVar_;
 	public:
-		OPortType(const T_ART_Type dtyp, const int dlen, const string name, const string sds="", const string lds="", const string htm="")
-				: PortType(dtyp, dlen, name, sds, lds, htm) {}
+		OPortType(const T_ART_Type dtyp, const int dlen, const string name, const string sds="", const string lds="", const string htm="");
 		virtual void initPortValue(const string& expr) const;
 		virtual void initPortValue(double value, int idx) const;
 		virtual void initPortValue(std::complex<double>& value, int idx) const;
+		virtual IValue& operator[](std::size_t idx);
+		virtual IValue& operator[](int idx);
 		virtual IValue& GetPortValue(std::size_t idx);
 		virtual IValue& GetPortValue(int idx);
-		virtual ~OPortType() {}
+		virtual ~OPortType();
 	};
 
 	class IPortType : public PortType

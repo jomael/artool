@@ -11,6 +11,104 @@
 
 using namespace mup;
 
+/* create a new implementation for convolution function which will be registered
+ * to all parsers of each ARTtimeModule */
+class convCallback : public ICallback {
+public:
+	convCallback() : ICallback(cmFUNC, "conv", "c:aac") {}
+
+	virtual void Eval(ptr_val_type& ret, const ptr_val_type* inArg, int argc) {
+
+		assert(argc==3);
+
+		const array_type& a = inArg[0]->GetArray();
+		const array_type& b = inArg[1]->GetArray();
+		int_type t = (int) (inArg[2]->GetFloat());
+
+		ARTdataContainer* tmpContainer;
+		ARTItimeModule::PortType* portA = NULL;
+		ARTItimeModule::PortType* portB = NULL;
+
+		int lowerBound = 0;
+		int upperBound = (int) t;
+
+		cmplx_type result = 0;
+
+		if ((t - (int) b.size()) >= 0)
+		{
+			lowerBound = (t - (int) b.size()) + 1;
+		}
+		else
+		{
+			lowerBound = 0;
+		}
+
+		tmpContainer = dynamic_cast<ARTdataContainer*>(a[lowerBound]);
+
+		// get parent container / port of first argument
+		if (tmpContainer)
+		{
+			portA = dynamic_cast<ARTItimeModule::PortType*>(tmpContainer->GetParent());
+		}
+
+		if (!portA)
+		{
+			throw ParserError("The first argument of function 'conv' is no valid port type!");
+		}
+
+		tmpContainer = dynamic_cast<ARTdataContainer*>(b[lowerBound]);
+
+		// get parent container / port of first argument
+		if (tmpContainer)
+		{
+			portB = dynamic_cast<ARTItimeModule::PortType*>(tmpContainer->GetParent());
+		}
+
+		if (!portB)
+		{
+			throw ParserError("The second argument of function 'conv' is no valid port type!");
+		}
+
+
+//		cout << "Expression of a: " << tmpContainer << endl;
+
+		// (a + bi) * (c + di) = ac + adi + bci - bd = (ac - bd) + (ad + bc)i
+//		cerr << "conv: t = " << t << ", lowerBound = " << lowerBound << ", upperBound = " << upperBound << endl;
+		for (int k = lowerBound; k <= upperBound; ++k)
+		{
+//			cerr << "index = " << index << endl;
+//			std::cerr << "a[" << k << "] = " << (*portA)[k].GetFloat() << std::endl;
+//			std::cerr << "b[" << t << "-" << k << "] = " << (*portB)[t-k].GetFloat() << std::endl;
+//			std::cerr << "b[" << t << "-" << k << "] = " << b[t-k]->GetFloat() << std::endl;
+			float_type z1_real = (*portA)[k].GetFloat();
+			float_type z1_imag = (*portA)[k].GetImag();
+			float_type z2_real = (*portB)[t-k].GetFloat();
+			float_type z2_imag = (*portB)[t-k].GetImag();
+
+			result.real() += (z1_real*z2_real - z1_imag*z2_imag);
+			result.imag() += (z1_real*z2_imag + z1_imag*z2_real);
+
+		}
+
+
+		*ret = result;
+
+		//cerr << endl << endl;
+
+		//cerr << "Conv: lowerBound = " << lowerBound << " upperBound = " << upperBound << endl;
+
+	}
+
+	const char_type* GetDesc() const {
+		return "conv(a, b, t) - Returns the convolution of input values a and b at time t.";
+	}
+
+	IToken* Clone() const {
+		return new convCallback(*this);
+	}
+
+};
+
 //void ARTPortType::initPortValue(const string& expr) const
 //{
 //	if (_port != NULL)
@@ -103,6 +201,26 @@ const Variable& ARTItimeModule::globalParameterType::GetParserVar() const
 }
 
 
+ARTItimeModule::OPortType::OPortType(const T_ART_Type dtyp,
+		const int dlen,
+		const string name,
+		const string sds,
+		const string lds,
+		const string htm)
+: PortType(dtyp, dlen, name, sds, lds, htm),
+  tVal_(0),
+  tVar_(new Variable(&tVal_))
+{
+	if (parser_)
+	{
+		parser_->DefineVar("t", *tVar_);
+	}
+	else
+	{
+		throw ARTerror("ARTItimeModule::OPortType::OPortType", "No valid parser has been created. Please check source code of ARTdataContainer!");
+	}
+}
+
 void ARTItimeModule::OPortType::initPortValue(const string& expr) const
 {
 	ParserX* tmpParser = new ParserX(mup::pckCOMPLEX_NO_STRING);
@@ -135,7 +253,41 @@ void ARTItimeModule::OPortType::initPortValue(std::complex<double>& value, int i
 	port[idx] = value;
 }
 
-IValue& ARTItimeModule::OPortType::GetPortValue(std::size_t idx)
+IValue& ARTItimeModule::OPortType::operator[](::size_t idx)
+{
+//	cout << "ARTItimeModule::OPortType::operator[size_t " << idx << "]" << endl;
+	ARTdataContainer& tmpContainer = GetArrayElement(idx);
+	if (!tmpContainer.IsValid())
+	{
+//		cout << idx << " INVALID!" << endl;
+		tVal_ = (int) idx;
+	}
+	else
+	{
+//		cout << idx << " VALID!" << endl;
+	}
+
+	return ARTdataContainer::operator[](idx);
+}
+
+IValue& ARTItimeModule::OPortType::operator[](int idx)
+{
+//	cout << "ARTItimeModule::OPortType::operator[int " << idx << "]" << endl;
+	ARTdataContainer& tmpContainer = GetArrayElement(idx);
+	if (!tmpContainer.IsValid())
+	{
+//		cout << idx << " INVALID!" << endl;
+		tVal_ = idx;
+	}
+	else
+	{
+//		cout << idx << " VALID!" << endl;
+	}
+
+	return ARTdataContainer::operator[](idx);
+}
+
+IValue& ARTItimeModule::OPortType::GetPortValue(::size_t idx)
 {
 	ARTtimeSimulator* simulator = dynamic_cast<ARTtimeSimulator*>(scope_);
 	if (simulator)
@@ -147,7 +299,16 @@ IValue& ARTItimeModule::OPortType::GetPortValue(std::size_t idx)
 		throw ARTerror("ARTPortType::initPortValue", "No valid time simulator set for current port '%s1'.", name_);
 	}
 
-	return GetArrayElement(idx);
+	ARTdataContainer& tmpContainer = GetArrayElement(idx);
+
+	if (tVal_.GetFloat() != (float_type) idx)
+	{
+		tVal_ = (int) idx;
+		tmpContainer.Invalidate();
+		SetCurrentIndex(idx);
+	}
+
+	return tmpContainer;
 }
 
 IValue& ARTItimeModule::OPortType::GetPortValue(int idx)
@@ -162,7 +323,22 @@ IValue& ARTItimeModule::OPortType::GetPortValue(int idx)
 		throw ARTerror("ARTPortType::initPortValue", "No valid time simulator set for current port '%s1'.", name_);
 	}
 
-	return GetArrayElement(idx);
+//	cout << "ARTItimeModule::OPortType::GetPortValue(" << idx << ")" << endl;
+	ARTdataContainer& tmpContainer = GetArrayElement(idx);
+
+	if (tVal_.GetFloat() != (float_type) idx)
+	{
+		tVal_ = (int) idx;
+		tmpContainer.Invalidate();
+		SetCurrentIndex(idx);
+	}
+
+	return tmpContainer;
+}
+
+ARTItimeModule::OPortType::~OPortType()
+{
+	delete tVar_;
 }
 
 ARTItimeModule::IPortType::IPortType(const string& name, const OPortType* param)
@@ -279,6 +455,9 @@ void ARTtimeModule::addOPort(const string& name, const string& expr, unsigned in
 	if (!FindProperty(name))
 	{
 		OPortType* newOPort = new OPortType(C_ART_na, size, name);
+
+		// register convolution function to new parser
+		newOPort->GetParser()->DefineFun(new convCallback());
 
 		// set definition of new output port
 		newOPort->SetDefinition(expr);
