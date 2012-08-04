@@ -30,6 +30,7 @@ ARTdataContainer::ARTdataContainer() :
 		citer_(clientList_.begin()),
 		dependencyList_(list<ARTdataContainer*>()),
 		diter_(dependencyList_.begin()),
+		parent_(NULL),
 		definition_(""),
 		parser_(NULL),
 		scope_(NULL),
@@ -54,6 +55,7 @@ ARTdataContainer::ARTdataContainer(const T_ART_Type dtyp, const int dlen, const 
 		citer_(clientList_.begin()),
 		dependencyList_(list<ARTdataContainer*>()),
 		diter_(dependencyList_.begin()),
+		parent_(NULL),
 		definition_(""),
 		parser_(NULL),
 		scope_(NULL),
@@ -81,6 +83,8 @@ ARTdataContainer::ARTdataContainer(const T_ART_Type dtyp, const int dlen, const 
 			// set all values to invalid
 			tmpARTdataContainer->valid_ = false;
 			tmpARTdataContainer->parser_ = parser_;
+			tmpARTdataContainer->parent_ = this;
+			tmpARTdataContainer->varname_ = varname_;
 			(*tmpArray)[i] = tmpARTdataContainer;
 		}
 		// set current index to 0 indicating that it is now
@@ -104,6 +108,7 @@ ARTdataContainer::ARTdataContainer(std::string name, ARTfunctionoid* func) :
 		citer_(clientList_.begin()),
 		dependencyList_(list<ARTdataContainer*>()),
 		diter_(dependencyList_.begin()),
+		parent_(NULL),
 		definition_(""),
 		parser_(NULL),
 		scope_(NULL),
@@ -133,6 +138,7 @@ ARTdataContainer::ARTdataContainer(const int i) :
 		citer_(clientList_.begin()),
 		dependencyList_(list<ARTdataContainer*>()),
 		diter_(dependencyList_.begin()),
+		parent_(NULL),
 		definition_(""),
 		parser_(NULL),
 		scope_(NULL),
@@ -157,6 +163,7 @@ ARTdataContainer::ARTdataContainer(const double d) :
 		citer_(clientList_.begin()),
 		dependencyList_(list<ARTdataContainer*>()),
 		diter_(dependencyList_.begin()),
+		parent_(NULL),
 		definition_(""),
 		parser_(NULL),
 		scope_(NULL),
@@ -181,6 +188,7 @@ ARTdataContainer::ARTdataContainer(const float f) :
 		citer_(clientList_.begin()),
 		dependencyList_(list<ARTdataContainer*>()),
 		diter_(dependencyList_.begin()),
+		parent_(NULL),
 		definition_(""),
 		parser_(NULL),
 		scope_(NULL),
@@ -205,6 +213,7 @@ ARTdataContainer::ARTdataContainer(const char* s) :
 		citer_(clientList_.begin()),
 		dependencyList_(list<ARTdataContainer*>()),
 		diter_(dependencyList_.begin()),
+		parent_(NULL),
 		definition_(""),
 		parser_(NULL),
 		scope_(NULL),
@@ -229,6 +238,7 @@ ARTdataContainer::ARTdataContainer(const char* s1, const char* s2) :
 		citer_(clientList_.begin()),
 		dependencyList_(list<ARTdataContainer*>()),
 		diter_(dependencyList_.begin()),
+		parent_(NULL),
 		definition_(""),
 		parser_(NULL),
 		scope_(NULL),
@@ -253,6 +263,7 @@ ARTdataContainer::ARTdataContainer(const char* s1, const char* s2, const char* s
 		citer_(clientList_.begin()),
 		dependencyList_(list<ARTdataContainer*>()),
 		diter_(dependencyList_.begin()),
+		parent_(NULL),
 		definition_(""),
 		parser_(NULL),
 		scope_(NULL),
@@ -277,6 +288,7 @@ ARTdataContainer::ARTdataContainer(const char* s1, const char* s2, const char* s
 		citer_(clientList_.begin()),
 		dependencyList_(list<ARTdataContainer*>()),
 		diter_(dependencyList_.begin()),
+		parent_(NULL),
 		definition_(""),
 		parser_(NULL),
 		scope_(NULL),
@@ -302,6 +314,7 @@ ARTdataContainer::ARTdataContainer(const ARTdataContainer& orig) :
 	citer_(orig.citer_),
 	dependencyList_(orig.dependencyList_),
 	diter_(orig.diter_),
+	parent_(orig.parent_),
 	definition_(orig.definition_),
 	parser_(orig.parser_),
 	scope_(orig.scope_),
@@ -737,7 +750,7 @@ void ARTdataContainer::Evaluate() const
 	_DBG_MSG("");
 	//std::cout << "ARTdataContainer::Evaluate() " << val << " // " << varname_ << "////////////////////\n";
 	//to avoid circular references, check if we are already calcualting this dataContainer
-	if (eval_started) throw ARTerror("ARTdataContainer::Evaluate", "Circular reference to dataContainer '%s1'.",varname_); 
+	if (eval_started) throw ARTerror("ARTdataContainer::Evaluate", "Circular reference to dataContainer '%s1'.", varname_);
 	//... and if we are not, remember we do so now.
 	eval_started = true;
 
@@ -774,7 +787,7 @@ void ARTdataContainer::Evaluate() const
 		}
 		catch( mup::ParserError& e )
 		{
-			throw ARTerror("ARTdataContainer::Evaluate", "Error in Parser when processing dataContainer: '%s1'", e.GetMsg().c_str());
+			throw ARTerror("ARTdataContainer::Evaluate", "Error in Parser when processing dataContainer '%s1': '%s2'", varname_, e.GetMsg().c_str());
 		}
 	}
 	else //function and parser are NULL 
@@ -1045,6 +1058,7 @@ void ARTdataContainer::SetVal(const int i, const int ind)
 
 void ARTdataContainer::SetVal(const double d, const int ind)
 {
+//	_DBG_MSG2("const double = " << d << ", const int = " << ind << ", name = " << varname_);
 	_DBG_MSG("const double, const int");
 	if (typ == C_ART_na)
 	{
@@ -1082,6 +1096,7 @@ void ARTdataContainer::SetVal(const float f, const int ind)
 void ARTdataContainer::SetVal(std::complex<double> c, const int ind)
 {
 	_DBG_MSG("std::complex, int");
+//	_DBG_MSG2("std::complex = ("<< c.real() << ", " << c.imag() << "), int");
 	//cout << "setVal(cmplx<" << c.real() << "," << c.imag() << ">, " << ind << ")" << endl;
 	if (typ == C_ART_na)
 	{
@@ -1399,7 +1414,7 @@ ARTdataContainer& ARTdataContainer::GetArrayElement(int idx)
 			return *tmp;
 			break;
 		default:
-			throw ParserError();
+			throw ARTerror("ARTdataContainer::GetArrayElement", "Data container '%s1' is no container of other data containers.", varname_);
 			break;
 	}
 	return *this;
@@ -1409,9 +1424,16 @@ void ARTdataContainer::SetCurrentIndex(int idx)
 {
 	_DBG_MSG("int");
 	array_type* tmpArray = (array_type *) (val->na);
+	array_type::size_type arraySize;
 	switch (typ)
 	{
 		case C_ART_na:
+			arraySize = tmpArray->size();
+//			cout << "Used buffer size of data container '"<< varname_ << "' = " << tmpArray->getUsedBufferSize() << endl;
+			if (arraySize - 3 <= tmpArray->getUsedBufferSize())
+			{
+				resizeArray(arraySize + 5);
+			}
 			tmpArray->setCurrentIdx(idx);
 			break;
 		default:
@@ -1454,7 +1476,7 @@ void ARTdataContainer::resizeArray(int newSize)
 //		cout << "Content[" << idx << "] = " << tmp->val->c.re << endl;
 //	}
 //
-	cout << "Resized array from " << oldSize << " to " << newSize << " elements." << endl;
+	cout << "Resized array '" << varname_ << "' from " << oldSize << " to " << newSize << " elements." << endl;
 
 }
 

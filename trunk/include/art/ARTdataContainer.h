@@ -122,6 +122,8 @@ protected:
 	mutable list<ARTdataContainer*>	dependencyList_;		///< other dataContainers this one depends on (variables in expression): need lookup whenever value is evaluated
 	mutable list<ARTdataContainer*>::iterator diter_;
 
+	ARTdataContainer* parent_;
+
 	void SetCountedFlag(bool b);
 
 	void EvaluateIfInvalid()
@@ -224,6 +226,8 @@ public:
 
 	//void SetInvalid(int st, int end);
 
+	bool IsValid() {return valid_;}
+
 	int GetInt(); 
 
 	const string& GetDefinition();
@@ -276,6 +280,7 @@ public:
 
 	void SetParser(ParserX* p);
 	virtual ParserX* GetParser() {return parser_;}
+	virtual ARTdataContainer* GetParent() {return parent_;}
 
 	void Rename(const string& newname);
 

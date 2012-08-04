@@ -4793,7 +4793,7 @@ TEST_DEF_START(FibonacciNumbers1, ARTtimeSimulatorTests)
 
 			ARTtimeModule* timeModule = new ARTtimeModule("myModule");
 
-			timeModule->addOPort("fib", "fib[t] = fib[t-1] + fib[t-2]");
+			timeModule->addOPort("fib", "fib[t] = fib[t-1] + fib[t-2]", 7);
 			timeModule->addOPort("test", "test[t] = fib[t]");
 
 			myTimeSimulator->AddTimeModule(timeModule);
@@ -4806,6 +4806,7 @@ TEST_DEF_START(FibonacciNumbers1, ARTtimeSimulatorTests)
 			for (int i = 0; i < 50; ++i)
 			{
 				outputPort.GetPortValue(i).GetFloat();
+//				cout << "Fib[" << i << "] = " << outputPort.GetPortValue(i).GetFloat() << endl;
 			}
 
 			// test 51st fibonacci number
@@ -4966,8 +4967,6 @@ TEST_DEF_START(FibonacciNumbers3, ARTtimeSimulatorTests)
 
 	virtual void unprepare()
 	{
-//		delete (myTimeSimulator->userElements);
-//		delete myTimeSimulator;
 		ARTDestroyTModule(myTimeSimulator, timeModule);
 		ARTDestroyTModule(myTimeSimulator, timeModule2);
 		ARTDestroySimulator(myTimeSimulator);
@@ -4975,6 +4974,178 @@ TEST_DEF_START(FibonacciNumbers3, ARTtimeSimulatorTests)
 	}
 
 TEST_DEF_END(FibonacciNumbers3)
+
+TEST_DEF_START(ConvolutionTest1, ARTtimeSimulatorTests)
+
+	ARTtimeSimulator* myTimeSimulator;
+
+	virtual void prepare()
+	{
+		myTimeSimulator = new ARTtimeSimulator("TestSim");
+		myTimeSimulator->userElements = new ARTlistProp("testList");
+
+	}
+
+	virtual bool run()
+	{
+
+		try
+		{
+
+			ARTtimeModule* timeModule = new ARTtimeModule("myModule");
+
+			timeModule->addOPort("p", "p[t] = conv(U,G,t)");
+			timeModule->addOPort("U", "U[t] = sin(2*pi*30*t*T)");
+			timeModule->addOPort("G", "G[t] = (t == 0) ? 1 : 0");
+			ARTItimeModule::OPortType* pPort = dynamic_cast<ARTItimeModule::OPortType*>(timeModule->getPort("p"));
+//			ARTItimeModule::OPortType* gPort = dynamic_cast<ARTItimeModule::OPortType*>(timeModule->getPort("G"));
+//			ARTItimeModule::OPortType* uPort = dynamic_cast<ARTItimeModule::OPortType*>(timeModule->getPort("U"));
+
+			myTimeSimulator->AddTimeModule(timeModule);
+
+			for (int i = 0; i < 50; ++i)
+			{
+				pPort->GetPortValue(i).GetFloat();
+//				std::cout << "p[" << i << "] = " << pPort->GetPortValue(i).GetFloat() << std::endl;
+//				std::cout << "G[" << i << "] = " << gPort->GetPortValue(i).GetFloat() << std::endl;
+//				std::cout << "U[" << i << "] = " << uPort->GetPortValue(i).GetFloat() << std::endl;
+//				std::cout << "p[" << i << "] = " << pPort->GetPortValue(i).GetFloat() << std::endl;
+			}
+
+			if (std::abs((pPort->GetPortValue(49).GetFloat() - (std::sin(2.0 * PI * 30.0 * 49.0 / 44100)))) < 1.0e-7)
+//			if (std::abs((pPort->GetPortValue(3).GetFloat() - (std::sin(2.0 * PI * 30.0 * 3.0 / 44100)))) < 1.0e-7)
+			{
+				return true;
+			}
+			else
+			{
+				std::cout << "\n\nsin(2*pi*30*15/44100) = " << pPort->GetPortValue(49).GetFloat() << " != " << std::sin(2.0 * PI * 30.0 * 15.0 / 44100) << std::endl;
+//				std::cout << "sin(2*pi*30*3/44100) = " << pPort->GetPortValue(3).GetFloat() << " != " << std::sin(2.0 * PI * 30.0 * 3.0 / 44100) << std::endl;
+				return false;
+			}
+			return true;
+		}
+		catch (ARTerror& e)
+		{
+			string err = e.GetErrorMessage();
+			std::cout << "\n\n" << err;
+			return false;
+		}
+
+	}
+
+	virtual void unprepare()
+	{
+		delete (myTimeSimulator->userElements);
+		delete myTimeSimulator;
+	}
+
+TEST_DEF_END(ConvolutionTest1)
+
+//TEST_DEF_START(ConvolutionTest2, ARTtimeSimulatorTests)
+//
+//	ARTtimeSimulator* myTimeSimulator;
+//
+//	virtual void prepare()
+//	{
+//		myTimeSimulator = new ARTtimeSimulator("TestSim");
+//		myTimeSimulator->userElements = new ARTlistProp("testList");
+//
+//	}
+//
+//	virtual bool run()
+//	{
+//
+//		try
+//		{
+//
+//			ARTtimeModule* timeModule = new ARTtimeModule("lip_module");
+//
+////			timeModule->addOPort("x", "x[t] = (-sqrt(k/m) * (1/Q) * ((x[t-1] - x[t-2])/T) + ((b*d)/m)* p_lip[t] - (k/m)*x[t-2])*T^2 - x[t-2] + 2*x[t-1] ");
+////			timeModule->addOPort("S_lip", "S_lip[t] = max(b*(2*x[t] + x_0), 0.00001)", 1);
+////			timeModule->addOPort("U", "U[t] = ((p_0 - p[t-1])*(S_lip[t]/rho) + ((U[t - 1])^2) * (-1/(2*S_lip[t]) + 1/S_cup + S_lip[t]/(S_cup^2)) ) * (T/d) + U[t-1]");
+////			timeModule->addOPort("p", "p[t] = conv(U, G, t)");
+////			timeModule->addOPort("p_lip", "p_lip[t] = -rho * U[t]^2 * (1/(S_cup * S_lip[t]) - 1/(S_cup^2)) + p[t]", 1);
+////			timeModule->addOPort("G", "G[t] = 0.005", 20);
+//
+//			timeModule->addOPort("x", "x[t] = (-sqrt(k/m) * (1/Q) * ((x[t-1] - x[t-2])/T) + ((b*d)/m)* p_lip[t-1] - (k/m)*x[t-2])*T^2 - x[t-2] + 2*x[t-1]", 3);
+//			timeModule->addOPort("S_lip", "S_lip[t] = max(b*(2*x[t] + x_0), 0.00001)", 1);
+//			timeModule->addOPort("p_lip", "p_lip[t] = -rho * U[t]^2 * (1/(S_cup * S_lip[t]) - 1/(S_cup^2)) + p[t]", 1);
+//			timeModule->addOPort("U", "U[t] = ((p_0 - p[t-1])*(S_lip[t-1]/rho) + ((U[t-1])^2) * (-1/(2*S_lip[t-1]) + 1/S_cup + S_lip[t-1]/(S_cup^2)) ) * (T/d) + U[t-1]", 5);
+////			timeModule->addOPort("U", "U[t] = S_lip[t-1]", 5);
+//			timeModule->addOPort("p", "p[t] = conv(U, G, t)", 5);
+//			timeModule->addOPort("G", "G[t] = 0.005", 20);
+////
+//			ARTItimeModule::OPortType* pPort = dynamic_cast<ARTItimeModule::OPortType*>(timeModule->getPort("p"));
+//			ARTItimeModule::OPortType* xPort = dynamic_cast<ARTItimeModule::OPortType*>(timeModule->getPort("x"));
+////			ARTItimeModule::OPortType* gPort = dynamic_cast<ARTItimeModule::OPortType*>(timeModule->getPort("G"));
+//			ARTItimeModule::OPortType* uPort = dynamic_cast<ARTItimeModule::OPortType*>(timeModule->getPort("U"));
+//			xPort->initPortValue("x[-1] = 0.00002, x[-2] = 0.00001");
+//			uPort->initPortValue(0, 0);
+////			uPort->SetVal(0.0, 0);
+////			std::cerr << "HERE" << std::endl;
+//			pPort->SetVal(0.0, 0);
+////			std::cerr << "got it!" << std::endl;
+//
+////			ARTItimeModule::OPortType* xPort = dynamic_cast<ARTItimeModule::OPortType*>(timeModule->getPort("x"));
+//			xPort->initPortValue("x[-1] = 0.00002, x[-2] = 0.00001");
+//
+//
+////			for (int i = 0; i < 20; ++i)
+////			{
+////				gPort->SetVal(0.005, i);
+////			}
+//
+//			myTimeSimulator->AddTimeModule(timeModule);
+//
+//			// speed of sound
+//			timeModule->addLocalParameter("c", 3.4E2);
+//			// average air density
+//			timeModule->addLocalParameter("rho", 1.2);
+//			// area of mouthpiece entryway
+//			timeModule->addLocalParameter("S_cup", 2.3E-3);
+//			// breadth of lip orifice
+//			timeModule->addLocalParameter("b", 8.0E-3);
+//			// thickness of lips
+//			timeModule->addLocalParameter("d", 2.0E-3);
+//			// equilibrium lip opening length
+//			timeModule->addLocalParameter("x_0", 2.1E-4);
+//			// lip quality factor
+//			timeModule->addLocalParameter("Q", 5.0);
+//			// lip resonance frequency
+//			timeModule->addLocalParameter("f_lip", 100);
+//			// lip mass define 1.5/(((2*PI)^2)/f_lip
+//			timeModule->addLocalParameter("m", 3.799544386E-4);
+//			// stiffness of lips
+//			timeModule->addLocalParameter("k", 1.5E2);
+//			// blowing pressure
+//			timeModule->addLocalParameter("p_0", 1.0);
+//
+//
+////			for (int i = 0; i < 44100*10; ++i)
+//			for (int i = 1; i < 100; ++i)
+//			{
+////				pPort->GetPortValue(i).GetFloat();
+//				std::cout << "p[" << i << "] = " << pPort->GetPortValue(i).GetFloat() << std::endl;
+//			}
+//			return true;
+//		}
+//		catch (ARTerror& e)
+//		{
+//			string err = e.GetErrorMessage();
+//			std::cout << "\n\n" << err;
+//			return false;
+//		}
+//
+//	}
+//
+//	virtual void unprepare()
+//	{
+//		delete (myTimeSimulator->userElements);
+//		delete myTimeSimulator;
+//	}
+//
+//TEST_DEF_END(ConvolutionTest2)
 
 //******************************************************************************************************************************************
 
