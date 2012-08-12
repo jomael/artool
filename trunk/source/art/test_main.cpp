@@ -5185,7 +5185,7 @@ TEST_DEF_START(ConvolutionTest3, ARTtimeSimulatorTests)
 			myTimeSimulator->AddTimeModule(timeModule);
 			myTimeSimulator->AddTimeModule(timeModule2);
 
-			for (i = 0; i < 50; ++i)
+			for (i = 0; i < 100; ++i)
 			{
 				cout << "Conv[" << i << "] = " << simulationOutPort->GetPortValue(i).GetFloat() << endl;
 			}

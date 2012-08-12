@@ -56,7 +56,7 @@ public:
 			throw ParserError("The first argument of function 'conv' is no valid port type!");
 		}
 
-		tmpContainer = dynamic_cast<ARTdataContainer*>(b[lowerBound]);
+		tmpContainer = dynamic_cast<ARTdataContainer*>(b[t-lowerBound]);
 
 		// get parent container / port of first argument
 		if (tmpContainer)
