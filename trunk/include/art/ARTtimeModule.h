@@ -9,8 +9,6 @@
 #define ARTTIMEMODULE_H_
 
 #include <string>
-#include <vector>
-#include <utility>
 #include <complex>
 
 #include "Interface.h"
@@ -22,40 +20,6 @@ using namespace mup;
 
 // forward declaration
 class ARTdataContainer;
-class ARTItimeModule;
-
-//class ARTPortType
-//{
-//public:
-//	virtual void initPortValue(const string& expr) const;
-//	virtual void initPortValue(double value, int idx) const;
-//	virtual void initPortValue(std::complex<double>& value, int idx) const;
-//
-//	// make class ARTPortType polymorphic
-//	virtual ~ARTPortType() {}
-//	friend class ARTItimeModule;
-//protected:
-//	const ARTdataContainer* _port;
-//	ARTtimeSimulator** _simulator;
-//};
-//
-//class ARTIPortType : public ARTPortType
-//{
-//public:
-//	virtual ~ARTIPortType() {}
-//	friend class ARTItimeModule;
-//
-//};
-//
-//class ARTOPortType : public ARTPortType
-//{
-//public:
-//	virtual std::complex<double> operator[](int idx) const;
-//	virtual ~ARTOPortType() {}
-//	friend class ARTItimeModule;
-//protected:
-//	ParserX* _parser;
-//};
 
 class ARTItimeModule : public ARTobject
 {
@@ -113,12 +77,25 @@ public:
 		virtual ~OPortType();
 	};
 
+	class FPortType : public PortType
+	{
+	public:
+		FPortType(const int dlen, const string name, const string sds="", const string lds="", const string htm="");
+		virtual IValue& operator[](std::size_t idx);
+		virtual IValue& operator[](int idx);
+		virtual void initPortValue(const string& expr) const;
+		virtual void initPortValue(double value, int idx) const;
+		virtual void initPortValue(std::complex<double>& value, int idx) const;
+		virtual ~FPortType() {}
+	};
+
 	class IPortType : public PortType
 	{
 	protected:
-		const OPortType* refPort_;
+		const PortType* refPort_;
 	public:
 		IPortType(const string& name, const OPortType* refPort);
+		IPortType(const string& name, const FPortType* refPort);
 		virtual const Variable& GetParserVar();
 		virtual const Variable& GetParserVar() const;
 		virtual ~IPortType() {}
@@ -135,13 +112,12 @@ public:
 	{}
 
 	virtual void addIPort(const string& name, const ARTdataProp* refPort) = 0;
-	virtual ARTdataProp* getPort(const string& name) = 0;
+	virtual ARTdataProp* getPort(const string& name);
 
-	virtual void setLocalParameter(const string& name, const string& expr) = 0;
-	virtual void setLocalParameter(const string& name, const std::complex<double>& val) = 0;
-	virtual void setLocalParameter(const string& name, const double val) = 0;
+	virtual void setLocalParameter(const string& name, const string& expr);
+	virtual void setLocalParameter(const string& name, const std::complex<double>& val);
+	virtual void setLocalParameter(const string& name, const double val);
 
-//	virtual void addGlobalParameter(const string& name, const Variable& parameter) = 0;
 	virtual void addGlobalParameter(const ARTdataProp* parameter) = 0;
 	virtual void removeGlobalParameter(const string& name) = 0;
 
@@ -153,35 +129,6 @@ public:
 protected:
 
 	ARTtimeSimulator* _simulator;
-
-//	inline static ARTdataContainer* getContainerFromPort(const ARTPortType& port)
-//	{
-//		ARTdataContainer* tmpContainer = const_cast<ARTdataContainer*>(port._port);
-//		return tmpContainer;
-//	}
-//
-//	inline static void setContainerForPort(ARTPortType& port, const ARTdataContainer* container)
-//	{
-//		port._port = container;
-//	}
-//
-//	inline static void setSimulatorForPort(ARTPortType& port, ARTtimeSimulator*& sim)
-//	{
-//		port._simulator = &sim;
-//	}
-//
-//	inline static ParserX* getParserFromOPort(const ARTOPortType& port)
-//	{
-//		ParserX* tmpParser = NULL;
-//		tmpParser = const_cast<ParserX*>(port._parser);
-//		return tmpParser;
-//	}
-//
-//	inline static void setParserForOPort(ARTOPortType& port, const ParserX* parser)
-//	{
-//		port._parser = const_cast<ParserX*>(parser);
-//	}
-
 };
 
 
@@ -194,18 +141,17 @@ public:
 
 	virtual void addIPort(const string& name, const ARTdataProp* refPort);
 	virtual void addOPort(const string& name, const string& expr, unsigned int size = 20);
-	virtual ARTdataProp* getPort(const string& name);
+//	virtual ARTdataProp* getPort(const string& name);
 //	virtual const ARTOPortType& getOPort(const string& name);
 
-	virtual void setLocalParameter(const string& name, const string& expr);
-	virtual void setLocalParameter(const string& name, const double val);
-	virtual void setLocalParameter(const string& name, const std::complex<double>& val);
+//	virtual void setLocalParameter(const string& name, const string& expr);
+//	virtual void setLocalParameter(const string& name, const double val);
+//	virtual void setLocalParameter(const string& name, const std::complex<double>& val);
 
 	virtual void addLocalParameter(const string& name, const string& expr);
 	virtual void addLocalParameter(const string& name, const double val);
 	virtual void addLocalParameter(const string& name, const std::complex<double>& val);
 
-//	virtual void addGlobalParameter(const string& name, const Variable& parameter);
 	virtual void addGlobalParameter(const ARTdataProp* parameter);
 	virtual void removeGlobalParameter(const string& name);
 
@@ -218,8 +164,6 @@ public:
 
 protected:
 
-//	inline virtual bool checkVarNameExists(const string& name);
-
 	inline virtual void addVariableToParsers(const string& name, const Variable& var);
 	inline virtual void removeVariableFromParsers(const string& name);
 
@@ -227,16 +171,6 @@ protected:
 
 	inline virtual void clean();
 //	inline virtual void copy(const ARTtimeModule& orig);
-
-
-//	typedef std::map<const string, ARTIPortType*> iPortMap;
-//	typedef iPortMap::iterator iPortIterator;
-//
-//	typedef std::map<const string, ARTOPortType*> oPortMap;
-//	typedef oPortMap::iterator oPortIterator;
-//
-//	iPortMap _iPorts;
-//	oPortMap _oPorts;
 
 };
 

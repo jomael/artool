@@ -1466,6 +1466,7 @@ void ARTdataContainer::resizeArray(int newSize)
 		tmp->SetVal(std::complex<double>(0,0));
 		tmp->parser_ = parser_;
 		tmp->definition_ = definition_;
+		tmp->parent_ = this;
 		tmpArray->at(elementPtr) = tmp;
 		elementPtr = (elementPtr + newSize + 1) % newSize;
 	}

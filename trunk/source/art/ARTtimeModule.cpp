@@ -23,7 +23,7 @@ public:
 
 		const array_type& a = inArg[0]->GetArray();
 		const array_type& b = inArg[1]->GetArray();
-		int_type t = (int) (inArg[2]->GetFloat());
+		int_type t = (int_type) (inArg[2]->GetFloat());
 
 		ARTdataContainer* tmpContainer;
 		ARTItimeModule::PortType* portA = NULL;
@@ -109,81 +109,6 @@ public:
 
 };
 
-//void ARTPortType::initPortValue(const string& expr) const
-//{
-//	if (_port != NULL)
-//	{
-//		ParserX* tmpParser = new ParserX(mup::pckCOMPLEX_NO_STRING);
-//		try
-//		{
-//			ARTdataContainer& port = const_cast<ARTdataContainer&>(*_port);
-//			tmpParser->DefineVar(port.GetVarName(), port.GetParserVar());
-//			tmpParser->SetExpr(expr);
-//			tmpParser->Eval();
-//			delete tmpParser;
-//		}
-//		catch (ParserError& error)
-//		{
-//			delete tmpParser;
-//			throw ARTerror("ARTPortType::initPortValue", "Error in evaluation of parser expression: %s1",
-//					error.GetMsg());
-//		}
-//	}
-//	else
-//	{
-//		throw ARTerror("ARTPortType::initPortValue", "No associated data container found for current port.");
-//	}
-//}
-//
-//void ARTPortType::initPortValue(double value, int idx) const
-//{
-//	if (_port != NULL)
-//	{
-//		ARTdataContainer& port = const_cast<ARTdataContainer&>(*_port);
-//		port[idx] = value;
-//	}
-//	else
-//	{
-//		throw ARTerror("ARTPortType::initPortValue", "No associated data container found for current port.");
-//	}
-//}
-//
-//void ARTPortType::initPortValue(std::complex<double>& value, int idx) const
-//{
-//	if (_port != NULL)
-//	{
-//		ARTdataContainer& port = const_cast<ARTdataContainer&>(*_port);
-//		port[idx] = value;
-//	}
-//	else
-//	{
-//		throw ARTerror("ARTPortType::initPortValue", "No associated data container found for current port.");
-//	}
-//}
-//
-//std::complex<double> ARTOPortType::operator[](int idx) const
-//{
-//
-//	if (_port != NULL)
-//	{
-//		ARTdataContainer& port = const_cast<ARTdataContainer&>(*_port);
-//		if (*_simulator)
-//		{
-//			(*_simulator)->SetModulesToCurrentTimeIndex(idx);
-//		}
-//		else
-//		{
-//			throw ARTerror("ARTPortType::initPortValue", "No simulator set for current port.");
-//		}
-//
-//		return port.GetArrayElement(idx).GetComplex();
-//	}
-//	else
-//	{
-//		throw ARTerror("ARTPortType::operator[]", "No associated data container found for current port.");
-//	}
-//}
-
 ARTItimeModule::globalParameterType::globalParameterType(const string& name, const ARTdataProp* param)
 	: timeProperty(C_ART_str, 0, name), param_(param)
 {
@@ -200,6 +125,9 @@ const Variable& ARTItimeModule::globalParameterType::GetParserVar() const
 	return param_->GetParserVar();
 }
 
+/*************************************************************
+ * ARTItimeModule::OPortType
+ *************************************************************/
 
 ARTItimeModule::OPortType::OPortType(const T_ART_Type dtyp,
 		const int dlen,
@@ -341,7 +269,84 @@ ARTItimeModule::OPortType::~OPortType()
 	delete tVar_;
 }
 
+/*************************************************************
+ * ARTItimeModule::FPortType
+ *************************************************************/
+
+ARTItimeModule::FPortType::FPortType(const int dlen,
+		const string name,
+		const string sds,
+		const string lds,
+		const string htm)
+: PortType(C_ART_na, dlen, name, sds, lds, htm)
+{
+	// change the ring buffer to be a vector
+	array_type* tmpArray = (array_type *) (val->na);
+	tmpArray->setVector();
+
+	avar_ = new Variable(this);
+	parserVarDefined_ = true;
+}
+
+IValue& ARTItimeModule::FPortType::operator[](std::size_t idx)
+{
+	array_type* tmpArray = (array_type *) (val->na);
+	ARTdataContainer* tmp;
+	tmp = dynamic_cast<ARTdataContainer*>((*tmpArray)[idx]);
+	return *tmp;
+}
+
+IValue& ARTItimeModule::FPortType::operator[](int idx)
+{
+	array_type* tmpArray = (array_type *) (val->na);
+	ARTdataContainer* tmp;
+	tmp = dynamic_cast<ARTdataContainer*>((*tmpArray)[idx]);
+	return *tmp;
+}
+
+void ARTItimeModule::FPortType::initPortValue(const string& expr) const
+{
+	ParserX* tmpParser = new ParserX(mup::pckCOMPLEX_NO_STRING);
+	try
+	{
+		tmpParser->DefineVar(GetVarName(), GetParserVar());
+		tmpParser->SetExpr(expr);
+		tmpParser->Eval();
+		delete tmpParser;
+	}
+	catch (ParserError& error)
+	{
+		delete tmpParser;
+		throw ARTerror("ARTPortType::initPortValue", "Error in evaluation of parser expression: %s1",
+				error.GetMsg());
+	}
+}
+
+void ARTItimeModule::FPortType::initPortValue(double value, int idx) const
+{
+	array_type* tmpArray = (array_type*) (val->na);
+	ARTdataContainer* tmp = dynamic_cast<ARTdataContainer*>((*tmpArray)[idx]);
+	tmp->SetVal(value);
+}
+
+void ARTItimeModule::FPortType::initPortValue(std::complex<double>& value, int idx) const
+{
+	array_type* tmpArray = (array_type*) (val->na);
+	ARTdataContainer* tmp = dynamic_cast<ARTdataContainer*>((*tmpArray)[idx]);
+	tmp->SetVal(value);
+}
+
+/*************************************************************
+ * ARTItimeModule::IPortType
+ *************************************************************/
+
 ARTItimeModule::IPortType::IPortType(const string& name, const OPortType* param)
+	: PortType(C_ART_str, 0, name), refPort_(param)
+{
+
+}
+
+ARTItimeModule::IPortType::IPortType(const string& name, const FPortType* param)
 	: PortType(C_ART_str, 0, name), refPort_(param)
 {
 
@@ -357,10 +362,79 @@ const Variable& ARTItimeModule::IPortType::GetParserVar() const
 	return refPort_->GetParserVar();
 }
 
+/*************************************************************
+ * ARTItimeModule
+ *************************************************************/
+
+ARTdataProp* ARTItimeModule::getPort(const string& name)
+{
+	PortType* port = dynamic_cast<PortType*>(FindProperty(name));
+	if (!port)
+	{
+		throw ARTerror("ARTItimeModule::getPort", "No port with name '%s1' has been found in current time module '%s2'.",
+				name, name_);
+	}
+	else
+	{
+		return port;
+	}
+
+}
+
+void ARTItimeModule::setLocalParameter(const string& name, const string& expr)
+{
+	localParameterType* lParam = dynamic_cast<localParameterType*>(FindProperty(name));
+	if (lParam)
+	{
+		// set definition and invalidate current parameter to force re-evaluation
+		lParam->SetDefinition(expr);
+		lParam->Invalidate();
+	}
+	else
+	{
+		throw ARTerror("ARTItimeModule::setLocalParameter", "Local parameter '%s1' could not be found in current time module '%s2'.",
+				name, name_);
+	}
+
+
+}
+
+void ARTItimeModule::setLocalParameter(const string& name, const double val)
+{
+	localParameterType* lParam = dynamic_cast<localParameterType*>(FindProperty(name));
+	if (lParam)
+	{
+		lParam->SetVal(val);
+	}
+	else
+	{
+		throw ARTerror("ARTItimeModule::setLocalParameter", "Local parameter '%s1' could not be found in current time module '%s2'.",
+				name, name_);
+	}
+}
+
+void ARTItimeModule::setLocalParameter(const string& name, const std::complex<double>& val)
+{
+	localParameterType* lParam = dynamic_cast<localParameterType*>(FindProperty(name));
+	if (lParam)
+	{
+		lParam->SetVal(val);
+	}
+	else
+	{
+		throw ARTerror("ARTItimeModule::setLocalParameter", "Local parameter '%s1' could not be found in current time module '%s2'.",
+				name, name_);
+	}
+}
+
 void ARTItimeModule::setSimulator(ARTsimulator* sim)
 {
 	_simulator = dynamic_cast<ARTtimeSimulator*>(sim);
 }
+
+/*************************************************************
+ * ARTtimeModule
+ *************************************************************/
 
 ARTtimeModule::ARTtimeModule(const string& name, const string& sds, const string& lds, const string& htm) :
 	ARTItimeModule(name, sds, lds, htm)
@@ -368,40 +442,32 @@ ARTtimeModule::ARTtimeModule(const string& name, const string& sds, const string
 
 }
 
-//void ARTtimeModule::addIPort(const string& name, const ARTPortType& port)
-//{
-//	// the given name of the input port has to be unique
-//	if (!checkVarNameExists(name))
-//	{
-//		ARTIPortType* newIPort = new ARTIPortType();
-//		const ARTdataContainer* tmpContainer = getContainerFromPort(port);
-//		setContainerForPort(*newIPort, tmpContainer);
-//		setSimulatorForPort(*newIPort, _simulator);
-//		_iPorts[name] = newIPort;
-//
-//		addVariableToParsers(name, tmpContainer->GetParserVar());
-//	}
-//	else
-//	{
-//		throw ARTerror("ARTtimeModule::addIPort", "Port name '%s1' is already in use in current time module '%s2'.",
-//				name, name_);
-//	}
-//}
-
 void ARTtimeModule::addIPort(const string& name, const ARTdataProp* refPort)
 {
 	// the given name of the input port has to be unique
 	if (!FindProperty(name))
 	{
 		const OPortType* oPort = dynamic_cast<const OPortType*>(refPort);
-		if (!oPort)
+		const FPortType* fPort = dynamic_cast<const FPortType*>(refPort);
+		IPortType* newIPort;
+		if (oPort)
+		{
+			newIPort = new IPortType(name, oPort);
+			addVariableToParsers(name, newIPort->GetParserVar());
+			AppendDataProp(newIPort);
+		}
+		else if (fPort)
+		{
+			newIPort = new IPortType(name, fPort);
+			addVariableToParsers(name, newIPort->GetParserVar());
+			AppendDataProp(newIPort);
+		}
+		else
 		{
 			throw ARTerror("ARTtimeModule::addIPort", "Port '%s1' is no valid output port.",
 					refPort->GetName());
 		}
-		IPortType* newIPort = new IPortType(name, oPort);
-		addVariableToParsers(name, newIPort->GetParserVar());
-		AppendDataProp(newIPort);
+
 	}
 	else
 	{
@@ -409,45 +475,6 @@ void ARTtimeModule::addIPort(const string& name, const ARTdataProp* refPort)
 				name, name_);
 	}
 }
-
-//void ARTtimeModule::addOPort(const string& name, const string& expr, unsigned int size)
-//{
-//	// the name of the given output port has to be unique
-//	if (!checkVarNameExists(name))
-//	{
-//		ARTOPortType* newOPort = new ARTOPortType();
-//		// create new ARTdataContainer with 20 elements array size
-//		ARTdataContainer* tmpContainer = new ARTdataContainer(C_ART_na, size, name);
-//
-//		// create new parser for output port
-//		ParserX* newParser = new ParserX(mup::pckCOMPLEX_NO_STRING);
-//		// setting parser of new output port
-//		tmpContainer->SetParser(newParser);
-//		// set definition of new output port
-//		tmpContainer->SetDefinition(expr);
-//		// register all variables of module to parser
-//		registerAllVariablesToParser(newParser);
-//
-//		// save parser for port
-//		setParserForOPort(*newOPort, newParser);
-//		// save data container for port
-//		setContainerForPort(*newOPort, tmpContainer);
-//		// save simulator of current module to output port
-//		setSimulatorForPort(*newOPort, _simulator);
-//
-//		// register new output port
-//		_oPorts[name] = newOPort;
-//
-//		// add variable to all available parsers
-//		addVariableToParsers(name, tmpContainer->GetParserVar());
-//
-//	}
-//	else
-//	{
-//		throw ARTerror("ARTtimeModule::addOPort", "Port name '%s1' is already in use in current time module '%s2'.",
-//				name, name_);
-//	}
-//}
 
 void ARTtimeModule::addOPort(const string& name, const string& expr, unsigned int size)
 {
@@ -478,75 +505,7 @@ void ARTtimeModule::addOPort(const string& name, const string& expr, unsigned in
 	}
 }
 
-ARTdataProp* ARTtimeModule::getPort(const string& name)
-{
-	PortType* port = dynamic_cast<PortType*>(FindProperty(name));
-	if (!port)
-	{
-		throw ARTerror("ARTtimeModule::getPort", "No port with name '%s1' has been found in current time module '%s2'.",
-				name, name_);
-	}
-	else
-	{
-		return port;
-	}
 
-}
-
-//ARTdataContainer& ARTtimeModule::getOPort(const string& name)
-//{
-//	if (_oPorts.find(name) != _oPorts.end())
-//	{
-//		return *(_oPorts[name]->oPort);
-//	}
-//
-//	// TODO: use a feasible exception type
-//	throw string("Output port name has not been found");
-//}
-
-void ARTtimeModule::setLocalParameter(const string& name, const string& expr)
-{
-	localParameterType* lParam = dynamic_cast<localParameterType*>(FindProperty(name));
-	if (lParam)
-	{
-		lParam->SetDefinition(expr);
-	}
-	else
-	{
-		throw ARTerror("ARTtimeModule::setLocalParameter", "Local parameter '%s1' could not be found in current time module '%s2'.",
-				name, name_);
-	}
-
-
-}
-
-void ARTtimeModule::setLocalParameter(const string& name, const double val)
-{
-	localParameterType* lParam = dynamic_cast<localParameterType*>(FindProperty(name));
-	if (lParam)
-	{
-		lParam->SetVal(val);
-	}
-	else
-	{
-		throw ARTerror("ARTtimeModule::setLocalParameter", "Local parameter '%s1' could not be found in current time module '%s2'.",
-				name, name_);
-	}
-}
-
-void ARTtimeModule::setLocalParameter(const string& name, const std::complex<double>& val)
-{
-	localParameterType* lParam = dynamic_cast<localParameterType*>(FindProperty(name));
-	if (lParam)
-	{
-		lParam->SetVal(val);
-	}
-	else
-	{
-		throw ARTerror("ARTtimeModule::setLocalParameter", "Local parameter '%s1' could not be found in current time module '%s2'.",
-				name, name_);
-	}
-}
 
 void ARTtimeModule::addLocalParameter(const string& name, const string& expr)
 {
@@ -624,20 +583,6 @@ void ARTtimeModule::addLocalParameter(const string& name, const std::complex<dou
 			name, name_);
 	}
 }
-
-//void ARTtimeModule::addGlobalParameter(const string& name, const Variable& parameter)
-//{
-//	if (!checkVarNameExists(name))
-//	{
-//		_gParams[name] = &parameter;
-//		addVariableToParsers(name, parameter);
-//	}
-//	else
-//	{
-//		throw ARTerror("ARTtimeModule::addGlobalParameter", "Name '%s1' of global parameter is already in use in current time module '%s2'.",
-//				name, name_);
-//	}
-//}
 
 void ARTtimeModule::addGlobalParameter(const ARTdataProp* parameter)
 {

@@ -25,6 +25,7 @@
 #include "ARTmodel.h"
 
 #include "ARTtimeModule.h"
+#include "timePrototypes.h"
 
 #define TEST_DEF_START(test_id, suite) \
 	class test_id : public TestClass \
@@ -5146,6 +5147,67 @@ TEST_DEF_END(ConvolutionTest1)
 //	}
 //
 //TEST_DEF_END(ConvolutionTest2)
+
+TEST_DEF_START(ConvolutionTest3, ARTtimeSimulatorTests)
+
+	ARTtimeSimulator* myTimeSimulator;
+
+	virtual void prepare()
+	{
+		myTimeSimulator = new ARTtimeSimulator("TestSim");
+		myTimeSimulator->userElements = new ARTlistProp("testList");
+
+	}
+
+	virtual bool run()
+	{
+
+		try
+		{
+			int i;
+
+			ARTItimeModule* timeModule = new inputFunctionModule("myModule", 30);
+			ARTtimeModule* timeModule2 = new ARTtimeModule("ConvolutionModule");
+
+			ARTItimeModule::FPortType* functionOutPort = dynamic_cast<ARTItimeModule::FPortType*>(timeModule->getPort("out"));
+
+			for (i = 0; i < 30; ++i)
+			{
+				functionOutPort->initPortValue(0.5, i);
+			}
+
+			timeModule2->addOPort("local", "local[t] = t");
+			timeModule2->addOPort("out", "out[t] = conv(local, function, t)");
+			timeModule2->addIPort("function", functionOutPort);
+
+			ARTItimeModule::OPortType* simulationOutPort = dynamic_cast<ARTItimeModule::OPortType*>(timeModule2->getPort("out"));
+
+			myTimeSimulator->AddTimeModule(timeModule);
+			myTimeSimulator->AddTimeModule(timeModule2);
+
+			for (i = 0; i < 50; ++i)
+			{
+				cout << "Conv[" << i << "] = " << simulationOutPort->GetPortValue(i).GetFloat() << endl;
+			}
+
+			return true;
+		}
+		catch (ARTerror& e)
+		{
+			string err = e.GetErrorMessage();
+			std::cout << "\n\n" << err;
+			return false;
+		}
+
+	}
+
+	virtual void unprepare()
+	{
+		delete (myTimeSimulator->userElements);
+		delete myTimeSimulator;
+	}
+
+TEST_DEF_END(ConvolutionTest3)
 
 //******************************************************************************************************************************************
 
