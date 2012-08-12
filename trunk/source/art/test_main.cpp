@@ -5187,7 +5187,13 @@ TEST_DEF_START(ConvolutionTest3, ARTtimeSimulatorTests)
 
 			for (i = 0; i < 100; ++i)
 			{
-				cout << "Conv[" << i << "] = " << simulationOutPort->GetPortValue(i).GetFloat() << endl;
+//				cout << "Conv[" << i << "] = " << simulationOutPort->GetPortValue(i).GetFloat() << endl;
+				simulationOutPort->GetPortValue(i).GetFloat();
+			}
+
+			if (simulationOutPort->GetPortValue(99).GetFloat() != 0.25*(99.0 - 70.0 + 1.0)*(99.0 + 70.0))
+			{
+				return false;
 			}
 
 			return true;

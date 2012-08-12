@@ -81,11 +81,11 @@ public:
 	{
 	public:
 		FPortType(const int dlen, const string name, const string sds="", const string lds="", const string htm="");
-		virtual IValue& operator[](std::size_t idx);
-		virtual IValue& operator[](int idx);
 		virtual void initPortValue(const string& expr) const;
 		virtual void initPortValue(double value, int idx) const;
 		virtual void initPortValue(std::complex<double>& value, int idx) const;
+		virtual IValue& operator[](std::size_t idx);
+		virtual IValue& operator[](int idx);
 		virtual ~FPortType() {}
 	};
 
