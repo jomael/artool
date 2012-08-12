@@ -452,6 +452,22 @@ public:
   	return _is_ringbuffer;
   }
 
+  /**
+   * @brief Sets the current behavior to a ring buffer.
+   */
+  inline virtual void setRingBuffer()
+  {
+	  _is_ringbuffer = true;
+  }
+
+  /**
+   * @brief Set the current behavior to a vector.
+   */
+  inline virtual void setVector()
+  {
+	  _is_ringbuffer = false;
+  }
+
 };
 
 

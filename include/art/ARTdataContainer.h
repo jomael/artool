@@ -150,7 +150,7 @@ protected:
 	 */
 	virtual void resizeArray(int newSize);
 
-private:
+protected:
 	//used for parser
 	mup::ARTValue* aval_;
 	mup::Variable* avar_;

@@ -138,6 +138,7 @@ set(ART_SOURCES
 	${ART_SOURCE_DIR}/runrb.cpp # y
 	${ART_SOURCE_DIR}/SimpleMatrix.cpp # y
 	${ART_SOURCE_DIR}/strparsing.cpp # y
+	${ART_SOURCE_DIR}/timePrototypes.cpp # y
 	${ART_SOURCE_DIR}/test_main.cpp # y
 	${ART_SOURCE_DIR}/WindInstrument.cpp # y 
 )
