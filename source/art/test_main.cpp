@@ -45,7 +45,7 @@
 
 
 
-
+//#define _TIMEDEBUG
 
 class TestClass
 {
@@ -223,6 +223,7 @@ class TestClass
 //I pack all test suites into this object
 TestClass* AllMyTests = new TestClass("AllMyTests");
 
+#ifndef _TIMEDEBUG
 //******************************************************************************************************************************************
 TestClass* ARTdataContainerTests = new TestClass("ARTdataContainerTests", AllMyTests);
 
@@ -4473,7 +4474,7 @@ TEST_DEF_START(testCircuitAsBranchImpedanceModes2, BranchTests)
 
 TEST_DEF_END(testCircuitAsBranchImpedanceModes2)
 //******************************************************************************************************************************************
-
+#endif
 TestClass* ARTtimeSimulatorTests = new TestClass("ARTtimeSimulatorTests", AllMyTests);
 
 TEST_DEF_START(DoublePortInitialization, ARTtimeSimulatorTests)
@@ -4581,7 +4582,8 @@ TEST_DEF_START(CreateAndChangeLocalParameter, ARTtimeSimulatorTests)
 
 			ARTItimeModule::OPortType& outputPort = dynamic_cast<ARTItimeModule::OPortType&>(*(timeModule->getPort("test")));
 
-			if (outputPort.GetPortValue(0).GetFloat() != 6.0)
+			timeSimulator->SimulateTimeStep(0);
+			if (outputPort[0].GetFloat() != 6.0)
 			{
 				return false;
 			}
@@ -4589,7 +4591,8 @@ TEST_DEF_START(CreateAndChangeLocalParameter, ARTtimeSimulatorTests)
 			timeModule->setLocalParameter("y", 0.5);
 			timeModule->setLocalParameter("x", "x = 44100");
 
-			if (outputPort.GetPortValue(1).GetFloat() != 44100.0/2)
+			timeSimulator->SimulateTimeStep(1);
+			if (outputPort[1].GetFloat() != 44100.0/2)
 			{
 				return false;
 			}
@@ -4639,14 +4642,16 @@ TEST_DEF_START(ChangeGlobalParameter, ARTtimeSimulatorTests)
 
 			myTimeSimulator->SetSimulationParameter("T", 0.1);
 
-			if (testPort.GetPortValue(0).GetFloat() != 0.1)
+			myTimeSimulator->SimulateTimeStep(0);
+			if (testPort[0].GetFloat() != 0.1)
 			{
 				return false;
 			}
 
 			myTimeSimulator->SetSimulationParameter("T", 0.2);
 
-			if (testPort.GetPortValue(1).GetFloat() != 0.2)
+			myTimeSimulator->SimulateTimeStep(1);
+			if (testPort[1].GetFloat() != 0.2)
 			{
 				return false;
 			}
@@ -4697,14 +4702,16 @@ TEST_DEF_START(CreateGlobalParameter, ARTtimeSimulatorTests)
 
 			myTimeSimulator->AddSimulationParameter("TEMP", 40.0);
 
-			if (testPort.GetPortValue(0).GetFloat() != 40.0)
+			myTimeSimulator->SimulateTimeStep(0);
+			if (testPort[0].GetFloat() != 40.0)
 			{
 				return false;
 			}
 
 			myTimeSimulator->SetSimulationParameter("TEMP", "TEMP = sqrt(2)");
 
-			if (testPort.GetPortValue(1).GetFloat() != std::sqrt(std::complex<double>(2.0,0)).real())
+			myTimeSimulator->SimulateTimeStep(1);
+			if (testPort[1].GetFloat() != std::sqrt(std::complex<double>(2.0,0)).real())
 			{
 				return false;
 			}
@@ -4806,12 +4813,13 @@ TEST_DEF_START(FibonacciNumbers1, ARTtimeSimulatorTests)
 
 			for (int i = 0; i < 50; ++i)
 			{
-				outputPort.GetPortValue(i).GetFloat();
+//				outputPort.GetPortValue(i).GetFloat();
+				myTimeSimulator->SimulateTimeStep(i);
 //				cout << "Fib[" << i << "] = " << outputPort.GetPortValue(i).GetFloat() << endl;
 			}
 
 			// test 51st fibonacci number
-			if (outputPort.GetPortValue(49).GetFloat() == (2.0*1597.0*6376021.0))
+			if (outputPort[49].GetFloat() == (2.0*1597.0*6376021.0))
 			{
 				return true;
 			}
@@ -4876,11 +4884,12 @@ TEST_DEF_START(FibonacciNumbers2, ARTtimeSimulatorTests)
 			for (int i = 0; i < 50; ++i)
 			{
 //				std::cout << "Fibonacci[" << i << "] = " << outputPort[i].real() << std::endl;
-				outputPort.GetPortValue(i).GetFloat();
+				myTimeSimulator->SimulateTimeStep(i);
+//				outputPort.GetPortValue(i).GetFloat();
 			}
 
 			// test 51st fibonacci number
-			if (outputPort.GetPortValue(49).GetFloat() == (2.0*1597.0*6376021.0))
+			if (outputPort[49].GetFloat() == (2.0*1597.0*6376021.0))
 			{
 				return true;
 			}
@@ -4998,7 +5007,7 @@ TEST_DEF_START(ConvolutionTest1, ARTtimeSimulatorTests)
 			timeModule->addOPort("p", "p[t] = conv(U,G,t)");
 			timeModule->addOPort("U", "U[t] = sin(2*pi*30*t*T)");
 			timeModule->addOPort("G", "G[t] = (t == 0) ? 1 : 0");
-			ARTItimeModule::OPortType* pPort = dynamic_cast<ARTItimeModule::OPortType*>(timeModule->getPort("p"));
+			ARTItimeModule::OPortType& pPort = dynamic_cast<ARTItimeModule::OPortType&>(*(timeModule->getPort("p")));
 //			ARTItimeModule::OPortType* gPort = dynamic_cast<ARTItimeModule::OPortType*>(timeModule->getPort("G"));
 //			ARTItimeModule::OPortType* uPort = dynamic_cast<ARTItimeModule::OPortType*>(timeModule->getPort("U"));
 
@@ -5006,21 +5015,22 @@ TEST_DEF_START(ConvolutionTest1, ARTtimeSimulatorTests)
 
 			for (int i = 0; i < 50; ++i)
 			{
-				pPort->GetPortValue(i).GetFloat();
+				myTimeSimulator->SimulateTimeStep(i);
+//				pPort->GetPortValue(i).GetFloat();
 //				std::cout << "p[" << i << "] = " << pPort->GetPortValue(i).GetFloat() << std::endl;
 //				std::cout << "G[" << i << "] = " << gPort->GetPortValue(i).GetFloat() << std::endl;
 //				std::cout << "U[" << i << "] = " << uPort->GetPortValue(i).GetFloat() << std::endl;
 //				std::cout << "p[" << i << "] = " << pPort->GetPortValue(i).GetFloat() << std::endl;
 			}
 
-			if (std::abs((pPort->GetPortValue(49).GetFloat() - (std::sin(2.0 * PI * 30.0 * 49.0 / 44100)))) < 1.0e-7)
+			if (std::abs(pPort[49].GetFloat() - (std::sin(2.0 * PI * 30.0 * 49.0 / 44100))) < 1.0e-7)
 //			if (std::abs((pPort->GetPortValue(3).GetFloat() - (std::sin(2.0 * PI * 30.0 * 3.0 / 44100)))) < 1.0e-7)
 			{
 				return true;
 			}
 			else
 			{
-				std::cout << "\n\nsin(2*pi*30*15/44100) = " << pPort->GetPortValue(49).GetFloat() << " != " << std::sin(2.0 * PI * 30.0 * 15.0 / 44100) << std::endl;
+				std::cout << "\n\nsin(2*pi*30*15/44100) = " << pPort[49].GetFloat() << " != " << std::sin(2.0 * PI * 30.0 * 15.0 / 44100) << std::endl;
 //				std::cout << "sin(2*pi*30*3/44100) = " << pPort->GetPortValue(3).GetFloat() << " != " << std::sin(2.0 * PI * 30.0 * 3.0 / 44100) << std::endl;
 				return false;
 			}
@@ -5177,10 +5187,10 @@ TEST_DEF_START(ConvolutionTest3, ARTtimeSimulatorTests)
 			}
 
 			timeModule2->addOPort("local", "local[t] = t");
-			timeModule2->addOPort("out", "out[t] = conv(local, function, t)");
+			timeModule2->addOPort("testout", "testout[t] = conv(local, function, t)");
 			timeModule2->addIPort("function", functionOutPort);
 
-			ARTItimeModule::OPortType* simulationOutPort = dynamic_cast<ARTItimeModule::OPortType*>(timeModule2->getPort("out"));
+			ARTItimeModule::OPortType& simulationOutPort = dynamic_cast<ARTItimeModule::OPortType&>(*(timeModule2->getPort("testout")));
 
 			myTimeSimulator->AddTimeModule(timeModule);
 			myTimeSimulator->AddTimeModule(timeModule2);
@@ -5188,10 +5198,11 @@ TEST_DEF_START(ConvolutionTest3, ARTtimeSimulatorTests)
 			for (i = 0; i < 100; ++i)
 			{
 //				cout << "Conv[" << i << "] = " << simulationOutPort->GetPortValue(i).GetFloat() << endl;
-				simulationOutPort->GetPortValue(i).GetFloat();
+//				simulationOutPort->GetPortValue(i).GetFloat();
+				myTimeSimulator->SimulateTimeStep(i);
 			}
 
-			if (simulationOutPort->GetPortValue(99).GetFloat() != 0.25*(99.0 - 70.0 + 1.0)*(99.0 + 70.0))
+			if (simulationOutPort[99].GetFloat() != 0.25*(99.0 - 70.0 + 1.0)*(99.0 + 70.0))
 			{
 				return false;
 			}
@@ -5214,6 +5225,71 @@ TEST_DEF_START(ConvolutionTest3, ARTtimeSimulatorTests)
 	}
 
 TEST_DEF_END(ConvolutionTest3)
+
+TEST_DEF_START(HiddenTimeDelay, ARTtimeSimulatorTests)
+
+	ARTtimeSimulator* myTimeSimulator;
+
+	virtual void prepare()
+	{
+		myTimeSimulator = new ARTtimeSimulator("TestSim");
+		myTimeSimulator->userElements = new ARTlistProp("testList");
+
+	}
+
+	virtual bool run()
+	{
+
+		try
+		{
+
+			ARTtimeModule* timeModule = new ARTtimeModule("myModule");
+			ARTtimeModule* timeModule2 = new ARTtimeModule("myModule2");
+
+			timeModule->addOPort("x", "x[t] = y[t-1]");
+			timeModule2->addOPort("y", "y[t] = x[t] + 2");
+
+			ARTItimeModule::OPortType& xPort = dynamic_cast<ARTItimeModule::OPortType&>(*(timeModule->getPort("x")));
+			ARTItimeModule::OPortType& yPort = dynamic_cast<ARTItimeModule::OPortType&>(*(timeModule2->getPort("y")));
+
+			timeModule->addIPort("y", &yPort);
+			timeModule2->addIPort("x", &xPort);
+
+			myTimeSimulator->AddTimeModule(timeModule);
+			myTimeSimulator->AddTimeModule(timeModule2);
+
+			yPort.initPortValue(-2, -1);
+//			xPort.initPortValue(-4, -1);
+
+			for (int i = 0; i < 100; ++i)
+			{
+				myTimeSimulator->SimulateTimeStep(i);
+//				cout << "x[" << i << "] = " << xPort[i].GetFloat() << endl;
+			}
+
+			if (xPort[99].GetFloat() != 98.0*2.0)
+			{
+				return false;
+			}
+
+			return true;
+		}
+		catch (ARTerror& e)
+		{
+			string err = e.GetErrorMessage();
+			std::cout << "\n\n" << err;
+			return false;
+		}
+
+	}
+
+	virtual void unprepare()
+	{
+		delete (myTimeSimulator->userElements);
+		delete myTimeSimulator;
+	}
+
+TEST_DEF_END(HiddenTimeDelay)
 
 //******************************************************************************************************************************************
 

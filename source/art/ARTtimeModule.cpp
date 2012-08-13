@@ -135,18 +135,18 @@ ARTItimeModule::OPortType::OPortType(const T_ART_Type dtyp,
 		const string sds,
 		const string lds,
 		const string htm)
-: PortType(dtyp, dlen, name, sds, lds, htm),
-  tVal_(0),
-  tVar_(new Variable(&tVal_))
+: PortType(dtyp, dlen, name, sds, lds, htm)
+//  tVal_(0),
+//  tVar_(new Variable(&tVal_))
 {
-	if (parser_)
-	{
-		parser_->DefineVar("t", *tVar_);
-	}
-	else
-	{
-		throw ARTerror("ARTItimeModule::OPortType::OPortType", "No valid parser has been created. Please check source code of ARTdataContainer!");
-	}
+//	if (parser_)
+//	{
+//		parser_->DefineVar("t", *tVar_);
+//	}
+//	else
+//	{
+//		throw ARTerror("ARTItimeModule::OPortType::OPortType", "No valid parser has been created. Please check source code of ARTdataContainer!");
+//	}
 }
 
 void ARTItimeModule::OPortType::initPortValue(const string& expr) const
@@ -181,92 +181,92 @@ void ARTItimeModule::OPortType::initPortValue(std::complex<double>& value, int i
 	port[idx] = value;
 }
 
-IValue& ARTItimeModule::OPortType::operator[](::size_t idx)
-{
-//	cout << "ARTItimeModule::OPortType::operator[size_t " << idx << "]" << endl;
-	ARTdataContainer& tmpContainer = GetArrayElement(idx);
-	if (!tmpContainer.IsValid())
-	{
-//		cout << idx << " INVALID!" << endl;
-		tVal_ = (int) idx;
-	}
-	else
-	{
-//		cout << idx << " VALID!" << endl;
-	}
+//IValue& ARTItimeModule::OPortType::operator[](::size_t idx)
+//{
+////	cout << "ARTItimeModule::OPortType::operator[size_t " << idx << "]" << endl;
+//	ARTdataContainer& tmpContainer = GetArrayElement(idx);
+//	if (!tmpContainer.IsValid())
+//	{
+////		cout << idx << " INVALID!" << endl;
+//		tVal_ = (int) idx;
+//	}
+//	else
+//	{
+////		cout << idx << " VALID!" << endl;
+//	}
+//
+//	return ARTdataContainer::operator[](idx);
+//}
+//
+//IValue& ARTItimeModule::OPortType::operator[](int idx)
+//{
+////	cout << "ARTItimeModule::OPortType::operator[int " << idx << "]" << endl;
+//	ARTdataContainer& tmpContainer = GetArrayElement(idx);
+//	if (!tmpContainer.IsValid())
+//	{
+////		cout << idx << " INVALID!" << endl;
+//		tVal_ = idx;
+//	}
+//	else
+//	{
+////		cout << idx << " VALID!" << endl;
+//	}
+//
+//	return ARTdataContainer::operator[](idx);
+//}
 
-	return ARTdataContainer::operator[](idx);
-}
-
-IValue& ARTItimeModule::OPortType::operator[](int idx)
-{
-//	cout << "ARTItimeModule::OPortType::operator[int " << idx << "]" << endl;
-	ARTdataContainer& tmpContainer = GetArrayElement(idx);
-	if (!tmpContainer.IsValid())
-	{
-//		cout << idx << " INVALID!" << endl;
-		tVal_ = idx;
-	}
-	else
-	{
-//		cout << idx << " VALID!" << endl;
-	}
-
-	return ARTdataContainer::operator[](idx);
-}
-
-IValue& ARTItimeModule::OPortType::GetPortValue(::size_t idx)
-{
-	ARTtimeSimulator* simulator = dynamic_cast<ARTtimeSimulator*>(scope_);
-	if (simulator)
-	{
-		simulator->SetModulesToCurrentTimeIndex(idx);
-	}
-	else
-	{
-		throw ARTerror("ARTPortType::initPortValue", "No valid time simulator set for current port '%s1'.", name_);
-	}
-
-	ARTdataContainer& tmpContainer = GetArrayElement(idx);
-
-	if (tVal_.GetFloat() != (float_type) idx)
-	{
-		tVal_ = (int) idx;
-		tmpContainer.Invalidate();
-		SetCurrentIndex(idx);
-	}
-
-	return tmpContainer;
-}
-
-IValue& ARTItimeModule::OPortType::GetPortValue(int idx)
-{
-	ARTtimeSimulator* simulator = dynamic_cast<ARTtimeSimulator*>(scope_);
-	if (simulator)
-	{
-		simulator->SetModulesToCurrentTimeIndex(idx);
-	}
-	else
-	{
-		throw ARTerror("ARTPortType::initPortValue", "No valid time simulator set for current port '%s1'.", name_);
-	}
-
-//	cout << "ARTItimeModule::OPortType::GetPortValue(" << idx << ")" << endl;
-	ARTdataContainer& tmpContainer = GetArrayElement(idx);
-
-	if (tVal_.GetFloat() != (float_type) idx)
-	{
-		tVal_ = (int) idx;
-		tmpContainer.Invalidate();
-		SetCurrentIndex(idx);
-	}
-
-	return tmpContainer;
-}
+//IValue& ARTItimeModule::OPortType::GetPortValue(::size_t idx)
+//{
+//	ARTtimeSimulator* simulator = dynamic_cast<ARTtimeSimulator*>(scope_);
+//	if (simulator)
+//	{
+//		simulator->SimulateTimeStep(idx);
+//	}
+//	else
+//	{
+//		throw ARTerror("ARTPortType::initPortValue", "No valid time simulator set for current port '%s1'.", name_);
+//	}
+//
+//	ARTdataContainer& tmpContainer = GetArrayElement(idx);
+//
+//	if (tVal_.GetFloat() != (float_type) idx)
+//	{
+//		tVal_ = (int) idx;
+//		tmpContainer.Invalidate();
+//		SetCurrentIndex(idx);
+//	}
+//
+//	return tmpContainer;
+//}
+//
+//IValue& ARTItimeModule::OPortType::GetPortValue(int idx)
+//{
+//	ARTtimeSimulator* simulator = dynamic_cast<ARTtimeSimulator*>(scope_);
+//	if (simulator)
+//	{
+//		simulator->SimulateTimeStep(idx);
+//	}
+//	else
+//	{
+//		throw ARTerror("ARTPortType::initPortValue", "No valid time simulator set for current port '%s1'.", name_);
+//	}
+//
+////	cout << "ARTItimeModule::OPortType::GetPortValue(" << idx << ")" << endl;
+//	ARTdataContainer& tmpContainer = GetArrayElement(idx);
+//
+//	if (tVal_.GetFloat() != (float_type) idx)
+//	{
+//		tVal_ = (int) idx;
+//		tmpContainer.Invalidate();
+//		SetCurrentIndex(idx);
+//	}
+//
+//	return tmpContainer;
+//}
 
 ARTItimeModule::OPortType::~OPortType()
 {
-	delete tVar_;
+//	delete tVar_;
 }
 
 /*************************************************************
@@ -648,6 +648,22 @@ void ARTtimeModule::setCurrentIndex(int idx)
 		{
 			oPort->SetCurrentIndex(idx);
 			oPort->GetArrayElement(idx).Invalidate();
+		}
+		propIter = GetProperties(propIter);
+	}
+}
+
+void ARTtimeModule::simulateCurrentIndex(int idx)
+{
+	ARTproperty* propIter = GetProperties(NULL);
+	OPortType* oPort;
+	while (propIter)
+	{
+		oPort = dynamic_cast<OPortType*>(propIter);
+		// only evaluate current output port if needed
+		if (oPort)
+		{
+			oPort->GetArrayElement(idx).EvaluateIfInvalid();
 		}
 		propIter = GetProperties(propIter);
 	}

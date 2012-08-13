@@ -25,6 +25,7 @@ public:
 
 	// do nothing
 	virtual void setCurrentIndex(int idx) {}
+	virtual void simulateCurrentIndex(int idx) {}
 
 	virtual ~inputFunctionModule();
 };

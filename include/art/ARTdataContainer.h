@@ -126,11 +126,13 @@ protected:
 
 	void SetCountedFlag(bool b);
 
+public:
 	void EvaluateIfInvalid()
 	{
 		if (!valid_) Evaluate();
 	}
 
+protected:
 	string definition_;	///< textual representation of property value (symbolic expression)
 	ParserX* parser_;	///< expression parser instance
 	ARTsimulator* scope_;	///< scope of variable names

@@ -62,18 +62,18 @@ public:
 
 	class OPortType : public PortType
 	{
-	protected:
-		Value tVal_;
-		Variable* tVar_;
+//	protected:
+//		Value tVal_;
+//		Variable* tVar_;
 	public:
 		OPortType(const T_ART_Type dtyp, const int dlen, const string name, const string sds="", const string lds="", const string htm="");
 		virtual void initPortValue(const string& expr) const;
 		virtual void initPortValue(double value, int idx) const;
 		virtual void initPortValue(std::complex<double>& value, int idx) const;
-		virtual IValue& operator[](std::size_t idx);
-		virtual IValue& operator[](int idx);
-		virtual IValue& GetPortValue(std::size_t idx);
-		virtual IValue& GetPortValue(int idx);
+//		virtual IValue& operator[](std::size_t idx);
+//		virtual IValue& operator[](int idx);
+//		virtual IValue& GetPortValue(std::size_t idx);
+//		virtual IValue& GetPortValue(int idx);
 		virtual ~OPortType();
 	};
 
@@ -123,6 +123,7 @@ public:
 
 	virtual void setSimulator(ARTsimulator* sim);
 	virtual void setCurrentIndex(int idx) = 0;
+	virtual void simulateCurrentIndex(int idx) = 0;
 
 	virtual ~ARTItimeModule() {}
 
@@ -157,6 +158,7 @@ public:
 
 	virtual void setSimulator(ARTsimulator* sim);
 	virtual void setCurrentIndex(int idx);
+	virtual void simulateCurrentIndex(int idx);
 
 //	virtual ARTtimeModule& operator=(const ARTtimeModule& orig);
 
