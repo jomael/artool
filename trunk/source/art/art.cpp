@@ -717,12 +717,19 @@ T_ART_Cmplx __CALLCONV ARTGetComplexFromPort(P_ART_DataProp port, int idx)
 	T_ART_Cmplx result;
 	DLL_ERRORHANDLING_BEGIN
 	std::complex<double> tempResult;
+	ARTtimeSimulator* sim;
 	ARTItimeModule::OPortType* oPort = dynamic_cast<ARTItimeModule::OPortType*>(port);
 	if (oPort == NULL)
 	{
 		throw ARTerror("ARTGetComplexFromPort", "The specified port is no valid output port!");
 	}
-	tempResult = oPort->GetPortValue(idx).GetComplex();
+	sim = dynamic_cast<ARTtimeSimulator*>(oPort->GetScope());
+	if (!sim)
+	{
+		throw ARTerror("ARTGetComplexFromPort", "Port '%s1' does not have a valid simulator!", oPort->GetName());
+	}
+	sim->SimulateTimeStep(idx);
+	tempResult = (*oPort)[idx].GetComplex();
 	result.re = tempResult.real();
 	result.im = tempResult.imag();
 	return result;

@@ -747,7 +747,7 @@ int ARTdataContainer::EvaluationCost()
 // expression evaluation
 void ARTdataContainer::Evaluate() const
 {
-	_DBG_MSG("");
+	_DBG_MSG( definition_ );
 	//std::cout << "ARTdataContainer::Evaluate() " << val << " // " << varname_ << "////////////////////\n";
 	//to avoid circular references, check if we are already calcualting this dataContainer
 	if (eval_started) throw ARTerror("ARTdataContainer::Evaluate", "Circular reference to dataContainer '%s1'.", varname_);

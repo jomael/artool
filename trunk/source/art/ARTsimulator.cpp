@@ -222,26 +222,26 @@ void ARTtimeSimulator::AddSimulationParameter(const string& name, double val)
 
 }
 
-void ARTtimeSimulator::SetModulesToCurrentTimeIndex(int idx)
+void ARTtimeSimulator::SimulateTimeStep(int idx)
 {
 
-//	// set current time index parameter if it exists
-//	ARTdataProp* prop = FindDataPropInSimulator("t");
-////	if (_simulParams.find("t") != _simulParams.end())
-////	{
-////		ARTdataContainer& tmpContainer = *(_simulParams["t"]->_val);
-////		tmpContainer.SetVal(idx);
-////	}
-//	if (prop != NULL)
+	// set current time index parameter if it exists
+	ARTdataProp* prop = FindDataPropInSimulator("t");
+//	if (_simulParams.find("t") != _simulParams.end())
 //	{
-////		std::cout << "Setting current global parameter 't' to " << idx << "." << std::endl;
-//		prop->SetVal(idx);
+//		ARTdataContainer& tmpContainer = *(_simulParams["t"]->_val);
+//		tmpContainer.SetVal(idx);
 //	}
-//	else
-//	{
-//		throw ARTerror("ARTtimeSimulator::SetModulesToCurrentTimeIndex", "Could not find global simulation parameter 't' in simulator '%s1' which is needed for time domain simulation.",
-//				name_);
-//	}
+	if (prop != NULL)
+	{
+//		std::cout << "Setting current global parameter 't' to " << idx << "." << std::endl;
+		prop->SetVal(idx);
+	}
+	else
+	{
+		throw ARTerror("ARTtimeSimulator::SetModulesToCurrentTimeIndex", "Could not find global simulation parameter 't' in simulator '%s1' which is needed for time domain simulation.",
+				name_);
+	}
 
 	// iterate through all time modules of the simulator
 	// and set their time index to the specified one
@@ -256,6 +256,18 @@ void ARTtimeSimulator::SetModulesToCurrentTimeIndex(int idx)
 			{
 //				std::cout << "Setting time module '" << tModule->GetName() << "' to time index " << idx << "." << std::endl;
 				tModule->setCurrentIndex(idx);
+			}
+			iter = userElements->GetObjects(iter);
+		}
+
+		iter = userElements->GetObjects(NULL);
+		while (iter != NULL)
+		{
+			tModule = dynamic_cast<ARTItimeModule*>(iter);
+			if (tModule)
+			{
+//				std::cout << "Setting time module '" << tModule->GetName() << "' to time index " << idx << "." << std::endl;
+				tModule->simulateCurrentIndex(idx);
 			}
 			iter = userElements->GetObjects(iter);
 		}
@@ -412,10 +424,11 @@ void ARTtimeSimulator::initStandardSimulParams()
 //	_simulParams["T"] = tmpParam;
 
 	// create new simulation parameter time index
-//	tmpContainer = new ARTdataContainer(C_ART_int, 0, "t");
+	tmpProp = new ARTdataProp(C_ART_int, 0, "t");
 //	tmpParser = new ParserX(mup::pckCOMPLEX_NO_STRING);
 //	tmpContainer->SetParser(tmpParser);
-//	tmpContainer->SetVal(0);
+	tmpProp->SetParser(parser_);
+	tmpProp->SetVal(0);
 //
 //	tmpParam = new simulParameterType();
 //	tmpParam->_val = tmpContainer;
@@ -427,7 +440,7 @@ void ARTtimeSimulator::initStandardSimulParams()
 //	tmpProp->SetParser(parser_);
 //	tmpProp->SetVal(0);
 
-//	AppendDataProp(tmpProp);
+	AppendDataProp(tmpProp);
 }
 
 void ARTtimeSimulator::clean()

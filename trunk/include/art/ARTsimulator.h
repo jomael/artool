@@ -78,7 +78,7 @@ public:
 	virtual void AddSimulationParameter(const string& name, const std::complex<double>& val);
 	virtual void AddSimulationParameter(const string& name, double val);
 
-	virtual void SetModulesToCurrentTimeIndex(int idx);
+	virtual void SimulateTimeStep(int idx);
 
 	virtual void SetSimulationParameter(const string& name, const string& expr);
 	virtual void SetSimulationParameter(const string& name, const std::complex<double>& val);
