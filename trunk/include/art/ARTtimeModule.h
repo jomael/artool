@@ -77,13 +77,13 @@ public:
 		virtual ~OPortType();
 	};
 
-	class FPortType : public PortType
+	class FPortType : public OPortType
 	{
 	public:
 		FPortType(const int dlen, const string name, const string sds="", const string lds="", const string htm="");
-		virtual void initPortValue(const string& expr) const;
-		virtual void initPortValue(double value, int idx) const;
-		virtual void initPortValue(std::complex<double>& value, int idx) const;
+//		virtual void initPortValue(const string& expr) const;
+//		virtual void initPortValue(double value, int idx) const;
+//		virtual void initPortValue(std::complex<double>& value, int idx) const;
 		virtual IValue& operator[](std::size_t idx);
 		virtual IValue& operator[](int idx);
 		virtual ~FPortType() {}
@@ -92,10 +92,10 @@ public:
 	class IPortType : public PortType
 	{
 	protected:
-		const PortType* refPort_;
+		const OPortType* refPort_;
 	public:
 		IPortType(const string& name, const OPortType* refPort);
-		IPortType(const string& name, const FPortType* refPort);
+//		IPortType(const string& name, const FPortType* refPort);
 		virtual const Variable& GetParserVar();
 		virtual const Variable& GetParserVar() const;
 		virtual ~IPortType() {}

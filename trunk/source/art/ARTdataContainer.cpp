@@ -1150,7 +1150,7 @@ void ARTdataContainer::SetVal(const char* s, int ind)
 // mark value as invalid and invalidate all dependent data containers
 void ARTdataContainer::Invalidate()
 {
-	_DBG_MSG("");
+	_DBG_MSG( varname_ );
 //	if (eval_started) throw ARTerror("ARTdataContainer::Invalidate", "Circular reference to dataContainer '%s1'.",varname_); 
 //	eval_started = true;
 	//std::cout << varname_ << " invalidated.\n";										
@@ -1435,6 +1435,7 @@ void ARTdataContainer::SetCurrentIndex(int idx)
 				resizeArray(arraySize + 5);
 			}
 			tmpArray->setCurrentIdx(idx);
+			GetArrayElement(idx).Invalidate();
 			break;
 		default:
 			throw ParserError();
@@ -1463,10 +1464,12 @@ void ARTdataContainer::resizeArray(int newSize)
 	{
 		tmp = new ARTdataContainer();
 		tmp->SetType(C_ART_cpx);
-		tmp->SetVal(std::complex<double>(0,0));
+//		tmp->SetVal(std::complex<double>(0,0));
+		tmp->valid_ = false;
 		tmp->parser_ = parser_;
 		tmp->definition_ = definition_;
 		tmp->parent_ = this;
+		tmp->varname_ = varname_;
 		tmpArray->at(elementPtr) = tmp;
 		elementPtr = (elementPtr + newSize + 1) % newSize;
 	}
