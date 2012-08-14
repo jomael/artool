@@ -25,10 +25,6 @@ public:
 		const array_type& b = inArg[1]->GetArray();
 		int_type t = (int_type) (inArg[2]->GetFloat());
 
-		ARTdataContainer* tmpContainer;
-		ARTItimeModule::PortType* portA = NULL;
-		ARTItimeModule::PortType* portB = NULL;
-
 		int lowerBound = 0;
 		int upperBound = (int) t;
 
@@ -43,32 +39,6 @@ public:
 			lowerBound = 0;
 		}
 
-		tmpContainer = dynamic_cast<ARTdataContainer*>(a[lowerBound]);
-
-		// get parent container / port of first argument
-		if (tmpContainer)
-		{
-			portA = dynamic_cast<ARTItimeModule::PortType*>(tmpContainer->GetParent());
-		}
-
-		if (!portA)
-		{
-			throw ParserError("The first argument of function 'conv' is no valid port type!");
-		}
-
-		tmpContainer = dynamic_cast<ARTdataContainer*>(b[t-lowerBound]);
-
-		// get parent container / port of first argument
-		if (tmpContainer)
-		{
-			portB = dynamic_cast<ARTItimeModule::PortType*>(tmpContainer->GetParent());
-		}
-
-		if (!portB)
-		{
-			throw ParserError("The second argument of function 'conv' is no valid port type!");
-		}
-
 
 //		cout << "Expression of a: " << tmpContainer << endl;
 
@@ -80,10 +50,12 @@ public:
 //			std::cerr << "a[" << k << "] = " << (*portA)[k].GetFloat() << std::endl;
 //			std::cerr << "b[" << t << "-" << k << "] = " << (*portB)[t-k].GetFloat() << std::endl;
 //			std::cerr << "b[" << t << "-" << k << "] = " << b[t-k]->GetFloat() << std::endl;
-			float_type z1_real = (*portA)[k].GetFloat();
-			float_type z1_imag = (*portA)[k].GetImag();
-			float_type z2_real = (*portB)[t-k].GetFloat();
-			float_type z2_imag = (*portB)[t-k].GetImag();
+
+			float_type z1_real = a[k]->GetFloat();
+			float_type z1_imag = a[k]->GetImag();
+			float_type z2_real = b[t-k]->GetFloat();
+			float_type z2_imag = b[t-k]->GetImag();
+
 
 			result.real() += (z1_real*z2_real - z1_imag*z2_imag);
 			result.imag() += (z1_real*z2_imag + z1_imag*z2_real);
