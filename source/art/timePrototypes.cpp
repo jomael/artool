@@ -46,7 +46,7 @@ ARTdataProp* inputFunctionModule::getPort(const string& name)
 {
 	if (name != "out")
 	{
-		throw ARTerror("InputFunctionModule::getPort", "This time module '%s1' has no port '%s2'.",
+		throw ARTerror("InputFunctionModule::getPort", "Time module '%s1' has no port '%s2'.",
 				name_, name);
 	}
 	return out_;
