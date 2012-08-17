@@ -83,6 +83,7 @@ void PackageCommon::AddToParser(ParserXBase *pParser)
   // - infix...
   pParser->DefineInfixOprt(new OprtCastToFloat);
   pParser->DefineInfixOprt(new OprtCastToInt);
+  pParser->DefineInfixOprt(new OprtRoundToInt);
 }
 
 //------------------------------------------------------------------------------

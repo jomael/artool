@@ -202,9 +202,19 @@ MUP_NAMESPACE_START
       case 'f': return GetFloat() < a_Val.GetFloat();
       case 'b': return GetBool() < a_Val.GetBool();
       case 'c':
+        // added by CBG
+        if (GetImag() == 0 && a_Val.GetImag() == 0)
+        {
+          return GetFloat() < a_Val.GetFloat();
+        }
       default:  MUP_FAIL(INVALID_TYPE_CODE);
                 return false;
       } // switch this type
+    }
+    // added by CBG
+    else if (GetImag() == 0 && a_Val.GetImag() == 0)
+    {
+      return GetFloat() < a_Val.GetFloat();
     }
     else
     {
@@ -231,9 +241,20 @@ MUP_NAMESPACE_START
       case 'i': 
       case 'f': return GetFloat() > a_Val.GetFloat();
       case 'b': return GetBool()  > a_Val.GetBool();
+      case 'c':
+        // added by CBG
+        if (GetImag() == 0 && a_Val.GetImag() == 0)
+        {
+          return GetFloat() > a_Val.GetFloat();
+        }
       default:  MUP_FAIL(INVALID_TYPE_CODE);
                 return false;
       } // switch this type
+    }
+    // added by CBG
+    else if (GetImag() == 0 && a_Val.GetImag() == 0)
+    {
+      return GetFloat() > a_Val.GetFloat();
     }
     else
     {
@@ -260,9 +281,20 @@ MUP_NAMESPACE_START
       case 'i': 
       case 'f': return GetFloat() >= a_Val.GetFloat();
       case 'b': return GetBool() >= a_Val.GetBool();
+      case 'c':
+        // added by CBG
+        if (GetImag() == 0 && a_Val.GetImag() == 0)
+        {
+          return GetFloat() >= a_Val.GetFloat();
+        }
       default:  MUP_FAIL(INVALID_TYPE_CODE);
                 return false;
       } // switch this type
+    }
+    // added by CBG
+    else if (GetImag() == 0 && a_Val.GetImag() == 0)
+    {
+      return GetFloat() >= a_Val.GetFloat();
     }
     else
     {
@@ -289,9 +321,20 @@ MUP_NAMESPACE_START
       case 'i': 
       case 'f': return GetFloat() <= a_Val.GetFloat();
       case 'b': return GetBool() <= a_Val.GetBool();
+      case 'c':
+        // added by CBG
+        if (GetImag() == 0 && a_Val.GetImag() == 0)
+        {
+          return GetFloat() <= a_Val.GetFloat();
+        }
       default:  MUP_FAIL(INVALID_TYPE_CODE);
                 return false;
       } // switch this type
+    }
+    // added by CBG
+    else if (GetImag() == 0 && a_Val.GetImag() == 0)
+    {
+      return GetFloat() <= a_Val.GetFloat();
     }
     else
     {

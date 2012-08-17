@@ -271,9 +271,9 @@ MUP_NAMESPACE_START
     {
     case 'f':  
     case 'i': 
-    case 'b':  
-         *ret = (int_type)a_pArg[0]->GetFloat();
-         break;
+    case 'b':
+      *ret = (int_type)a_pArg[0]->GetFloat();
+      break;
 
     default:
       {
@@ -289,12 +289,85 @@ MUP_NAMESPACE_START
   //------------------------------------------------------------------------------
   const char_type* OprtCastToInt::GetDesc() const 
   { 
-    return _T("cast a value into a floating point number"); 
+    return _T("cast a value into an integer number");
   }
 
   //------------------------------------------------------------------------------
   IToken* OprtCastToInt::Clone() const 
   { 
     return new OprtCastToInt(*this); 
+  }
+
+
+  //------------------------------------------------------------------------------
+  //
+  //  Round To Int
+  //
+  //------------------------------------------------------------------------------
+
+  OprtRoundToInt::OprtRoundToInt()
+    :IOprtInfix( _T("(round)"), _T("i:.") )
+  {}
+
+  //------------------------------------------------------------------------------
+  void OprtRoundToInt::Eval(ptr_val_type &ret, const ptr_val_type *a_pArg, int /*a_iArgc*/)
+  {
+    float_type inFloat;
+    int_type result;
+    switch(a_pArg[0]->GetType())
+    {
+    case 'f':
+    case 'i':
+    case 'b':
+      inFloat = a_pArg[0]->GetFloat();
+      result = (int_type) inFloat;
+      if (std::abs(inFloat - result) >= 0.5)
+      {
+        result = (inFloat > 0) ? ++result : --result;
+      }
+
+//      std::cout << ", result (after) = " << result << std::endl;
+
+      *ret = result;
+      break;
+//      *ret = (int_type)a_pArg[0]->GetFloat();
+//      break;
+    case 'c':
+      if (a_pArg[0]->GetImag() == 0)
+      {
+        inFloat = a_pArg[0]->GetFloat();
+        result = (int_type) inFloat;
+        if (std::abs(inFloat - result) >= 0.5)
+        {
+          result = (inFloat > 0) ? ++result : --result;
+        }
+
+  //      std::cout << ", result (after) = " << result << std::endl;
+
+        *ret = result;
+        break;
+      }
+
+    default:
+      {
+        ErrorContext err;
+        err.Errc = ecINVALID_TYPECAST;
+        err.Type1 = a_pArg[0]->GetType();
+        err.Type2 = 'i';
+        throw ParserError(err);
+      }
+    } // switch value type
+  }
+
+  //------------------------------------------------------------------------------
+  const char_type* OprtRoundToInt::GetDesc() const
+  {
+    return _T("round a value to nearest integer number");
+  }
+
+  //------------------------------------------------------------------------------
+  IToken* OprtRoundToInt::Clone() const
+  {
+    return new OprtRoundToInt(*this);
   }
 }

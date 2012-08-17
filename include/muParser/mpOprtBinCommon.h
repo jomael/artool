@@ -269,6 +269,19 @@ MUP_NAMESPACE_START
     virtual const char_type* GetDesc() const;
     virtual IToken* Clone() const;
   }; // class OprtCastToInt
+
+  //---------------------------------------------------------------------------
+  /** \brief Callback for an operator allowing to round values to integer values.
+      \ingroup infix
+  */
+  class OprtRoundToInt : public IOprtInfix
+  {
+  public:
+    OprtRoundToInt();
+    virtual void Eval(ptr_val_type &ret, const ptr_val_type *a_pArg, int a_iArgc);
+    virtual const char_type* GetDesc() const;
+    virtual IToken* Clone() const;
+  }; // class OprtCastToInt
 }  // namespace mu
 
 #endif
