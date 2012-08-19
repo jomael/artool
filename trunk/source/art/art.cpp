@@ -611,16 +611,21 @@ bool    __CALLCONV ARTDestroyCircuit     (P_ART_Simulator simulator,P_ART_Circui
 	DLL_ERRORHANDLING_END
 }
 
-P_ART_TModule __CALLCONV ARTCreateTModule	(P_ART_Simulator simulator, const char* name)
+P_ART_TModule __CALLCONV ARTCreateTModule	(P_ART_Simulator simulator, const char* name, const char* type)
 {
 	DLL_ERRORHANDLING_BEGIN
 	ARTtimeSimulator* sim = dynamic_cast<ARTtimeSimulator*>(simulator);
 	//check if the simulator is a valid object
 	if (sim == NULL) throw ARTerror("ARTCreateTModule", "Invalid time domain simulator");
 
+	if (string(type) != "TimeModule")
+	{
+		throw ARTerror("ARTCreateTModule", "Unknown time module prototype.");
+	}
+
 	//Circuits with the same name will cause problems later on, so check that the name is free
 	ARTItimeModule* newModule = dynamic_cast<ARTItimeModule*>(sim->userElements->FindObject(name));
-	if (newModule) throw ARTerror("ARTCreateCircuit", "A time module with the name '%s1' already exists.", name);
+	if (newModule) throw ARTerror("ARTCreateTModule", "A time module with the name '%s1' already exists.", name);
 
 	newModule = new ARTtimeModule(name);
 

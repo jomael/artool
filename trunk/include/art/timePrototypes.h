@@ -30,5 +30,37 @@ public:
 	virtual ~inputFunctionModule();
 };
 
+class fractionalDelayModule : public ARTItimeModule
+{
+protected:
+	OPortType* out_;
+	IPortType* in_;
+public:
+	explicit fractionalDelayModule(const string& name, const string& sds="", const string& lds="", const string& htm="");
+
+	virtual void addIPort(const string& name, const ARTdataProp* refPort);
+	virtual ARTdataProp* getPort(const string& name);
+
+	virtual void addGlobalParameter(const ARTdataProp* parameter);
+	virtual void removeGlobalParameter(const string& name);
+
+	virtual void setSimulator(ARTsimulator* sim);
+	virtual void setCurrentIndex(int idx);
+	virtual void simulateCurrentIndex(int idx);
+
+	virtual ~fractionalDelayModule();
+protected:
+	virtual void initLocalParams();
+	virtual void initSimulation();
+
+	virtual double getLagrangeParams(int n, int N, double D);
+	virtual double getThiranParams(int n, int N, double D);
+
+	virtual double fac(int n);
+	virtual double binom(int n, int k);
+
+
+};
+
 
 #endif /* TIMEPROTOTYPES_H_ */

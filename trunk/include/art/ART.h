@@ -1087,11 +1087,12 @@ __DECLSPEC bool	__CALLCONV	ARTDestroyCircuit	(P_ART_Simulator simulator,P_ART_Ci
  * Creates a time simulation module.
  * @param simulator The simulator within which the circuit should be created.
  * @param name The name of the time module.
+ * @param type The type of the time module. All available types are registered as prototypes in the root object.
  * @returns A pointer to the created time module. The DLL interface returns NULL if an error occurs.
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror, if not using the DLL interface.
  */
-__DECLSPEC P_ART_TModule __CALLCONV ARTCreateTModule	(P_ART_Simulator simulator, const char* name);
+__DECLSPEC P_ART_TModule __CALLCONV ARTCreateTModule	(P_ART_Simulator simulator, const char* name, const char* type);
 
 /**
  * Destroys a time simulation module.

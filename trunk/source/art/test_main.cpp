@@ -4932,8 +4932,8 @@ TEST_DEF_START(FibonacciNumbers3, ARTtimeSimulatorTests)
 		try
 		{
 
-			timeModule = ARTCreateTModule(myTimeSimulator, "myModule");
-			timeModule2 = ARTCreateTModule(myTimeSimulator, "myModule2");
+			timeModule = ARTCreateTModule(myTimeSimulator, "myModule", "TimeModule");
+			timeModule2 = ARTCreateTModule(myTimeSimulator, "myModule2", "TimeModule");
 
 			ARTAddOPortToTModule(timeModule, "fib", "fib[t] = fib[t-1] + fib[t-2]");
 			ARTAddOPortToTModule(timeModule2, "test", "test[t] = fib[t] * l * T");
@@ -5243,13 +5243,13 @@ TEST_DEF_START(HiddenTimeDelay, ARTtimeSimulatorTests)
 		try
 		{
 
-//		    cout << "(int) 0.3 = " << (int) 0.3 << ", (int) -0.3 = " << (int) -0.3 << endl;
-
 			ARTtimeModule* timeModule = new ARTtimeModule("myModule");
 			ARTtimeModule* timeModule2 = new ARTtimeModule("myModule2");
 
-			timeModule->addOPort("x", "x[t] = (t == 0) ? 9 : 0");
-			timeModule2->addOPort("y", "y[t] = x[t - ((round) (d/T))]");
+			timeModule->addOPort("x", "x[t] = y[t-1]");
+			timeModule2->addOPort("y", "y[t] = x[t] + 2");
+//			timeModule->addOPort("x", "x[t] = (t == 0) ? 9 : 0");
+//			timeModule2->addOPort("y", "y[t] = x[t - ((round) (d/T))]");
 
 			ARTItimeModule::OPortType& xPort = dynamic_cast<ARTItimeModule::OPortType&>(*(timeModule->getPort("x")));
 			ARTItimeModule::OPortType& yPort = dynamic_cast<ARTItimeModule::OPortType&>(*(timeModule2->getPort("y")));
@@ -5264,17 +5264,18 @@ TEST_DEF_START(HiddenTimeDelay, ARTtimeSimulatorTests)
 
 			timeModule2->addLocalParameter("d", 0.45);
 
-//			yPort.initPortValue(-2, -1);
+			yPort.initPortValue(-2, -1);
 
 			for (int i = 0; i < 100; ++i)
 			{
 				myTimeSimulator->SimulateTimeStep(i);
 //				cout << "x[" << i << "] = " << xPort[i].GetFloat() << endl;
-				cout << "y[" << i << "] = " << yPort[i].GetFloat() << endl;
+//				cout << "y[" << i << "] = " << yPort[i].GetFloat() << endl;
 			}
 
 			if (xPort[99].GetFloat() != 98.0*2.0)
 			{
+//			    cout << "x[" << 99 << "] = " << xPort[99].GetFloat() << endl;
 				return false;
 			}
 
@@ -5330,7 +5331,21 @@ TEST_DEF_START(RectangularFunction, ARTtimeSimulatorTests)
 			for (int i = 0; i < 100; ++i)
 			{
 				myTimeSimulator->SimulateTimeStep(i);
-				cout << "x[" << i << "] = " << xPort[i].GetFloat() << endl;
+				if (i < 3 && xPort[i].GetFloat() != 0)
+				{
+					cout << "x[" << i << "] = " << xPort[i].GetFloat() << " != 0" << endl;
+					return false;
+				}
+				else if (i > 3 && i <= 27 && xPort[i].GetFloat() != 1)
+				{
+					cout << "x[" << i << "] = " << xPort[i].GetFloat() << " != 1" << endl;
+					return false;
+				}
+				else if (i > 27 && xPort[i].GetFloat() != 0)
+				{
+					cout << "x[" << i << "] = " << xPort[i].GetFloat() << " != 0" << endl;
+					return false;
+				}
 			}
 
 			return true;
@@ -5351,6 +5366,156 @@ TEST_DEF_START(RectangularFunction, ARTtimeSimulatorTests)
 	}
 
 TEST_DEF_END(RectangularFunction)
+
+TEST_DEF_START(SineFunction, ARTtimeSimulatorTests)
+
+	ARTtimeSimulator* myTimeSimulator;
+
+	virtual void prepare()
+	{
+		myTimeSimulator = new ARTtimeSimulator("TestSim");
+		myTimeSimulator->userElements = new ARTlistProp("testList");
+
+	}
+
+	virtual bool run()
+	{
+
+		try
+		{
+
+			ARTtimeModule* timeModule = new ARTtimeModule("myModule");
+
+			timeModule->addOPort("x", "x[t] = A*sin(2*pi*(t*T*f - Delta))");
+//			timeModule->addOPort("x", "x[t] = A*sin(t)");
+
+			ARTItimeModule::OPortType& xPort = dynamic_cast<ARTItimeModule::OPortType&>(*(timeModule->getPort("x")));
+
+			myTimeSimulator->AddTimeModule(timeModule);
+
+			timeModule->addLocalParameter("f", 11025.0);
+			timeModule->addLocalParameter("Delta", 0.25);
+			timeModule->addLocalParameter("A", 2.3);
+
+//			myTimeSimulator->SetSimulationParameter("T", 0.1);
+
+			for (int i = 0; i < 100; ++i)
+			{
+				myTimeSimulator->SimulateTimeStep(i);
+//				cout << "x[" << i << "] = " << xPort[i].GetFloat() << endl;
+			}
+
+			if (std::abs(xPort[99].GetFloat() - 2.3*std::sin(2*PI*(99.0/44100.0*11025.0 - 0.25))) > 1e-6)
+			{
+				cout << "\n\nx[" << 99 << "] = " << xPort[99].GetFloat() << " != " << std::sin(2*PI*(99.0/44100.0*11025.0 - 0.25)) << endl;
+				return false;
+			}
+
+			return true;
+		}
+		catch (ARTerror& e)
+		{
+			string err = e.GetErrorMessage();
+			std::cout << "\n\n" << err;
+			return false;
+		}
+
+	}
+
+	virtual void unprepare()
+	{
+		delete (myTimeSimulator->userElements);
+		delete myTimeSimulator;
+	}
+
+TEST_DEF_END(SineFunction)
+
+TEST_DEF_START(FractionalDelay, ARTtimeSimulatorTests)
+
+	ARTtimeSimulator* myTimeSimulator;
+
+	virtual void prepare()
+	{
+		myTimeSimulator = new ARTtimeSimulator("TestSim");
+		myTimeSimulator->userElements = new ARTlistProp("testList");
+
+	}
+
+	virtual bool run()
+	{
+
+		try
+		{
+
+			ARTtimeModule* pulseModule = new ARTtimeModule("pulseModule");
+			ARTItimeModule* delayModule1 = new fractionalDelayModule("testDelay1");
+			ARTItimeModule* delayModule2 = new fractionalDelayModule("testDelay2");
+
+			pulseModule->addOPort("x", "x[t] = (t == 0) ? 1 : 0");
+//			pulseModule->addOPort("x", "x[t] = A*sin(t)");
+
+			ARTItimeModule::OPortType& xPort = dynamic_cast<ARTItimeModule::OPortType&>(*(pulseModule->getPort("x")));
+			ARTItimeModule::OPortType& simulationPort1 = dynamic_cast<ARTItimeModule::OPortType&>(*(delayModule1->getPort("out")));
+			ARTItimeModule::OPortType& simulationPort2 = dynamic_cast<ARTItimeModule::OPortType&>(*(delayModule2->getPort("out")));
+
+			delayModule1->addIPort("in", &xPort);
+			delayModule2->addIPort("in", &xPort);
+
+			myTimeSimulator->AddTimeModule(pulseModule);
+			myTimeSimulator->AddTimeModule(delayModule1);
+			myTimeSimulator->AddTimeModule(delayModule2);
+
+			myTimeSimulator->SetSimulationParameter("T", 0.1);
+
+			delayModule1->setLocalParameter("type", "thiran");
+			delayModule1->setLocalParameter("Delay", 0.51);
+			delayModule1->setLocalParameter("order", 5);
+
+			delayModule2->setLocalParameter("type", "lagrange");
+			delayModule2->setLocalParameter("Delay", 0.51);
+			delayModule2->setLocalParameter("order", 12);
+
+			for (int i = 0; i < 100; ++i)
+			{
+				myTimeSimulator->SimulateTimeStep(i);
+//				cout << "out1[" << i << "] = " << simulationPort1[i].GetFloat() << endl;
+//				cout << "out2[" << i << "] = " << simulationPort2[i].GetFloat() << endl;
+				if (i == 5)
+				{
+					if (std::abs(simulationPort1[i].GetFloat() - 1.0) > 0.1)
+					{
+						return false;
+					}
+					if (std::abs(simulationPort2[i].GetFloat() - 1.0) > 0.1)
+					{
+						return false;
+					}
+				}
+			}
+
+			if ((std::abs(simulationPort1[99].GetFloat()) > 1e-10) || (simulationPort2[99].GetFloat() != 0))
+			{
+				return false;
+			}
+
+			return true;
+		}
+		catch (ARTerror& e)
+		{
+			string err = e.GetErrorMessage();
+			std::cout << "\n\n" << err;
+			return false;
+		}
+
+	}
+
+	virtual void unprepare()
+	{
+		delete (myTimeSimulator->userElements);
+		delete myTimeSimulator;
+	}
+
+TEST_DEF_END(FractionalDelay)
 
 //******************************************************************************************************************************************
 
