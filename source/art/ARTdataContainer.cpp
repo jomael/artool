@@ -94,6 +94,11 @@ ARTdataContainer::ARTdataContainer(const T_ART_Type dtyp, const int dlen, const 
 		tmpArray->setCurrentIdx(0);
 		// save pointer to na field of val
 		val->na = (void *) tmpArray;
+
+		if (varname_ != "")
+		{
+			SetParserVar(varname_);
+		}
 	}
 }
 
@@ -1007,7 +1012,7 @@ int ARTdataContainer::GetInt()
 			{
 				tmp = dynamic_cast<ARTdataContainer*>((*tmpArray)[0]);
 				//i = tmp->GetValueAsInt();
-				i = tmp->GetFloat();
+				i = tmp->GetInt();
 			}
 			break;
 		default: throw ARTerror("ARTdataContainer::GetValueAsInt", "Invalid type conversion to int: type is non-numeric, complex or triple.");
@@ -1473,6 +1478,8 @@ void ARTdataContainer::resizeArray(int newSize)
 		tmpArray->at(elementPtr) = tmp;
 		elementPtr = (elementPtr + newSize + 1) % newSize;
 	}
+
+	len = newSize;
 
 //	for (idx = 0; idx < tmpArray->size(); ++idx)
 //	{

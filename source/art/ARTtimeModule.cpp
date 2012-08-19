@@ -358,9 +358,17 @@ void ARTItimeModule::setLocalParameter(const string& name, const string& expr)
 	localParameterType* lParam = dynamic_cast<localParameterType*>(FindProperty(name));
 	if (lParam)
 	{
-		// set definition and invalidate current parameter to force re-evaluation
-		lParam->SetDefinition(expr);
-		lParam->Invalidate();
+		if (lParam->GetType() == 's')
+		{
+//			cout << "setting string of local parameter '" << name << "' to '" << expr << "'" << endl;
+			lParam->SetVal(expr.c_str());
+		}
+		else
+		{
+			// set definition and invalidate current parameter to force re-evaluation
+			lParam->SetDefinition(expr);
+			lParam->Invalidate();
+		}
 	}
 	else
 	{
