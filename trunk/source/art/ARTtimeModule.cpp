@@ -681,7 +681,7 @@ void ARTtimeModule::removeVariableFromParsers(const string& name)
 	while (propIter)
 	{
 		oPort = dynamic_cast<OPortType*>(propIter);
-		// only add variables to parsers of output ports
+		// only remove variables from parsers of output ports
 		if (oPort)
 		{
 			oPort->GetParser()->RemoveVar(name);
