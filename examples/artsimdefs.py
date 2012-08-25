@@ -33,7 +33,7 @@ ARTCreateCircuit.argtypes = [c_void_p, c_char_p];
 
 ARTCreateTModule = artsim.ARTCreateTModule;
 ARTCreateTModule.restype = c_void_p;
-ARTCreateTModule.argtypes = [c_void_p, c_char_p];
+ARTCreateTModule.argtypes = [c_void_p, c_char_p, c_char_p];
 
 ARTAddOPortToTModule = artsim.ARTAddOPortToTModule;
 ARTAddOPortToTModule.restype = c_int;

@@ -12,8 +12,8 @@ pSim = ARTRootObject();
 mySim = ARTCreateSimulator("MySimulator", "TimeDomain", "");
 
 # create time modules
-timeModule = ARTCreateTModule(mySim, "myModule");
-timeModule2 = ARTCreateTModule(mySim, "myModule2");
+timeModule = ARTCreateTModule(mySim, "myModule", "TimeModule");
+timeModule2 = ARTCreateTModule(mySim, "myModule2", "TimeModule");
 
 # add output ports to time modules
 ARTAddOPortToTModule(timeModule, "fib", "fib[t] = fib[t-1] + fib[t-2]");
