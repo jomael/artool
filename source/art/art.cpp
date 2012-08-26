@@ -567,7 +567,8 @@ P_ART_DataProp    __CALLCONV ARTSetParameter     (P_ART_Simulator simulator, con
 				else
 				// no => just set the new definition
 				{
-					prop->SetDefinition(strcrop(expression), simulator);
+//					prop->SetDefinition(strcrop(expression), simulator);
+					prop->SetDefinition(strcrop(expression));
 				}
 			}
 		}

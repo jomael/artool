@@ -45,7 +45,7 @@
 
 
 
-#define _TIMEDEBUG
+//#define _TIMEDEBUG
 
 class TestClass
 {
@@ -4928,7 +4928,6 @@ TEST_DEF_START(FibonacciNumbers3, ARTtimeSimulatorTests)
 
 	virtual bool run()
 	{
-
 		try
 		{
 
@@ -5469,10 +5468,13 @@ TEST_DEF_START(FractionalDelay, ARTtimeSimulatorTests)
 
 			delayModule1->setLocalParameter("type", "thiran");
 			delayModule1->setLocalParameter("Delay", 0.51);
+//			delayModule1->setLocalParameter("Delay", "Delay = 0.3");
 			delayModule1->setLocalParameter("order", 5);
+//			delayModule1->setLocalParameter("order", 3);
 
 			delayModule2->setLocalParameter("type", "lagrange");
 			delayModule2->setLocalParameter("Delay", 0.51);
+//			delayModule2->setLocalParameter("Delay", "Delay = 0.9");
 			delayModule2->setLocalParameter("order", 12);
 
 			for (int i = 0; i < 100; ++i)

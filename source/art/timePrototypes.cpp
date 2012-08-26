@@ -74,11 +74,16 @@ fractionalDelayModule::fractionalDelayModule(const string& name, const string& s
 {
 	initLocalParams();
 	out_ = new OPortType(C_ART_na, 20, "out");
+	AppendDataProp(out_);
 }
 
 void fractionalDelayModule::addIPort(const string& name, const ARTdataProp* refPort)
 {
-	ParserX* tmpParser;
+	if (name != "in")
+	{
+		throw ARTerror("fractionalDelayModule::addIPort",
+				"It is only possible to add an input port with name 'in' to this module!");
+	}
 	const OPortType* oPort = dynamic_cast<const OPortType*>(refPort);
 	if (!refPort)
 	{
@@ -86,37 +91,8 @@ void fractionalDelayModule::addIPort(const string& name, const ARTdataProp* refP
 				refPort->GetName());
 	}
 	in_ = new IPortType(name, oPort);
-	tmpParser = out_->GetParser();
-	tmpParser->DefineVar(name, in_->GetParserVar());
-}
-
-void fractionalDelayModule::addGlobalParameter(const ARTdataProp* parameter)
-{
-	ParserX* tmpParser = out_->GetParser();
-	if (!parameter)
-	{
-		throw ARTerror("fractionalDelayModule::addGlobalParameter", "Could not add global parameter to current time module '%s1': No valid parameter.",
-				name_);
-	}
-	if (!FindProperty(parameter->GetName()))
-	{
-		globalParameterType* newParam =	new globalParameterType(parameter->GetName(), parameter);
-		// register global variable to output port
-		tmpParser->DefineVar(parameter->GetName(), parameter->GetParserVar());
-		AppendDataProp(newParam);
-	}
-	else
-	{
-		throw ARTerror("fractionalDelayModule::addGlobalParameter", "Name '%s1' of global parameter is already in use in current time module '%s2'.",
-				parameter->GetName(), name_);
-	}
-
-}
-
-void fractionalDelayModule::removeGlobalParameter(const string& name)
-{
-	ParserX* tmpParser = out_->GetParser();
-	tmpParser->RemoveVar(name);
+	out_->GetParser()->DefineVar(name, in_->GetParserVar());
+	AppendDataProp(in_);
 }
 
 ARTdataProp* fractionalDelayModule::getPort(const string& name)
@@ -127,29 +103,6 @@ ARTdataProp* fractionalDelayModule::getPort(const string& name)
 				name_, name);
 	}
 	return out_;
-}
-
-void fractionalDelayModule::setSimulator(ARTsimulator* sim)
-{
-	_simulator = dynamic_cast<ARTtimeSimulator*>(sim);
-	ARTproperty* iter = GetProperties(NULL);
-	OPortType* oPort;
-	localParameterType* lType;
-	while (iter)
-	{
-		// set simulator for all registered output ports and use parser for local parameters
-		oPort = dynamic_cast<OPortType*>(iter);
-		lType = dynamic_cast<localParameterType*>(iter);
-		if (oPort)
-		{
-			oPort->SetScope(_simulator);
-		}
-		else if (lType)
-		{
-			lType->SetParser(sim->GetParser());
-		}
-		iter = GetProperties(iter);
-	}
 }
 
 void fractionalDelayModule::setCurrentIndex(int idx)
@@ -164,12 +117,6 @@ void fractionalDelayModule::setCurrentIndex(int idx)
 void fractionalDelayModule::simulateCurrentIndex(int idx)
 {
 	out_->GetArrayElement(idx).EvaluateIfInvalid();
-}
-
-fractionalDelayModule::~fractionalDelayModule()
-{
-	delete in_;
-	delete out_;
 }
 
 void fractionalDelayModule::initLocalParams()
@@ -345,4 +292,49 @@ double fractionalDelayModule::binom(int n, int k)
 	double numerator = fac(n);
 	double denominator = fac(k) * fac(n -k);
 	return numerator / denominator;
+}
+
+/*******************************************************************************************
+ * impulseModule
+ *******************************************************************************************/
+
+impulseModule::impulseModule(const string& name, const string& sds, const string& lds, const string& htm) :
+		ARTItimeModule(name, sds, lds, htm),
+		out_(NULL)
+{
+	initLocalParams();
+	out_ = new OPortType(C_ART_na, 5, "out");
+	out_->SetDefinition("out[t] = (t == 0) ? A : 0");
+	AppendDataProp(out_);
+}
+
+ARTdataProp* impulseModule::getPort(const string& name)
+{
+	if (name != "out")
+	{
+		throw ARTerror("impulseModule::getPort", "Time module '%s1' has no port '%s2'.",
+				name_, name);
+	}
+	return out_;
+}
+
+void impulseModule::setCurrentIndex(int idx)
+{
+	out_->SetCurrentIndex(idx);
+}
+
+void impulseModule::simulateCurrentIndex(int idx)
+{
+	out_->GetArrayElement(idx).EvaluateIfInvalid();
+}
+
+void impulseModule::initLocalParams()
+{
+	localParameterType* tmpParam;
+
+	// save standard value for output amplitude
+	tmpParam = new localParameterType("A");
+	tmpParam->SetVal(1);
+	AppendDataProp(tmpParam);
+
 }

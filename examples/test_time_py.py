@@ -44,7 +44,7 @@ raw_input("Please press ENTER to continue...\n");
 #ARTDestroyElement(mySim, timeModule2);
 #ARTDestroyElement(mySim, myBes);
 
-ARTDestroySimulator(mySim);
+#ARTDestroySimulator(mySim);
 
 ARTRootDestroy();
 

@@ -37,8 +37,8 @@ public:
 	class localParameterType : public timeProperty
 	{
 	public:
-		localParameterType(const string& name) : timeProperty(C_ART_cpx, 0, name) {}
-		virtual ~localParameterType() {}
+		localParameterType(const string& name);
+		virtual ~localParameterType();
 	};
 
 	class globalParameterType : public timeProperty
@@ -118,8 +118,8 @@ public:
 	virtual void setLocalParameter(const string& name, const std::complex<double>& val);
 	virtual void setLocalParameter(const string& name, const double val);
 
-	virtual void addGlobalParameter(const ARTdataProp* parameter) = 0;
-	virtual void removeGlobalParameter(const string& name) = 0;
+	virtual void addGlobalParameter(const ARTdataProp* parameter);
+	virtual void removeGlobalParameter(const string& name);
 
 	virtual void setSimulator(ARTsimulator* sim);
 	virtual void setCurrentIndex(int idx) = 0;
@@ -142,12 +142,6 @@ public:
 
 	virtual void addIPort(const string& name, const ARTdataProp* refPort);
 	virtual void addOPort(const string& name, const string& expr, unsigned int size = 20);
-//	virtual ARTdataProp* getPort(const string& name);
-//	virtual const ARTOPortType& getOPort(const string& name);
-
-//	virtual void setLocalParameter(const string& name, const string& expr);
-//	virtual void setLocalParameter(const string& name, const double val);
-//	virtual void setLocalParameter(const string& name, const std::complex<double>& val);
 
 	virtual void addLocalParameter(const string& name, const string& expr);
 	virtual void addLocalParameter(const string& name, const double val);
@@ -156,7 +150,6 @@ public:
 	virtual void addGlobalParameter(const ARTdataProp* parameter);
 	virtual void removeGlobalParameter(const string& name);
 
-	virtual void setSimulator(ARTsimulator* sim);
 	virtual void setCurrentIndex(int idx);
 	virtual void simulateCurrentIndex(int idx);
 

@@ -1487,7 +1487,7 @@ void ARTdataContainer::resizeArray(int newSize)
 //		cout << "Content[" << idx << "] = " << tmp->val->c.re << endl;
 //	}
 //
-	cout << "Resized array '" << varname_ << "' from " << oldSize << " to " << newSize << " elements." << endl;
+//	cout << "Resized array '" << varname_ << "' from " << oldSize << " to " << newSize << " elements." << endl;
 
 }
 
