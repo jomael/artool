@@ -217,7 +217,7 @@ public:
 	T_ART_Var* GetValue() 
 	{
 		// evaluate if necessary (but only when numeric value) then return value pointer
-		if ((!valid_) && (typ != C_ART_str) && (typ != C_ART_nstr))
+		if ((!valid_) && (typ != C_ART_str) && (typ != C_ART_nstr) && (typ != C_ART_na))
 			Evaluate(); 
 		return val;
 	}

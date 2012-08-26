@@ -17,6 +17,8 @@ protected:
 public:
 	explicit inputFunctionModule(const string& name, const int len = 0, const string& sds="", const string& lds="", const string& htm="");
 
+	virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
+
 	virtual void addIPort(const string& name, const ARTdataProp* refPort);
 	virtual ARTdataProp* getPort(const string& name);
 
@@ -36,7 +38,8 @@ protected:
 	OPortType* out_;
 	IPortType* in_;
 public:
-	explicit fractionalDelayModule(const string& name, const string& sds="", const string& lds="", const string& htm="");
+	explicit fractionalDelayModule(const string& name="FractionalDelayModule", const string& sds="", const string& lds="", const string& htm="");
+	virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
 
 	virtual void addIPort(const string& name, const ARTdataProp* refPort);
 	virtual ARTdataProp* getPort(const string& name);
@@ -64,14 +67,147 @@ class impulseModule : public ARTItimeModule
 protected:
 	OPortType* out_;
 public:
-	explicit impulseModule(const string& name, const string& sds="", const string& lds="", const string& htm="");
+	explicit impulseModule(const string& name = "ImpulseModule", const string& sds="", const string& lds="", const string& htm="");
+	virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
 
+	virtual void addIPort(const string& name, const ARTdataProp* refPort);
 	virtual ARTdataProp* getPort(const string& name);
 
 	virtual void setCurrentIndex(int idx);
 	virtual void simulateCurrentIndex(int idx);
 
 	virtual ~impulseModule() {}
+protected:
+	virtual void initLocalParams();
+};
+
+class heavisideModule : public ARTItimeModule
+{
+protected:
+	OPortType* out_;
+public:
+	explicit heavisideModule(const string& name = "HeavisideModule", const string& sds="", const string& lds="", const string& htm="");
+	virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
+
+	virtual void addIPort(const string& name, const ARTdataProp* refPort);
+	virtual ARTdataProp* getPort(const string& name);
+
+	virtual void setCurrentIndex(int idx);
+	virtual void simulateCurrentIndex(int idx);
+
+	virtual ~heavisideModule() {}
+protected:
+	virtual void initLocalParams();
+};
+
+class rectengularModule : public ARTItimeModule
+{
+protected:
+	OPortType* out_;
+public:
+	explicit rectengularModule(const string& name = "RectengularModule", const string& sds="", const string& lds="", const string& htm="");
+	virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
+
+	virtual void addIPort(const string& name, const ARTdataProp* refPort);
+	virtual ARTdataProp* getPort(const string& name);
+
+	virtual void setCurrentIndex(int idx);
+	virtual void simulateCurrentIndex(int idx);
+
+	virtual ~rectengularModule() {}
+protected:
+	virtual void initLocalParams();
+};
+
+class amplificationModule : public ARTItimeModule
+{
+protected:
+	OPortType* out_;
+	IPortType* in_;
+public:
+	explicit amplificationModule(const string& name = "AmplificationModule", const string& sds="", const string& lds="", const string& htm="");
+	virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
+
+	virtual void addIPort(const string& name, const ARTdataProp* refPort);
+	virtual ARTdataProp* getPort(const string& name);
+
+	virtual void setCurrentIndex(int idx);
+	virtual void simulateCurrentIndex(int idx);
+
+	virtual ~amplificationModule() {}
+protected:
+	virtual void initLocalParams();
+};
+
+class simpleDelayModule : public ARTItimeModule
+{
+protected:
+	OPortType* out_;
+	IPortType* in_;
+public:
+	explicit simpleDelayModule(const string& name = "SimpleDelayModule", const string& sds="", const string& lds="", const string& htm="");
+	virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
+
+	virtual void addIPort(const string& name, const ARTdataProp* refPort);
+	virtual ARTdataProp* getPort(const string& name);
+
+	virtual void setCurrentIndex(int idx);
+	virtual void simulateCurrentIndex(int idx);
+
+	virtual ~simpleDelayModule() {}
+protected:
+	virtual void initLocalParams();
+};
+
+class addModule : public ARTItimeModule
+{
+protected:
+	OPortType* out_;
+public:
+	explicit addModule(const string& name = "AddModule", const string& sds="", const string& lds="", const string& htm="");
+	virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
+
+	virtual void addIPort(const string& name, const ARTdataProp* refPort);
+	virtual ARTdataProp* getPort(const string& name);
+
+	virtual void setCurrentIndex(int idx);
+	virtual void simulateCurrentIndex(int idx);
+
+	virtual ~addModule() {}
+};
+
+class multiplicationModule : public ARTItimeModule
+{
+protected:
+	OPortType* out_;
+public:
+	explicit multiplicationModule(const string& name = "MultiplicationModule", const string& sds="", const string& lds="", const string& htm="");
+	virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
+
+	virtual void addIPort(const string& name, const ARTdataProp* refPort);
+	virtual ARTdataProp* getPort(const string& name);
+
+	virtual void setCurrentIndex(int idx);
+	virtual void simulateCurrentIndex(int idx);
+
+	virtual ~multiplicationModule() {}
+};
+
+class sinewaveModule : public ARTItimeModule
+{
+protected:
+	OPortType* out_;
+public:
+	explicit sinewaveModule(const string& name = "SinewaveModule", const string& sds="", const string& lds="", const string& htm="");
+	virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
+
+	virtual void addIPort(const string& name, const ARTdataProp* refPort);
+	virtual ARTdataProp* getPort(const string& name);
+
+	virtual void setCurrentIndex(int idx);
+	virtual void simulateCurrentIndex(int idx);
+
+	virtual ~sinewaveModule() {}
 protected:
 	virtual void initLocalParams();
 };
