@@ -29,7 +29,7 @@ public:
 	class timeProperty : public ARTdataProp
 	{
 	public:
-		timeProperty(const T_ART_Type dtyp, const int dlen, const string name, const string sds="", const string lds="", const string htm="")
+		timeProperty(const T_ART_Type dtyp, const int dlen, const string& name, const string sds="", const string lds="", const string htm="")
 				: ARTdataProp(dtyp, dlen, name, sds, lds, htm) {}
 		virtual ~timeProperty() {}
 	};
@@ -37,7 +37,7 @@ public:
 	class localParameterType : public timeProperty
 	{
 	public:
-		localParameterType(const string& name);
+		localParameterType(const string& name, const string sds="", const string lds="", const string htm="");
 		virtual ~localParameterType();
 	};
 
@@ -105,11 +105,16 @@ public:
 
 	explicit ARTItimeModule(const string& name, const string& sds="", const string& lds="", const string& htm="") :
 		ARTobject(name, sds, lds, htm), _simulator(NULL)
-	{}
+	{
+		// all time modules exist in the time domain
+		AppendMethod("TimeDomain", "simulation in time domain");
+	}
 
 	ARTItimeModule(const ARTItimeModule& orig) :
 		ARTobject(orig), _simulator(orig._simulator)
 	{}
+
+	virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="") = 0;
 
 	virtual void addIPort(const string& name, const ARTdataProp* refPort) = 0;
 	virtual ARTdataProp* getPort(const string& name);
@@ -137,8 +142,10 @@ class ARTtimeModule : public ARTItimeModule
 {
 public:
 
-	explicit ARTtimeModule(const string& name, const string& sds="", const string& lds="", const string& htm="");
+	explicit ARTtimeModule(const string& name="TimeModule", const string& sds="", const string& lds="", const string& htm="");
 //	explicit ARTtimeModule(const ARTtimeModule& orig);
+
+	virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
 
 	virtual void addIPort(const string& name, const ARTdataProp* refPort);
 	virtual void addOPort(const string& name, const string& expr, unsigned int size = 20);

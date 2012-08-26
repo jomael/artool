@@ -81,8 +81,8 @@ public:
 
 };
 
-ARTItimeModule::localParameterType::localParameterType(const string& name) :
-		timeProperty(C_ART_cpx, 0, name)
+ARTItimeModule::localParameterType::localParameterType(const string& name, const string sds, const string lds, const string htm) :
+		timeProperty(C_ART_cpx, 0, name, sds, lds, htm)
 {
 	// create new parser for local parameters
 	parser_ = new ParserX(mup::pckCOMPLEX_NO_STRING);
@@ -524,6 +524,11 @@ ARTtimeModule::ARTtimeModule(const string& name, const string& sds, const string
 	ARTItimeModule(name, sds, lds, htm)
 {
 
+}
+
+ARTItimeModule* ARTtimeModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
+{
+	return new ARTtimeModule(name, sds, lds, htm);
 }
 
 void ARTtimeModule::addIPort(const string& name, const ARTdataProp* refPort)

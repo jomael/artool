@@ -27,6 +27,11 @@ inputFunctionModule::inputFunctionModule(const string& name, const int len, cons
 	}
 }
 
+ARTItimeModule* inputFunctionModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
+{
+	return new inputFunctionModule(name, 20, sds, lds, htm);
+}
+
 
 void inputFunctionModule::addIPort(const string& name, const ARTdataProp* refPort)
 {
@@ -77,6 +82,11 @@ fractionalDelayModule::fractionalDelayModule(const string& name, const string& s
 	AppendDataProp(out_);
 }
 
+ARTItimeModule* fractionalDelayModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
+{
+	return new fractionalDelayModule(name, sds, lds, htm);
+}
+
 void fractionalDelayModule::addIPort(const string& name, const ARTdataProp* refPort)
 {
 	if (name != "in")
@@ -124,18 +134,18 @@ void fractionalDelayModule::initLocalParams()
 	localParameterType* tmpParam;
 
 	// save standard type of filter
-	tmpParam = new localParameterType("type");
+	tmpParam = new localParameterType("type", "type of the fractional delay filter, may be either 'lagrangre' or 'thiran'");
 	tmpParam->SetType(C_ART_str, 0);
 	tmpParam->SetVal("lagrange");
 	AppendDataProp(tmpParam);
 
 	// save standard order of implemented filter
-	tmpParam = new localParameterType("order");
+	tmpParam = new localParameterType("order", "order of the filter");
 	tmpParam->SetVal(5);
 	AppendDataProp(tmpParam);
 
 	// save standard delay of current module => currently 0 seconds
-	tmpParam = new localParameterType("Delay");
+	tmpParam = new localParameterType("Delay", "delay in seconds");
 	tmpParam->SetVal(0.0);
 	AppendDataProp(tmpParam);
 }
@@ -302,10 +312,21 @@ impulseModule::impulseModule(const string& name, const string& sds, const string
 		ARTItimeModule(name, sds, lds, htm),
 		out_(NULL)
 {
-	initLocalParams();
 	out_ = new OPortType(C_ART_na, 5, "out");
 	out_->SetDefinition("out[t] = (t == 0) ? A : 0");
 	AppendDataProp(out_);
+	initLocalParams();
+}
+
+ARTItimeModule* impulseModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
+{
+	return new impulseModule(name, sds, lds, htm);
+}
+
+void impulseModule::addIPort(const string& name, const ARTdataProp* refPort)
+{
+	throw ARTerror("impulseModule::addIPort", "Operation not permitted for time module '%s1'.",
+			name_);
 }
 
 ARTdataProp* impulseModule::getPort(const string& name)
@@ -337,4 +358,458 @@ void impulseModule::initLocalParams()
 	tmpParam->SetVal(1);
 	AppendDataProp(tmpParam);
 
+	out_->GetParser()->DefineVar(tmpParam->GetName(), tmpParam->GetParserVar());
+}
+
+/*******************************************************************************************
+ * heavisideModule
+ *******************************************************************************************/
+
+heavisideModule::heavisideModule(const string& name, const string& sds, const string& lds, const string& htm) :
+		ARTItimeModule(name, sds, lds, htm),
+		out_(NULL)
+{
+	out_ = new OPortType(C_ART_na, 5, "out");
+	out_->SetDefinition("out[t] = (t >= 0) ? A : 0");
+	AppendDataProp(out_);
+	initLocalParams();
+}
+
+ARTItimeModule* heavisideModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
+{
+	return new heavisideModule(name, sds, lds, htm);
+}
+
+void heavisideModule::addIPort(const string& name, const ARTdataProp* refPort)
+{
+	throw ARTerror("heavisideModule::addIPort", "Operation not permitted for time module '%s1'.",
+			name_);
+}
+
+ARTdataProp* heavisideModule::getPort(const string& name)
+{
+	if (name != "out")
+	{
+		throw ARTerror("heavisideModule::getPort", "Time module '%s1' has no port '%s2'.",
+				name_, name);
+	}
+	return out_;
+}
+
+void heavisideModule::setCurrentIndex(int idx)
+{
+	out_->SetCurrentIndex(idx);
+}
+
+void heavisideModule::simulateCurrentIndex(int idx)
+{
+	out_->GetArrayElement(idx).EvaluateIfInvalid();
+}
+
+void heavisideModule::initLocalParams()
+{
+	localParameterType* tmpParam;
+
+	// save standard value for output amplitude
+	tmpParam = new localParameterType("A");
+	tmpParam->SetVal(1);
+	AppendDataProp(tmpParam);
+
+	out_->GetParser()->DefineVar(tmpParam->GetName(), tmpParam->GetParserVar());
+}
+
+
+/*******************************************************************************************
+ * rectengularModule
+ *******************************************************************************************/
+
+rectengularModule::rectengularModule(const string& name, const string& sds, const string& lds, const string& htm) :
+		ARTItimeModule(name, sds, lds, htm),
+		out_(NULL)
+{
+	out_ = new OPortType(C_ART_na, 5, "out");
+	out_->SetDefinition("out[t] = (((t*T) >= S) and ((t*T) <= E)) ? A : 0");
+	AppendDataProp(out_);
+	initLocalParams();
+}
+
+ARTItimeModule* rectengularModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
+{
+	return new rectengularModule(name, sds, lds, htm);
+}
+
+void rectengularModule::addIPort(const string& name, const ARTdataProp* refPort)
+{
+	throw ARTerror("rectengularModule::addIPort", "Operation not permitted for time module '%s1'.",
+			name_);
+}
+
+ARTdataProp* rectengularModule::getPort(const string& name)
+{
+	if (name != "out")
+	{
+		throw ARTerror("rectengularModule::getPort", "Time module '%s1' has no port '%s2'.",
+				name_, name);
+	}
+	return out_;
+}
+
+void rectengularModule::setCurrentIndex(int idx)
+{
+	out_->SetCurrentIndex(idx);
+}
+
+void rectengularModule::simulateCurrentIndex(int idx)
+{
+	out_->GetArrayElement(idx).EvaluateIfInvalid();
+}
+
+void rectengularModule::initLocalParams()
+{
+	localParameterType* tmpParam;
+
+	// save standard value for output amplitude
+	tmpParam = new localParameterType("A");
+	tmpParam->SetVal(1);
+	AppendDataProp(tmpParam);
+
+	out_->GetParser()->DefineVar(tmpParam->GetName(), tmpParam->GetParserVar());
+
+	// save standard value for begin value
+	tmpParam = new localParameterType("S");
+	tmpParam->SetVal(0);
+	AppendDataProp(tmpParam);
+
+	out_->GetParser()->DefineVar(tmpParam->GetName(), tmpParam->GetParserVar());
+
+	// save standard value for end value
+	tmpParam = new localParameterType("E");
+	tmpParam->SetVal(1);
+	AppendDataProp(tmpParam);
+
+	out_->GetParser()->DefineVar(tmpParam->GetName(), tmpParam->GetParserVar());
+}
+
+/*******************************************************************************************
+ * amplificationModule
+ *******************************************************************************************/
+
+amplificationModule::amplificationModule(const string& name, const string& sds, const string& lds, const string& htm) :
+		ARTItimeModule(name, sds, lds, htm),
+		out_(NULL)
+{
+	out_ = new OPortType(C_ART_na, 5, "out");
+	out_->SetDefinition("out[t] = A*in[t]");
+	AppendDataProp(out_);
+	initLocalParams();
+}
+
+ARTItimeModule* amplificationModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
+{
+	return new amplificationModule(name, sds, lds, htm);
+}
+
+void amplificationModule::addIPort(const string& name, const ARTdataProp* refPort)
+{
+	if (name != "in")
+	{
+		throw ARTerror("amplificationModule::addIPort",
+				"It is only possible to add an input port with name 'in' to this module!");
+	}
+	const OPortType* oPort = dynamic_cast<const OPortType*>(refPort);
+	if (!refPort)
+	{
+		throw ARTerror("amplificationModule::addIPort", "Port '%s1' is no valid output port",
+				refPort->GetName());
+	}
+	in_ = new IPortType(name, oPort);
+	out_->GetParser()->DefineVar(name, in_->GetParserVar());
+	AppendDataProp(in_);
+}
+
+ARTdataProp* amplificationModule::getPort(const string& name)
+{
+	if (name != "out")
+	{
+		throw ARTerror("amplificationModule::getPort", "Time module '%s1' has no port '%s2'.",
+				name_, name);
+	}
+	return out_;
+}
+
+void amplificationModule::setCurrentIndex(int idx)
+{
+	out_->SetCurrentIndex(idx);
+}
+
+void amplificationModule::simulateCurrentIndex(int idx)
+{
+	out_->GetArrayElement(idx).EvaluateIfInvalid();
+}
+
+void amplificationModule::initLocalParams()
+{
+	localParameterType* tmpParam;
+
+	// save standard value for output amplitude
+	tmpParam = new localParameterType("A");
+	tmpParam->SetVal(1);
+	AppendDataProp(tmpParam);
+
+	out_->GetParser()->DefineVar(tmpParam->GetName(), tmpParam->GetParserVar());
+}
+
+/*******************************************************************************************
+ * simpleDelayModule
+ *******************************************************************************************/
+
+simpleDelayModule::simpleDelayModule(const string& name, const string& sds, const string& lds, const string& htm) :
+		ARTItimeModule(name, sds, lds, htm),
+		out_(NULL)
+{
+	out_ = new OPortType(C_ART_na, 5, "out");
+	out_->SetDefinition("out[t] = in[t - ((round)(Delay/T))]");
+	AppendDataProp(out_);
+	initLocalParams();
+}
+
+ARTItimeModule* simpleDelayModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
+{
+	return new simpleDelayModule(name, sds, lds, htm);
+}
+
+void simpleDelayModule::addIPort(const string& name, const ARTdataProp* refPort)
+{
+	if (name != "in")
+	{
+		throw ARTerror("simpleDelayModule::addIPort",
+				"It is only possible to add an input port with name 'in' to this module!");
+	}
+	const OPortType* oPort = dynamic_cast<const OPortType*>(refPort);
+	if (!refPort)
+	{
+		throw ARTerror("simpleDelayModule::addIPort", "Port '%s1' is no valid output port",
+				refPort->GetName());
+	}
+	in_ = new IPortType(name, oPort);
+	out_->GetParser()->DefineVar(name, in_->GetParserVar());
+	AppendDataProp(in_);
+}
+
+ARTdataProp* simpleDelayModule::getPort(const string& name)
+{
+	if (name != "out")
+	{
+		throw ARTerror("simpleDelayModule::getPort", "Time module '%s1' has no port '%s2'.",
+				name_, name);
+	}
+	return out_;
+}
+
+void simpleDelayModule::setCurrentIndex(int idx)
+{
+	out_->SetCurrentIndex(idx);
+}
+
+void simpleDelayModule::simulateCurrentIndex(int idx)
+{
+	out_->GetArrayElement(idx).EvaluateIfInvalid();
+}
+
+void simpleDelayModule::initLocalParams()
+{
+	localParameterType* tmpParam;
+
+	// save standard value for output amplitude
+	tmpParam = new localParameterType("Delay");
+	tmpParam->SetVal(1);
+	AppendDataProp(tmpParam);
+
+	out_->GetParser()->DefineVar(tmpParam->GetName(), tmpParam->GetParserVar());
+}
+
+/*******************************************************************************************
+ * addModule
+ *******************************************************************************************/
+
+addModule::addModule(const string& name, const string& sds, const string& lds, const string& htm) :
+		ARTItimeModule(name, sds, lds, htm),
+		out_(NULL)
+{
+	out_ = new OPortType(C_ART_na, 5, "out");
+	out_->SetDefinition("out[t] = in1[t] + in2[t]");
+	AppendDataProp(out_);
+}
+
+ARTItimeModule* addModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
+{
+	return new addModule(name, sds, lds, htm);
+}
+
+void addModule::addIPort(const string& name, const ARTdataProp* refPort)
+{
+	IPortType* iPort;
+	if (name != "in1" && name != "in2")
+	{
+		throw ARTerror("addModule::addIPort",
+				"It is only possible to add an input port with name 'in1' or 'in2' to this module! %s1", name);
+	}
+	const OPortType* oPort = dynamic_cast<const OPortType*>(refPort);
+	if (!refPort)
+	{
+		throw ARTerror("addModule::addIPort", "Port '%s1' is no valid output port",
+				refPort->GetName());
+	}
+	iPort = new IPortType(name, oPort);
+	out_->GetParser()->DefineVar(name, iPort->GetParserVar());
+	AppendDataProp(iPort);
+}
+
+ARTdataProp* addModule::getPort(const string& name)
+{
+	if (name != "out")
+	{
+		throw ARTerror("simpleDelayModule::getPort", "Time module '%s1' has no port '%s2'.",
+				name_, name);
+	}
+	return out_;
+}
+
+void addModule::setCurrentIndex(int idx)
+{
+	out_->SetCurrentIndex(idx);
+}
+
+void addModule::simulateCurrentIndex(int idx)
+{
+	out_->GetArrayElement(idx).EvaluateIfInvalid();
+}
+
+/*******************************************************************************************
+ * multiplicationModule
+ *******************************************************************************************/
+
+multiplicationModule::multiplicationModule(const string& name, const string& sds, const string& lds, const string& htm) :
+		ARTItimeModule(name, sds, lds, htm),
+		out_(NULL)
+{
+	out_ = new OPortType(C_ART_na, 5, "out");
+	out_->SetDefinition("out[t] = in1[t] * in2[t]");
+	AppendDataProp(out_);
+}
+
+ARTItimeModule* multiplicationModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
+{
+	return new multiplicationModule(name, sds, lds, htm);
+}
+
+void multiplicationModule::addIPort(const string& name, const ARTdataProp* refPort)
+{
+	IPortType* iPort;
+	if (name != "in1" && name != "in2")
+	{
+		throw ARTerror("multiplicationModule::addIPort",
+				"It is only possible to add an input port with name 'in1' or 'in2' to this module! %s1", name);
+	}
+	const OPortType* oPort = dynamic_cast<const OPortType*>(refPort);
+	if (!refPort)
+	{
+		throw ARTerror("addModule::addIPort", "Port '%s1' is no valid output port",
+				refPort->GetName());
+	}
+	iPort = new IPortType(name, oPort);
+	out_->GetParser()->DefineVar(name, iPort->GetParserVar());
+	AppendDataProp(iPort);
+}
+
+ARTdataProp* multiplicationModule::getPort(const string& name)
+{
+	if (name != "out")
+	{
+		throw ARTerror("multiplicationModule::getPort", "Time module '%s1' has no port '%s2'.",
+				name_, name);
+	}
+	return out_;
+}
+
+void multiplicationModule::setCurrentIndex(int idx)
+{
+	out_->SetCurrentIndex(idx);
+}
+
+void multiplicationModule::simulateCurrentIndex(int idx)
+{
+	out_->GetArrayElement(idx).EvaluateIfInvalid();
+}
+
+
+/*******************************************************************************************
+ * sinewaveModule
+ *******************************************************************************************/
+
+sinewaveModule::sinewaveModule(const string& name, const string& sds, const string& lds, const string& htm) :
+		ARTItimeModule(name, sds, lds, htm),
+		out_(NULL)
+{
+	out_ = new OPortType(C_ART_na, 5, "out");
+	out_->SetDefinition("out[t] = A*sin(2*pi*(t*T*f - Delta))");
+	AppendDataProp(out_);
+	initLocalParams();
+}
+
+ARTItimeModule* sinewaveModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
+{
+	return new sinewaveModule(name, sds, lds, htm);
+}
+
+void sinewaveModule::addIPort(const string& name, const ARTdataProp* refPort)
+{
+	throw ARTerror("sinewaveModule::addIPort", "Operation not permitted for time module '%s1'.",
+			name_);
+}
+
+ARTdataProp* sinewaveModule::getPort(const string& name)
+{
+	if (name != "out")
+	{
+		throw ARTerror("sinewaveModule::getPort", "Time module '%s1' has no port '%s2'.",
+				name_, name);
+	}
+	return out_;
+}
+
+void sinewaveModule::setCurrentIndex(int idx)
+{
+	out_->SetCurrentIndex(idx);
+}
+
+void sinewaveModule::simulateCurrentIndex(int idx)
+{
+	out_->GetArrayElement(idx).EvaluateIfInvalid();
+}
+
+void sinewaveModule::initLocalParams()
+{
+	localParameterType* tmpParam;
+
+	// save standard value for output amplitude
+	tmpParam = new localParameterType("A");
+	tmpParam->SetVal(1);
+	AppendDataProp(tmpParam);
+
+	out_->GetParser()->DefineVar(tmpParam->GetName(), tmpParam->GetParserVar());
+
+	// save standard value for begin value
+	tmpParam = new localParameterType("f");
+	tmpParam->SetVal(10);
+	AppendDataProp(tmpParam);
+
+	out_->GetParser()->DefineVar(tmpParam->GetName(), tmpParam->GetParserVar());
+
+	// save standard value for end value
+	tmpParam = new localParameterType("Delta");
+	tmpParam->SetVal(0);
+	AppendDataProp(tmpParam);
+
+	out_->GetParser()->DefineVar(tmpParam->GetName(), tmpParam->GetParserVar());
 }

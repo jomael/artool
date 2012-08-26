@@ -97,6 +97,10 @@ ARTRootDestroy = artsim.ARTRootDestroy;
 ARTRootDestroy.restype = c_int;
 ARTRootDestroy.argtypes = [];
 
+ARTGetLastErrorMessage = artsim.ARTGetLastErrorMessage;
+ARTGetLastErrorMessage.restype = c_char_p;
+ARTGetLastErrorMessage.argtype = [];
+
 # define c++ classes
 class T_ART_Cmplx(Structure):
 	_fields_ = [("re", c_double),("im", c_double)];

@@ -547,7 +547,7 @@ P_ART_DataProp    __CALLCONV ARTSetParameter     (P_ART_Simulator simulator, con
 				// remove module name if any exists
 				string expression = commands[i];
 				::size_t pos = expression.find('.');
-				if (pos != expression.npos)
+				if (pos != expression.npos && pos < expression.find("="))
 				{
 					expression.erase(0, pos + 1);
 				}
@@ -564,11 +564,27 @@ P_ART_DataProp    __CALLCONV ARTSetParameter     (P_ART_Simulator simulator, con
 						throw ARTerror("ARTSetParameter", "The given expression '%s1' does not access an output port of the given time module.", s);
 					}
 				}
+				// parameter is a string property
+				else if (expressions[1].find('\'') != s.npos)
+				{
+					string string_exp = expressions[1];
+					if (string_exp.find_first_of('\'') == string_exp.find_last_of('\''))
+					{
+						throw ARTerror("ARTSetParameter", "The given expression '%s1' is no valid expression to set a string property.", s);
+					}
+					::size_t first_quote = string_exp.find_first_of('\'') + 1;
+					::size_t last_quote = string_exp.find_last_of('\'') - 2;
+//					cout << "first_quote = " << first_quote << ", last_quote = " << last_quote << endl;
+					prop->SetVal(string_exp.substr(first_quote, last_quote).c_str());
+//					cout << "Setting expression <<" << s << " = " << string_exp.substr(first_quote, last_quote) <<  ">>" << endl;
+
+				}
 				else
 				// no => just set the new definition
 				{
 //					prop->SetDefinition(strcrop(expression), simulator);
 					prop->SetDefinition(strcrop(expression));
+//					cout << "Setting expression '" << expression << "'" << endl;
 				}
 			}
 		}
@@ -615,24 +631,30 @@ bool    __CALLCONV ARTDestroyCircuit     (P_ART_Simulator simulator,P_ART_Circui
 P_ART_TModule __CALLCONV ARTCreateTModule	(P_ART_Simulator simulator, const char* name, const char* type)
 {
 	DLL_ERRORHANDLING_BEGIN
+	ARTItimeModule* newModule;
 	ARTtimeSimulator* sim = dynamic_cast<ARTtimeSimulator*>(simulator);
 	//check if the simulator is a valid object
 	if (sim == NULL) throw ARTerror("ARTCreateTModule", "Invalid time domain simulator");
 
-	if (string(type) != "TimeModule")
-	{
-		throw ARTerror("ARTCreateTModule", "Unknown time module prototype.");
-	}
+	ARTItimeModule* prototype = dynamic_cast<ARTItimeModule*>(art->prototypeModels->FindObject(type));
 
 	//Circuits with the same name will cause problems later on, so check that the name is free
-	ARTItimeModule* newModule = dynamic_cast<ARTItimeModule*>(sim->userElements->FindObject(name));
+	newModule = dynamic_cast<ARTItimeModule*>(sim->userElements->FindObject(name));
 	if (newModule) throw ARTerror("ARTCreateTModule", "A time module with the name '%s1' already exists.", name);
 
-	newModule = new ARTtimeModule(name);
+	if (prototype != NULL)
+	{
+		//check if model features simulator's domain and wavetype
+		ARTmethod* method = prototype->FindMethod(simulator->GetDomain()->GetName().c_str());
+		if (method == NULL) throw ARTerror("ARTCreateTModule", "The prototype model does not support the domain of the simulator.");
 
-	sim->AddTimeModule(newModule);
+		newModule = prototype->Create(name);
+		sim->AddTimeModule(newModule);
+		return newModule;
 
-	return newModule;
+	}
+	else //if a model of "name" was not found in the list:
+		throw ARTerror("ARTCreateTModule", "A prototype model of the specified type '%s1' does not exist.", type);
 
 	DLL_ERRORHANDLING_END
 }
@@ -1470,13 +1492,14 @@ void listprops(ARTobject* obj, string ind) {
 				int len = (dprop)->GetCount();
 				T_ART_Type typ = (dprop)->GetDatatype();
 				T_ART_Var* val = (dprop)->GetValue();
-				if          (typ == C_ART_str) std::cout << ind << "  StrVal=" << val->s << endl; 
+				if      (typ == C_ART_str) std::cout << ind << "  StrVal=" << val->s << endl;
 				else if (typ == C_ART_int) std::cout << ind << "  IntVal=" << val->i << endl; 
 				else if (typ == C_ART_flo) std::cout << ind << "  FloVal=" << val->f << endl; 
 				else if (typ == C_ART_dbl) std::cout << ind << "  DblVal=" << val->d << endl; 
 				else if (typ == C_ART_cpx) std::cout << ind << "  CpxVal=(" << val->c.re << "," << val->c.im << ")" << endl; 
 				else if (typ == C_ART_tri) std::cout << ind << "  TriVal=(" << val->t.f  << ":" << val->t.re << "," << val->t.im << ")" << endl; 
 				else if (typ == C_ART_mat) std::cout << ind << "  MatVal=(" << val->m.a11.re << "," << val->m.a11.im << ")..." << endl; 
+				else if (typ == C_ART_na)  std::cout << ind << "  VecVal=()..." << endl;
 				else if (typ == C_ART_nstr) for (int j=0;j<len;j++) std::cout << ind << "  NStrVal" << "[" << j << "]=" << val->ns[j] << endl; 
 				else if (typ == C_ART_nint) for (int j=0;j<len;j++) std::cout << ind << "  NIntVal" << "[" << j << "]=" << val->ni[j] << endl; 
 				else if (typ == C_ART_nflo) for (int j=0;j<len;j++) std::cout << ind << "  NFloVal" << "[" << j << "]=" << val->nf[j] << endl; 
@@ -1758,6 +1781,7 @@ int main(int argc, char **argv)
     std::cout << "AcousticResearchTool created..." << endl;
  
     listprops(art,"");
+    std::cout << "END of LISTPROPS" << endl;
     listmets(art,"");
 
     return ARTNOERROR;

@@ -46,6 +46,7 @@
 #include "ARTwaveObject.h"
 #include "ARTmodel.h"
 #include "ARTdataContainer.h"
+#include "timePrototypes.h"
 
 //**************************************************************************************************************
 
@@ -980,6 +981,18 @@ AcousticResearchTool::AcousticResearchTool() : ARTobject("ART","Acoustic Researc
 	// The branch is not a model, it is used by ARTcircuit objects, when other ARTcircuits are inserted into the instrument.
 	//obj = prototypeModels->AppendObject(new BranchModel());
 	
+	// register prototypes of time modules
+	obj = prototypeModels->AppendObject(new ARTtimeModule());
+	obj = prototypeModels->AppendObject(new impulseModule());
+	obj = prototypeModels->AppendObject(new heavisideModule());
+	obj = prototypeModels->AppendObject(new rectengularModule());
+	obj = prototypeModels->AppendObject(new amplificationModule());
+	obj = prototypeModels->AppendObject(new simpleDelayModule());
+	obj = prototypeModels->AppendObject(new addModule());
+	obj = prototypeModels->AppendObject(new multiplicationModule());
+	obj = prototypeModels->AppendObject(new sinewaveModule());
+	obj = prototypeModels->AppendObject(new fractionalDelayModule());
+
 	//the following list has to be filled by the user
 	simulators = AppendListProp("Simulators"); 
 

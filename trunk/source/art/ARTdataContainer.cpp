@@ -339,12 +339,22 @@ ARTdataContainer::ARTdataContainer(const ARTdataContainer& orig) :
 
 		ARTdataContainer* tmpARTdataContainer;
 		ARTdataContainer* oldARTdataContainer;
+
+		parser_ = new ParserX(mup::pckCOMPLEX_NO_STRING);
+
 		for (int i = 0; i < len; ++i)
 		{
 			oldARTdataContainer = dynamic_cast<ARTdataContainer*>((*oldArray)[i]);
 			// create empty ARTdataContainers of type complex
 			tmpARTdataContainer = new ARTdataContainer(*oldARTdataContainer);
 			tmpARTdataContainer->SetType(C_ART_cpx);
+			// initialize all values of ARTdataContainer to zero...
+			tmpARTdataContainer->SetVal(std::complex<double>(0,0));
+			// set all values to invalid
+			tmpARTdataContainer->valid_ = false;
+			tmpARTdataContainer->parser_ = parser_;
+			tmpARTdataContainer->parent_ = this;
+			tmpARTdataContainer->varname_ = varname_;
 			tmpArray->at(i) = tmpARTdataContainer;
 		}
 		// save pointer to na field of val
