@@ -41,14 +41,13 @@ public:
 	virtual void addIPort(const string& name, const ARTdataProp* refPort);
 	virtual ARTdataProp* getPort(const string& name);
 
-	virtual void addGlobalParameter(const ARTdataProp* parameter);
-	virtual void removeGlobalParameter(const string& name);
+//	virtual void addGlobalParameter(const ARTdataProp* parameter);
+//	virtual void removeGlobalParameter(const string& name);
 
-	virtual void setSimulator(ARTsimulator* sim);
 	virtual void setCurrentIndex(int idx);
 	virtual void simulateCurrentIndex(int idx);
 
-	virtual ~fractionalDelayModule();
+	virtual ~fractionalDelayModule() {}
 protected:
 	virtual void initLocalParams();
 	virtual void initSimulation();
@@ -58,8 +57,23 @@ protected:
 
 	virtual double fac(int n);
 	virtual double binom(int n, int k);
+};
 
+class impulseModule : public ARTItimeModule
+{
+protected:
+	OPortType* out_;
+public:
+	explicit impulseModule(const string& name, const string& sds="", const string& lds="", const string& htm="");
 
+	virtual ARTdataProp* getPort(const string& name);
+
+	virtual void setCurrentIndex(int idx);
+	virtual void simulateCurrentIndex(int idx);
+
+	virtual ~impulseModule() {}
+protected:
+	virtual void initLocalParams();
 };
 
 

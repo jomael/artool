@@ -81,6 +81,21 @@ public:
 
 };
 
+ARTItimeModule::localParameterType::localParameterType(const string& name) :
+		timeProperty(C_ART_cpx, 0, name)
+{
+	// create new parser for local parameters
+	parser_ = new ParserX(mup::pckCOMPLEX_NO_STRING);
+	SetParserVar(name);
+}
+
+ARTItimeModule::localParameterType::~localParameterType()
+{
+	// delete parser of local parameters
+	delete parser_;
+	parser_ = NULL;
+}
+
 ARTItimeModule::globalParameterType::globalParameterType(const string& name, const ARTdataProp* param)
 	: timeProperty(C_ART_str, 0, name), param_(param)
 {
@@ -367,7 +382,7 @@ void ARTItimeModule::setLocalParameter(const string& name, const string& expr)
 		{
 			// set definition and invalidate current parameter to force re-evaluation
 			lParam->SetDefinition(expr);
-			lParam->Invalidate();
+//			lParam->Invalidate();
 		}
 	}
 	else
@@ -407,9 +422,98 @@ void ARTItimeModule::setLocalParameter(const string& name, const std::complex<do
 	}
 }
 
+void ARTItimeModule::addGlobalParameter(const ARTdataProp* parameter)
+{
+	ARTproperty* iter;
+	OPortType* oPort;
+	localParameterType* lParam;
+	if (!parameter)
+	{
+		throw ARTerror("ARTItimeModule::addGlobalParameter", "Could not add global parameter to current time module '%s1': No valid parameter.",
+				name_);
+	}
+	if (!FindProperty(parameter->GetName()))
+	{
+		globalParameterType* newParam =	new globalParameterType(parameter->GetName(), parameter);
+		iter = GetProperties(NULL);
+		while (iter)
+		{
+			oPort = dynamic_cast<OPortType*>(iter);
+			lParam = dynamic_cast<localParameterType*>(iter);
+			// register global variable to output port
+			if (oPort)
+			{
+				oPort->GetParser()->DefineVar(parameter->GetName(), parameter->GetParserVar());
+			}
+			// register global variable to local parameter
+			else if (lParam)
+			{
+				lParam->GetParser()->DefineVar(parameter->GetName(), parameter->GetParserVar());
+			}
+			iter = GetProperties(iter);
+		}
+		AppendDataProp(newParam);
+	}
+	else
+	{
+		throw ARTerror("ARTItimeModule::addGlobalParameter", "Name '%s1' of global parameter is already in use in current time module '%s2'.",
+				parameter->GetName(), name_);
+	}
+}
+
+void ARTItimeModule::removeGlobalParameter(const string& name)
+{
+
+	ARTproperty* iter = GetProperties(NULL);
+	localParameterType* lParam;
+	OPortType* oPort;
+
+	globalParameterType* gParam = dynamic_cast<globalParameterType*>(FindProperty(name));
+	if (gParam)
+	{
+		DeleteProperty(gParam);
+		delete gParam;
+	}
+	else
+	{
+		throw ARTerror("fractionalDelayModule::addGlobalParameter", "No global parameter with name '%s1' found in current time module '%s2'.",
+				name, name_);
+	}
+
+	while (iter)
+	{
+		oPort = dynamic_cast<OPortType*>(iter);
+		lParam = dynamic_cast<localParameterType*>(iter);
+		// remove global parameter from output port
+		if (oPort)
+		{
+			oPort->GetParser()->RemoveVar(name);
+		}
+		// remove global parameter from local parameters
+		else if (lParam)
+		{
+			lParam->GetParser()->RemoveVar(name);
+		}
+		iter = GetProperties(iter);
+	}
+}
+
+
 void ARTItimeModule::setSimulator(ARTsimulator* sim)
 {
 	_simulator = dynamic_cast<ARTtimeSimulator*>(sim);
+	ARTproperty* iter = GetProperties(NULL);
+	OPortType* oPort;
+	while (iter)
+	{
+		// set simulator for all registered output ports
+		oPort = dynamic_cast<OPortType*>(iter);
+		if (oPort)
+		{
+			oPort->SetScope(_simulator);
+		}
+		iter = GetProperties(iter);
+	}
 }
 
 /*************************************************************
@@ -499,8 +603,9 @@ void ARTtimeModule::addLocalParameter(const string& name, const string& expr)
 		localParameterType* newParam = new localParameterType(name);
 		try
 		{
-			newParam->SetParser(_simulator->GetParser());
+//			newParam->SetParser(_simulator->GetParser());
 			newParam->SetDefinition(expr);
+
 
 		}
 		catch (ARTerror& error)
@@ -508,8 +613,9 @@ void ARTtimeModule::addLocalParameter(const string& name, const string& expr)
 			delete newParam;
 			throw error;
 		}
-		AppendDataProp(newParam);
+		registerAllVariablesToParser(newParam->GetParser());
 		addVariableToParsers(name, newParam->GetParserVar());
+		AppendDataProp(newParam);
 	}
 	else
 	{
@@ -530,10 +636,13 @@ void ARTtimeModule::addLocalParameter(const string& name, const double val)
 		}
 		localParameterType* newParam = new localParameterType(name);
 
-		newParam->SetParser(_simulator->GetParser());
+//		newParam->SetParser(_simulator->GetParser());
 		newParam->SetVal(val);
-		AppendDataProp(newParam);
+//		AppendDataProp(newParam);
+//		addVariableToParsers(name, newParam->GetParserVar());
+		registerAllVariablesToParser(newParam->GetParser());
 		addVariableToParsers(name, newParam->GetParserVar());
+		AppendDataProp(newParam);
 	}
 	else
 	{
@@ -552,10 +661,13 @@ void ARTtimeModule::addLocalParameter(const string& name, const std::complex<dou
 					name, name_);
 		}
 		localParameterType* newParam = new localParameterType(name);
-		newParam->SetParser(_simulator->GetParser());
+//		newParam->SetParser(_simulator->GetParser());
 		newParam->SetVal(val);
-		AppendDataProp(newParam);
+//		AppendDataProp(newParam);
+//		addVariableToParsers(name, newParam->GetParserVar());
+		registerAllVariablesToParser(newParam->GetParser());
 		addVariableToParsers(name, newParam->GetParserVar());
+		AppendDataProp(newParam);
 	}
 	else
 	{
@@ -589,6 +701,7 @@ void ARTtimeModule::removeGlobalParameter(const string& name)
 	globalParameterType* parameter = dynamic_cast<globalParameterType*>(FindProperty(name));
 	if (parameter)
 	{
+		removeVariableFromParsers(name);
 		DeleteProperty(parameter);
 		delete parameter;
 	}
@@ -596,23 +709,6 @@ void ARTtimeModule::removeGlobalParameter(const string& name)
 	{
 		throw ARTerror("ARTtimeModule::removeGlobalParameter", "Name '%s1' of global parameter could not be found in current time module '%s2'.",
 				name, name_);
-	}
-}
-
-void ARTtimeModule::setSimulator(ARTsimulator* sim)
-{
-	_simulator = dynamic_cast<ARTtimeSimulator*>(sim);
-	ARTproperty* iter = GetProperties(NULL);
-	OPortType* oPort;
-	while (iter)
-	{
-		// set simulator for all registered output ports
-		oPort = dynamic_cast<OPortType*>(iter);
-		if (oPort)
-		{
-			oPort->SetScope(_simulator);
-		}
-		iter = GetProperties(iter);
 	}
 }
 
@@ -660,13 +756,20 @@ void ARTtimeModule::addVariableToParsers(const string& name, const Variable& var
 	// add the given variable to all currently registered parsers of output ports
 	ARTproperty* propIter = GetProperties(NULL);
 	OPortType* oPort;
+	localParameterType* lParam;
 	while (propIter)
 	{
 		oPort = dynamic_cast<OPortType*>(propIter);
+		lParam = dynamic_cast<localParameterType*>(propIter);
 		// only add variables to parsers of output ports
+		// and local parameters
 		if (oPort)
 		{
 			oPort->GetParser()->DefineVar(name, var);
+		}
+		else if (lParam)
+		{
+			lParam->GetParser()->DefineVar(name, var);
 		}
 		propIter = GetProperties(propIter);
 	}
@@ -678,13 +781,20 @@ void ARTtimeModule::removeVariableFromParsers(const string& name)
 	// go through all parsers of output ports and remove name declaration
 	ARTproperty* propIter = GetProperties(NULL);
 	OPortType* oPort;
+	localParameterType* lParam;
 	while (propIter)
 	{
 		oPort = dynamic_cast<OPortType*>(propIter);
-		// only remove variables from parsers of output ports
+		lParam = dynamic_cast<localParameterType*>(propIter);
+		// only remove variables from parsers of output ports and
+		// local parameters
 		if (oPort)
 		{
 			oPort->GetParser()->RemoveVar(name);
+		}
+		else if (lParam)
+		{
+			lParam->GetParser()->RemoveVar(name);
 		}
 		propIter = GetProperties(propIter);
 	}
