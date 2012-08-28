@@ -56,9 +56,10 @@ public:
 			float_type z2_real = b[t-k]->GetFloat();
 			float_type z2_imag = b[t-k]->GetImag();
 
+			result += cmplx_type((z1_real*z2_real - z1_imag*z2_imag), (z1_real*z2_imag + z1_imag*z2_real));
 
-			result.real() += (z1_real*z2_real - z1_imag*z2_imag);
-			result.imag() += (z1_real*z2_imag + z1_imag*z2_real);
+			/*result.real() += (z1_real*z2_real - z1_imag*z2_imag);
+			result.imag() += (z1_real*z2_imag + z1_imag*z2_real);*/
 
 		}
 
