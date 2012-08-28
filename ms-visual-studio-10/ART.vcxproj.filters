@@ -303,6 +303,9 @@
     <ClCompile Include="..\source\art\ARTsimulator.cpp">
       <Filter>SourceFiles\art</Filter>
     </ClCompile>
+    <ClCompile Include="..\source\art\timePrototypes.cpp">
+      <Filter>SourceFiles\art</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\include\art\ART.h">
@@ -642,6 +645,9 @@
       <Filter>HeaderFiles\art</Filter>
     </ClInclude>
     <ClInclude Include="..\include\art\ARTsimulator.h">
+      <Filter>HeaderFiles\art</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\art\timePrototypes.h">
       <Filter>HeaderFiles\art</Filter>
     </ClInclude>
   </ItemGroup>

@@ -265,6 +265,7 @@
     <ClCompile Include="..\source\art\simplematrix.cpp" />
     <ClCompile Include="..\source\art\strparsing.cpp" />
     <ClCompile Include="..\source\art\test_main.cpp" />
+    <ClCompile Include="..\source\art\timePrototypes.cpp" />
     <ClCompile Include="..\source\art\windinstrument.cpp" />
     <ClCompile Include="..\source\fortran\cbabk2.c" />
     <ClCompile Include="..\source\fortran\cbal.c" />
@@ -370,6 +371,7 @@
     <ClInclude Include="..\include\art\SimpleMatrix.h" />
     <ClInclude Include="..\include\art\statistic.hpp" />
     <ClInclude Include="..\include\art\strparsing.h" />
+    <ClInclude Include="..\include\art\timePrototypes.h" />
     <ClInclude Include="..\include\art\token.h" />
     <ClInclude Include="..\include\art\WindInstrument.h" />
     <ClInclude Include="..\include\fortran\f2c.h" />
