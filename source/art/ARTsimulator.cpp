@@ -151,6 +151,7 @@ void ARTtimeSimulator::AddSimulationParameter(const string& name, const string& 
 		prop->SetParser(parser_);
 		prop->SetDefinition(expr, this);
 		AppendDataProp(prop);
+		addParamToCurrentModules(prop);
 		return;
 	}
 	throw ARTerror("ARTtimeSimulator::AddGlobalParameter",
@@ -181,6 +182,7 @@ void ARTtimeSimulator::AddSimulationParameter(const string& name, const std::com
 		prop->SetParser(parser_);
 		prop->SetVal(val);
 		AppendDataProp(prop);
+		addParamToCurrentModules(prop);
 		return;
 	}
 	throw ARTerror("ARTtimeSimulator::AddGlobalParameter",
@@ -461,12 +463,16 @@ void ARTtimeSimulator::clean()
 
 void ARTtimeSimulator::addParamsToModule(ARTItimeModule* timeModule)
 {
-	ARTdataProp* iter = dynamic_cast<ARTdataProp*>(GetProperties(NULL));
+	ARTproperty* iter = GetProperties(NULL);
+	ARTdataProp* prop;
 	while (iter != NULL)
 	{
-//		timeModule->addGlobalParameter(iter->GetName(),iter->GetParserVar());
-		timeModule->addGlobalParameter(iter);
-		iter = dynamic_cast<ARTdataProp*>(GetProperties(iter));
+		prop = dynamic_cast<ARTdataProp*>(iter);
+		if (prop)
+		{
+			timeModule->addGlobalParameter(prop);
+		}
+		iter = GetProperties(iter);
 	}
 }
 
@@ -475,13 +481,13 @@ void ARTtimeSimulator::addParamToCurrentModules(ARTdataProp* newParam)
 {
 	if (userElements)
 	{
-		ARTtimeModule* iter = dynamic_cast<ARTtimeModule*>(userElements->GetObjects(NULL));
+		ARTItimeModule* iter = dynamic_cast<ARTItimeModule*>(userElements->GetObjects(NULL));
 		while (iter != NULL)
 		{
 //			std::cout << "Adding parameter '" << newParam->GetName() << "' to time module '" << iter->GetName() << "'." << std::endl;
 //			iter->addGlobalParameter(newParam->GetName(), newParam->GetParserVar());
 			iter->addGlobalParameter(newParam);
-			iter = dynamic_cast<ARTtimeModule*>(userElements->GetObjects(iter));
+			iter = dynamic_cast<ARTItimeModule*>(userElements->GetObjects(iter));
 		}
 	}
 }

@@ -45,7 +45,7 @@
 
 
 
-//#define _TIMEDEBUG
+#define _TIMEDEBUG
 
 class TestClass
 {
@@ -5518,6 +5518,82 @@ TEST_DEF_START(FractionalDelay, ARTtimeSimulatorTests)
 	}
 
 TEST_DEF_END(FractionalDelay)
+
+
+TEST_DEF_START(DWGCylinder, ARTtimeSimulatorTests)
+
+	ARTtimeSimulator* myTimeSimulator;
+
+	virtual void prepare()
+	{
+		myTimeSimulator = new ARTtimeSimulator("TestSim");
+		myTimeSimulator->userElements = new ARTlistProp("testList");
+
+	}
+
+	virtual bool run()
+	{
+
+		try
+		{
+
+			ARTtimeModule* pulseModule = new ARTtimeModule("pulseModule");
+			ARTItimeModule* cylModule1 = new DWGcylinderModule("cyl1");
+
+			pulseModule->addOPort("x", "x[t] = (t == 0) ? 1 : 0", 50);
+
+			ARTItimeModule::OPortType& xPort = dynamic_cast<ARTItimeModule::OPortType&>(*(pulseModule->getPort("x")));
+			ARTItimeModule::OPortType& simulationPort1 = dynamic_cast<ARTItimeModule::OPortType&>(*(cylModule1->getPort("p2p")));
+			ARTItimeModule::OPortType& simulationPort2 = dynamic_cast<ARTItimeModule::OPortType&>(*(cylModule1->getPort("p1m")));
+
+			cylModule1->addIPort("p1p", &xPort);
+			cylModule1->addIPort("p2m", &xPort);
+
+			myTimeSimulator->AddTimeModule(pulseModule);
+			myTimeSimulator->AddTimeModule(cylModule1);
+			myTimeSimulator->AddSimulationParameter("c", 343.36);
+
+			myTimeSimulator->SetSimulationParameter("T", 1.0/44100.0);
+
+			cylModule1->setLocalParameter("type", "thiran");
+			cylModule1->setLocalParameter("length", 320);
+
+			for (int i = 0; i < 100; ++i)
+			{
+				myTimeSimulator->SimulateTimeStep(i);
+				if (simulationPort1[i].GetFloat() != simulationPort2[i].GetFloat())
+				{
+					return false;
+				}
+				if (i == 41 && simulationPort1[i].GetFloat() < 0.95)
+				{
+					return false;
+				}
+			}
+
+			if (std::abs(simulationPort1[99].GetFloat()) > 1e-10)
+			{
+				return false;
+			}
+
+			return true;
+		}
+		catch (ARTerror& e)
+		{
+			string err = e.GetErrorMessage();
+			std::cout << "\n\n" << err;
+			return false;
+		}
+
+	}
+
+	virtual void unprepare()
+	{
+		delete (myTimeSimulator->userElements);
+		delete myTimeSimulator;
+	}
+
+TEST_DEF_END(DWGCylinder)
 
 //******************************************************************************************************************************************
 

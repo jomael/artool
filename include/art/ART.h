@@ -1128,6 +1128,17 @@ __DECLSPEC bool __CALLCONV ARTAddOPortToTModule	(P_ART_TModule module, const cha
 __DECLSPEC bool __CALLCONV ARTAddLocalParamToTModule	(P_ART_TModule module, const char* name, const char* expr);
 
 /**
+ * Adds a new global parameter to the given time simulator.
+ * @param simulator A pointer to the simulator to which the parameter will be added.
+ * @param name Name of the new parameter.
+ * @param expr The calculation expression of the new parameter.
+ * @returns true if successful, the DLL interface returns false if an error occurs,
+ *   use ARTGetLastErrorMessage to get the error message.
+ * @throws ARTerror, if not using the DLL interface.
+ */
+__DECLSPEC bool __CALLCONV ARTAddGlobalParamToTSimulator	(P_ART_Simulator simulator, const char* name, const char* expr);
+
+/**
  * Connects the ports of the given modules.
  * @param simulator A pointer to the simulator containing the related time modules.
  * @param expr The calculation expression of the port connection. Example: "module1.in = module2.out".
