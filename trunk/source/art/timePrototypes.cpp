@@ -181,12 +181,6 @@ void fractionalDelayModule::initSimulation()
 	// init expression
 	expr << "out[t] = ";
 
-	// init output port to zero
-	for (n = 1; n <= N; ++n)
-	{
-		(*out_)[-n] = 0;
-	}
-
 	if (type->GetString() == "lagrange")
 	{
 		// print out warning if order does not fit delay time
@@ -225,6 +219,9 @@ void fractionalDelayModule::initSimulation()
 
 		for (n = 1; n <= N; ++n)
 		{
+			// init output port to zero for thiran IIR
+			(*out_)[-n] = 0;
+
 			if (n != 1)
 			{
 				expr << " + ";
@@ -302,6 +299,199 @@ double fractionalDelayModule::binom(int n, int k)
 	double numerator = fac(n);
 	double denominator = fac(k) * fac(n -k);
 	return numerator / denominator;
+}
+
+/*******************************************************************************************
+ * DWGcylinderModule
+ *******************************************************************************************/
+
+DWGcylinderModule::DWGcylinderModule(const string& name, const string& sds, const string& lds, const string& htm) :
+		fractionalDelayModule(name, sds, lds, htm),
+		p1p_(NULL),
+		p2p_(NULL),
+		p1m_(NULL),
+		p2m_(NULL)
+{
+	initLocalParams();
+	p2p_ = new OPortType(C_ART_na, 20, "p2p");
+	AppendDataProp(p2p_);
+	p1m_ = new OPortType(C_ART_na, 20, "p1m");
+	AppendDataProp(p1m_);
+}
+
+ARTItimeModule* DWGcylinderModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
+{
+	return new DWGcylinderModule(name, sds, lds, htm);
+}
+
+void DWGcylinderModule::addIPort(const string& name, const ARTdataProp* refPort)
+{
+	if (name != "p1p" && name != "p2m")
+	{
+		throw ARTerror("DWGcylinderModule::addIPort",
+				"It is only possible to add input ports with names 'p1p' and 'p2m' to this module!");
+	}
+
+	if (FindProperty(name))
+	{
+		throw ARTerror("DWGcylinderModule::addIPort",
+				"An input port with name '%s1' already exists in module '%s2'!",
+				name, name_);
+	}
+
+	const OPortType* oPort = dynamic_cast<const OPortType*>(refPort);
+	if (!refPort)
+	{
+		throw ARTerror("DWGcylinderModule::addIPort", "Port '%s1' is no valid output port",
+				refPort->GetName());
+	}
+
+	if (name == "p1p")
+	{
+		p1p_ = new IPortType(name, oPort);
+		p2p_->GetParser()->DefineVar(name, p1p_->GetParserVar());
+		AppendDataProp(p1p_);
+	}
+	else
+	{
+		p2m_ = new IPortType(name, oPort);
+		p1m_->GetParser()->DefineVar(name, p2m_->GetParserVar());
+		AppendDataProp(p2m_);
+	}
+}
+
+ARTdataProp* DWGcylinderModule::getPort(const string& name)
+{
+	if (name != "p2p" && name != "p1m")
+	{
+		throw ARTerror("DWGcylinderModule::getPort", "Time module '%s1' has no port '%s2'.",
+				name_, name);
+	}
+	else
+	{
+		return dynamic_cast<ARTdataProp*>(FindProperty(name));
+	}
+}
+
+void DWGcylinderModule::setCurrentIndex(int idx)
+{
+	if (idx == 0)
+	{
+		initSimulation();
+	}
+	p2p_->SetCurrentIndex(idx);
+	p1m_->SetCurrentIndex(idx);
+}
+
+void DWGcylinderModule::simulateCurrentIndex(int idx)
+{
+	p2p_->GetArrayElement(idx).EvaluateIfInvalid();
+	p1m_->GetArrayElement(idx).EvaluateIfInvalid();
+}
+
+void DWGcylinderModule::initLocalParams()
+{
+	localParameterType* tmpParam;
+
+	// save standard order of implemented filter
+	tmpParam = new localParameterType("length", "length of the cylinder in mm");
+	tmpParam->SetVal(50);
+	AppendDataProp(tmpParam);
+}
+
+void DWGcylinderModule::initSimulation()
+{
+
+	localParameterType* type = dynamic_cast<localParameterType*>(FindProperty("type"));
+	localParameterType* length = dynamic_cast<localParameterType*>(FindProperty("length"));
+	globalParameterType* T = dynamic_cast<globalParameterType*>(FindProperty("T"));
+	globalParameterType* c = dynamic_cast<globalParameterType*>(FindProperty("c"));
+
+	int n;
+
+	std::stringstream expr1;
+	std::stringstream expr2;
+//	expr.precision(10);
+
+	// calculate normalized delay
+	double D;
+	int N;
+
+	if (c == NULL)
+	{
+		throw ARTerror("DWGcylinderModule::initSimulation",
+				"No global parameter 'c' for the speed of sound has been found. Please add it to your current simulator!");
+	}
+
+	// depending on the length of cylinder, calculate value for delay
+	// divide by 1000 as original length is given in mm
+	D = (length->GetFloat()) / ((c->GetParserVar().GetFloat() * T->GetParserVar().GetFloat())) / 1000;
+
+	// calculate filter order depending on filter type
+	if (type->GetString() == "lagrange")
+	{
+		N = (int) (2*D + 1);
+	}
+	else if (type->GetString() == "thiran")
+	{
+		N = (int) (D + 0.5);
+	}
+	else
+	{
+		throw ARTerror("DWGcylinderModule::initSimulation",
+				"Unknown type '%s1' of module '%s2': Current implementations provide 'lagrange' and 'thiran' fractional delay filters!",
+				type->GetString(), name_);
+	}
+
+	// init expression
+	expr1 << "p2p[t] = ";
+	expr2 << "p1m[t] = ";
+
+	if (type->GetString() == "lagrange")
+	{
+		for (n = 0; n <= N; ++n)
+		{
+			if (n != 0)
+			{
+				expr1 << " + ";
+				expr2 << " + ";
+			}
+			expr1 << getLagrangeParams(n, N, D);
+			expr1 << "*p1p[t - " << n << "]";
+			expr2 << getLagrangeParams(n, N, D);
+			expr2 << "*p2m[t - " << n << "]";
+		}
+	}
+	else if (type->GetString() == "thiran")
+	{
+
+		for (n = 1; n <= N; ++n)
+		{
+			// init output ports to zero for thiran IIR
+			(*p2p_)[-n] = 0;
+			(*p1m_)[-n] = 0;
+
+			// set up calculation expression
+			if (n != 1)
+			{
+				expr1 << " + ";
+				expr2 << " + ";
+			}
+			expr1 << getThiranParams(n, N, D);
+			expr1 << "*(p1p[t - " << N - n << "] - p2p[t - " << n << "])";
+			expr2 << getThiranParams(n, N, D);
+			expr2 << "*(p2m[t - " << N - n << "] - p1m[t - " << n << "])";
+		}
+
+		expr1 << " + p1p[t - " << N << "]";
+		expr2 << " + p2m[t - " << N << "]";
+	}
+
+//	cout << "D = " << D << "\nExpression for FD: " << expr1.str() << endl;
+
+	// save whole definitions to output ports
+	p2p_->SetDefinition(expr1.str());
+	p1m_->SetDefinition(expr2.str());
 }
 
 /*******************************************************************************************

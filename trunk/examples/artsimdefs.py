@@ -43,6 +43,10 @@ ARTAddLocalParamToTModule = artsim.ARTAddLocalParamToTModule;
 ARTAddLocalParamToTModule.restype = c_int;
 ARTAddLocalParamToTModule.argtypes = [c_void_p, c_char_p, c_char_p];
 
+ARTAddGlobalParamToTSimulator = artsim.ARTAddGlobalParamToTSimulator;
+ARTAddGlobalParamToTSimulator.restype = c_int;
+ARTAddGlobalParamToTSimulator.argtypes = [c_void_p, c_char_p, c_char_p];
+
 ARTConnectPorts = artsim.ARTConnectPorts;
 ARTConnectPorts.restype = c_int;
 ARTConnectPorts.argtypes = [c_void_p, c_char_p];

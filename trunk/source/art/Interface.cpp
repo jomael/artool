@@ -992,6 +992,7 @@ AcousticResearchTool::AcousticResearchTool() : ARTobject("ART","Acoustic Researc
 	obj = prototypeModels->AppendObject(new multiplicationModule());
 	obj = prototypeModels->AppendObject(new sinewaveModule());
 	obj = prototypeModels->AppendObject(new fractionalDelayModule());
+	obj = prototypeModels->AppendObject(new DWGcylinderModule());
 
 	//the following list has to be filled by the user
 	simulators = AppendListProp("Simulators"); 

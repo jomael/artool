@@ -689,9 +689,22 @@ __DECLSPEC bool __CALLCONV ARTAddLocalParamToTModule	(P_ART_TModule module, cons
 	ARTtimeModule* mod = dynamic_cast<ARTtimeModule*>(module);
 	if (mod == NULL)
 	{
-		throw ARTerror("ARTAddOPortToTModule", "The specified time module does not support adding local parameters.");
+		throw ARTerror("ARTAddLocalParamToTModule", "The specified time module does not support adding local parameters.");
 	}
 	mod->addLocalParameter(name, expr);
+	return 1; //No error
+	DLL_ERRORHANDLING_END
+}
+
+bool __CALLCONV ARTAddGlobalParamToTSimulator	(P_ART_Simulator simulator, const char* name, const char* expr)
+{
+	DLL_ERRORHANDLING_BEGIN
+	ARTtimeSimulator* sim = dynamic_cast<ARTtimeSimulator*>(simulator);
+	if (sim == NULL)
+	{
+		throw ARTerror("ARTAddGlobalParamToTSimulator", "The specified simulator is no valid time-domain simulator.");
+	}
+	sim->AddSimulationParameter(name, expr);
 	return 1; //No error
 	DLL_ERRORHANDLING_END
 }

@@ -62,6 +62,33 @@ protected:
 	virtual double binom(int n, int k);
 };
 
+class DWGcylinderModule : public fractionalDelayModule
+{
+protected:
+	OPortType* outm_;
+
+	IPortType* p1p_;
+	OPortType* p2p_;
+	OPortType* p1m_;
+	IPortType* p2m_;
+
+public:
+	explicit DWGcylinderModule(const string& name="DWGCylinderModule", const string& sds="", const string& lds="", const string& htm="");
+	virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
+
+	virtual void addIPort(const string& name, const ARTdataProp* refPort);
+	virtual ARTdataProp* getPort(const string& name);
+
+	virtual void setCurrentIndex(int idx);
+	virtual void simulateCurrentIndex(int idx);
+
+	virtual ~DWGcylinderModule() {}
+protected:
+	virtual void initLocalParams();
+	virtual void initSimulation();
+
+};
+
 class impulseModule : public ARTItimeModule
 {
 protected:
