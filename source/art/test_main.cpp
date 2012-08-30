@@ -5539,6 +5539,7 @@ TEST_DEF_START(DWGCylinder, ARTtimeSimulatorTests)
 
 			ARTtimeModule* pulseModule = new ARTtimeModule("pulseModule");
 			ARTItimeModule* cylModule1 = new DWGcylinderModule("cyl1");
+//			ARTItimeModule* cylModule1 = new DWGconeJunctionModule("cyl1");
 
 			pulseModule->addOPort("x", "x[t] = (t == 0) ? 1 : 0", 50);
 
@@ -5557,6 +5558,7 @@ TEST_DEF_START(DWGCylinder, ARTtimeSimulatorTests)
 
 			cylModule1->setLocalParameter("type", "thiran");
 			cylModule1->setLocalParameter("length", 320);
+//			cylModule1->setLocalParameter("r2", 70);
 
 			for (int i = 0; i < 100; ++i)
 			{
@@ -5569,6 +5571,8 @@ TEST_DEF_START(DWGCylinder, ARTtimeSimulatorTests)
 				{
 					return false;
 				}
+//				cout << "p2p[" << i << "] = " << simulationPort1[i].GetFloat() << endl;
+//				cout << "p1m[" << i << "] = " << simulationPort2[i].GetFloat() << endl;
 			}
 
 			if (std::abs(simulationPort1[99].GetFloat()) > 1e-10)
