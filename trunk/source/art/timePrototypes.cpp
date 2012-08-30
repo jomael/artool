@@ -6,7 +6,9 @@
  */
 
 #include <sstream>
+#include <cmath>
 #include "timePrototypes.h"
+#include "constants.hpp"
 
 /*******************************************************************************************
  * inputFunctionModule
@@ -65,433 +67,6 @@ ARTdataProp* inputFunctionModule::getPort(const string& name)
 inputFunctionModule::~inputFunctionModule()
 {
 	delete out_;
-}
-
-
-/*******************************************************************************************
- * fractionDelayModule
- *******************************************************************************************/
-
-fractionalDelayModule::fractionalDelayModule(const string& name, const string& sds, const string& lds, const string& htm) :
-		ARTItimeModule(name, sds, lds, htm),
-		out_(NULL),
-		in_(NULL)
-{
-	initLocalParams();
-	out_ = new OPortType(C_ART_na, 20, "out");
-	AppendDataProp(out_);
-}
-
-ARTItimeModule* fractionalDelayModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
-{
-	return new fractionalDelayModule(name, sds, lds, htm);
-}
-
-void fractionalDelayModule::addIPort(const string& name, const ARTdataProp* refPort)
-{
-	if (name != "in")
-	{
-		throw ARTerror("fractionalDelayModule::addIPort",
-				"It is only possible to add an input port with name 'in' to this module!");
-	}
-	const OPortType* oPort = dynamic_cast<const OPortType*>(refPort);
-	if (!refPort)
-	{
-		throw ARTerror("fractionalDelayModule::addIPort", "Port '%s1' is no valid output port",
-				refPort->GetName());
-	}
-	in_ = new IPortType(name, oPort);
-	out_->GetParser()->DefineVar(name, in_->GetParserVar());
-	AppendDataProp(in_);
-}
-
-ARTdataProp* fractionalDelayModule::getPort(const string& name)
-{
-	if (name != "out")
-	{
-		throw ARTerror("fractionalDelayModule::getPort", "Time module '%s1' has no port '%s2'.",
-				name_, name);
-	}
-	return out_;
-}
-
-void fractionalDelayModule::setCurrentIndex(int idx)
-{
-	if (idx == 0)
-	{
-		initSimulation();
-	}
-	out_->SetCurrentIndex(idx);
-}
-
-void fractionalDelayModule::simulateCurrentIndex(int idx)
-{
-	out_->GetArrayElement(idx).EvaluateIfInvalid();
-}
-
-void fractionalDelayModule::initLocalParams()
-{
-	localParameterType* tmpParam;
-
-	// save standard type of filter
-	tmpParam = new localParameterType("type", "type of the fractional delay filter, may be either 'lagrangre' or 'thiran'");
-	tmpParam->SetType(C_ART_str, 0);
-	tmpParam->SetVal("lagrange");
-	AppendDataProp(tmpParam);
-
-	// save standard order of implemented filter
-	tmpParam = new localParameterType("order", "order of the filter");
-	tmpParam->SetVal(5);
-	AppendDataProp(tmpParam);
-
-	// save standard delay of current module => currently 0 seconds
-	tmpParam = new localParameterType("Delay", "delay in seconds");
-	tmpParam->SetVal(0.0);
-	AppendDataProp(tmpParam);
-}
-
-void fractionalDelayModule::initSimulation()
-{
-	localParameterType* type = dynamic_cast<localParameterType*>(FindProperty("type"));
-	localParameterType* order = dynamic_cast<localParameterType*>(FindProperty("order"));
-	localParameterType* Delay = dynamic_cast<localParameterType*>(FindProperty("Delay"));
-	globalParameterType* T = dynamic_cast<globalParameterType*>(FindProperty("T"));
-
-	int n;
-	bool warn = false;
-
-	std::stringstream expr;
-//	expr.precision(10);
-
-//	cout << "Delay = " << Delay->GetFloat() << ", T = " << T->GetParserVar().GetFloat() << endl;
-
-	// calculate normalized delay
-	double D = (Delay->GetFloat()) / (T->GetParserVar().GetFloat());
-	int N = order->GetInt();
-
-	// make sure that normalized delay is below one sampling period such =>
-	// use simple delay and fractional delay in combination
-//	if (D >= 1.0)
-//	{
-//		throw ARTerror("fractionalDelayModule::initSimulation",
-//				"The current value for 'Delay' of module '%s1' is greater than a single sampling period. Please use a delay module and the fractional delay module to get this effect!",
-//				name_);
-//	}
-
-	// init expression
-	expr << "out[t] = ";
-
-	if (type->GetString() == "lagrange")
-	{
-		// print out warning if order does not fit delay time
-		if (N % 2 == 0)
-		{
-			if (((N/2 - 1) > D) || ((N/2 + 1) < D))
-			{
-				warn = true;
-			}
-		}
-		else
-		{
-			if ((((N-1)/2) > D) || (((N+1)/2) < D))
-			{
-				warn = true;
-			}
-		}
-
-		for (n = 0; n <= N; ++n)
-		{
-			if (n != 0)
-			{
-				expr << " + ";
-			}
-			expr << getLagrangeParams(n, N, D);
-			expr << "*in[t - " << n << "]";
-		}
-	}
-	else if (type->GetString() == "thiran")
-	{
-		// print out warning if order does not fit delay time
-		if (((N - 0.5) > D) || ((N + 0.5) < D))
-		{
-			warn = true;
-		}
-
-		for (n = 1; n <= N; ++n)
-		{
-			// init output port to zero for thiran IIR
-			(*out_)[-n] = 0;
-
-			if (n != 1)
-			{
-				expr << " + ";
-			}
-			expr << getThiranParams(n, N, D);
-			expr << "*(in[t - " << N - n << "] - out[t - " << n << "])";
-		}
-
-		expr << " + in[t - " << N << "]";
-	}
-	else
-	{
-		throw ARTerror("fractionalDelayModule::initSimulation",
-				"Unknown type '%s1' of module '%s2': Current implementations provide 'lagrange' and 'thiran' fractional delay filters!",
-				type->GetString(), name_);
-	}
-
-	if (warn)
-	{
-		cerr << "Warning: In fractionalDelayModule::initSimulation() of module '"
-				<< name_ << "': The specified filter order does not provide a stable result."
-				<< " Please change either the filter order or the delay time." << endl;
-	}
-
-//	cout << "D = " << D << "\nExpression for FD: " << expr.str() << endl;
-
-	// save whole definition to output port
-	out_->SetDefinition(expr.str());
-}
-
-double fractionalDelayModule::getLagrangeParams(int n, int N, double D)
-{
-	int k = 0;
-
-	double result = 1;
-
-	for (k = 0; k <= N; ++k)
-	{
-		if (k != n)
-		{
-			result *= ((D - k)/(n - k));
-		}
-	}
-
-	return result;
-}
-
-double fractionalDelayModule::getThiranParams(int n, int N, double D)
-{
-	int k = 0;
-	double result = (n%2 == 0) ? 1 : -1;
-	result *= binom(N, n);
-
-	for (k = 0; k <= N; ++k)
-	{
-		result *= ((D - N + k)/(D - N  + n + k));
-	}
-
-	return result;
-}
-
-double fractionalDelayModule::fac(int n)
-{
-	double result = 1;
-	int i;
-	for (i = 1; i <= n; ++i)
-	{
-		result *= i;
-	}
-	return result;
-}
-
-double fractionalDelayModule::binom(int n, int k)
-{
-	double numerator = fac(n);
-	double denominator = fac(k) * fac(n -k);
-	return numerator / denominator;
-}
-
-/*******************************************************************************************
- * DWGcylinderModule
- *******************************************************************************************/
-
-DWGcylinderModule::DWGcylinderModule(const string& name, const string& sds, const string& lds, const string& htm) :
-		fractionalDelayModule(name, sds, lds, htm),
-		p1p_(NULL),
-		p2p_(NULL),
-		p1m_(NULL),
-		p2m_(NULL)
-{
-	initLocalParams();
-	p2p_ = new OPortType(C_ART_na, 20, "p2p");
-	AppendDataProp(p2p_);
-	p1m_ = new OPortType(C_ART_na, 20, "p1m");
-	AppendDataProp(p1m_);
-}
-
-ARTItimeModule* DWGcylinderModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
-{
-	return new DWGcylinderModule(name, sds, lds, htm);
-}
-
-void DWGcylinderModule::addIPort(const string& name, const ARTdataProp* refPort)
-{
-	if (name != "p1p" && name != "p2m")
-	{
-		throw ARTerror("DWGcylinderModule::addIPort",
-				"It is only possible to add input ports with names 'p1p' and 'p2m' to this module!");
-	}
-
-	if (FindProperty(name))
-	{
-		throw ARTerror("DWGcylinderModule::addIPort",
-				"An input port with name '%s1' already exists in module '%s2'!",
-				name, name_);
-	}
-
-	const OPortType* oPort = dynamic_cast<const OPortType*>(refPort);
-	if (!refPort)
-	{
-		throw ARTerror("DWGcylinderModule::addIPort", "Port '%s1' is no valid output port",
-				refPort->GetName());
-	}
-
-	if (name == "p1p")
-	{
-		p1p_ = new IPortType(name, oPort);
-		p2p_->GetParser()->DefineVar(name, p1p_->GetParserVar());
-		AppendDataProp(p1p_);
-	}
-	else
-	{
-		p2m_ = new IPortType(name, oPort);
-		p1m_->GetParser()->DefineVar(name, p2m_->GetParserVar());
-		AppendDataProp(p2m_);
-	}
-}
-
-ARTdataProp* DWGcylinderModule::getPort(const string& name)
-{
-	if (name != "p2p" && name != "p1m")
-	{
-		throw ARTerror("DWGcylinderModule::getPort", "Time module '%s1' has no port '%s2'.",
-				name_, name);
-	}
-	else
-	{
-		return dynamic_cast<ARTdataProp*>(FindProperty(name));
-	}
-}
-
-void DWGcylinderModule::setCurrentIndex(int idx)
-{
-	if (idx == 0)
-	{
-		initSimulation();
-	}
-	p2p_->SetCurrentIndex(idx);
-	p1m_->SetCurrentIndex(idx);
-}
-
-void DWGcylinderModule::simulateCurrentIndex(int idx)
-{
-	p2p_->GetArrayElement(idx).EvaluateIfInvalid();
-	p1m_->GetArrayElement(idx).EvaluateIfInvalid();
-}
-
-void DWGcylinderModule::initLocalParams()
-{
-	localParameterType* tmpParam;
-
-	// save standard order of implemented filter
-	tmpParam = new localParameterType("length", "length of the cylinder in mm");
-	tmpParam->SetVal(50);
-	AppendDataProp(tmpParam);
-}
-
-void DWGcylinderModule::initSimulation()
-{
-
-	localParameterType* type = dynamic_cast<localParameterType*>(FindProperty("type"));
-	localParameterType* length = dynamic_cast<localParameterType*>(FindProperty("length"));
-	globalParameterType* T = dynamic_cast<globalParameterType*>(FindProperty("T"));
-	globalParameterType* c = dynamic_cast<globalParameterType*>(FindProperty("c"));
-
-	int n;
-
-	std::stringstream expr1;
-	std::stringstream expr2;
-//	expr.precision(10);
-
-	// calculate normalized delay
-	double D;
-	int N;
-
-	if (c == NULL)
-	{
-		throw ARTerror("DWGcylinderModule::initSimulation",
-				"No global parameter 'c' for the speed of sound has been found. Please add it to your current simulator!");
-	}
-
-	// depending on the length of cylinder, calculate value for delay
-	// divide by 1000 as original length is given in mm
-	D = (length->GetFloat()) / ((c->GetParserVar().GetFloat() * T->GetParserVar().GetFloat())) / 1000;
-
-	// calculate filter order depending on filter type
-	if (type->GetString() == "lagrange")
-	{
-		N = (int) (2*D + 1);
-	}
-	else if (type->GetString() == "thiran")
-	{
-		N = (int) (D + 0.5);
-	}
-	else
-	{
-		throw ARTerror("DWGcylinderModule::initSimulation",
-				"Unknown type '%s1' of module '%s2': Current implementations provide 'lagrange' and 'thiran' fractional delay filters!",
-				type->GetString(), name_);
-	}
-
-	// init expression
-	expr1 << "p2p[t] = ";
-	expr2 << "p1m[t] = ";
-
-	if (type->GetString() == "lagrange")
-	{
-		for (n = 0; n <= N; ++n)
-		{
-			if (n != 0)
-			{
-				expr1 << " + ";
-				expr2 << " + ";
-			}
-			expr1 << getLagrangeParams(n, N, D);
-			expr1 << "*p1p[t - " << n << "]";
-			expr2 << getLagrangeParams(n, N, D);
-			expr2 << "*p2m[t - " << n << "]";
-		}
-	}
-	else if (type->GetString() == "thiran")
-	{
-
-		for (n = 1; n <= N; ++n)
-		{
-			// init output ports to zero for thiran IIR
-			(*p2p_)[-n] = 0;
-			(*p1m_)[-n] = 0;
-
-			// set up calculation expression
-			if (n != 1)
-			{
-				expr1 << " + ";
-				expr2 << " + ";
-			}
-			expr1 << getThiranParams(n, N, D);
-			expr1 << "*(p1p[t - " << N - n << "] - p2p[t - " << n << "])";
-			expr2 << getThiranParams(n, N, D);
-			expr2 << "*(p2m[t - " << N - n << "] - p1m[t - " << n << "])";
-		}
-
-		expr1 << " + p1p[t - " << N << "]";
-		expr2 << " + p2m[t - " << N << "]";
-	}
-
-//	cout << "D = " << D << "\nExpression for FD: " << expr1.str() << endl;
-
-	// save whole definitions to output ports
-	p2p_->SetDefinition(expr1.str());
-	p1m_->SetDefinition(expr2.str());
 }
 
 /*******************************************************************************************
@@ -1002,4 +577,985 @@ void sinewaveModule::initLocalParams()
 	AppendDataProp(tmpParam);
 
 	out_->GetParser()->DefineVar(tmpParam->GetName(), tmpParam->GetParserVar());
+}
+
+/*******************************************************************************************
+ * genericDelayModule
+ *******************************************************************************************/
+
+double genericDelayModule::getLagrangeParams(int n, int N, double D)
+{
+	int k = 0;
+
+	double result = 1;
+
+	for (k = 0; k <= N; ++k)
+	{
+		if (k != n)
+		{
+			result *= ((D - k)/(n - k));
+		}
+	}
+
+	return result;
+}
+
+double genericDelayModule::getThiranParams(int n, int N, double D)
+{
+	int k = 0;
+	double result = (n%2 == 0) ? 1 : -1;
+	result *= binom(N, n);
+
+	for (k = 0; k <= N; ++k)
+	{
+		result *= ((D - N + k)/(D - N  + n + k));
+	}
+
+	return result;
+}
+
+double genericDelayModule::fac(int n)
+{
+	double result = 1;
+	int i;
+	for (i = 1; i <= n; ++i)
+	{
+		result *= i;
+	}
+	return result;
+}
+
+double genericDelayModule::binom(int n, int k)
+{
+	double numerator = fac(n);
+	double denominator = fac(k) * fac(n -k);
+	return numerator / denominator;
+}
+
+
+/*******************************************************************************************
+ * fractionDelayModule
+ *******************************************************************************************/
+
+fractionalDelayModule::fractionalDelayModule(const string& name, const string& sds, const string& lds, const string& htm) :
+		genericDelayModule(name, sds, lds, htm),
+		out_(NULL),
+		in_(NULL)
+{
+	initLocalParams();
+	out_ = new OPortType(C_ART_na, 20, "out");
+	AppendDataProp(out_);
+}
+
+ARTItimeModule* fractionalDelayModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
+{
+	return new fractionalDelayModule(name, sds, lds, htm);
+}
+
+void fractionalDelayModule::addIPort(const string& name, const ARTdataProp* refPort)
+{
+	if (name != "in")
+	{
+		throw ARTerror("fractionalDelayModule::addIPort",
+				"It is only possible to add an input port with name 'in' to this module!");
+	}
+	const OPortType* oPort = dynamic_cast<const OPortType*>(refPort);
+	if (!refPort)
+	{
+		throw ARTerror("fractionalDelayModule::addIPort", "Port '%s1' is no valid output port",
+				refPort->GetName());
+	}
+	in_ = new IPortType(name, oPort);
+	out_->GetParser()->DefineVar(name, in_->GetParserVar());
+	AppendDataProp(in_);
+}
+
+ARTdataProp* fractionalDelayModule::getPort(const string& name)
+{
+	if (name != "out")
+	{
+		throw ARTerror("fractionalDelayModule::getPort", "Time module '%s1' has no port '%s2'.",
+				name_, name);
+	}
+	return out_;
+}
+
+void fractionalDelayModule::setCurrentIndex(int idx)
+{
+	if (idx == 0)
+	{
+		initSimulation();
+	}
+	out_->SetCurrentIndex(idx);
+}
+
+void fractionalDelayModule::simulateCurrentIndex(int idx)
+{
+	out_->GetArrayElement(idx).EvaluateIfInvalid();
+}
+
+void fractionalDelayModule::initLocalParams()
+{
+	localParameterType* tmpParam;
+
+	// save standard type of filter
+	tmpParam = new localParameterType("type", "type of the fractional delay filter, may be either 'lagrangre' or 'thiran'");
+	tmpParam->SetType(C_ART_str, 0);
+	tmpParam->SetVal("lagrange");
+	AppendDataProp(tmpParam);
+
+	// save standard order of implemented filter
+	tmpParam = new localParameterType("order", "order of the filter");
+	tmpParam->SetVal(5);
+	AppendDataProp(tmpParam);
+
+	// save standard delay of current module => currently 0 seconds
+	tmpParam = new localParameterType("Delay", "delay in seconds");
+	tmpParam->SetVal(0.0);
+	AppendDataProp(tmpParam);
+}
+
+void fractionalDelayModule::initSimulation()
+{
+	localParameterType* type = dynamic_cast<localParameterType*>(FindProperty("type"));
+	localParameterType* order = dynamic_cast<localParameterType*>(FindProperty("order"));
+	localParameterType* Delay = dynamic_cast<localParameterType*>(FindProperty("Delay"));
+	globalParameterType* T = dynamic_cast<globalParameterType*>(FindProperty("T"));
+
+	int n;
+	bool warn = false;
+
+	std::stringstream expr;
+//	expr.precision(10);
+
+//	cout << "Delay = " << Delay->GetFloat() << ", T = " << T->GetParserVar().GetFloat() << endl;
+
+	// calculate normalized delay
+	double D = (Delay->GetFloat()) / (T->GetParserVar().GetFloat());
+	int N = order->GetInt();
+
+	// make sure that normalized delay is below one sampling period such =>
+	// use simple delay and fractional delay in combination
+//	if (D >= 1.0)
+//	{
+//		throw ARTerror("fractionalDelayModule::initSimulation",
+//				"The current value for 'Delay' of module '%s1' is greater than a single sampling period. Please use a delay module and the fractional delay module to get this effect!",
+//				name_);
+//	}
+
+	// init expression
+	expr << "out[t] = ";
+
+	if (type->GetString() == "lagrange")
+	{
+		// print out warning if order does not fit delay time
+		if (N % 2 == 0)
+		{
+			if (((N/2 - 1) > D) || ((N/2 + 1) < D))
+			{
+				warn = true;
+			}
+		}
+		else
+		{
+			if ((((N-1)/2) > D) || (((N+1)/2) < D))
+			{
+				warn = true;
+			}
+		}
+
+		for (n = 0; n <= N; ++n)
+		{
+			if (n != 0)
+			{
+				expr << " + ";
+			}
+			expr << getLagrangeParams(n, N, D);
+			expr << "*in[t - " << n << "]";
+		}
+	}
+	else if (type->GetString() == "thiran")
+	{
+		// print out warning if order does not fit delay time
+		if (((N - 0.5) > D) || ((N + 0.5) < D))
+		{
+			warn = true;
+		}
+
+		for (n = 1; n <= N; ++n)
+		{
+			// init output port to zero for thiran IIR
+			(*out_)[-n] = 0;
+
+			if (n != 1)
+			{
+				expr << " + ";
+			}
+			expr << getThiranParams(n, N, D);
+			expr << "*(in[t - " << N - n << "] - out[t - " << n << "])";
+		}
+
+		expr << " + in[t - " << N << "]";
+	}
+	else
+	{
+		throw ARTerror("fractionalDelayModule::initSimulation",
+				"Unknown type '%s1' of module '%s2': Current implementations provide 'lagrange' and 'thiran' fractional delay filters!",
+				type->GetString(), name_);
+	}
+
+	if (warn)
+	{
+		cerr << "Warning: In fractionalDelayModule::initSimulation() of module '"
+				<< name_ << "': The specified filter order does not provide a stable result."
+				<< " Please change either the filter order or the delay time." << endl;
+	}
+
+//	cout << "D = " << D << "\nExpression for FD: " << expr.str() << endl;
+
+	// save whole definition to output port
+	out_->SetDefinition(expr.str());
+}
+
+/*******************************************************************************************
+ * DWGcylinderModule
+ *******************************************************************************************/
+
+DWGcylinderModule::DWGcylinderModule(const string& name, const string& sds, const string& lds, const string& htm) :
+		genericDelayModule(name, sds, lds, htm),
+		p1p_(NULL),
+		p2p_(NULL),
+		p1m_(NULL),
+		p2m_(NULL)
+{
+	initLocalParams();
+	p2p_ = new OPortType(C_ART_na, 20, "p2p");
+	AppendDataProp(p2p_);
+	p1m_ = new OPortType(C_ART_na, 20, "p1m");
+	AppendDataProp(p1m_);
+}
+
+ARTItimeModule* DWGcylinderModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
+{
+	return new DWGcylinderModule(name, sds, lds, htm);
+}
+
+void DWGcylinderModule::addIPort(const string& name, const ARTdataProp* refPort)
+{
+	if (name != "p1p" && name != "p2m")
+	{
+		throw ARTerror("DWGcylinderModule::addIPort",
+				"It is only possible to add input ports with names 'p1p' and 'p2m' to this module!");
+	}
+
+	if (FindProperty(name))
+	{
+		throw ARTerror("DWGcylinderModule::addIPort",
+				"An input port with name '%s1' already exists in module '%s2'!",
+				name, name_);
+	}
+
+	const OPortType* oPort = dynamic_cast<const OPortType*>(refPort);
+	if (!refPort)
+	{
+		throw ARTerror("DWGcylinderModule::addIPort", "Port '%s1' is no valid output port",
+				refPort->GetName());
+	}
+
+	if (name == "p1p")
+	{
+		p1p_ = new IPortType(name, oPort);
+		p2p_->GetParser()->DefineVar(name, p1p_->GetParserVar());
+		AppendDataProp(p1p_);
+	}
+	else
+	{
+		p2m_ = new IPortType(name, oPort);
+		p1m_->GetParser()->DefineVar(name, p2m_->GetParserVar());
+		AppendDataProp(p2m_);
+	}
+}
+
+ARTdataProp* DWGcylinderModule::getPort(const string& name)
+{
+	if (name != "p2p" && name != "p1m")
+	{
+		throw ARTerror("DWGcylinderModule::getPort", "Time module '%s1' has no port '%s2'.",
+				name_, name);
+	}
+	else
+	{
+		return dynamic_cast<ARTdataProp*>(FindProperty(name));
+	}
+}
+
+void DWGcylinderModule::setCurrentIndex(int idx)
+{
+	if (idx == 0)
+	{
+		initSimulation();
+	}
+	p2p_->SetCurrentIndex(idx);
+	p1m_->SetCurrentIndex(idx);
+}
+
+void DWGcylinderModule::simulateCurrentIndex(int idx)
+{
+	p2p_->GetArrayElement(idx).EvaluateIfInvalid();
+	p1m_->GetArrayElement(idx).EvaluateIfInvalid();
+}
+
+void DWGcylinderModule::initLocalParams()
+{
+	localParameterType* tmpParam;
+
+	// save standard type of filter
+	tmpParam = new localParameterType("type", "type of the fractional delay filter, may be either 'lagrangre' or 'thiran'");
+	tmpParam->SetType(C_ART_str, 0);
+	tmpParam->SetVal("lagrange");
+	AppendDataProp(tmpParam);
+
+	// save standard length of implemented filter
+	tmpParam = new localParameterType("length", "length of the cylinder in mm");
+	tmpParam->SetVal(50);
+	AppendDataProp(tmpParam);
+}
+
+void DWGcylinderModule::initSimulation()
+{
+
+	localParameterType* type = dynamic_cast<localParameterType*>(FindProperty("type"));
+	localParameterType* length = dynamic_cast<localParameterType*>(FindProperty("length"));
+	globalParameterType* T = dynamic_cast<globalParameterType*>(FindProperty("T"));
+	globalParameterType* c = dynamic_cast<globalParameterType*>(FindProperty("c"));
+
+	int n;
+
+	std::stringstream expr1;
+	std::stringstream expr2;
+//	expr.precision(10);
+
+	// calculate normalized delay
+	double D;
+	int N;
+
+	if (c == NULL)
+	{
+		throw ARTerror("DWGcylinderModule::initSimulation",
+				"No global parameter 'c' for the speed of sound has been found. Please add it to your current simulator!");
+	}
+
+	// depending on the length of cylinder, calculate value for delay
+	// divide by 1000 as original length is given in mm
+	D = (length->GetFloat()) / ((c->GetParserVar().GetFloat() * T->GetParserVar().GetFloat())) / 1000;
+
+	// calculate filter order depending on filter type
+	if (type->GetString() == "lagrange")
+	{
+		N = (int) (2*D + 1);
+	}
+	else if (type->GetString() == "thiran")
+	{
+		N = (int) (D + 0.5);
+	}
+	else
+	{
+		throw ARTerror("DWGcylinderModule::initSimulation",
+				"Unknown type '%s1' of module '%s2': Current implementations provide 'lagrange' and 'thiran' fractional delay filters!",
+				type->GetString(), name_);
+	}
+
+	// init expression
+	expr1 << "p2p[t] = ";
+	expr2 << "p1m[t] = ";
+
+	if (type->GetString() == "lagrange")
+	{
+		for (n = 0; n <= N; ++n)
+		{
+			if (n != 0)
+			{
+				expr1 << " + ";
+				expr2 << " + ";
+			}
+			expr1 << getLagrangeParams(n, N, D);
+			expr1 << "*p1p[t - " << n << "]";
+			expr2 << getLagrangeParams(n, N, D);
+			expr2 << "*p2m[t - " << n << "]";
+		}
+	}
+	else if (type->GetString() == "thiran")
+	{
+
+		for (n = 1; n <= N; ++n)
+		{
+			// init output ports to zero for thiran IIR
+			(*p2p_)[-n] = 0;
+			(*p1m_)[-n] = 0;
+
+			// set up calculation expression
+			if (n != 1)
+			{
+				expr1 << " + ";
+				expr2 << " + ";
+			}
+			expr1 << getThiranParams(n, N, D);
+			expr1 << "*(p1p[t - " << N - n << "] - p2p[t - " << n << "])";
+			expr2 << getThiranParams(n, N, D);
+			expr2 << "*(p2m[t - " << N - n << "] - p1m[t - " << n << "])";
+		}
+
+		expr1 << " + p1p[t - " << N << "]";
+		expr2 << " + p2m[t - " << N << "]";
+	}
+
+//	cout << "D = " << D << "\nExpression for FD: " << expr1.str() << endl;
+
+	// save whole definitions to output ports
+	p2p_->SetDefinition(expr1.str());
+	p1m_->SetDefinition(expr2.str());
+}
+
+/*******************************************************************************************
+ * DWGcylinderJunctionModule
+ *******************************************************************************************/
+
+DWGcylinderJunctionModule::DWGcylinderJunctionModule(const string& name, const string& sds, const string& lds, const string& htm) :
+		ARTItimeModule(name, sds, lds, htm),
+		p1p_(NULL),
+		p2p_(NULL),
+		p1m_(NULL),
+		p2m_(NULL),
+		r1_(NULL),
+		r2_(NULL)
+{
+	initLocalParams();
+	p2p_ = new OPortType(C_ART_na, 5, "p2p");
+	p2p_->SetDefinition("p2p[t] = p1p[t] + (((r1/1000)^2 - (r2/1000)^2)/((r1/1000)^2 + (r2/1000)^2)) * (p1p[t] - p2m[t])");
+	p2p_->GetParser()->DefineVar("r1", r1_->GetParserVar());
+	p2p_->GetParser()->DefineVar("r2", r2_->GetParserVar());
+	AppendDataProp(p2p_);
+
+	p1m_ = new OPortType(C_ART_na, 5, "p1m");
+	p1m_->SetDefinition("p1m[t] = p2m[t] + (((r1/1000)^2 - (r2/1000)^2)/((r1/1000)^2 + (r2/1000)^2)) * (p1p[t] - p2m[t])");
+	p1m_->GetParser()->DefineVar("r1", r1_->GetParserVar());
+	p1m_->GetParser()->DefineVar("r2", r2_->GetParserVar());
+	AppendDataProp(p1m_);
+}
+
+ARTItimeModule* DWGcylinderJunctionModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
+{
+	return new DWGcylinderJunctionModule(name, sds, lds, htm);
+}
+
+void DWGcylinderJunctionModule::addIPort(const string& name, const ARTdataProp* refPort)
+{
+	if (name != "p1p" && name != "p2m")
+	{
+		throw ARTerror("DWGcylinderJunctionModule::addIPort",
+				"It is only possible to add input ports with names 'p1p' and 'p2m' to this module!");
+	}
+
+	if (FindProperty(name))
+	{
+		throw ARTerror("DWGcylinderJunctionModule::addIPort",
+				"An input port with name '%s1' already exists in module '%s2'!",
+				name, name_);
+	}
+
+	const OPortType* oPort = dynamic_cast<const OPortType*>(refPort);
+	if (!refPort)
+	{
+		throw ARTerror("DWGcylinderJunctionModule::addIPort", "Port '%s1' is no valid output port",
+				refPort->GetName());
+	}
+
+	if (name == "p1p")
+	{
+		p1p_ = new IPortType(name, oPort);
+		p2p_->GetParser()->DefineVar(name, p1p_->GetParserVar());
+		AppendDataProp(p1p_);
+	}
+	else
+	{
+		p2m_ = new IPortType(name, oPort);
+		p1m_->GetParser()->DefineVar(name, p2m_->GetParserVar());
+		AppendDataProp(p2m_);
+	}
+}
+
+ARTdataProp* DWGcylinderJunctionModule::getPort(const string& name)
+{
+	if (name != "p2p" && name != "p1m")
+	{
+		throw ARTerror("DWGcylinderJunctionModule::getPort", "Time module '%s1' has no port '%s2'.",
+				name_, name);
+	}
+	else
+	{
+		return dynamic_cast<ARTdataProp*>(FindProperty(name));
+	}
+}
+
+void DWGcylinderJunctionModule::setCurrentIndex(int idx)
+{
+	p2p_->SetCurrentIndex(idx);
+	p1m_->SetCurrentIndex(idx);
+}
+
+void DWGcylinderJunctionModule::simulateCurrentIndex(int idx)
+{
+	p2p_->GetArrayElement(idx).EvaluateIfInvalid();
+	p1m_->GetArrayElement(idx).EvaluateIfInvalid();
+}
+
+void DWGcylinderJunctionModule::initLocalParams()
+{
+
+	// save standard radius of left cylinder
+	r1_ = new localParameterType("r1", "radius of left cylinder in mm");
+	r1_->SetVal(10);
+	AppendDataProp(r1_);
+
+	// save standard radius of right cylinder
+	r2_ = new localParameterType("r2", "radius of right cylinder in mm");
+	r2_->SetVal(15);
+	AppendDataProp(r2_);
+
+}
+
+/*******************************************************************************************
+ * DWGconeModule
+ *******************************************************************************************/
+
+DWGconeModule::DWGconeModule(const string& name, const string& sds, const string& lds, const string& htm) :
+		DWGcylinderModule(name, sds, lds, htm)
+{
+	initLocalParams();
+}
+
+ARTItimeModule* DWGconeModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
+{
+	return new DWGconeModule(name, sds, lds, htm);
+}
+
+void DWGconeModule::initLocalParams()
+{
+	localParameterType* tmpParam;
+
+//	// save standard type of filter
+//	tmpParam = new localParameterType("type", "type of the fractional delay filter, may be either 'lagrangre' or 'thiran'");
+//	tmpParam->SetType(C_ART_str, 0);
+//	tmpParam->SetVal("lagrange");
+//	AppendDataProp(tmpParam);
+//
+//	// save standard length of implemented filter
+//	tmpParam = new localParameterType("length", "length of the cylinder in mm");
+//	tmpParam->SetVal(50);
+//	AppendDataProp(tmpParam);
+	tmpParam = new localParameterType("r1", "radius of the left end in mm");
+	tmpParam->SetVal(50);
+	AppendDataProp(tmpParam);
+
+	p2p_->GetParser()->DefineVar(tmpParam->GetName(), tmpParam->GetParserVar());
+	p1m_->GetParser()->DefineVar(tmpParam->GetName(), tmpParam->GetParserVar());
+
+	tmpParam = new localParameterType("r2", "radius of the right end in mm");
+	tmpParam->SetVal(100);
+	AppendDataProp(tmpParam);
+
+	p2p_->GetParser()->DefineVar(tmpParam->GetName(), tmpParam->GetParserVar());
+	p1m_->GetParser()->DefineVar(tmpParam->GetName(), tmpParam->GetParserVar());
+}
+
+void DWGconeModule::initSimulation()
+{
+
+	localParameterType* type = dynamic_cast<localParameterType*>(FindProperty("type"));
+	localParameterType* length = dynamic_cast<localParameterType*>(FindProperty("length"));
+	globalParameterType* T = dynamic_cast<globalParameterType*>(FindProperty("T"));
+	globalParameterType* c = dynamic_cast<globalParameterType*>(FindProperty("c"));
+
+	int n;
+
+	std::stringstream expr1;
+	std::stringstream expr2;
+//	expr.precision(10);
+
+	// calculate normalized delay
+	double D;
+	int N;
+
+	if (c == NULL)
+	{
+		throw ARTerror("DWGconeModule::initSimulation",
+				"No global parameter 'c' for the speed of sound has been found. Please add it to your current simulator!");
+	}
+
+	// depending on the length of cylinder, calculate value for delay
+	// divide by 1000 as original length is given in mm
+	D = (length->GetFloat()) / ((c->GetParserVar().GetFloat() * T->GetParserVar().GetFloat())) / 1000;
+
+	// calculate filter order depending on filter type
+	if (type->GetString() == "lagrange")
+	{
+		N = (int) (2*D + 1);
+	}
+	else if (type->GetString() == "thiran")
+	{
+		N = (int) (D + 0.5);
+	}
+	else
+	{
+		throw ARTerror("DWGconeModule::initSimulation",
+				"Unknown type '%s1' of module '%s2': Current implementations provide 'lagrange' and 'thiran' fractional delay filters!",
+				type->GetString(), name_);
+	}
+
+	// init expression
+	expr1 << "p2p[t] = (r1/r2)*(";
+	expr2 << "p1m[t] = (r2/r1)*(";
+
+	if (type->GetString() == "lagrange")
+	{
+		for (n = 0; n <= N; ++n)
+		{
+			if (n != 0)
+			{
+				expr1 << " + ";
+				expr2 << " + ";
+			}
+			expr1 << getLagrangeParams(n, N, D);
+			expr1 << "*p1p[t - " << n << "]";
+			expr2 << getLagrangeParams(n, N, D);
+			expr2 << "*p2m[t - " << n << "]";
+		}
+	}
+	else if (type->GetString() == "thiran")
+	{
+
+		for (n = 1; n <= N; ++n)
+		{
+			// init output ports to zero for thiran IIR
+			(*p2p_)[-n] = 0;
+			(*p1m_)[-n] = 0;
+
+			// set up calculation expression
+			if (n != 1)
+			{
+				expr1 << " + ";
+				expr2 << " + ";
+			}
+			expr1 << getThiranParams(n, N, D);
+			expr1 << "*(p1p[t - " << N - n << "] - p2p[t - " << n << "])";
+			expr2 << getThiranParams(n, N, D);
+			expr2 << "*(p2m[t - " << N - n << "] - p1m[t - " << n << "])";
+		}
+
+		expr1 << " + p1p[t - " << N << "])";
+		expr2 << " + p2m[t - " << N << "])";
+	}
+
+//	cout << "D = " << D << "\nExpression for FD: " << expr1.str() << endl;
+//	cout << "D = " << D << "\nExpression for FD: " << expr2.str() << endl;
+
+	// save whole definitions to output ports
+	p2p_->SetDefinition(expr1.str());
+	p1m_->SetDefinition(expr2.str());
+}
+
+/*******************************************************************************************
+ * DWGconeJunctionModule
+ *******************************************************************************************/
+
+DWGconeJunctionModule::DWGconeJunctionModule(const string& name, const string& sds, const string& lds, const string& htm) :
+		ARTItimeModule(name, sds, lds, htm),
+		p1p_(NULL),
+		p2p_(NULL),
+		p1m_(NULL),
+		p2m_(NULL),
+		rz_(NULL),
+		r1_(NULL),
+		r2_(NULL)
+{
+	initLocalParams();
+
+	rz_ = new OPortType(C_ART_na, 5, "rz");
+	AppendDataProp(rz_);
+
+	p2p_ = new OPortType(C_ART_na, 20, "p2p");
+	p2p_->GetParser()->DefineVar("rz", rz_->GetParserVar());
+	AppendDataProp(p2p_);
+	p1m_ = new OPortType(C_ART_na, 20, "p1m");
+	p1m_->GetParser()->DefineVar("rz", rz_->GetParserVar());
+	AppendDataProp(p1m_);
+
+}
+
+ARTItimeModule* DWGconeJunctionModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
+{
+	return new DWGconeJunctionModule(name, sds, lds, htm);
+}
+
+void DWGconeJunctionModule::addIPort(const string& name, const ARTdataProp* refPort)
+{
+	if (name != "p1p" && name != "p2m")
+	{
+		throw ARTerror("DWGconeJunctionModule::addIPort",
+				"It is only possible to add input ports with names 'p1p' and 'p2m' to this module!");
+	}
+
+	if (FindProperty(name))
+	{
+		throw ARTerror("DWGconeJunctionModule::addIPort",
+				"An input port with name '%s1' already exists in module '%s2'!",
+				name, name_);
+	}
+
+	const OPortType* oPort = dynamic_cast<const OPortType*>(refPort);
+	if (!refPort)
+	{
+		throw ARTerror("DWGconeJunctionModule::addIPort", "Port '%s1' is no valid output port",
+				refPort->GetName());
+	}
+
+	if (name == "p1p")
+	{
+		p1p_ = new IPortType(name, oPort);
+		p2p_->GetParser()->DefineVar(name, p1p_->GetParserVar());
+		p1m_->GetParser()->DefineVar(name, p1p_->GetParserVar());
+		rz_->GetParser()->DefineVar(name, p1p_->GetParserVar());
+		AppendDataProp(p1p_);
+	}
+	else
+	{
+		p2m_ = new IPortType(name, oPort);
+		p2p_->GetParser()->DefineVar(name, p2m_->GetParserVar());
+		p1m_->GetParser()->DefineVar(name, p2m_->GetParserVar());
+		rz_->GetParser()->DefineVar(name, p2m_->GetParserVar());
+		AppendDataProp(p2m_);
+	}
+}
+
+ARTdataProp* DWGconeJunctionModule::getPort(const string& name)
+{
+	if (name != "p2p" && name != "p1m")
+	{
+		throw ARTerror("DWGconeJunctionModule::getPort", "Time module '%s1' has no port '%s2'.",
+				name_, name);
+	}
+	else
+	{
+		return dynamic_cast<ARTdataProp*>(FindProperty(name));
+	}
+}
+
+void DWGconeJunctionModule::setCurrentIndex(int idx)
+{
+	if (idx == 0)
+	{
+		initSimulation();
+	}
+	p2p_->SetCurrentIndex(idx);
+	p1m_->SetCurrentIndex(idx);
+	rz_->SetCurrentIndex(idx);
+}
+
+void DWGconeJunctionModule::simulateCurrentIndex(int idx)
+{
+	p2p_->GetArrayElement(idx).EvaluateIfInvalid();
+	p1m_->GetArrayElement(idx).EvaluateIfInvalid();
+	rz_->GetArrayElement(idx).EvaluateIfInvalid();
+}
+
+void DWGconeJunctionModule::initLocalParams()
+{
+	localParameterType* tmpParam;
+
+	// save standard type of filter
+	tmpParam = new localParameterType("method", "method of calculating the internal filter; may be either 'IIM', 'BT' or 'TICM'");
+	tmpParam->SetType(C_ART_str, 0);
+	tmpParam->SetVal("IIM");
+	AppendDataProp(tmpParam);
+
+	// save standard radius of left cone
+	r1_ = new localParameterType("r1", "radius of the left cone in mm");
+	r1_->SetVal(50);
+	AppendDataProp(r1_);
+
+	// save standard radius of right cone
+	r2_ = new localParameterType("r2", "radius of the right cone in mm");
+	r2_->SetVal(50);
+	AppendDataProp(r2_);
+}
+
+void DWGconeJunctionModule::initSimulation()
+{
+	const string& method = dynamic_cast<localParameterType*>(FindProperty("method"))->GetString();
+
+	double S1, S2, B, C1, C2, C3;
+	S1 = (r1_->GetFloat()/1000)*(r1_->GetFloat()/1000)*PI;
+	S2 = (r2_->GetFloat()/1000)*(r2_->GetFloat()/1000)*PI;
+
+	B = S1/S2;
+
+	cout << "B = " << B << endl;
+
+	C1 = 2*B/(B+1);
+	C2 = 2/(B+1);
+	C3 = (B-1)/(B+1);
+
+	std::stringstream exprrz;
+
+	std::stringstream expr1;
+	std::stringstream expr2;
+
+	// set expression for R(z)
+	exprrz << "rz[t] = ";
+	exprrz << getB0(method) << "*(" << C1 << "*p1p[t] + " << C2 << "*p2m[t]) + ";
+	exprrz << getB1(method) << "*(" << C1 << "*p1p[t-1] + " << C2 << "*p2m[t-1]) + ";
+	exprrz << getA1(method) << "*rz[t-1]";
+
+	// init value of rz[-1] for IIR filter
+	(*rz_)[-1] = 0.0;
+
+	cout << exprrz.str() << endl;
+
+	// set expression for p2p[t]
+	expr1 << "p2p[t] = p1p[t] + rz[t] + " << C3 << "*(p1p[t] - p2m[t])";
+	expr2 << "p1m[t] = p2m[t] + rz[t] + " << C3 << "*(p1p[t] - p2m[t])";
+
+//	cout << "D = " << D << "\nExpression for FD: " << expr1.str() << endl;
+
+	// save whole definitions to output ports
+	rz_->SetDefinition(exprrz.str());
+	p2p_->SetDefinition(expr1.str());
+	p1m_->SetDefinition(expr2.str());
+}
+
+double DWGconeJunctionModule::getB0(const string& method)
+{
+	double alpha, beta, gamma1, gamma2, S1, S2;
+	double result = 0;
+
+	double T = dynamic_cast<globalParameterType*>(FindProperty("T"))->GetParserVar().GetFloat();
+	globalParameterType* c = dynamic_cast<globalParameterType*>(FindProperty("c"));
+
+	if (c == NULL)
+	{
+		throw ARTerror("DWGconeJunctionModule::getB0",
+				"No global parameter 'c' for the speed of sound has been found. Please add it to your current simulator!");
+	}
+
+	gamma1 = (c->GetParserVar().GetFloat())/(2*(r1_->GetFloat()));
+	gamma2 = (c->GetParserVar().GetFloat())/(2*(r2_->GetFloat()));
+	S1 = (r1_->GetFloat()/1000)*(r1_->GetFloat()/1000)*PI;
+	S2 = (r2_->GetFloat()/1000)*(r2_->GetFloat()/1000)*PI;
+
+	alpha = 2*(gamma2*S2 - gamma1*S1)/(S2 + S1);
+	beta = 2/T;
+
+	if (method == "IIM")
+	{
+		result = -1 + exp(alpha * T);
+	}
+	else if (method == "TICM")
+	{
+		result = -1 - ((exp(-alpha*T) - 1)/(alpha*T));
+	}
+	else if (method == "BT")
+	{
+		result = alpha/(alpha + beta);
+	}
+	else
+	{
+		throw ARTerror("DWGconeJunctionModule::getB0", "Unknown calculation method '%s1'. Possible values are 'IIM', 'TICM' and 'BT'.",
+				method);
+	}
+	return result;
+}
+
+double DWGconeJunctionModule::getB1(const string& method)
+{
+	double alpha, beta, gamma1, gamma2, S1, S2;
+	double result = 0;
+
+	double T = dynamic_cast<globalParameterType*>(FindProperty("T"))->GetParserVar().GetFloat();
+	globalParameterType* c = dynamic_cast<globalParameterType*>(FindProperty("c"));
+
+	if (c == NULL)
+	{
+		throw ARTerror("DWGconeJunctionModule::getB0",
+				"No global parameter 'c' for the speed of sound has been found. Please add it to your current simulator!");
+	}
+
+	gamma1 = (c->GetParserVar().GetFloat())/(2*(r1_->GetFloat()));
+	gamma2 = (c->GetParserVar().GetFloat())/(2*(r2_->GetFloat()));
+	S1 = (r1_->GetFloat()/1000)*(r1_->GetFloat()/1000)*PI;
+	S2 = (r2_->GetFloat()/1000)*(r2_->GetFloat()/1000)*PI;
+
+	alpha = 2*(gamma2*S2 - gamma1*S1)/(S2 + S1);
+	beta = 2/T;
+
+	if (method == "IIM")
+	{
+		result = 0;
+	}
+	else if (method == "TICM")
+	{
+		result = exp(-alpha*T) + ((exp(-alpha*T) - 1)/(alpha*T));
+	}
+	else if (method == "BT")
+	{
+		result = alpha/(alpha + beta);
+	}
+	else
+	{
+		throw ARTerror("DWGconeJunctionModule::getB1", "Unknown calculation method '%s1'. Possible values are 'IIM', 'TICM' and 'BT'.",
+				method);
+	}
+	return result;
+
+}
+
+double DWGconeJunctionModule::getA1(const string& method)
+{
+	double alpha, beta, gamma1, gamma2, S1, S2;
+	double result = 0;
+
+	double T = dynamic_cast<globalParameterType*>(FindProperty("T"))->GetParserVar().GetFloat();
+	globalParameterType* c = dynamic_cast<globalParameterType*>(FindProperty("c"));
+
+	if (c == NULL)
+	{
+		throw ARTerror("DWGconeJunctionModule::getB0",
+				"No global parameter 'c' for the speed of sound has been found. Please add it to your current simulator!");
+	}
+
+	gamma1 = (c->GetParserVar().GetFloat())/(2*(r1_->GetFloat()));
+	gamma2 = (c->GetParserVar().GetFloat())/(2*(r2_->GetFloat()));
+	S1 = (r1_->GetFloat()/1000)*(r1_->GetFloat()/1000)*PI;
+	S2 = (r2_->GetFloat()/1000)*(r2_->GetFloat()/1000)*PI;
+
+	alpha = 2*(gamma2*S2 - gamma1*S1)/(S2 + S1);
+	beta = 2/T;
+
+	if (method == "IIM")
+	{
+		result = exp(-alpha * T);
+	}
+	else if (method == "TICM")
+	{
+		result = exp(-alpha * T);
+	}
+	else if (method == "BT")
+	{
+		result = (alpha - beta)/(alpha + beta);
+	}
+	else
+	{
+		throw ARTerror("DWGconeJunctionModule::getA1", "Unknown calculation method '%s1'. Possible values are 'IIM', 'TICM' and 'BT'.",
+				method);
+	}
+	return result;
 }
