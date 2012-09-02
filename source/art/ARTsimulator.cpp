@@ -412,7 +412,7 @@ void ARTtimeSimulator::initStandardSimulParams()
 	ARTdataProp* tmpProp;
 
 	// create new simulation parameter for sampling period
-	tmpProp = new ARTdataProp(C_ART_cpx, 0, "T");
+	tmpProp = new ARTdataProp(C_ART_dbl, 0, "T");
 //	tmpParser = new ParserX(mup::pckCOMPLEX_NO_STRING);
 	tmpProp->SetParser(parser_);
 	tmpProp->SetVal(1.0/44100.0);

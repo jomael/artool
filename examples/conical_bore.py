@@ -71,30 +71,31 @@ if (ARTConnectPorts(sim, "RightConeJunction.p2m = RightCylinder.p1m; RightCylind
 if (ARTConnectPorts(sim, "Gain2.in = RightCylinder.p2p; RightCylinder.p2m = Gain2.out") == 0):
   print ARTGetLastErrorMessage();
 
-#if (ARTConnectPorts(sim, "Gain1.in = LeftCylinder.p1m; Add.in1 = Gain1.out; Add.in2 = Impulse.out; LeftCylinder.p1p = Add.out") == 0):
-#  print ARTGetLastErrorMessage();
-
-if (ARTConnectPorts(sim, "Gain1.in = LeftCylinder.p1m; Add.in1 = Gain1.out; Add.in2 = Sine.out; LeftCylinder.p1p = Add.out") == 0):
+if (ARTConnectPorts(sim, "Gain1.in = LeftCylinder.p1m; Add.in1 = Gain1.out; Add.in2 = Impulse.out; LeftCylinder.p1p = Add.out") == 0):
   print ARTGetLastErrorMessage();
+
+#if (ARTConnectPorts(sim, "Gain1.in = LeftCylinder.p1m; Add.in1 = Gain1.out; Add.in2 = Sine.out; LeftCylinder.p1p = Add.out") == 0):
+#  print ARTGetLastErrorMessage();
 
 
 # set local parameters of each module
 if (ARTSetParameter(sim, "LeftCylinder.length = 171; LeftCylinder.type = 'thiran'") == None):
   print ARTGetLastErrorMessage();
 
-if (ARTSetParameter(sim, "LeftConeJunction.r1 = 12; LeftConeJunction.r2 = 12; LeftConeJunction.method = 'BT'") == None):
+if (ARTSetParameter(sim, "LeftConeJunction.r1 = 6.1; LeftConeJunction.r2 = 6; LeftConeJunction.method = 'BT'") == None):
   print ARTGetLastErrorMessage();
 
-if (ARTSetParameter(sim, "Cone.length = 190; Cone.r1 = 12; Cone.r2 = 8.5; Cone.type = 'thiran'") == None):
+if (ARTSetParameter(sim, "Cone.length = 190; Cone.r1 = 6; Cone.r2 = 4.1; Cone.type = 'thiran'") == None):
   print ARTGetLastErrorMessage();
 
-if (ARTSetParameter(sim, "RightConeJunction.r1 = 8; RightConeJunction.r2 = 8; RightConeJunction.method = 'BT'") == None):
+if (ARTSetParameter(sim, "RightConeJunction.r1 = 4.1; RightConeJunction.r2 = 4; RightConeJunction.method = 'BT'") == None):
   print ARTGetLastErrorMessage();
 
 if (ARTSetParameter(sim, "RightCylinder.length = 202; RightCylinder.type = 'thiran'") == None):
   print ARTGetLastErrorMessage();
 
-if (ARTSetParameter(sim, "Gain1.A = 0.95; Gain2.A = -0.95") == None):
+#if (ARTSetParameter(sim, "Gain1.A = 0.5; Gain2.A = -0.2") == None):
+if (ARTSetParameter(sim, "Gain1.A = 0; Gain2.A = 0") == None):
   print ARTGetLastErrorMessage();
 
 if (ARTSetParameter(sim, "Sine.f = 440") == None):
@@ -118,15 +119,15 @@ for i in range (-1,-28,-1):
   if (ARTSetParameter(sim, addString + leftCylinderString + leftJunctionString + coneString + rightJunctionString + rightCylinderString + gain2String) == None):
     print ARTGetLastErrorMessage();
 
-for i in range(0, 8000) :
+for i in range(0, 410) :
 #for i in range(0, 2) :
   # get data structure
   outVal = ARTGetComplexFromPort(outputPort, i);
-  #error = ARTGetLastErrorMessage();
-  #if (error != ""):
-  #  print error;
-  #  break;
-  print "{0:.10f} {1}".format(i/44.1,outVal.re);
+  error = ARTGetLastErrorMessage();
+  if (error != ""):
+    print error;
+    break;
+  print "{0} {1}".format(i,outVal.re);
 
 #print ARTGetLastErrorMessage();
 

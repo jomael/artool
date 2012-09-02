@@ -1117,6 +1117,18 @@ __DECLSPEC bool __CALLCONV ARTDestroyTModule	(P_ART_Simulator simulator, P_ART_T
 __DECLSPEC bool __CALLCONV ARTAddOPortToTModule	(P_ART_TModule module, const char* name, const char* expr);
 
 /**
+ * Sets the function output port of the given function module.
+ * @param module A pointer to the time module of which the port will be defined.
+ * @param len Length of the output port.
+ * @param expr The calculation expression of the output port, may be empty if values are
+ *             initialized manually.
+ * @returns true if successful, the DLL interface returns false if an error occurs,
+ *   use ARTGetLastErrorMessage to get the error message.
+ * @throws ARTerror, if not using the DLL interface.
+ */
+__DECLSPEC bool __CALLCONV ARTSetOPortOfFModule	(P_ART_TModule module, int len, const char* expr);
+
+/**
  * Adds a new local parameter to the given time module.
  * @param module A pointer to the time module to which the parameter will be added.
  * @param name Name of the new parameter.

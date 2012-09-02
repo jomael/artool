@@ -14,25 +14,15 @@
  * inputFunctionModule
  *******************************************************************************************/
 
-inputFunctionModule::inputFunctionModule(const string& name, const int len, const string& sds, const string& lds, const string& htm) :
+inputFunctionModule::inputFunctionModule(const string& name, const string& sds, const string& lds, const string& htm) :
 	ARTItimeModule(name, sds, lds, htm),
 	out_(NULL)
 {
-	if (len > 0)
-	{
-		out_ = new FPortType(len, "out", "Output port of InputFunctionModule");
-		out_->SetParentModuleName(this->name_);
-	}
-	else
-	{
-		throw ARTerror("inputFunctionModule::inputFunctionModule", "Error when creating new inputFunction module '%s1': invalid specified length.",
-				name);
-	}
 }
 
 ARTItimeModule* inputFunctionModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
 {
-	return new inputFunctionModule(name, 20, sds, lds, htm);
+	return new inputFunctionModule(name, sds, lds, htm);
 }
 
 
@@ -42,22 +32,43 @@ void inputFunctionModule::addIPort(const string& name, const ARTdataProp* refPor
 			name_);
 }
 
-
-void inputFunctionModule::addGlobalParameter(const ARTdataProp* parameter)
+void inputFunctionModule::defineOPort(int len, const string& expr)
 {
-	ParserX* tmpParser = out_->GetParser();
-	tmpParser->DefineVar(parameter->GetName(), parameter->GetParserVar());
-}
+	ARTproperty* iter;
+	globalParameterType* gParam;
+	if (len > 0)
+	{
+		// create new function port of specified length
+		out_ = new FPortType(len, "out", "Output port of InputFunctionModule");
+		out_->SetParentModuleName(this->name_);
+		out_->SetDefinition(expr);
+		out_->SetScope(_simulator);
 
-void inputFunctionModule::removeGlobalParameter(const string& name)
-{
-	ParserX* tmpParser = out_->GetParser();
-	tmpParser->RemoveVar(name);
+		// add all existing global parameters
+		iter = GetProperties(NULL);
+		while (iter)
+		{
+			gParam = dynamic_cast<globalParameterType*>(iter);
+			if (gParam)
+			{
+				out_->GetParser()->DefineVar(gParam->GetName(), gParam->GetParserVar());
+			}
+			iter = GetProperties(iter);
+		}
+
+		AppendDataProp(out_);
+
+	}
+	else
+	{
+		throw ARTerror("inputFunctionModule::defineOPort", "Error when creating new output port for module '%s1': invalid specified length.",
+				name_);
+	}
 }
 
 ARTdataProp* inputFunctionModule::getPort(const string& name)
 {
-	if (name != "out")
+	if (name != "out" || !out_)
 	{
 		throw ARTerror("InputFunctionModule::getPort", "Time module '%s1' has no port '%s2'.",
 				name_, name);
@@ -67,7 +78,7 @@ ARTdataProp* inputFunctionModule::getPort(const string& name)
 
 inputFunctionModule::~inputFunctionModule()
 {
-	delete out_;
+//	delete out_;
 }
 
 /*******************************************************************************************
