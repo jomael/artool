@@ -582,6 +582,8 @@ void ARTtimeModule::addOPort(const string& name, const string& expr, unsigned in
 		registerAllVariablesToParser(newOPort->GetParser());
 		// set current simulator to output port
 		newOPort->SetScope(_simulator);
+		// set parent name of output port
+		newOPort->SetParentModuleName(name_);
 
 		// add variable to all available parsers
 		addVariableToParsers(name, newOPort->GetParserVar());

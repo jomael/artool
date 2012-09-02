@@ -15,7 +15,7 @@ class inputFunctionModule : public ARTItimeModule
 protected:
 	FPortType* out_;
 public:
-	explicit inputFunctionModule(const string& name, const int len = 0, const string& sds="", const string& lds="", const string& htm="");
+	explicit inputFunctionModule(const string& name="InputFunctionModule", const int len = 0, const string& sds="", const string& lds="", const string& htm="");
 
 	virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
 
@@ -226,6 +226,9 @@ protected:
 	OPortType* p2p_;
 	OPortType* p1m_;
 	IPortType* p2m_;
+
+	OPortType* p1pbuf_;
+	OPortType* p2mbuf_;
 
 public:
 	explicit DWGcylinderModule(const string& name="DWGCylinderModule", const string& sds="", const string& lds="", const string& htm="");
