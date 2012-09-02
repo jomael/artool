@@ -30,7 +30,7 @@ ARTdataContainer::ARTdataContainer() :
 		citer_(clientList_.begin()),
 		dependencyList_(list<ARTdataContainer*>()),
 		diter_(dependencyList_.begin()),
-		parent_(NULL),
+		parentContainer_(NULL),
 		definition_(""),
 		parser_(NULL),
 		scope_(NULL),
@@ -38,6 +38,7 @@ ARTdataContainer::ARTdataContainer() :
 		avar_(NULL),
 		parserVarDefined_(false),
 		tempDef_(""),
+		parentModuleName_(""),
 		//arrayVals_(NULL),
 		m_pCache_(NULL)
 {
@@ -55,7 +56,7 @@ ARTdataContainer::ARTdataContainer(const T_ART_Type dtyp, const int dlen, const 
 		citer_(clientList_.begin()),
 		dependencyList_(list<ARTdataContainer*>()),
 		diter_(dependencyList_.begin()),
-		parent_(NULL),
+		parentContainer_(NULL),
 		definition_(""),
 		parser_(NULL),
 		scope_(NULL),
@@ -63,6 +64,7 @@ ARTdataContainer::ARTdataContainer(const T_ART_Type dtyp, const int dlen, const 
 		avar_(NULL),
 		parserVarDefined_(false),
 		tempDef_(""),
+		parentModuleName_(""),
 		//arrayVals_(NULL),
 		m_pCache_(NULL)
 {
@@ -83,7 +85,7 @@ ARTdataContainer::ARTdataContainer(const T_ART_Type dtyp, const int dlen, const 
 			// set all values to invalid
 			tmpARTdataContainer->valid_ = false;
 			tmpARTdataContainer->parser_ = parser_;
-			tmpARTdataContainer->parent_ = this;
+			tmpARTdataContainer->parentContainer_ = this;
 			tmpARTdataContainer->varname_ = varname_;
 			(*tmpArray)[i] = tmpARTdataContainer;
 		}
@@ -113,7 +115,7 @@ ARTdataContainer::ARTdataContainer(std::string name, ARTfunctionoid* func) :
 		citer_(clientList_.begin()),
 		dependencyList_(list<ARTdataContainer*>()),
 		diter_(dependencyList_.begin()),
-		parent_(NULL),
+		parentContainer_(NULL),
 		definition_(""),
 		parser_(NULL),
 		scope_(NULL),
@@ -121,6 +123,7 @@ ARTdataContainer::ARTdataContainer(std::string name, ARTfunctionoid* func) :
 		avar_(NULL),
 		parserVarDefined_(false),
 		tempDef_(""),
+		parentModuleName_(""),
 		//arrayVals_(NULL),
 		m_pCache_(NULL)
 {
@@ -143,7 +146,7 @@ ARTdataContainer::ARTdataContainer(const int i) :
 		citer_(clientList_.begin()),
 		dependencyList_(list<ARTdataContainer*>()),
 		diter_(dependencyList_.begin()),
-		parent_(NULL),
+		parentContainer_(NULL),
 		definition_(""),
 		parser_(NULL),
 		scope_(NULL),
@@ -151,6 +154,7 @@ ARTdataContainer::ARTdataContainer(const int i) :
 		avar_(NULL),
 		parserVarDefined_(false),
 		tempDef_(""),
+		parentModuleName_(""),
 		//arrayVals_(NULL),
 		m_pCache_(NULL)
 {
@@ -168,7 +172,7 @@ ARTdataContainer::ARTdataContainer(const double d) :
 		citer_(clientList_.begin()),
 		dependencyList_(list<ARTdataContainer*>()),
 		diter_(dependencyList_.begin()),
-		parent_(NULL),
+		parentContainer_(NULL),
 		definition_(""),
 		parser_(NULL),
 		scope_(NULL),
@@ -176,6 +180,7 @@ ARTdataContainer::ARTdataContainer(const double d) :
 		avar_(NULL),
 		parserVarDefined_(false),
 		tempDef_(""),
+		parentModuleName_(""),
 		//arrayVals_(NULL),
 		m_pCache_(NULL)
 {
@@ -193,7 +198,7 @@ ARTdataContainer::ARTdataContainer(const float f) :
 		citer_(clientList_.begin()),
 		dependencyList_(list<ARTdataContainer*>()),
 		diter_(dependencyList_.begin()),
-		parent_(NULL),
+		parentContainer_(NULL),
 		definition_(""),
 		parser_(NULL),
 		scope_(NULL),
@@ -201,6 +206,7 @@ ARTdataContainer::ARTdataContainer(const float f) :
 		avar_(NULL),
 		parserVarDefined_(false),
 		tempDef_(""),
+		parentModuleName_(""),
 		//arrayVals_(NULL),
 		m_pCache_(NULL)
 {
@@ -218,7 +224,7 @@ ARTdataContainer::ARTdataContainer(const char* s) :
 		citer_(clientList_.begin()),
 		dependencyList_(list<ARTdataContainer*>()),
 		diter_(dependencyList_.begin()),
-		parent_(NULL),
+		parentContainer_(NULL),
 		definition_(""),
 		parser_(NULL),
 		scope_(NULL),
@@ -226,6 +232,7 @@ ARTdataContainer::ARTdataContainer(const char* s) :
 		avar_(NULL),
 		parserVarDefined_(false),
 		tempDef_(""),
+		parentModuleName_(""),
 		//arrayVals_(NULL),
 		m_pCache_(NULL)
 {
@@ -243,7 +250,7 @@ ARTdataContainer::ARTdataContainer(const char* s1, const char* s2) :
 		citer_(clientList_.begin()),
 		dependencyList_(list<ARTdataContainer*>()),
 		diter_(dependencyList_.begin()),
-		parent_(NULL),
+		parentContainer_(NULL),
 		definition_(""),
 		parser_(NULL),
 		scope_(NULL),
@@ -251,6 +258,7 @@ ARTdataContainer::ARTdataContainer(const char* s1, const char* s2) :
 		avar_(NULL),
 		parserVarDefined_(false),
 		tempDef_(""),
+		parentModuleName_(""),
 		//arrayVals_(NULL),
 		m_pCache_(NULL)
 {
@@ -268,7 +276,7 @@ ARTdataContainer::ARTdataContainer(const char* s1, const char* s2, const char* s
 		citer_(clientList_.begin()),
 		dependencyList_(list<ARTdataContainer*>()),
 		diter_(dependencyList_.begin()),
-		parent_(NULL),
+		parentContainer_(NULL),
 		definition_(""),
 		parser_(NULL),
 		scope_(NULL),
@@ -276,6 +284,7 @@ ARTdataContainer::ARTdataContainer(const char* s1, const char* s2, const char* s
 		avar_(NULL),
 		parserVarDefined_(false),
 		tempDef_(""),
+		parentModuleName_(""),
 		//arrayVals_(NULL),
 		m_pCache_(NULL)
 {
@@ -293,7 +302,7 @@ ARTdataContainer::ARTdataContainer(const char* s1, const char* s2, const char* s
 		citer_(clientList_.begin()),
 		dependencyList_(list<ARTdataContainer*>()),
 		diter_(dependencyList_.begin()),
-		parent_(NULL),
+		parentContainer_(NULL),
 		definition_(""),
 		parser_(NULL),
 		scope_(NULL),
@@ -301,6 +310,7 @@ ARTdataContainer::ARTdataContainer(const char* s1, const char* s2, const char* s
 		avar_(NULL),
 		parserVarDefined_(false),
 		tempDef_(""),
+		parentModuleName_(""),
 		//arrayVals_(NULL),
 		m_pCache_(NULL)
 {
@@ -319,7 +329,7 @@ ARTdataContainer::ARTdataContainer(const ARTdataContainer& orig) :
 	citer_(orig.citer_),
 	dependencyList_(orig.dependencyList_),
 	diter_(orig.diter_),
-	parent_(orig.parent_),
+	parentContainer_(orig.parentContainer_),
 	definition_(orig.definition_),
 	parser_(orig.parser_),
 	scope_(orig.scope_),
@@ -327,6 +337,7 @@ ARTdataContainer::ARTdataContainer(const ARTdataContainer& orig) :
 	avar_(NULL),
 	parserVarDefined_(false),
 	tempDef_(orig.tempDef_),
+	parentModuleName_(orig.parentModuleName_),
 	//arrayVals_(NULL), // TODO copy values!
 	m_pCache_(NULL)
 {
@@ -353,7 +364,7 @@ ARTdataContainer::ARTdataContainer(const ARTdataContainer& orig) :
 			// set all values to invalid
 			tmpARTdataContainer->valid_ = false;
 			tmpARTdataContainer->parser_ = parser_;
-			tmpARTdataContainer->parent_ = this;
+			tmpARTdataContainer->parentContainer_ = this;
 			tmpARTdataContainer->varname_ = varname_;
 			tmpArray->at(i) = tmpARTdataContainer;
 		}
@@ -762,10 +773,21 @@ int ARTdataContainer::EvaluationCost()
 // expression evaluation
 void ARTdataContainer::Evaluate() const
 {
-	_DBG_MSG( definition_ );
+//	_DBG_MSG2( definition_ );
 	//std::cout << "ARTdataContainer::Evaluate() " << val << " // " << varname_ << "////////////////////\n";
-	//to avoid circular references, check if we are already calcualting this dataContainer
-	if (eval_started) throw ARTerror("ARTdataContainer::Evaluate", "Circular reference to dataContainer '%s1'.", varname_);
+	//to avoid circular references, check if we are already calculating this dataContainer
+	if (eval_started)
+	{
+		if (parentContainer_ && parentContainer_->parentModuleName_ != "")
+		{
+			throw ARTerror("ARTdataContainer::Evaluate", "Circular reference to dataContainer '%s1' of module '%s2'.", varname_, parentContainer_->parentModuleName_);
+		}
+		else
+		{
+			throw ARTerror("ARTdataContainer::Evaluate", "Circular reference to dataContainer '%s1'.", varname_);
+		}
+	}
+
 	//... and if we are not, remember we do so now.
 	eval_started = true;
 
@@ -804,6 +826,10 @@ void ARTdataContainer::Evaluate() const
 		{
 			throw ARTerror("ARTdataContainer::Evaluate", "Error in Parser when processing dataContainer '%s1': '%s2'", varname_, e.GetMsg().c_str());
 		}
+		catch(std::out_of_range& oor)
+		{
+			throw ARTerror("ARTdataContainer::Evaluate", "Error in Parser when processing dataContainer '%s1': '%s2'", varname_, oor.what());
+		}
 	}
 	else //function and parser are NULL 
 		throw ARTerror("ARTdataContainer::Evaluate", "No evaluating expression or functionoid specified for dataContainer '%s1'.", varname_); 
@@ -817,6 +843,8 @@ void ARTdataContainer::Evaluate() const
 	valid_ = true;
 	//calculation stopped
 	eval_started = false;
+
+//	cout << "DONE with " << definition_ << endl;
 
 }
 
@@ -1483,7 +1511,7 @@ void ARTdataContainer::resizeArray(int newSize)
 		tmp->valid_ = false;
 		tmp->parser_ = parser_;
 		tmp->definition_ = definition_;
-		tmp->parent_ = this;
+		tmp->parentContainer_ = this;
 		tmp->varname_ = varname_;
 		tmpArray->at(elementPtr) = tmp;
 		elementPtr = (elementPtr + newSize + 1) % newSize;
@@ -1513,7 +1541,7 @@ void ARTdataContainer::resizeArray(int newSize)
 	//---------------------------------------------------------------------------
 	IValue& ARTdataContainer::operator[](std::size_t i)
 	{
-		_DBG_MSG("std::size_t");
+		_DBG_MSG(varname_ << " std::size_t = " << (int) i);
 		array_type* tmpArray = (array_type *) (val->na);
 		ARTdataContainer* tmp;
 		array_type::size_type arraySize;
@@ -1538,7 +1566,7 @@ void ARTdataContainer::resizeArray(int newSize)
 	//---------------------------------------------------------------------------
 	IValue& ARTdataContainer::operator[](int i)
 	{
-		_DBG_MSG("int");
+		_DBG_MSG(varname_ << " int i = " << i);
 		array_type* tmpArray = (array_type *) (val->na);
 		ARTdataContainer* tmp;
 		array_type::size_type arraySize;

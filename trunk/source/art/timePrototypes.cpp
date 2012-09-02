@@ -21,6 +21,7 @@ inputFunctionModule::inputFunctionModule(const string& name, const int len, cons
 	if (len > 0)
 	{
 		out_ = new FPortType(len, "out", "Output port of InputFunctionModule");
+		out_->SetParentModuleName(this->name_);
 	}
 	else
 	{
@@ -79,6 +80,7 @@ impulseModule::impulseModule(const string& name, const string& sds, const string
 {
 	out_ = new OPortType(C_ART_na, 5, "out");
 	out_->SetDefinition("out[t] = (t == 0) ? A : 0");
+	out_->SetParentModuleName(name_);
 	AppendDataProp(out_);
 	initLocalParams();
 }
@@ -111,6 +113,7 @@ void impulseModule::setCurrentIndex(int idx)
 
 void impulseModule::simulateCurrentIndex(int idx)
 {
+//	cout << "evaluating module " << name_ << endl;
 	out_->GetArrayElement(idx).EvaluateIfInvalid();
 }
 
@@ -136,6 +139,7 @@ heavisideModule::heavisideModule(const string& name, const string& sds, const st
 {
 	out_ = new OPortType(C_ART_na, 5, "out");
 	out_->SetDefinition("out[t] = (t >= 0) ? A : 0");
+	out_->SetParentModuleName(name_);
 	AppendDataProp(out_);
 	initLocalParams();
 }
@@ -168,6 +172,7 @@ void heavisideModule::setCurrentIndex(int idx)
 
 void heavisideModule::simulateCurrentIndex(int idx)
 {
+//	cout << "evaluating module " << name_ << endl;
 	out_->GetArrayElement(idx).EvaluateIfInvalid();
 }
 
@@ -194,6 +199,7 @@ rectengularModule::rectengularModule(const string& name, const string& sds, cons
 {
 	out_ = new OPortType(C_ART_na, 5, "out");
 	out_->SetDefinition("out[t] = (((t*T) >= S) and ((t*T) <= E)) ? A : 0");
+	out_->SetParentModuleName(name_);
 	AppendDataProp(out_);
 	initLocalParams();
 }
@@ -226,6 +232,7 @@ void rectengularModule::setCurrentIndex(int idx)
 
 void rectengularModule::simulateCurrentIndex(int idx)
 {
+//	cout << "evaluating module " << name_ << endl;
 	out_->GetArrayElement(idx).EvaluateIfInvalid();
 }
 
@@ -265,6 +272,7 @@ amplificationModule::amplificationModule(const string& name, const string& sds, 
 {
 	out_ = new OPortType(C_ART_na, 5, "out");
 	out_->SetDefinition("out[t] = A*in[t]");
+	out_->SetParentModuleName(name_);
 	AppendDataProp(out_);
 	initLocalParams();
 }
@@ -309,6 +317,7 @@ void amplificationModule::setCurrentIndex(int idx)
 
 void amplificationModule::simulateCurrentIndex(int idx)
 {
+//	cout << "evaluating module " << name_ << endl;
 	out_->GetArrayElement(idx).EvaluateIfInvalid();
 }
 
@@ -334,6 +343,7 @@ simpleDelayModule::simpleDelayModule(const string& name, const string& sds, cons
 {
 	out_ = new OPortType(C_ART_na, 5, "out");
 	out_->SetDefinition("out[t] = in[t - ((round)(Delay/T))]");
+	out_->SetParentModuleName(name_);
 	AppendDataProp(out_);
 	initLocalParams();
 }
@@ -378,6 +388,7 @@ void simpleDelayModule::setCurrentIndex(int idx)
 
 void simpleDelayModule::simulateCurrentIndex(int idx)
 {
+//	cout << "evaluating module " << name_ << endl;
 	out_->GetArrayElement(idx).EvaluateIfInvalid();
 }
 
@@ -403,6 +414,7 @@ addModule::addModule(const string& name, const string& sds, const string& lds, c
 {
 	out_ = new OPortType(C_ART_na, 5, "out");
 	out_->SetDefinition("out[t] = in1[t] + in2[t]");
+	out_->SetParentModuleName(name_);
 	AppendDataProp(out_);
 }
 
@@ -447,6 +459,7 @@ void addModule::setCurrentIndex(int idx)
 
 void addModule::simulateCurrentIndex(int idx)
 {
+//	cout << "evaluating module " << name_ << endl;
 	out_->GetArrayElement(idx).EvaluateIfInvalid();
 }
 
@@ -460,6 +473,7 @@ multiplicationModule::multiplicationModule(const string& name, const string& sds
 {
 	out_ = new OPortType(C_ART_na, 5, "out");
 	out_->SetDefinition("out[t] = in1[t] * in2[t]");
+	out_->SetParentModuleName(name_);
 	AppendDataProp(out_);
 }
 
@@ -504,6 +518,7 @@ void multiplicationModule::setCurrentIndex(int idx)
 
 void multiplicationModule::simulateCurrentIndex(int idx)
 {
+//	cout << "evaluating module " << name_ << endl;
 	out_->GetArrayElement(idx).EvaluateIfInvalid();
 }
 
@@ -518,6 +533,7 @@ sinewaveModule::sinewaveModule(const string& name, const string& sds, const stri
 {
 	out_ = new OPortType(C_ART_na, 5, "out");
 	out_->SetDefinition("out[t] = A*sin(2*pi*(t*T*f - Delta))");
+	out_->SetParentModuleName(name_);
 	AppendDataProp(out_);
 	initLocalParams();
 }
@@ -550,6 +566,7 @@ void sinewaveModule::setCurrentIndex(int idx)
 
 void sinewaveModule::simulateCurrentIndex(int idx)
 {
+//	cout << "evaluating module " << name_ << endl;
 	out_->GetArrayElement(idx).EvaluateIfInvalid();
 }
 
@@ -644,6 +661,7 @@ fractionalDelayModule::fractionalDelayModule(const string& name, const string& s
 {
 	initLocalParams();
 	out_ = new OPortType(C_ART_na, 20, "out");
+	out_->SetParentModuleName(name_);
 	AppendDataProp(out_);
 }
 
@@ -691,6 +709,7 @@ void fractionalDelayModule::setCurrentIndex(int idx)
 
 void fractionalDelayModule::simulateCurrentIndex(int idx)
 {
+//	cout << "evaluating module " << name_ << endl;
 	out_->GetArrayElement(idx).EvaluateIfInvalid();
 }
 
@@ -826,13 +845,30 @@ DWGcylinderModule::DWGcylinderModule(const string& name, const string& sds, cons
 		p1p_(NULL),
 		p2p_(NULL),
 		p1m_(NULL),
-		p2m_(NULL)
+		p2m_(NULL),
+		p1pbuf_(NULL),
+		p2mbuf_(NULL)
 {
 	initLocalParams();
 	p2p_ = new OPortType(C_ART_na, 20, "p2p");
+	p2p_->SetParentModuleName(name_);
 	AppendDataProp(p2p_);
 	p1m_ = new OPortType(C_ART_na, 20, "p1m");
+	p1m_->SetParentModuleName(name_);
 	AppendDataProp(p1m_);
+	// internal buffer ports for input ports
+	p1pbuf_ = new OPortType(C_ART_na, 20, "p1pbuf");
+	p1pbuf_->SetDefinition("p1pbuf[t] = p1p[t - 1]");
+	p1pbuf_->SetParentModuleName(name_);
+	AppendDataProp(p1pbuf_);
+	p2mbuf_ = new OPortType(C_ART_na, 20, "p2mbuf");
+	p2mbuf_->SetDefinition("p2mbuf[t] = p2m[t - 1]");
+	p2mbuf_->SetParentModuleName(name_);
+	AppendDataProp(p2mbuf_);
+
+	// register buffers to output ports
+	p2p_->GetParser()->DefineVar("p1p", p1pbuf_->GetParserVar());
+	p1m_->GetParser()->DefineVar("p2m", p2mbuf_->GetParserVar());
 }
 
 ARTItimeModule* DWGcylinderModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
@@ -865,13 +901,13 @@ void DWGcylinderModule::addIPort(const string& name, const ARTdataProp* refPort)
 	if (name == "p1p")
 	{
 		p1p_ = new IPortType(name, oPort);
-		p2p_->GetParser()->DefineVar(name, p1p_->GetParserVar());
+		p1pbuf_->GetParser()->DefineVar(name, p1p_->GetParserVar());
 		AppendDataProp(p1p_);
 	}
 	else
 	{
 		p2m_ = new IPortType(name, oPort);
-		p1m_->GetParser()->DefineVar(name, p2m_->GetParserVar());
+		p2mbuf_->GetParser()->DefineVar(name, p2m_->GetParserVar());
 		AppendDataProp(p2m_);
 	}
 }
@@ -895,12 +931,20 @@ void DWGcylinderModule::setCurrentIndex(int idx)
 	{
 		initSimulation();
 	}
+	p1pbuf_->SetCurrentIndex(idx);
+	p2mbuf_->SetCurrentIndex(idx);
+
 	p2p_->SetCurrentIndex(idx);
 	p1m_->SetCurrentIndex(idx);
 }
 
 void DWGcylinderModule::simulateCurrentIndex(int idx)
 {
+//	cout << "evaluating module " << name_ << endl;
+
+	p1pbuf_->SetCurrentIndex(idx);
+	p2mbuf_->SetCurrentIndex(idx);
+
 	p2p_->GetArrayElement(idx).EvaluateIfInvalid();
 	p1m_->GetArrayElement(idx).EvaluateIfInvalid();
 }
@@ -949,6 +993,9 @@ void DWGcylinderModule::initSimulation()
 	// divide by 1000 as original length is given in mm
 	D = (length->GetFloat()) / ((c->GetParserVar().GetFloat() * T->GetParserVar().GetFloat())) / 1000;
 
+	// decrease delay by one because we will introduce a separate delay buffer
+	D--;
+
 	// calculate filter order depending on filter type
 	if (type->GetString() == "lagrange")
 	{
@@ -973,11 +1020,18 @@ void DWGcylinderModule::initSimulation()
 	{
 		for (n = 0; n <= N; ++n)
 		{
+
+
 			if (n != 0)
 			{
+				// init buffer of input ports
+				(*p1pbuf_)[-n] = 0;
+				(*p2mbuf_)[-n] = 0;
+
 				expr1 << " + ";
 				expr2 << " + ";
 			}
+
 			expr1 << getLagrangeParams(n, N, D);
 			expr1 << "*p1p[t - " << n << "]";
 			expr2 << getLagrangeParams(n, N, D);
@@ -992,6 +1046,9 @@ void DWGcylinderModule::initSimulation()
 			// init output ports to zero for thiran IIR
 			(*p2p_)[-n] = 0;
 			(*p1m_)[-n] = 0;
+			// init buffer of input ports
+			(*p1pbuf_)[-n] = 0;
+			(*p2mbuf_)[-n] = 0;
 
 			// set up calculation expression
 			if (n != 1)
@@ -1009,7 +1066,8 @@ void DWGcylinderModule::initSimulation()
 		expr2 << " + p2m[t - " << N << "]";
 	}
 
-//	cout << "D = " << D << "\nExpression for FD: " << expr1.str() << endl;
+//	cout << "Expression for p2p: " << expr1.str() << endl;
+//	cout << "Expression for p1m: " << expr2.str() << endl;
 
 	// save whole definitions to output ports
 	p2p_->SetDefinition(expr1.str());
@@ -1034,12 +1092,14 @@ DWGcylinderJunctionModule::DWGcylinderJunctionModule(const string& name, const s
 	p2p_->SetDefinition("p2p[t] = p1p[t] + (((r1/1000)^2 - (r2/1000)^2)/((r1/1000)^2 + (r2/1000)^2)) * (p1p[t] - p2m[t])");
 	p2p_->GetParser()->DefineVar("r1", r1_->GetParserVar());
 	p2p_->GetParser()->DefineVar("r2", r2_->GetParserVar());
+	p2p_->SetParentModuleName(name_);
 	AppendDataProp(p2p_);
 
 	p1m_ = new OPortType(C_ART_na, 5, "p1m");
 	p1m_->SetDefinition("p1m[t] = p2m[t] + (((r1/1000)^2 - (r2/1000)^2)/((r1/1000)^2 + (r2/1000)^2)) * (p1p[t] - p2m[t])");
 	p1m_->GetParser()->DefineVar("r1", r1_->GetParserVar());
 	p1m_->GetParser()->DefineVar("r2", r2_->GetParserVar());
+	p1m_->SetParentModuleName(name_);
 	AppendDataProp(p1m_);
 }
 
@@ -1074,11 +1134,13 @@ void DWGcylinderJunctionModule::addIPort(const string& name, const ARTdataProp* 
 	{
 		p1p_ = new IPortType(name, oPort);
 		p2p_->GetParser()->DefineVar(name, p1p_->GetParserVar());
+		p1m_->GetParser()->DefineVar(name, p1p_->GetParserVar());
 		AppendDataProp(p1p_);
 	}
 	else
 	{
 		p2m_ = new IPortType(name, oPort);
+		p2p_->GetParser()->DefineVar(name, p2m_->GetParserVar());
 		p1m_->GetParser()->DefineVar(name, p2m_->GetParserVar());
 		AppendDataProp(p2m_);
 	}
@@ -1105,6 +1167,7 @@ void DWGcylinderJunctionModule::setCurrentIndex(int idx)
 
 void DWGcylinderJunctionModule::simulateCurrentIndex(int idx)
 {
+//	cout << "evaluating module " << name_ << endl;
 	p2p_->GetArrayElement(idx).EvaluateIfInvalid();
 	p1m_->GetArrayElement(idx).EvaluateIfInvalid();
 }
@@ -1196,6 +1259,9 @@ void DWGconeModule::initSimulation()
 	// divide by 1000 as original length is given in mm
 	D = (length->GetFloat()) / ((c->GetParserVar().GetFloat() * T->GetParserVar().GetFloat())) / 1000;
 
+	// decrease delay by one because we will introduce a separate delay buffer
+	D--;
+
 	// calculate filter order depending on filter type
 	if (type->GetString() == "lagrange")
 	{
@@ -1220,8 +1286,13 @@ void DWGconeModule::initSimulation()
 	{
 		for (n = 0; n <= N; ++n)
 		{
+
 			if (n != 0)
 			{
+				// init buffer of input ports
+				(*p1pbuf_)[-n] = 0;
+				(*p2mbuf_)[-n] = 0;
+
 				expr1 << " + ";
 				expr2 << " + ";
 			}
@@ -1239,6 +1310,10 @@ void DWGconeModule::initSimulation()
 			// init output ports to zero for thiran IIR
 			(*p2p_)[-n] = 0;
 			(*p1m_)[-n] = 0;
+
+			// init buffer of input ports
+			(*p1pbuf_)[-n] = 0;
+			(*p2mbuf_)[-n] = 0;
 
 			// set up calculation expression
 			if (n != 1)
@@ -1281,13 +1356,16 @@ DWGconeJunctionModule::DWGconeJunctionModule(const string& name, const string& s
 	initLocalParams();
 
 	rz_ = new OPortType(C_ART_na, 5, "rz");
+	rz_->SetParentModuleName(name_);
 	AppendDataProp(rz_);
 
 	p2p_ = new OPortType(C_ART_na, 20, "p2p");
 	p2p_->GetParser()->DefineVar("rz", rz_->GetParserVar());
+	p2p_->SetParentModuleName(name_);
 	AppendDataProp(p2p_);
 	p1m_ = new OPortType(C_ART_na, 20, "p1m");
 	p1m_->GetParser()->DefineVar("rz", rz_->GetParserVar());
+	p1m_->SetParentModuleName(name_);
 	AppendDataProp(p1m_);
 
 }
@@ -1363,6 +1441,7 @@ void DWGconeJunctionModule::setCurrentIndex(int idx)
 
 void DWGconeJunctionModule::simulateCurrentIndex(int idx)
 {
+//	cout << "evaluating module " << name_ << endl;
 	p2p_->GetArrayElement(idx).EvaluateIfInvalid();
 	p1m_->GetArrayElement(idx).EvaluateIfInvalid();
 	rz_->GetArrayElement(idx).EvaluateIfInvalid();
@@ -1399,7 +1478,7 @@ void DWGconeJunctionModule::initSimulation()
 
 	B = S1/S2;
 
-	cout << "B = " << B << endl;
+//	cout << "B = " << B << endl;
 
 	C1 = 2*B/(B+1);
 	C2 = 2/(B+1);
@@ -1419,13 +1498,14 @@ void DWGconeJunctionModule::initSimulation()
 	// init value of rz[-1] for IIR filter
 	(*rz_)[-1] = 0.0;
 
-	cout << exprrz.str() << endl;
+//	cout << "Expression for rz: " << exprrz.str() << endl;
 
 	// set expression for p2p[t]
 	expr1 << "p2p[t] = p1p[t] + rz[t] + " << C3 << "*(p1p[t] - p2m[t])";
 	expr2 << "p1m[t] = p2m[t] + rz[t] + " << C3 << "*(p1p[t] - p2m[t])";
 
-//	cout << "D = " << D << "\nExpression for FD: " << expr1.str() << endl;
+//	cout << "Expression for p2p: " << expr1.str() << endl;
+//	cout << "Expression for p1m: " << expr2.str() << endl;
 
 	// save whole definitions to output ports
 	rz_->SetDefinition(exprrz.str());

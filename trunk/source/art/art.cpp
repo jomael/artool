@@ -756,6 +756,8 @@ P_ART_DataProp __CALLCONV ARTGetPortFromTModule	(P_ART_TModule module, const cha
 T_ART_Cmplx __CALLCONV ARTGetComplexFromPort(P_ART_DataProp port, int idx)
 {
 	T_ART_Cmplx result;
+	result.re = 0;
+	result.im = 0;
 	DLL_ERRORHANDLING_BEGIN
 	std::complex<double> tempResult;
 	ARTtimeSimulator* sim;

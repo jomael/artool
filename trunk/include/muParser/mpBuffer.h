@@ -316,7 +316,8 @@ public:
 		reference retVal = _fields[n];
 
 //		std::cout << "operator[]: _first = " << _first << ", idx = " << idx
-//				<< ", _used_elements = " << _used_elements << std::endl;
+//				<< ", _used_elements = " << _used_elements
+//				<< ", _size = " << _size << std::endl;
 
 		// save the lowest index of the current array access:
 		// if the currently used buffer size is less than the

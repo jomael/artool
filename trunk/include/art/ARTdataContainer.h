@@ -122,7 +122,7 @@ protected:
 	mutable list<ARTdataContainer*>	dependencyList_;		///< other dataContainers this one depends on (variables in expression): need lookup whenever value is evaluated
 	mutable list<ARTdataContainer*>::iterator diter_;
 
-	ARTdataContainer* parent_;
+	ARTdataContainer* parentContainer_;
 
 	void SetCountedFlag(bool b);
 
@@ -158,6 +158,7 @@ protected:
 	mup::Variable* avar_;
 	bool parserVarDefined_;
 	string tempDef_;
+	string parentModuleName_;
 
 private:
 
@@ -282,7 +283,7 @@ public:
 
 	void SetParser(ParserX* p);
 	virtual ParserX* GetParser() {return parser_;}
-	virtual ARTdataContainer* GetParent() {return parent_;}
+	virtual ARTdataContainer* GetParent() {return parentContainer_;}
 
 	void Rename(const string& newname);
 
@@ -318,6 +319,16 @@ public:
 
 	ARTdataContainer& GetArrayElement(int idx);
 	void SetCurrentIndex(int idx);
+
+	void SetParentModuleName(const string& name)
+	{
+		parentModuleName_ = name;
+	}
+
+	const string& GetParentModuleName() const
+	{
+		return parentModuleName_;
+	}
 
 	// former ARTValue
 

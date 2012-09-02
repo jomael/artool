@@ -992,6 +992,7 @@ AcousticResearchTool::AcousticResearchTool() : ARTobject("ART","Acoustic Researc
 	obj = prototypeModels->AppendObject(new multiplicationModule());
 	obj = prototypeModels->AppendObject(new sinewaveModule());
 	obj = prototypeModels->AppendObject(new fractionalDelayModule());
+//	obj = prototypeModels->AppendObject(new inputFunctionModule());
 	obj = prototypeModels->AppendObject(new DWGcylinderModule());
 	obj = prototypeModels->AppendObject(new DWGcylinderJunctionModule());
 	obj = prototypeModels->AppendObject(new DWGconeModule());
