@@ -824,15 +824,41 @@ void ARTdataContainer::Evaluate() const
 		}
 		catch( mup::ParserError& e )
 		{
-			throw ARTerror("ARTdataContainer::Evaluate", "Error in Parser when processing dataContainer '%s1': '%s2'", varname_, e.GetMsg().c_str());
+			if (parentContainer_ && parentContainer_->parentModuleName_ != "")
+			{
+				throw ARTerror("ARTdataContainer::Evaluate", "Error in Parser when processing dataContainer '%s1' of module '%s2': '%s3'",
+						varname_, parentContainer_->parentModuleName_,  e.GetMsg().c_str());
+			}
+			else
+			{
+				throw ARTerror("ARTdataContainer::Evaluate", "Error in Parser when processing dataContainer '%s1': '%s2'", varname_, e.GetMsg().c_str());
+			}
 		}
 		catch(std::out_of_range& oor)
 		{
-			throw ARTerror("ARTdataContainer::Evaluate", "Error in Parser when processing dataContainer '%s1': '%s2'", varname_, oor.what());
+			if (parentContainer_ && parentContainer_->parentModuleName_ != "")
+			{
+				throw ARTerror("ARTdataContainer::Evaluate", "Error in Parser when processing dataContainer '%s1' of module '%s2': '%s3'",
+						varname_, parentContainer_->parentModuleName_,  oor.what());
+			}
+			else
+			{
+				throw ARTerror("ARTdataContainer::Evaluate", "Error in Parser when processing dataContainer '%s1': '%s2'", varname_, oor.what());
+			}
 		}
 	}
 	else //function and parser are NULL 
-		throw ARTerror("ARTdataContainer::Evaluate", "No evaluating expression or functionoid specified for dataContainer '%s1'.", varname_); 
+	{
+		if (parentContainer_ && parentContainer_->parentModuleName_ != "")
+		{
+			throw ARTerror("ARTdataContainer::Evaluate", "No evaluating expression or functionoid specified for dataContainer '%s1' of module '%s2'.",
+					varname_, parentContainer_->parentModuleName_);
+		}
+		else
+		{
+			throw ARTerror("ARTdataContainer::Evaluate", "No evaluating expression or functionoid specified for dataContainer '%s1'.", varname_);
+		}
+	}
 	//clock_t finish = clock();
 	
 	//complexity_ = (double)(finish - start) / GetIterationNumber();
@@ -1725,7 +1751,7 @@ void ARTdataContainer::resizeArray(int newSize)
 	//---------------------------------------------------------------------------
 	IValue& ARTdataContainer::operator=(const cmplx_type &val)
 	{
-		_DBG_MSG("const cmplx_type&");
+		_DBG_MSG(varname_ << " const cmplx_type& " << val.real() << ","<< val.imag());
 		SetVal(val);
 		return *this;
 	}

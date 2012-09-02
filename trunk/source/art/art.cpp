@@ -62,6 +62,7 @@
 #include "ARTdataContainer.h"
 #include "ARTsimulator.h"
 #include "ARTtimeModule.h"
+#include "timePrototypes.h"
 
 #define NOERROR_ 0
 #define ERROR_ -1
@@ -679,6 +680,19 @@ bool __CALLCONV ARTAddOPortToTModule	(P_ART_TModule module, const char* name, co
 		throw ARTerror("ARTAddOPortToTModule", "The specified time module does not support adding output ports.");
 	}
 	mod->addOPort(name, expr);
+	return 1; //No error
+	DLL_ERRORHANDLING_END
+}
+
+bool __CALLCONV ARTSetOPortOfFModule	(P_ART_TModule module, int len, const char* expr)
+{
+	DLL_ERRORHANDLING_BEGIN
+	inputFunctionModule* mod = dynamic_cast<inputFunctionModule*>(module);
+	if (mod == NULL)
+	{
+		throw ARTerror("ARTAddOPortToFModule", "The specified time module does not support defining function output ports.");
+	}
+	mod->defineOPort(len, expr);
 	return 1; //No error
 	DLL_ERRORHANDLING_END
 }

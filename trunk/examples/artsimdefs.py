@@ -39,6 +39,10 @@ ARTAddOPortToTModule = artsim.ARTAddOPortToTModule;
 ARTAddOPortToTModule.restype = c_int;
 ARTAddOPortToTModule.argtypes = [c_void_p, c_char_p, c_char_p];
 
+ARTSetOPortOfFModule = artsim.ARTSetOPortOfFModule;
+ARTSetOPortOfFModule.restype = c_int;
+ARTSetOPortOfFModule.argtypes = [c_void_p, c_int, c_char_p];
+
 ARTAddLocalParamToTModule = artsim.ARTAddLocalParamToTModule;
 ARTAddLocalParamToTModule.restype = c_int;
 ARTAddLocalParamToTModule.argtypes = [c_void_p, c_char_p, c_char_p];
