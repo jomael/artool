@@ -420,8 +420,8 @@ ARTelement::ARTelement(const string name, const string sds, const string lds, co
 	//propMatrix = AppendDataProp("M_" + name, NULL, "The transmission matrix of this element.");
 
 	//Set the output data container of the wave object to a property we append to the object
-	z_inp = AppendDataProp("Z_" + name, NULL, "The propagated impedance at this element's or circuit's entry.");
-	z_rad = AppendDataProp("ZR_" + name, NULL, "The radiation impedance at this element's or circuit's opening.");
+	z_inp = AppendDataProp("Z_" + name, (ARTvariant *) NULL, "The propagated impedance at this element's or circuit's entry.");
+	z_rad = AppendDataProp("ZR_" + name, (ARTvariant *) NULL, "The radiation impedance at this element's or circuit's opening.");
 	wavefrontOut = new WaveObjectMMImpedance(z_inp, NULL, NULL);
 }
 
@@ -473,7 +473,7 @@ ARTcircuit::ARTcircuit(ARTsimulator* simulator, const string name, const string 
 
 {
 	//Every circuit has its impedance as data property. impedanceCurve is a shortcut pointer:
-	impedanceCurve_ = AppendDataProp("InputImpedanceCurve" , NULL , "The plot of this circuit's acoustic input impedance as a vector of complex numbers");
+	impedanceCurve_ = AppendDataProp("InputImpedanceCurve" , (ARTvariant *) NULL , "The plot of this circuit's acoustic input impedance as a vector of complex numbers");
 
 	//every circuit owns a branch model, but it is not added to properties
 	model = new BranchModel(name_ + "_Branch");
