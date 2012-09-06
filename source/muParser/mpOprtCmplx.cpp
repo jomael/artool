@@ -373,7 +373,33 @@ MUP_NAMESPACE_START
   void OprtPowCmplx::Eval(ptr_val_type& ret, const ptr_val_type *arg, int argc)
   {
     assert(argc==2);
-    *ret = exp(arg[1]->GetComplex() * log(arg[0]->GetComplex()));
+    if ((arg[0]->GetImag() == 0) && (arg[1]->GetImag() == 0))
+    {
+      float_type a = arg[0]->GetFloat();
+      float_type b = arg[1]->GetFloat();
+
+      int ib = (int)b;
+      if (b-ib==0)
+      {
+        switch (ib)
+        {
+          case 1: *ret = a; return;
+          case 2: *ret = a*a; return;
+          case 3: *ret = a*a*a; return;
+          case 4: *ret = a*a*a*a; return;
+          case 5: *ret = a*a*a*a*a; return;
+          default: *ret = pow(a, ib); return;
+        }
+      }
+      else
+      {
+        *ret = pow(a, b);
+      }
+    }
+    else
+    {
+      *ret = exp(arg[1]->GetComplex() * log(arg[0]->GetComplex()));
+    }
   }
 
   //-----------------------------------------------------------
