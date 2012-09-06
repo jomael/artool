@@ -1860,13 +1860,22 @@ void ARTdataContainer::resizeArray(int newSize)
 //		return m_val;
 		static cmplx_type tmp;
 		if (!valid_) Evaluate();
-		if (typ == C_ART_cpx)
+		switch (typ)
 		{
+		case C_ART_dbl:
+			tmp = cmplx_type(val->d,0);
+			break;
+		case C_ART_flo:
+			tmp = cmplx_type(val->f,0);
+			break;
+		case C_ART_int:
+			tmp = cmplx_type(val->i,0);
+			break;
+		case C_ART_cpx:
 			tmp = cmplx_type(val->c.re,val->c.im);
-		}
-		else
-		{
-			tmp = cmplx_type(0,0);
+			break;
+		default:
+			throw ARTerror("ARTdataContainer::GetComplex()", "The current data type cannot be converted into a complex value!");
 		}
 		return tmp;
 	}
