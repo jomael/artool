@@ -302,6 +302,8 @@ protected:
 
 	localParameterType* r1_;
 	localParameterType* r2_;
+	localParameterType* S1_;
+	localParameterType* S2_;
 
 public:
 	explicit DWGconeJunctionModule(const string& name="DWGConeJunctionModule", const string& sds="", const string& lds="", const string& htm="");

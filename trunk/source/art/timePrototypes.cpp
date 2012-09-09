@@ -971,7 +971,7 @@ void DWGcylinderModule::initLocalParams()
 	AppendDataProp(tmpParam);
 
 	// save standard length of implemented filter
-	tmpParam = new localParameterType("length", "length of the cylinder in mm");
+	tmpParam = new localParameterType("length", "length of the cylinder in m");
 	tmpParam->SetVal(50);
 	AppendDataProp(tmpParam);
 }
@@ -1001,8 +1001,7 @@ void DWGcylinderModule::initSimulation()
 	}
 
 	// depending on the length of cylinder, calculate value for delay
-	// divide by 1000 as original length is given in mm
-	D = (length->GetFloat()) / ((c->GetParserVar().GetFloat() * T->GetParserVar().GetFloat())) / 1000;
+	D = (length->GetFloat()) / ((c->GetParserVar().GetFloat() * T->GetParserVar().GetFloat()));
 
 	// decrease delay by one because we will introduce a separate delay buffer
 	D--;
@@ -1100,14 +1099,14 @@ DWGcylinderJunctionModule::DWGcylinderJunctionModule(const string& name, const s
 {
 	initLocalParams();
 	p2p_ = new OPortType(C_ART_na, 5, "p2p");
-	p2p_->SetDefinition("p2p[t] = p1p[t] + (((r1/1000)^2 - (r2/1000)^2)/((r1/1000)^2 + (r2/1000)^2)) * (p1p[t] - p2m[t])");
+	p2p_->SetDefinition("p2p[t] = p1p[t] + (((r1)^2 - (r2)^2)/((r1)^2 + (r2)^2)) * (p1p[t] - p2m[t])");
 	p2p_->GetParser()->DefineVar("r1", r1_->GetParserVar());
 	p2p_->GetParser()->DefineVar("r2", r2_->GetParserVar());
 	p2p_->SetParentModuleName(name_);
 	AppendDataProp(p2p_);
 
 	p1m_ = new OPortType(C_ART_na, 5, "p1m");
-	p1m_->SetDefinition("p1m[t] = p2m[t] + (((r1/1000)^2 - (r2/1000)^2)/((r1/1000)^2 + (r2/1000)^2)) * (p1p[t] - p2m[t])");
+	p1m_->SetDefinition("p1m[t] = p2m[t] + (((r1)^2 - (r2)^2)/((r1)^2 + (r2)^2)) * (p1p[t] - p2m[t])");
 	p1m_->GetParser()->DefineVar("r1", r1_->GetParserVar());
 	p1m_->GetParser()->DefineVar("r2", r2_->GetParserVar());
 	p1m_->SetParentModuleName(name_);
@@ -1187,12 +1186,12 @@ void DWGcylinderJunctionModule::initLocalParams()
 {
 
 	// save standard radius of left cylinder
-	r1_ = new localParameterType("r1", "radius of left cylinder in mm");
+	r1_ = new localParameterType("r1", "radius of left cylinder in m");
 	r1_->SetVal(10);
 	AppendDataProp(r1_);
 
 	// save standard radius of right cylinder
-	r2_ = new localParameterType("r2", "radius of right cylinder in mm");
+	r2_ = new localParameterType("r2", "radius of right cylinder in m");
 	r2_->SetVal(15);
 	AppendDataProp(r2_);
 
@@ -1227,14 +1226,14 @@ void DWGconeModule::initLocalParams()
 //	tmpParam = new localParameterType("length", "length of the cylinder in mm");
 //	tmpParam->SetVal(50);
 //	AppendDataProp(tmpParam);
-	tmpParam = new localParameterType("r1", "radius of the left end in mm");
+	tmpParam = new localParameterType("r1", "radius of the left wave sphere in m");
 	tmpParam->SetVal(50);
 	AppendDataProp(tmpParam);
 
 	p2p_->GetParser()->DefineVar(tmpParam->GetName(), tmpParam->GetParserVar());
 	p1m_->GetParser()->DefineVar(tmpParam->GetName(), tmpParam->GetParserVar());
 
-	tmpParam = new localParameterType("r2", "radius of the right end in mm");
+	tmpParam = new localParameterType("r2", "radius of the right wave sphere in m");
 	tmpParam->SetVal(100);
 	AppendDataProp(tmpParam);
 
@@ -1246,7 +1245,6 @@ void DWGconeModule::initSimulation()
 {
 
 	localParameterType* type = dynamic_cast<localParameterType*>(FindProperty("type"));
-	localParameterType* length = dynamic_cast<localParameterType*>(FindProperty("length"));
 	globalParameterType* T = dynamic_cast<globalParameterType*>(FindProperty("T"));
 	globalParameterType* c = dynamic_cast<globalParameterType*>(FindProperty("c"));
 
@@ -1257,7 +1255,7 @@ void DWGconeModule::initSimulation()
 //	expr.precision(10);
 
 	// calculate normalized delay
-	double D;
+	double D, length;
 	int N;
 
 	if (c == NULL)
@@ -1266,9 +1264,12 @@ void DWGconeModule::initSimulation()
 				"No global parameter 'c' for the speed of sound has been found. Please add it to your current simulator!");
 	}
 
+	// calculate length of cone module based on shperical appex radii
+	length = std::abs(dynamic_cast<localParameterType*>(FindProperty("r1"))->GetFloat() -
+			dynamic_cast<localParameterType*>(FindProperty("r2"))->GetFloat());
+
 	// depending on the length of cylinder, calculate value for delay
-	// divide by 1000 as original length is given in mm
-	D = (length->GetFloat()) / ((c->GetParserVar().GetFloat() * T->GetParserVar().GetFloat())) / 1000;
+	D = (length) / ((c->GetParserVar().GetFloat() * T->GetParserVar().GetFloat()));
 
 	// decrease delay by one because we will introduce a separate delay buffer
 	D--;
@@ -1312,6 +1313,8 @@ void DWGconeModule::initSimulation()
 			expr2 << getLagrangeParams(n, N, D);
 			expr2 << "*p2m[t - " << n << "]";
 		}
+		expr1 << ")";
+		expr2 << ")";
 	}
 	else if (type->GetString() == "thiran")
 	{
@@ -1362,7 +1365,9 @@ DWGconeJunctionModule::DWGconeJunctionModule(const string& name, const string& s
 		p2m_(NULL),
 		rz_(NULL),
 		r1_(NULL),
-		r2_(NULL)
+		r2_(NULL),
+		S1_(NULL),
+		S2_(NULL)
 {
 	initLocalParams();
 
@@ -1469,14 +1474,24 @@ void DWGconeJunctionModule::initLocalParams()
 	AppendDataProp(tmpParam);
 
 	// save standard radius of left cone
-	r1_ = new localParameterType("r1", "radius of the left cone in mm");
-	r1_->SetVal(50);
+	r1_ = new localParameterType("r1", "radius of the left wave sphere in m");
+	r1_->SetVal(0.050);
 	AppendDataProp(r1_);
 
 	// save standard radius of right cone
-	r2_ = new localParameterType("r2", "radius of the right cone in mm");
-	r2_->SetVal(50);
+	r2_ = new localParameterType("r2", "radius of the right wave sphere in m");
+	r2_->SetVal(0.050);
 	AppendDataProp(r2_);
+
+	// save standard wave area of left cone
+	S1_ = new localParameterType("S1", "area of the left wave sphere in m");
+	S1_->SetVal(0.050);
+	AppendDataProp(S1_);
+
+	// save standard wave area of right cone
+	S2_ = new localParameterType("S2", "area of the right wave sphere in m");
+	S2_->SetVal(0.050);
+	AppendDataProp(S2_);
 }
 
 void DWGconeJunctionModule::initSimulation()
@@ -1484,16 +1499,19 @@ void DWGconeJunctionModule::initSimulation()
 	const string& method = dynamic_cast<localParameterType*>(FindProperty("method"))->GetString();
 
 	double S1, S2, B, C1, C2, C3;
-	S1 = (r1_->GetFloat()/1000)*(r1_->GetFloat()/1000)*PI;
-	S2 = (r2_->GetFloat()/1000)*(r2_->GetFloat()/1000)*PI;
+	S1 = dynamic_cast<localParameterType*>(FindProperty("S1"))->GetFloat();
+	S2 = dynamic_cast<localParameterType*>(FindProperty("S2"))->GetFloat();
 
 	B = S1/S2;
 
-//	cout << "B = " << B << endl;
+//	cout << "B = " << B << ", S1 = " << S1 << ", S2 = " << S2 << endl;
 
 	C1 = 2*B/(B+1);
 	C2 = 2/(B+1);
 	C3 = (B-1)/(B+1);
+//	C1 = 1;
+//	C2 = 1;
+//	C3 = 0;
 
 	std::stringstream exprrz;
 
@@ -1503,8 +1521,10 @@ void DWGconeJunctionModule::initSimulation()
 	// set expression for R(z)
 	exprrz << "rz[t] = ";
 	exprrz << getB0(method) << "*(" << C1 << "*p1p[t] + " << C2 << "*p2m[t]) + ";
-	exprrz << getB1(method) << "*(" << C1 << "*p1p[t-1] + " << C2 << "*p2m[t-1]) + ";
+	exprrz << getB1(method) << "*(" << C1 << "*p1p[t-1] + " << C2 << "*p2m[t-1]) - ";
 	exprrz << getA1(method) << "*rz[t-1]";
+
+//	cout << "b0 = " << getB0(method) << ", b1 = " << getB1(method) << ", a1 = " << getA1(method) << endl;
 
 	// init value of rz[-1] for IIR filter
 	(*rz_)[-1] = 0.0;
@@ -1540,23 +1560,27 @@ double DWGconeJunctionModule::getB0(const string& method)
 
 	gamma1 = (c->GetParserVar().GetFloat())/(2*(r1_->GetFloat()));
 	gamma2 = (c->GetParserVar().GetFloat())/(2*(r2_->GetFloat()));
-	S1 = (r1_->GetFloat()/1000)*(r1_->GetFloat()/1000)*PI;
-	S2 = (r2_->GetFloat()/1000)*(r2_->GetFloat()/1000)*PI;
+//	gamma1 = dynamic_cast<localParameterType*>(FindProperty("gamma1"))->GetFloat();
+//	gamma2 = dynamic_cast<localParameterType*>(FindProperty("gamma2"))->GetFloat();
+	S1 = dynamic_cast<localParameterType*>(FindProperty("S1"))->GetFloat();
+	S2 = dynamic_cast<localParameterType*>(FindProperty("S2"))->GetFloat();
 
 	alpha = 2*(gamma2*S2 - gamma1*S1)/(S2 + S1);
 	beta = 2/T;
 
+
 	if (method == "IIM")
 	{
-		result = -1 + exp(alpha * T);
+//		result = -1 + exp(alpha * T);
+		result = -1 + exp(-alpha * T);
 	}
 	else if (method == "TICM")
 	{
-		result = -1 - ((exp(-alpha*T) - 1)/(alpha*T));
+		result = -(1 + ((exp(-alpha*T) - 1)/(alpha*T)));
 	}
 	else if (method == "BT")
 	{
-		result = alpha/(alpha + beta);
+		result = -alpha/(alpha + beta);
 	}
 	else
 	{
@@ -1576,14 +1600,16 @@ double DWGconeJunctionModule::getB1(const string& method)
 
 	if (c == NULL)
 	{
-		throw ARTerror("DWGconeJunctionModule::getB0",
+		throw ARTerror("DWGconeJunctionModule::getB1",
 				"No global parameter 'c' for the speed of sound has been found. Please add it to your current simulator!");
 	}
 
 	gamma1 = (c->GetParserVar().GetFloat())/(2*(r1_->GetFloat()));
 	gamma2 = (c->GetParserVar().GetFloat())/(2*(r2_->GetFloat()));
-	S1 = (r1_->GetFloat()/1000)*(r1_->GetFloat()/1000)*PI;
-	S2 = (r2_->GetFloat()/1000)*(r2_->GetFloat()/1000)*PI;
+//	gamma1 = dynamic_cast<localParameterType*>(FindProperty("gamma1"))->GetFloat();
+//	gamma2 = dynamic_cast<localParameterType*>(FindProperty("gamma2"))->GetFloat();
+	S1 = dynamic_cast<localParameterType*>(FindProperty("S1"))->GetFloat();
+	S2 = dynamic_cast<localParameterType*>(FindProperty("S2"))->GetFloat();
 
 	alpha = 2*(gamma2*S2 - gamma1*S1)/(S2 + S1);
 	beta = 2/T;
@@ -1594,11 +1620,11 @@ double DWGconeJunctionModule::getB1(const string& method)
 	}
 	else if (method == "TICM")
 	{
-		result = exp(-alpha*T) + ((exp(-alpha*T) - 1)/(alpha*T));
+		result = (exp(-alpha*T) + ((exp(-alpha*T) - 1)/(alpha*T)));
 	}
 	else if (method == "BT")
 	{
-		result = alpha/(alpha + beta);
+		result = -alpha/(alpha + beta);
 	}
 	else
 	{
@@ -1619,25 +1645,28 @@ double DWGconeJunctionModule::getA1(const string& method)
 
 	if (c == NULL)
 	{
-		throw ARTerror("DWGconeJunctionModule::getB0",
+		throw ARTerror("DWGconeJunctionModule::getA1",
 				"No global parameter 'c' for the speed of sound has been found. Please add it to your current simulator!");
 	}
 
 	gamma1 = (c->GetParserVar().GetFloat())/(2*(r1_->GetFloat()));
 	gamma2 = (c->GetParserVar().GetFloat())/(2*(r2_->GetFloat()));
-	S1 = (r1_->GetFloat()/1000)*(r1_->GetFloat()/1000)*PI;
-	S2 = (r2_->GetFloat()/1000)*(r2_->GetFloat()/1000)*PI;
+//	gamma1 = dynamic_cast<localParameterType*>(FindProperty("gamma1"))->GetFloat();
+//	gamma2 = dynamic_cast<localParameterType*>(FindProperty("gamma2"))->GetFloat();
+	S1 = dynamic_cast<localParameterType*>(FindProperty("S1"))->GetFloat();
+	S2 = dynamic_cast<localParameterType*>(FindProperty("S2"))->GetFloat();
 
 	alpha = 2*(gamma2*S2 - gamma1*S1)/(S2 + S1);
 	beta = 2/T;
 
 	if (method == "IIM")
 	{
-		result = exp(-alpha * T);
+//		result = exp(-alpha * T);
+		result = -exp(-alpha * T);
 	}
 	else if (method == "TICM")
 	{
-		result = exp(-alpha * T);
+		result = -exp(-alpha * T);
 	}
 	else if (method == "BT")
 	{
