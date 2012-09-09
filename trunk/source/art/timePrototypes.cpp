@@ -1187,12 +1187,12 @@ void DWGcylinderJunctionModule::initLocalParams()
 
 	// save standard radius of left cylinder
 	r1_ = new localParameterType("r1", "radius of left cylinder in m");
-	r1_->SetVal(10);
+	r1_->SetVal(0.010);
 	AppendDataProp(r1_);
 
 	// save standard radius of right cylinder
 	r2_ = new localParameterType("r2", "radius of right cylinder in m");
-	r2_->SetVal(15);
+	r2_->SetVal(0.015);
 	AppendDataProp(r2_);
 
 }
