@@ -28,7 +28,7 @@ for i in range(0, 36) :
   junctionModules.append(ARTCreateTModule(sim, "CylinderJunction{0}".format(i), "DWGCylinderJunctionModule"));
   if (junctionModules[i] == None):
     print ARTGetLastErrorMessage();
-  if (ARTSetParameter(sim, "CylinderJunction{0}.r1 = {1}; CylinderJunction{0}.r2 = {2}".format(i, r1, r2)) == None):
+  if (ARTSetParameter(sim, "CylinderJunction{0}.r1 = {1}; CylinderJunction{0}.r2 = {2}".format(i, r1/1000.0, r2/1000.0)) == None):
     print ARTGetLastErrorMessage();
   if (ARTConnectPorts(sim, "CylinderJunction{0}.p1p = DelayModule{0}.p2p; DelayModule{0}.p2m = CylinderJunction{0}.p1m".format(i)) == 0):
     print ARTGetLastErrorMessage();
@@ -73,7 +73,7 @@ if (ARTConnectPorts(sim, "DelayModule0.p1p = Impulse.out") == 0):
 
 
 # set local parameters of each module
-if (ARTSetParameter(sim, "Gain.A = -0.3") == None):
+if (ARTSetParameter(sim, "Gain.A = 0") == None):
   print ARTGetLastErrorMessage();
 
 if (ARTSetParameter(sim, "Sine.f = 1000") == None):

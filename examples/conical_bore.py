@@ -10,6 +10,8 @@ pSim = ARTRootObject();
 
 # create simulator
 sim = ARTCreateSimulator("TimeSimulator", "TimeDomain", "");
+if (sim == None):
+  print ARTGetLastErrorMessage();
 
 # adding speed of sound as global simulation parameter
 ARTAddGlobalParamToTSimulator(sim, "c", "c = 331");
@@ -74,28 +76,28 @@ if (ARTConnectPorts(sim, "Gain2.in = RightCylinder.p2p; RightCylinder.p2m = Gain
 if (ARTConnectPorts(sim, "Gain1.in = LeftCylinder.p1m; Add.in1 = Gain1.out; Add.in2 = Impulse.out; LeftCylinder.p1p = Add.out") == 0):
   print ARTGetLastErrorMessage();
 
+# use this line if you want to see the system response to a sine wave signal
 #if (ARTConnectPorts(sim, "Gain1.in = LeftCylinder.p1m; Add.in1 = Gain1.out; Add.in2 = Sine.out; LeftCylinder.p1p = Add.out") == 0):
 #  print ARTGetLastErrorMessage();
 
 
 # set local parameters of each module
-if (ARTSetParameter(sim, "LeftCylinder.length = 171; LeftCylinder.type = 'thiran'") == None):
+if (ARTSetParameter(sim, "LeftCylinder.length = 0.171; LeftCylinder.type = 'lagrange'") == None):
   print ARTGetLastErrorMessage();
 
-if (ARTSetParameter(sim, "LeftConeJunction.r1 = 6.1; LeftConeJunction.r2 = 6; LeftConeJunction.method = 'BT'") == None):
+if (ARTSetParameter(sim, "LeftConeJunction.r1 = 1E300; LeftConeJunction.S1 = 0.000113097; LeftConeJunction.r2 = -0.570031578; LeftConeJunction.S2 = 0.0001131; LeftConeJunction.method = 'BT'") == None):
   print ARTGetLastErrorMessage();
 
-if (ARTSetParameter(sim, "Cone.length = 190; Cone.r1 = 6; Cone.r2 = 4.1; Cone.type = 'thiran'") == None):
+if (ARTSetParameter(sim, "Cone.r1 = 0.570031578; Cone.r2 = 0.380021052; Cone.type = 'lagrange'") == None):
   print ARTGetLastErrorMessage();
 
-if (ARTSetParameter(sim, "RightConeJunction.r1 = 4.1; RightConeJunction.r2 = 4; RightConeJunction.method = 'BT'") == None):
+if (ARTSetParameter(sim, "RightConeJunction.r1 = -0.380021052; RightConeJunction.S1 = 5.026675912E-5; RightConeJunction.r2 = 1E300; RightConeJunction.S2 = 5.026548246E-5; RightConeJunction.method = 'BT'") == None):
   print ARTGetLastErrorMessage();
 
-if (ARTSetParameter(sim, "RightCylinder.length = 202; RightCylinder.type = 'thiran'") == None):
+if (ARTSetParameter(sim, "RightCylinder.length = 0.202; RightCylinder.type = 'lagrange'") == None):
   print ARTGetLastErrorMessage();
 
-#if (ARTSetParameter(sim, "Gain1.A = 0.5; Gain2.A = -0.2") == None):
-if (ARTSetParameter(sim, "Gain1.A = 0; Gain2.A = 0") == None):
+if (ARTSetParameter(sim, "Gain1.A = 0; Gain2.A = -0") == None):
   print ARTGetLastErrorMessage();
 
 if (ARTSetParameter(sim, "Sine.f = 440") == None):
@@ -103,12 +105,11 @@ if (ARTSetParameter(sim, "Sine.f = 440") == None):
 
 # get output port
 outputPort = ARTGetPortFromTModule(leftCylinder, "p1m");
-#outputPort = ARTGetPortFromTModule(rightCylinder, "p1m");
 if (outputPort == None):
   print ARTGetLastErrorMessage();
 
 # initialize all modules to increase buffer size
-for i in range (-1,-28,-1):
+for i in range (-1,-56,-1):
   addString = "Add.out[{0}] = 0;".format(i);
   leftCylinderString = "LeftCylinder.p2p[{0}] = 0; LeftCylinder.p1m[{0}] = 0;".format(i);
   leftJunctionString = "LeftConeJunction.p2p[{0}] = 0; LeftConeJunction.p1m[{0}] = 0;".format(i);
@@ -119,19 +120,14 @@ for i in range (-1,-28,-1):
   if (ARTSetParameter(sim, addString + leftCylinderString + leftJunctionString + coneString + rightJunctionString + rightCylinderString + gain2String) == None):
     print ARTGetLastErrorMessage();
 
-for i in range(0, 410) :
-#for i in range(0, 2) :
+for i in range(0, 300) :
   # get data structure
   outVal = ARTGetComplexFromPort(outputPort, i);
   error = ARTGetLastErrorMessage();
   if (error != ""):
     print error;
     break;
-  print "{0} {1}".format(i,outVal.re);
-
-#print ARTGetLastErrorMessage();
-
-#raw_input("Please press ENTER to continue...\n");
+  print "{0} {1}".format(i/44.1,outVal.re);
 
 ARTRootDestroy();
 
