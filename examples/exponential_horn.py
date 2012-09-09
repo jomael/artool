@@ -68,12 +68,13 @@ if (gainModule == None):
 if (ARTConnectPorts(sim, "DelayModule36.p2m = Gain.out; Gain.in = DelayModule36.p2p") == 0):
   print ARTGetLastErrorMessage();
 
-if (ARTConnectPorts(sim, "DelayModule0.p1p = Impulse.out") == 0):
+if (ARTConnectPorts(sim, "DelayModule0.p1p = Sine.out") == 0):
   print ARTGetLastErrorMessage();
 
 
 # set local parameters of each module
-if (ARTSetParameter(sim, "Gain.A = 0") == None):
+# (800 - ZL)/(800 + ZL); ZL = rho * c / SL = 1.2 * 331 / 0.01114949313
+if (ARTSetParameter(sim, "Gain.A = -0.95607405") == None):
   print ARTGetLastErrorMessage();
 
 if (ARTSetParameter(sim, "Sine.f = 1000") == None):
@@ -101,6 +102,7 @@ for i in range(0, 441):
   if (error != ""):
     print error;
     break;
+  #if (i%2 == 0):
   print "{0:.10f} {1}".format(i/44.1,outVal.re);
 
 ARTRootDestroy();
