@@ -543,7 +543,7 @@ sinewaveModule::sinewaveModule(const string& name, const string& sds, const stri
 		out_(NULL)
 {
 	out_ = new OPortType(C_ART_na, 5, "out");
-	out_->SetDefinition("out[t] = A*sin(2*pi*(t*T*f - Delta))");
+	out_->SetDefinition("out[t] = A*sin(2*pi*f*(t*T - Delta))");
 	out_->SetParentModuleName(name_);
 	AppendDataProp(out_);
 	initLocalParams();
