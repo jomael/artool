@@ -38,8 +38,7 @@ for i in range(0, 36) :
   #print "{3}:\tx = {0}, r1 = {1}, r2 = {2}".format(((331.0/44100.0) * i), r1, r2, i);
   #print "{0} {1}".format(((331.0/44100.0) * i * 1000), r1);
 
-
-# add and connect final delay module
+# add final delay module
 delayModules.append(ARTCreateTModule(sim, "DelayModule36", "TimeModule"));
 if (delayModules[36] == None):
   print ARTGetLastErrorMessage();
@@ -47,8 +46,10 @@ if (ARTAddOPortToTModule(delayModules[36], "p2p", "p2p[t] = p1p[t-1]") == 0):
   print ARTGetLastErrorMessage();
 if (ARTAddOPortToTModule(delayModules[36], "p1m", "p1m[t] = p2m[t-1]") == 0):
   print ARTGetLastErrorMessage();
+
 if (ARTConnectPorts(sim, "CylinderJunction35.p2m = DelayModule36.p1m; DelayModule36.p1p = CylinderJunction35.p2p") == 0):
   print ARTGetLastErrorMessage();
+
 
 # create impulse and gain modules
 impulseModule = ARTCreateTModule(sim, "Impulse", "ImpulseModule");
@@ -59,26 +60,59 @@ sineModule = ARTCreateTModule(sim, "Sine", "SinewaveModule");
 if (sineModule == None):
   print ARTGetLastErrorMessage();
 
+addModule = ARTCreateTModule(sim, "Add", "AddModule");
+if (addModule == None):
+  print ARTGetLastErrorMessage();
+
 gainModule = ARTCreateTModule(sim, "Gain", "AmplificationModule");
 if (gainModule == None):
   print ARTGetLastErrorMessage();
 
+reflectanceModule = ARTCreateTModule(sim, "RCon", "TimeModule");
+if (reflectanceModule == None):
+  print ARTGetLastErrorMessage();
+
+# add output port to reflectance module
+if (ARTAddOPortToTModule(reflectanceModule, "out", "out[t] = conv(pp,Rf,t)") == 0):
+  print ARTGetLastErrorMessage();
+
+reflectanceFunctionModule = ARTCreateTModule(sim, "Rf", "InputFunctionModule");
+if (reflectanceModule == None):
+  print ARTGetLastErrorMessage();
+
+# read in reflectance function from file
+with open('exp_horn_norm_rf.txt', 'r') as f:
+  flen = int(f.readline())
+
+  # create and resize output port of function module
+  if (ARTSetOPortOfFModule(reflectanceFunctionModule, flen, "") == 0):
+    print ARTGetLastErrorMessage();
+
+  for i in range(0,flen):
+    value = float(f.readline());
+    if (ARTSetParameter(sim, "Rf.out[{0}] = {1}".format(i,value)) == None):
+      print ARTGetLastErrorMessage();
+    #print "InstrumentResponse.out[{0}] = {1}".format(i,value);
+
+
 
 # connect output ports of remaining Modules
-if (ARTConnectPorts(sim, "DelayModule36.p2m = Gain.out; Gain.in = DelayModule36.p2p") == 0):
+if (ARTConnectPorts(sim, "Add.in1 = Impulse.out; Add.in2 = Gain.out; DelayModule0.p1p = Add.out; Gain.in = DelayModule0.p1m") == 0):
   print ARTGetLastErrorMessage();
 
-if (ARTConnectPorts(sim, "DelayModule0.p1p = Sine.out") == 0):
+if (ARTConnectPorts(sim, "RCon.pp = DelayModule36.p2p; RCon.Rf = Rf.out; DelayModule36.p2m = RCon.out") == 0):
   print ARTGetLastErrorMessage();
+
+#if (ARTConnectPorts(sim, "DelayModule0.p1p = Sine.out") == 0):
+#  print ARTGetLastErrorMessage();
 
 
 # set local parameters of each module
-# (800 - ZL)/(800 + ZL); ZL = rho * c / SL = 1.2 * 331 / 0.01114949313
-if (ARTSetParameter(sim, "Gain.A = -0.95607405") == None):
+if (ARTSetParameter(sim, "Gain.A = 0") == None):
   print ARTGetLastErrorMessage();
 
-if (ARTSetParameter(sim, "Sine.f = 1000") == None):
-  print ARTGetLastErrorMessage();
+#if (ARTSetParameter(sim, "Sine.f = 1000") == None):
+#  print ARTGetLastErrorMessage();
 
 # get output port
 outputPort = ARTGetPortFromTModule(delayModules[0], "p1m");
@@ -95,14 +129,14 @@ for i in range (0,36):
 if (ARTSetParameter(sim, "DelayModule36.p2p[-1] = 0; DelayModule36.p1m[-1] = 0") == None):
   print ARTGetLastErrorMessage();
 
-for i in range(0, 441):
+for i in range(0, 500):
   # get data structure
   outVal = ARTGetComplexFromPort(outputPort, i);
   error = ARTGetLastErrorMessage();
   if (error != ""):
     print error;
     break;
-  #if (i%2 == 0):
+  #if (outVal.re != 0):
   print "{0:.10f} {1}".format(i/44.1,outVal.re);
 
 ARTRootDestroy();
