@@ -4,6 +4,9 @@
 
 from artsimdefs import *;
 from math import exp;
+from time import clock;
+
+startTime = clock();
 
 # init simulation
 pSim = ARTRootObject();
@@ -163,15 +166,22 @@ if (ARTSetParameter(sim, "lipModule.p[-1] = 0") == None):
 if (ARTSetParameter(sim, "lipModule.delta_p[-1] = 0") == None):
   print ARTGetLastErrorMessage();
 
+simStartTime = clock();
 
+#for i in range(0, 23940):
 for i in range(0, 2400):
   outVal_p = ARTGetComplexFromPort(outPort_p, i);
   error = ARTGetLastErrorMessage();
   if (error != ""):
     print error;
     break;
-  if (i >= 23940*0.06 and i <= 23940*0.075):
-    print "{0:10f} {1:10f}".format(i/23.940, outVal_p.re);
+  #if (i >= 23940*0.06 and i <= 23940*0.075):
+  #  print "{0:10f} {1:10f}".format(i/23.940, outVal_p.re);
+
+endTime = clock();
+
+# comment out if you are not interested in the performance
+#print "Total simulation duration: {0} s.\nNet simulation duration: {1} s.".format(endTime - startTime, endTime - simStartTime);
 
 ARTRootDestroy();
 

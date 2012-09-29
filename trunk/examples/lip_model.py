@@ -5,6 +5,9 @@
 from artsimdefs import *;
 from math import exp;
 from pylab import *
+from time import clock;
+
+startTime = clock();
 
 # init simulation
 pSim = ARTRootObject();
@@ -197,6 +200,8 @@ flow = [0 for x in range(N)]
 #counter = 0;
 #fLip = 231;
 
+simStartTime = clock();
+
 for i in range(0, N):
   pres[i] = ARTGetComplexFromPort(outPort_p, i).re;
   error = ARTGetLastErrorMessage();
@@ -204,6 +209,7 @@ for i in range(0, N):
   if (error != ""):
     print error;
     break;
+  #print "{0}\r".format(i);
   #if (i >= 35970*0.06 and i <= 35970*0.075):
   #  print "{0} {1}".format(i/35.970, flow[i]);
   #counter = counter + 1;
@@ -225,5 +231,10 @@ xlabel('$time [ms]$');
 ylabel('$flow [m^3/s]$');
 
 show();
+
+endTime = clock();
+
+# comment out if you are not interested in the performance
+#print "Total simulation duration: {0} s.\nNet simulation duration: {1} s.".format(endTime - startTime, endTime - simStartTime);
 
 ARTRootDestroy();
