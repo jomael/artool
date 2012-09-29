@@ -30,7 +30,7 @@ if (impulseModule == None):
 stepModule = ARTCreateTModule(sim, "Step", "HeavisideModule");
 if (stepModule == None):
   print ARTGetLastErrorMessage();
-ARTSetParameter(sim, "Step.A = 6E3");
+ARTSetParameter(sim, "Step.A = 1.5E3");
 
 # init impulse response of instrument by reading external admittance file
 with open('clarinet_rf.txt', 'r') as f:
@@ -105,18 +105,6 @@ if (ARTAddLocalParamToTModule(lipModule, "c", "c = 3.4E2") == 0):
 # average air density
 if (ARTAddLocalParamToTModule(lipModule, "rho", "rho = 1.2") == 0):
   print ARTGetLastErrorMessage();
-# please specify
-if (ARTAddLocalParamToTModule(lipModule, "a1", "a1 = 1.5977") == 0):
-  print ARTGetLastErrorMessage();
-# please specify
-if (ARTAddLocalParamToTModule(lipModule, "a2", "a2 = -0.8821") == 0):
-  print ARTGetLastErrorMessage();
-# please specify
-if (ARTAddLocalParamToTModule(lipModule, "a3", "a3 = -2.7026E3") == 0):
-  print ARTGetLastErrorMessage();
-# please specify
-if (ARTAddLocalParamToTModule(lipModule, "b1", "b1 = 3.2839E-8") == 0):
-  print ARTGetLastErrorMessage();
 # initial impedance, please specify
 if (ARTAddLocalParamToTModule(lipModule, "Z_0", "Z_0 = 4.3418E6") == 0):
   print ARTGetLastErrorMessage();
@@ -131,6 +119,31 @@ if (ARTAddLocalParamToTModule(lipModule, "y_m", "y_m = 4E-4") == 0):
   print ARTGetLastErrorMessage();
 
 if (ARTAddLocalParamToTModule(lipModule, "lambda", "lambda = 0.013") == 0):
+  print ARTGetLastErrorMessage();
+#
+if (ARTAddLocalParamToTModule(lipModule, "k_c", "k_c = 8.23E10") == 0):
+  print ARTGetLastErrorMessage();
+#
+if (ARTAddLocalParamToTModule(lipModule, "k", "k = 8.66E6") == 0):
+  print ARTGetLastErrorMessage();
+#
+if (ARTAddLocalParamToTModule(lipModule, "m", "m = 0.05") == 0):
+  print ARTGetLastErrorMessage();
+#
+if (ARTAddLocalParamToTModule(lipModule, "a1", "a1 = (2-(k*T^2)/m)/(1 + rho*T/2)") == 0):
+#if (ARTAddLocalParamToTModule(lipModule, "a1", "a1 = 1.5977") == 0):
+  print ARTGetLastErrorMessage();
+#
+if (ARTAddLocalParamToTModule(lipModule, "a2", "a2 = (rho*T/2 - 1)/(1 + rho*T/2)") == 0):
+#if (ARTAddLocalParamToTModule(lipModule, "a2", "a2 = -0.8821") == 0):
+  print ARTGetLastErrorMessage();
+#
+if (ARTAddLocalParamToTModule(lipModule, "a3", "a3 = (-k_c*T^2)/(1 + rho*T/2)") == 0):
+#if (ARTAddLocalParamToTModule(lipModule, "a3", "a3 = -2.7026E3") == 0):
+  print ARTGetLastErrorMessage();
+#
+if (ARTAddLocalParamToTModule(lipModule, "b1", "b1 = (T^2/m)/(1 + rho*T/2)") == 0):
+#if (ARTAddLocalParamToTModule(lipModule, "b1", "b1 = 3.2839E-8") == 0):
   print ARTGetLastErrorMessage();
 
 
@@ -151,13 +164,14 @@ if (ARTSetParameter(sim, "lipModule.delta_p[-1] = 0") == None):
   print ARTGetLastErrorMessage();
 
 
-for i in range(0, 24000):
+for i in range(0, 2400):
   outVal_p = ARTGetComplexFromPort(outPort_p, i);
   error = ARTGetLastErrorMessage();
   if (error != ""):
     print error;
     break;
-  print "{0:10f} {1:10f}".format(i/23.940, outVal_p.re);
+  if (i >= 23940*0.06 and i <= 23940*0.075):
+    print "{0:10f} {1:10f}".format(i/23.940, outVal_p.re);
 
 ARTRootDestroy();
 
