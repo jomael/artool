@@ -45,7 +45,7 @@
 
 
 
-#define _TIMEDEBUG
+//#define _TIMEDEBUG
 
 class TestClass
 {
@@ -4048,6 +4048,7 @@ TEST_DEF_START(testToneHoleImp, customModelTests)
 	{
 		try
 		{
+
 			ARTAppendReference(meinIns, Cyl1);
 			ARTAppendReference(meinIns, Th);
 			ARTAppendReference(meinIns, Cyl2);
@@ -5157,73 +5158,75 @@ TEST_DEF_END(ConvolutionTest1)
 //
 //TEST_DEF_END(ConvolutionTest2)
 
-TEST_DEF_START(ConvolutionTest3, ARTtimeSimulatorTests)
-
-	ARTtimeSimulator* myTimeSimulator;
-
-	virtual void prepare()
-	{
-		myTimeSimulator = new ARTtimeSimulator("TestSim");
-		myTimeSimulator->userElements = new ARTlistProp("testList");
-
-	}
-
-	virtual bool run()
-	{
-
-		try
-		{
-			int i;
-
-			ARTItimeModule* timeModule = new inputFunctionModule("myModule", 30);
-			ARTtimeModule* timeModule2 = new ARTtimeModule("ConvolutionModule");
-
-			ARTItimeModule::FPortType* functionOutPort = dynamic_cast<ARTItimeModule::FPortType*>(timeModule->getPort("out"));
-
-			for (i = 0; i < 30; ++i)
-			{
-				functionOutPort->initPortValue(0.5, i);
-			}
-
-			timeModule2->addOPort("local", "local[t] = t");
-			timeModule2->addOPort("testout", "testout[t] = conv(local, function, t)");
-			timeModule2->addIPort("function", functionOutPort);
-
-			ARTItimeModule::OPortType& simulationOutPort = dynamic_cast<ARTItimeModule::OPortType&>(*(timeModule2->getPort("testout")));
-
-			myTimeSimulator->AddTimeModule(timeModule);
-			myTimeSimulator->AddTimeModule(timeModule2);
-
-			for (i = 0; i < 100; ++i)
-			{
-//				cout << "Conv[" << i << "] = " << simulationOutPort->GetPortValue(i).GetFloat() << endl;
-//				simulationOutPort->GetPortValue(i).GetFloat();
-				myTimeSimulator->SimulateTimeStep(i);
-			}
-
-			if (simulationOutPort[99].GetFloat() != 0.25*(99.0 - 70.0 + 1.0)*(99.0 + 70.0))
-			{
-				return false;
-			}
-
-			return true;
-		}
-		catch (ARTerror& e)
-		{
-			string err = e.GetErrorMessage();
-			std::cout << "\n\n" << err;
-			return false;
-		}
-
-	}
-
-	virtual void unprepare()
-	{
-		delete (myTimeSimulator->userElements);
-		delete myTimeSimulator;
-	}
-
-TEST_DEF_END(ConvolutionTest3)
+//TEST_DEF_START(ConvolutionTest3, ARTtimeSimulatorTests)
+//
+//	ARTtimeSimulator* myTimeSimulator;
+//
+//	virtual void prepare()
+//	{
+//		myTimeSimulator = new ARTtimeSimulator("TestSim");
+//		myTimeSimulator->userElements = new ARTlistProp("testList");
+//
+//	}
+//
+//	virtual bool run()
+//	{
+//
+//		try
+//		{
+//			int i;
+//
+//			ARTItimeModule* timeModule = new inputFunctionModule("myModule");
+//			ARTtimeModule* timeModule2 = new ARTtimeModule("ConvolutionModule");
+//
+//			dynamic_cast<inputFunctionModule*>(timeModule)->defineOPort(30, "");
+//
+//			ARTItimeModule::FPortType* functionOutPort = dynamic_cast<ARTItimeModule::FPortType*>(timeModule->getPort("out"));
+//
+//			for (i = 0; i < 30; ++i)
+//			{
+//				functionOutPort->initPortValue(0.5, i);
+//			}
+//
+//			timeModule2->addOPort("local", "local[t] = t");
+//			timeModule2->addOPort("testout", "testout[t] = conv(local, function, t)");
+//			timeModule2->addIPort("function", functionOutPort);
+//
+//			ARTItimeModule::OPortType& simulationOutPort = dynamic_cast<ARTItimeModule::OPortType&>(*(timeModule2->getPort("testout")));
+//
+//			myTimeSimulator->AddTimeModule(timeModule);
+//			myTimeSimulator->AddTimeModule(timeModule2);
+//
+//			for (i = 0; i < 100; ++i)
+//			{
+////				cout << "Conv[" << i << "] = " << simulationOutPort->GetPortValue(i).GetFloat() << endl;
+////				simulationOutPort->GetPortValue(i).GetFloat();
+//				myTimeSimulator->SimulateTimeStep(i);
+//			}
+//
+//			if (simulationOutPort[99].GetFloat() != 0.25*(99.0 - 70.0 + 1.0)*(99.0 + 70.0))
+//			{
+//				return false;
+//			}
+//
+//			return true;
+//		}
+//		catch (ARTerror& e)
+//		{
+//			string err = e.GetErrorMessage();
+//			std::cout << "\n\n" << err;
+//			return false;
+//		}
+//
+//	}
+//
+//	virtual void unprepare()
+//	{
+//		delete (myTimeSimulator->userElements);
+//		delete myTimeSimulator;
+//	}
+//
+//TEST_DEF_END(ConvolutionTest3)
 
 TEST_DEF_START(HiddenTimeDelay, ARTtimeSimulatorTests)
 
@@ -5520,157 +5523,158 @@ TEST_DEF_START(FractionalDelay, ARTtimeSimulatorTests)
 TEST_DEF_END(FractionalDelay)
 
 
-TEST_DEF_START(DWGCylinder, ARTtimeSimulatorTests)
-
-	ARTtimeSimulator* myTimeSimulator;
-
-	virtual void prepare()
-	{
-		myTimeSimulator = new ARTtimeSimulator("TestSim");
-		myTimeSimulator->userElements = new ARTlistProp("testList");
-
-	}
-
-	virtual bool run()
-	{
-
-		try
-		{
-
-			ARTtimeModule* pulseModule = new ARTtimeModule("pulseModule");
-			ARTItimeModule* cylModule1 = new DWGcylinderModule("cyl1");
-//			ARTItimeModule* cylModule1 = new DWGconeJunctionModule("cyl1");
-
-			pulseModule->addOPort("x", "x[t] = (t == 0) ? 1 : 0", 50);
-
-			ARTItimeModule::OPortType& xPort = dynamic_cast<ARTItimeModule::OPortType&>(*(pulseModule->getPort("x")));
-			ARTItimeModule::OPortType& simulationPort1 = dynamic_cast<ARTItimeModule::OPortType&>(*(cylModule1->getPort("p2p")));
-			ARTItimeModule::OPortType& simulationPort2 = dynamic_cast<ARTItimeModule::OPortType&>(*(cylModule1->getPort("p1m")));
-
-			cylModule1->addIPort("p1p", &xPort);
-			cylModule1->addIPort("p2m", &xPort);
-
-			myTimeSimulator->AddTimeModule(pulseModule);
-			myTimeSimulator->AddTimeModule(cylModule1);
-			myTimeSimulator->AddSimulationParameter("c", 343.36);
-
-			myTimeSimulator->SetSimulationParameter("T", 1.0/44100.0);
-
-			cylModule1->setLocalParameter("type", "thiran");
-			cylModule1->setLocalParameter("length", 320);
-//			cylModule1->setLocalParameter("r2", 70);
-
-			for (int i = 0; i < 100; ++i)
-			{
-				myTimeSimulator->SimulateTimeStep(i);
-				if (simulationPort1[i].GetFloat() != simulationPort2[i].GetFloat())
-				{
-					return false;
-				}
-				if (i == 41 && simulationPort1[i].GetFloat() < 0.95)
-				{
-					return false;
-				}
-//				cout << "p2p[" << i << "] = " << simulationPort1[i].GetFloat() << endl;
-//				cout << "p1m[" << i << "] = " << simulationPort2[i].GetFloat() << endl;
-			}
-
-			if (std::abs(simulationPort1[99].GetFloat()) > 1e-10)
-			{
-				return false;
-			}
-
-			return true;
-		}
-		catch (ARTerror& e)
-		{
-			string err = e.GetErrorMessage();
-			std::cout << "\n\n" << err;
-			return false;
-		}
-
-	}
-
-	virtual void unprepare()
-	{
-		delete (myTimeSimulator->userElements);
-		delete myTimeSimulator;
-	}
-
-TEST_DEF_END(DWGCylinder)
-#endif
-
-TEST_DEF_START(ResizeTest, ARTtimeSimulatorTests)
-
-	ARTsimulator* myTimeSimulator;
-
-	virtual void prepare()
-	{
-		myTimeSimulator = ARTCreateSimulator("TestSim", "TimeDomain", "");
-	}
-
-	virtual bool run()
-	{
-
-		try
-		{
-			int i;
-
-			ARTItimeModule* impulseModule = ARTCreateTModule(myTimeSimulator, "Impulse", "ImpulseModule");
-			ARTItimeModule* rightCylinder = ARTCreateTModule(myTimeSimulator, "RightCylinder", "DWGCylinderModule");
-			ARTItimeModule* gain2 = ARTCreateTModule(myTimeSimulator, "Gain2", "AmplificationModule");
-			std::stringstream tmp;
-
-//			ARTAddOPortToTModule(resizeModule, "x", "x[t] = t + x[t-35]");
-
-			ARTAddGlobalParamToTSimulator(myTimeSimulator, "c", "c = 331");
-
-			ARTConnectPorts(myTimeSimulator, "Gain2.in = RightCylinder.p2p; RightCylinder.p2m = Gain2.out");
-			ARTConnectPorts(myTimeSimulator, "RightCylinder.p1p = Impulse.out");
-			ARTSetParameter(myTimeSimulator, "RightCylinder.length = 102; RightCylinder.type = 'thiran'");
-			ARTSetParameter(myTimeSimulator, "Gain2.A = -1");
-
-			P_ART_DataProp outPort = ARTGetPortFromTModule(rightCylinder, "p1m");
-
-//			ARTItimeModule::OPortType& xPort = dynamic_cast<ARTItimeModule::OPortType&>(*(resizeModule->getPort("x")));
-
-
-
-			for (i = -1; i >= -27; --i)
-			{
-				std::stringstream tmp;
-				tmp << "RightCylinder.p1m[" << i << "] = 0;";
-				tmp << "Impulse.out[" << i << "] = 0;";
-				tmp << "Gain2.out[" << i << "] = 0;";
-				ARTSetParameter(myTimeSimulator, tmp.str().c_str());
-			}
-
-			for (i = 0; i < 100; ++i)
-			{
+//TEST_DEF_START(DWGCylinder, ARTtimeSimulatorTests)
+//
+//	ARTtimeSimulator* myTimeSimulator;
+//
+//	virtual void prepare()
+//	{
+//		myTimeSimulator = new ARTtimeSimulator("TestSim");
+//		myTimeSimulator->userElements = new ARTlistProp("testList");
+//
+//	}
+//
+//	virtual bool run()
+//	{
+//
+//		try
+//		{
+//
+//			ARTtimeModule* pulseModule = new ARTtimeModule("pulseModule");
+//			ARTItimeModule* cylModule1 = new DWGcylinderModule("cyl1");
+////			ARTItimeModule* cylModule1 = new DWGconeJunctionModule("cyl1");
+//
+//			pulseModule->addOPort("x", "x[t] = (t == 0) ? 1 : 0", 50);
+//
+//			ARTItimeModule::OPortType& xPort = dynamic_cast<ARTItimeModule::OPortType&>(*(pulseModule->getPort("x")));
+//			ARTItimeModule::OPortType& simulationPort1 = dynamic_cast<ARTItimeModule::OPortType&>(*(cylModule1->getPort("p2p")));
+//			ARTItimeModule::OPortType& simulationPort2 = dynamic_cast<ARTItimeModule::OPortType&>(*(cylModule1->getPort("p1m")));
+//
+//			cylModule1->addIPort("p1p", &xPort);
+//			cylModule1->addIPort("p2m", &xPort);
+//
+//			myTimeSimulator->AddTimeModule(pulseModule);
+//			myTimeSimulator->AddTimeModule(cylModule1);
+//			myTimeSimulator->AddSimulationParameter("c", 343.36);
+//
+//			myTimeSimulator->SetSimulationParameter("T", 1.0/44100.0);
+//
+//			cylModule1->setLocalParameter("type", "thiran");
+//			cylModule1->setLocalParameter("length", 320);
+////			cylModule1->setLocalParameter("r2", 70);
+//
+//			for (int i = 0; i < 100; ++i)
+//			{
+//				cout << "BLA" << endl;
 //				myTimeSimulator->SimulateTimeStep(i);
-				T_ART_Cmplx outVal = ARTGetComplexFromPort(outPort, i);
-				cout << "x[" << i << "] = " << outVal.re << endl;
-			}
-
-			return true;
-		}
-		catch (ARTerror& e)
-		{
-			string err = e.GetErrorMessage();
-			std::cout << "\n\n" << err;
-			return false;
-		}
-
-	}
-
-	virtual void unprepare()
-	{
+//				if (simulationPort1[i].GetFloat() != simulationPort2[i].GetFloat())
+//				{
+//					return false;
+//				}
+//				if (i == 41 && simulationPort1[i].GetFloat() < 0.95)
+//				{
+//					return false;
+//				}
+////				cout << "p2p[" << i << "] = " << simulationPort1[i].GetFloat() << endl;
+////				cout << "p1m[" << i << "] = " << simulationPort2[i].GetFloat() << endl;
+//			}
+//
+//			if (std::abs(simulationPort1[99].GetFloat()) > 1e-10)
+//			{
+//				return false;
+//			}
+//
+//			return true;
+//		}
+//		catch (ARTerror& e)
+//		{
+//			string err = e.GetErrorMessage();
+//			std::cout << "\n\n" << err;
+//			return false;
+//		}
+//
+//	}
+//
+//	virtual void unprepare()
+//	{
 //		delete (myTimeSimulator->userElements);
 //		delete myTimeSimulator;
-		ARTDestroySimulator(myTimeSimulator);
-	}
+//	}
+//
+//TEST_DEF_END(DWGCylinder)
+#endif
 
-TEST_DEF_END(ResizeTest)
+//TEST_DEF_START(ResizeTest, ARTtimeSimulatorTests)
+//
+//	ARTsimulator* myTimeSimulator;
+//
+//	virtual void prepare()
+//	{
+//		myTimeSimulator = ARTCreateSimulator("TestSim", "TimeDomain", "");
+//	}
+//
+//	virtual bool run()
+//	{
+//
+//		try
+//		{
+//			int i;
+//
+//			ARTItimeModule* impulseModule = ARTCreateTModule(myTimeSimulator, "Impulse", "ImpulseModule");
+//			ARTItimeModule* rightCylinder = ARTCreateTModule(myTimeSimulator, "RightCylinder", "DWGCylinderModule");
+//			ARTItimeModule* gain2 = ARTCreateTModule(myTimeSimulator, "Gain2", "AmplificationModule");
+//			std::stringstream tmp;
+//
+////			ARTAddOPortToTModule(resizeModule, "x", "x[t] = t + x[t-35]");
+//
+//			ARTAddGlobalParamToTSimulator(myTimeSimulator, "c", "c = 331");
+//
+//			ARTConnectPorts(myTimeSimulator, "Gain2.in = RightCylinder.p2p; RightCylinder.p2m = Gain2.out");
+//			ARTConnectPorts(myTimeSimulator, "RightCylinder.p1p = Impulse.out");
+//			ARTSetParameter(myTimeSimulator, "RightCylinder.length = 102; RightCylinder.type = 'thiran'");
+//			ARTSetParameter(myTimeSimulator, "Gain2.A = -1");
+//
+//			P_ART_DataProp outPort = ARTGetPortFromTModule(rightCylinder, "p1m");
+//
+////			ARTItimeModule::OPortType& xPort = dynamic_cast<ARTItimeModule::OPortType&>(*(resizeModule->getPort("x")));
+//
+//
+//
+//			for (i = -1; i >= -27; --i)
+//			{
+//				std::stringstream tmp;
+//				tmp << "RightCylinder.p1m[" << i << "] = 0;";
+//				tmp << "Impulse.out[" << i << "] = 0;";
+//				tmp << "Gain2.out[" << i << "] = 0;";
+//				ARTSetParameter(myTimeSimulator, tmp.str().c_str());
+//			}
+//
+//			for (i = 0; i < 100; ++i)
+//			{
+////				myTimeSimulator->SimulateTimeStep(i);
+//				T_ART_Cmplx outVal = ARTGetComplexFromPort(outPort, i);
+//				cout << "x[" << i << "] = " << outVal.re << endl;
+//			}
+//
+//			return true;
+//		}
+//		catch (ARTerror& e)
+//		{
+//			string err = e.GetErrorMessage();
+//			std::cout << "\n\n" << err;
+//			return false;
+//		}
+//
+//	}
+//
+//	virtual void unprepare()
+//	{
+////		delete (myTimeSimulator->userElements);
+////		delete myTimeSimulator;
+//		ARTDestroySimulator(myTimeSimulator);
+//	}
+//
+//TEST_DEF_END(ResizeTest)
 
 //******************************************************************************************************************************************
 
