@@ -86,12 +86,15 @@ if (ARTSetParameter(sim, "LeftCylinder.length = 0.171; LeftCylinder.type = 'lagr
   print ARTGetLastErrorMessage();
 
 if (ARTSetParameter(sim, "LeftConeJunction.r1 = 1E300; LeftConeJunction.S1 = 0.000113097; LeftConeJunction.r2 = -0.570031578; LeftConeJunction.S2 = 0.0001131; LeftConeJunction.method = 'BT'") == None):
+#if (ARTSetParameter(sim, "LeftConeJunction.lr1 = 0.006; LeftConeJunction.lr2 = 0.006; LeftConeJunction.llength = 0.171; LeftConeJunction.rr1 = 0.006; LeftConeJunction.rr2 = 0.004; LeftConeJunction.rlength = 0.19; LeftConeJunction.mode = 'boreprofile'; LeftConeJunction.method = 'BT'") == None):
   print ARTGetLastErrorMessage();
 
 if (ARTSetParameter(sim, "Cone.r1 = 0.570031578; Cone.r2 = 0.380021052; Cone.type = 'lagrange'") == None):
+#if (ARTSetParameter(sim, "Cone.r1 = 0.006; Cone.r2 = 0.004; Cone.length = 0.19;  Cone.mode = 'boreprofile'; Cone.type = 'lagrange'") == None):
   print ARTGetLastErrorMessage();
 
 if (ARTSetParameter(sim, "RightConeJunction.r1 = -0.380021052; RightConeJunction.S1 = 5.026675912E-5; RightConeJunction.r2 = 1E300; RightConeJunction.S2 = 5.026548246E-5; RightConeJunction.method = 'BT'") == None):
+#if (ARTSetParameter(sim, "RightConeJunction.lr1 = 0.006; RightConeJunction.lr2 = 0.004; RightConeJunction.llength = 0.19; RightConeJunction.rr1 = 0.004; RightConeJunction.rr2 = 0.004; RightConeJunction.rlength = 0.202; RightConeJunction.mode = 'boreprofile'; RightConeJunction.method = 'BT'") == None):
   print ARTGetLastErrorMessage();
 
 if (ARTSetParameter(sim, "RightCylinder.length = 0.202; RightCylinder.type = 'lagrange'") == None):

@@ -769,6 +769,8 @@ P_ART_DataProp __CALLCONV ARTGetPortFromTModule	(P_ART_TModule module, const cha
 
 T_ART_Cmplx __CALLCONV ARTGetComplexFromPort(P_ART_DataProp port, int idx)
 {
+	static int currentIdx = -1;
+
 	T_ART_Cmplx result;
 	result.re = 0;
 	result.im = 0;
@@ -785,7 +787,17 @@ T_ART_Cmplx __CALLCONV ARTGetComplexFromPort(P_ART_DataProp port, int idx)
 	{
 		throw ARTerror("ARTGetComplexFromPort", "Port '%s1' does not have a valid simulator!", oPort->GetName());
 	}
-	sim->SimulateTimeStep(idx);
+	if (idx == currentIdx + 1)
+	{
+//		cout << "SIMULATE IDX: " << idx << endl;
+		sim->SimulateTimeStep(idx);
+		currentIdx = idx;
+	}
+	else if ((idx < currentIdx) || (idx > currentIdx + 1))
+	{
+		throw ARTerror("ARTGetComplexFromPort", "Invalid time index specified.");
+	}
+
 	tempResult = (*oPort)[idx].GetComplex();
 	result.re = tempResult.real();
 	result.im = tempResult.imag();
