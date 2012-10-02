@@ -1226,19 +1226,25 @@ void DWGconeModule::initLocalParams()
 //	tmpParam = new localParameterType("length", "length of the cylinder in mm");
 //	tmpParam->SetVal(50);
 //	AppendDataProp(tmpParam);
-	tmpParam = new localParameterType("r1", "radius of the left wave sphere in m");
+	tmpParam = new localParameterType("r1", "radius of the left wave sphere in m (mode = 'default')/ radius of the left cone ending (mode = 'boreprofile')");
 	tmpParam->SetVal(50);
 	AppendDataProp(tmpParam);
 
 	p2p_->GetParser()->DefineVar(tmpParam->GetName(), tmpParam->GetParserVar());
 	p1m_->GetParser()->DefineVar(tmpParam->GetName(), tmpParam->GetParserVar());
 
-	tmpParam = new localParameterType("r2", "radius of the right wave sphere in m");
+	tmpParam = new localParameterType("r2", "radius of the right wave sphere in m (mode = 'default')/ radius of the right cone ending (mode = 'boreprofile')");
 	tmpParam->SetVal(100);
 	AppendDataProp(tmpParam);
 
 	p2p_->GetParser()->DefineVar(tmpParam->GetName(), tmpParam->GetParserVar());
 	p1m_->GetParser()->DefineVar(tmpParam->GetName(), tmpParam->GetParserVar());
+
+	tmpParam = new localParameterType("mode", "input mode of radii and length: 'default' means that r1 and r2 are interpreted as cone apex distances, whereas in 'boreprofile' "
+			" the cone apex distances are calculated based on the given radii of the left (r1) and right (r2) cone opening and the specified length of the cone.");
+	tmpParam->SetType(C_ART_str, 0);
+	tmpParam->SetVal("default");
+	AppendDataProp(tmpParam);
 }
 
 void DWGconeModule::initSimulation()
@@ -1247,6 +1253,7 @@ void DWGconeModule::initSimulation()
 	localParameterType* type = dynamic_cast<localParameterType*>(FindProperty("type"));
 	globalParameterType* T = dynamic_cast<globalParameterType*>(FindProperty("T"));
 	globalParameterType* c = dynamic_cast<globalParameterType*>(FindProperty("c"));
+	const string& mode = dynamic_cast<localParameterType*>(FindProperty("mode"))->GetString();
 
 	int n;
 
@@ -1262,6 +1269,13 @@ void DWGconeModule::initSimulation()
 	{
 		throw ARTerror("DWGconeModule::initSimulation",
 				"No global parameter 'c' for the speed of sound has been found. Please add it to your current simulator!");
+	}
+
+	// if radii and length are given in bore profile mode,
+	// we first have to calculate the cone apex distances
+	if (mode == "boreprofile")
+	{
+		calculateConeApex();
 	}
 
 	// calculate length of cone module based on shperical appex radii
@@ -1351,6 +1365,36 @@ void DWGconeModule::initSimulation()
 	// save whole definitions to output ports
 	p2p_->SetDefinition(expr1.str());
 	p1m_->SetDefinition(expr2.str());
+}
+
+void DWGconeModule::calculateConeApex()
+{
+	double r1 = dynamic_cast<localParameterType*>(FindProperty("r1"))->GetFloat();
+	double r2 = dynamic_cast<localParameterType*>(FindProperty("r2"))->GetFloat();
+	double length = dynamic_cast<localParameterType*>(FindProperty("length"))->GetFloat();
+
+	double Rl, Rr, L;
+
+	// calculate cone apex distances
+	// case left radius is greater than right one => converging cone
+	if (r1 > r2)
+	{
+		L = (length*r1)/(r1 - r2);
+		Rl = std::sqrt(r1*r1 + L*L);
+		Rr = std::sqrt(r2*r2 + (L - length)*(L - length));
+	}
+	// case right radius is greater than left one => diverging cone
+	else
+	{
+		L = (length*r2)/(r2 - r1);
+		Rl = std::sqrt(r1*r1 + (L - length)*(L - length));
+		Rr = std::sqrt(r2*r2 + L*L);
+	}
+
+	// save calculated radii
+	dynamic_cast<localParameterType*>(FindProperty("r1"))->SetVal(Rl);
+	dynamic_cast<localParameterType*>(FindProperty("r2"))->SetVal(Rr);
+
 }
 
 /*******************************************************************************************
@@ -1474,33 +1518,77 @@ void DWGconeJunctionModule::initLocalParams()
 	AppendDataProp(tmpParam);
 
 	// save standard radius of left cone
-	r1_ = new localParameterType("r1", "radius of the left wave sphere in m");
+	r1_ = new localParameterType("r1", "radius of the left wave sphere in m (used in default mode)");
 	r1_->SetVal(0.050);
 	AppendDataProp(r1_);
 
 	// save standard radius of right cone
-	r2_ = new localParameterType("r2", "radius of the right wave sphere in m");
+	r2_ = new localParameterType("r2", "radius of the right wave sphere in m (used in default mode)");
 	r2_->SetVal(0.050);
 	AppendDataProp(r2_);
 
 	// save standard wave area of left cone
-	S1_ = new localParameterType("S1", "area of the left wave sphere in m");
+	S1_ = new localParameterType("S1", "area of the left wave sphere in m (used in default mode)");
 	S1_->SetVal(0.050);
 	AppendDataProp(S1_);
 
 	// save standard wave area of right cone
-	S2_ = new localParameterType("S2", "area of the right wave sphere in m");
+	S2_ = new localParameterType("S2", "area of the right wave sphere in m (used in default mode)");
 	S2_->SetVal(0.050);
 	AppendDataProp(S2_);
+
+	// save standard value for left end radius of the left cone
+	tmpParam = new localParameterType("lr1", "radius of the left end of the left cone in m (used in boreprofile mode)");
+	tmpParam->SetVal(0.01);
+	AppendDataProp(tmpParam);
+
+	// save standard value for right end radius of the left cone
+	tmpParam = new localParameterType("lr2", "radius of the right end of the left cone in m (used in boreprofile mode)");
+	tmpParam->SetVal(0.015);
+	AppendDataProp(tmpParam);
+
+	// save standard value for length of the left cone
+	tmpParam = new localParameterType("llength", "radius of the length of the left cone in m (used in boreprofile mode)");
+	tmpParam->SetVal(0.1);
+	AppendDataProp(tmpParam);
+
+	// save standard value for left end radius of the right cone
+	tmpParam = new localParameterType("rr1", "radius of the left end of the right cone in m (used in boreprofile mode)");
+	tmpParam->SetVal(0.01);
+	AppendDataProp(tmpParam);
+
+	// save standard value for right end radius of the right cone
+	tmpParam = new localParameterType("rr2", "radius of the right end of the right cone in m (used in boreprofile mode)");
+	tmpParam->SetVal(0.015);
+	AppendDataProp(tmpParam);
+
+	// save standard value for length of the right cone
+	tmpParam = new localParameterType("rlength", "radius of the length of the right cone in m (used in boreprofile mode)");
+	tmpParam->SetVal(0.1);
+	AppendDataProp(tmpParam);
+
+	tmpParam = new localParameterType("mode", "input mode of radii and length: 'default' means that r1, r2, S1 and S2 have to be specifed as cone"
+			" apex distances and area of the corresponding wave spheres whereas in 'boreprofile' mode, the radii and length of the left and right cone"
+			" have to be specified.");
+	tmpParam->SetType(C_ART_str, 0);
+	tmpParam->SetVal("default");
+	AppendDataProp(tmpParam);
 }
 
 void DWGconeJunctionModule::initSimulation()
 {
-	const string& method = dynamic_cast<localParameterType*>(FindProperty("method"))->GetString();
+	string method = dynamic_cast<localParameterType*>(FindProperty("method"))->GetString();
+	string mode = dynamic_cast<localParameterType*>(FindProperty("mode"))->GetString();
 
 	double S1, S2, B, C1, C2, C3;
-	S1 = dynamic_cast<localParameterType*>(FindProperty("S1"))->GetFloat();
-	S2 = dynamic_cast<localParameterType*>(FindProperty("S2"))->GetFloat();
+
+	if (mode == "boreprofile")
+	{
+		calculateConeApex();
+	}
+
+	S1 = S1_->GetFloat();
+	S2 = S2_->GetFloat();
 
 	B = S1/S2;
 
@@ -1544,6 +1632,93 @@ void DWGconeJunctionModule::initSimulation()
 	p1m_->SetDefinition(expr2.str());
 }
 
+void DWGconeJunctionModule::calculateConeApex()
+{
+	double lr1 = dynamic_cast<localParameterType*>(FindProperty("lr1"))->GetFloat();
+	double lr2 = dynamic_cast<localParameterType*>(FindProperty("lr2"))->GetFloat();
+	double llength = dynamic_cast<localParameterType*>(FindProperty("llength"))->GetFloat();
+
+	double rr1 = dynamic_cast<localParameterType*>(FindProperty("rr1"))->GetFloat();
+	double rr2 = dynamic_cast<localParameterType*>(FindProperty("rr2"))->GetFloat();
+	double rlength = dynamic_cast<localParameterType*>(FindProperty("rlength"))->GetFloat();
+
+	double Rl, Rr, L, S;
+
+	// calculate cone apex distances for left cone
+	// case left radius is greater than right one => converging cone
+	if (lr1 > lr2)
+	{
+		L = (llength*lr1)/(lr1 - lr2);
+		Rl = std::sqrt(lr1*lr1 + L*L);
+		Rr = std::sqrt(lr2*lr2 + (L - llength)*(L - llength));
+
+		// set negative value for converging cone
+		r1_->SetVal(-Rr);
+		// calculate area of sphere cap
+		S = 2*PI*Rr*(Rr - (L - llength));
+		S1_->SetVal(S);
+	}
+	// case left radius is equal to right one => we have a cylinder
+	else if (lr1 == lr2)
+	{
+		// cone apex distance is about infinity
+		r1_->SetVal(1E300);
+		// area is just the area of the circle
+		S = lr1*lr1*PI;
+		S1_->SetVal(S);
+	}
+	// case right radius is greater than left one => diverging cone
+	else
+	{
+		L = (llength*lr2)/(lr2 - lr1);
+		Rl = std::sqrt(lr1*lr1 + (L - llength)*(L - llength));
+		Rr = std::sqrt(lr2*lr2 + L*L);
+
+		// set positive value for diverging cone
+		r1_->SetVal(Rr);
+		// calculate area of sphere cap
+		S = 2*PI*Rr*(Rr - L);
+		S1_->SetVal(S);
+	}
+
+	// calculate cone apex distances for right cone
+	// case left radius is greater than right one => converging cone
+	if (rr1 > rr2)
+	{
+		L = (rlength*rr1)/(rr1 - rr2);
+		Rl = std::sqrt(rr1*rr1 + L*L);
+		Rr = std::sqrt(rr2*rr2 + (L - rlength)*(L - rlength));
+
+		// set negative value for converging cone
+		r2_->SetVal(-Rl);
+		// calculate area of sphere cap
+		S = 2*PI*Rl*(Rl - L);
+		S2_->SetVal(S);
+	}
+	// case left radius is equal to right one => we have a cylinder
+	else if (rr1 == rr2)
+	{
+		// cone apex distance is about infinity
+		r2_->SetVal(1E300);
+		// area is just the area of the circle
+		S = rr1*rr1*PI;
+		S2_->SetVal(S);
+	}
+	// case right radius is greater than left one => diverging cone
+	else
+	{
+		L = (rlength*rr2)/(rr2 - rr1);
+		Rl = std::sqrt(rr1*rr1 + (L - rlength)*(L - rlength));
+		Rr = std::sqrt(rr2*rr2 + L*L);
+
+		// set positive value for diverging cone
+		r2_->SetVal(Rl);
+		// calculate area of sphere cap
+		S = 2*PI*Rl*(Rl - (L - rlength));
+		S2_->SetVal(S);
+	}
+}
+
 double DWGconeJunctionModule::getB0(const string& method)
 {
 	double alpha, beta, gamma1, gamma2, S1, S2;
@@ -1562,8 +1737,8 @@ double DWGconeJunctionModule::getB0(const string& method)
 	gamma2 = (c->GetParserVar().GetFloat())/(2*(r2_->GetFloat()));
 //	gamma1 = dynamic_cast<localParameterType*>(FindProperty("gamma1"))->GetFloat();
 //	gamma2 = dynamic_cast<localParameterType*>(FindProperty("gamma2"))->GetFloat();
-	S1 = dynamic_cast<localParameterType*>(FindProperty("S1"))->GetFloat();
-	S2 = dynamic_cast<localParameterType*>(FindProperty("S2"))->GetFloat();
+	S1 = S1_->GetFloat();
+	S2 = S2_->GetFloat();
 
 	alpha = 2*(gamma2*S2 - gamma1*S1)/(S2 + S1);
 	beta = 2/T;
@@ -1608,8 +1783,8 @@ double DWGconeJunctionModule::getB1(const string& method)
 	gamma2 = (c->GetParserVar().GetFloat())/(2*(r2_->GetFloat()));
 //	gamma1 = dynamic_cast<localParameterType*>(FindProperty("gamma1"))->GetFloat();
 //	gamma2 = dynamic_cast<localParameterType*>(FindProperty("gamma2"))->GetFloat();
-	S1 = dynamic_cast<localParameterType*>(FindProperty("S1"))->GetFloat();
-	S2 = dynamic_cast<localParameterType*>(FindProperty("S2"))->GetFloat();
+	S1 = S1_->GetFloat();
+	S2 = S2_->GetFloat();
 
 	alpha = 2*(gamma2*S2 - gamma1*S1)/(S2 + S1);
 	beta = 2/T;
@@ -1653,8 +1828,8 @@ double DWGconeJunctionModule::getA1(const string& method)
 	gamma2 = (c->GetParserVar().GetFloat())/(2*(r2_->GetFloat()));
 //	gamma1 = dynamic_cast<localParameterType*>(FindProperty("gamma1"))->GetFloat();
 //	gamma2 = dynamic_cast<localParameterType*>(FindProperty("gamma2"))->GetFloat();
-	S1 = dynamic_cast<localParameterType*>(FindProperty("S1"))->GetFloat();
-	S2 = dynamic_cast<localParameterType*>(FindProperty("S2"))->GetFloat();
+	S1 = S1_->GetFloat();
+	S2 = S2_->GetFloat();
 
 	alpha = 2*(gamma2*S2 - gamma1*S1)/(S2 + S1);
 	beta = 2/T;

@@ -287,6 +287,7 @@ public:
 protected:
 	virtual void initLocalParams();
 	virtual void initSimulation();
+	virtual void calculateConeApex();
 
 };
 
@@ -319,6 +320,8 @@ public:
 protected:
 	virtual void initLocalParams();
 	virtual void initSimulation();
+
+	virtual void calculateConeApex();
 
 	virtual double getB0(const string& method);
 	virtual double getB1(const string& method);

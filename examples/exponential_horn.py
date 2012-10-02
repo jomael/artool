@@ -23,8 +23,13 @@ for i in range(0, 36) :
     print ARTGetLastErrorMessage();
   if (ARTAddOPortToTModule(delayModules[i], "p2p", "p2p[t] = p1p[t-1]") == 0):
     print ARTGetLastErrorMessage();
-  if (ARTAddOPortToTModule(delayModules[i], "p1m", "p1m[t] = p2m[t-1]") == 0):
-    print ARTGetLastErrorMessage();
+  if (i != 0):
+    if (ARTAddOPortToTModule(delayModules[i], "p1m", "p1m[t] = p2m[t-1]") == 0):
+      print ARTGetLastErrorMessage();
+  else:
+    if (ARTAddOPortToTModule(delayModules[i], "p1m", "p1m[t] = p2m[t-1]") == 0):
+      print ARTGetLastErrorMessage();
+
   junctionModules.append(ARTCreateTModule(sim, "CylinderJunction{0}".format(i), "DWGCylinderJunctionModule"));
   if (junctionModules[i] == None):
     print ARTGetLastErrorMessage();
@@ -52,8 +57,11 @@ if (ARTConnectPorts(sim, "CylinderJunction35.p2m = DelayModule36.p1m; DelayModul
 
 
 # create impulse and gain modules
-impulseModule = ARTCreateTModule(sim, "Impulse", "ImpulseModule");
+impulseModule = ARTCreateTModule(sim, "Impulse", "TimeModule");
+#impulseModule = ARTCreateTModule(sim, "Impulse", "ImpulseModule");
 if (impulseModule == None):
+  print ARTGetLastErrorMessage();
+if (ARTAddOPortToTModule(impulseModule, "out", "out[t] = (t == 0 or t == 1) ? 0.5 : 0") == 0):
   print ARTGetLastErrorMessage();
 
 sineModule = ARTCreateTModule(sim, "Sine", "SinewaveModule");
@@ -115,6 +123,7 @@ if (ARTSetParameter(sim, "Gain.A = 0") == None):
 #  print ARTGetLastErrorMessage();
 
 # get output port
+#outputPort = ARTGetPortFromTModule(junctionModules[0], "p2p");
 outputPort = ARTGetPortFromTModule(delayModules[0], "p1m");
 if (outputPort == None):
   print ARTGetLastErrorMessage();
@@ -126,7 +135,7 @@ for i in range (0,36):
   if (ARTSetParameter(sim, "CylinderJunction{0}.p2p[-1] = 0; CylinderJunction{0}.p1m[-1] = 0".format(i)) == None):
     print ARTGetLastErrorMessage();
 
-if (ARTSetParameter(sim, "DelayModule36.p2p[-1] = 0; DelayModule36.p1m[-1] = 0") == None):
+if (ARTSetParameter(sim, "DelayModule36.p2p[-1] = 0; DelayModule36.p1m[-1] = 0; Add.out[-1] = 0") == None):
   print ARTGetLastErrorMessage();
 
 for i in range(0, 500):
@@ -136,8 +145,8 @@ for i in range(0, 500):
   if (error != ""):
     print error;
     break;
-  #if (outVal.re != 0):
-  print "{0:.10f} {1}".format(i/44.1,outVal.re);
+  if (i >= 75 or outVal.re != 0):
+    print "{0:.10f} {1}".format(i/44.1,outVal.re);
 
 ARTRootDestroy();
 

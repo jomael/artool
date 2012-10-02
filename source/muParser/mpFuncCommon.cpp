@@ -86,6 +86,15 @@ MUP_NAMESPACE_START
       case 'i': val = a_pArg[i]->GetFloat(); break;
       case 'n': break; // ignore not in list entries (missing parameter)
       case 'c':
+        if (a_pArg[i]->GetImag() == 0)
+        {
+          val = a_pArg[i]->GetFloat();
+          break;
+        }
+//        else
+//        {
+//          std::cerr << "HELP:" << a_pArg[i]->GetImag() << std::endl;
+//        }
       default:
         {
           ErrorContext err;
@@ -130,6 +139,7 @@ MUP_NAMESPACE_START
   */
   void FunMin::Eval(ptr_val_type &ret, const ptr_val_type *a_pArg, int a_iArgc)
   {
+//    std::cerr << "MIN" << std::endl;
     float_type min(1e30), val(min);
 
     for (int i=0; i<a_iArgc; ++i)
@@ -138,6 +148,12 @@ MUP_NAMESPACE_START
       {
       case 'f': 
       case 'i': val = a_pArg[i]->GetFloat();   break;
+      case 'c':
+        if (a_pArg[i]->GetImag() == 0)
+        {
+          val = a_pArg[i]->GetFloat();
+          break;
+        }
       default:
         {
           ErrorContext err;
@@ -152,6 +168,7 @@ MUP_NAMESPACE_START
     }
     
     *ret = min;
+//    std::cerr << "END MIN" << std::endl;
   }
 
   //------------------------------------------------------------------------------
