@@ -530,7 +530,7 @@ When calculation the impedance of a cylindrical tube, you would first create an 
  *
  * @section sec4 Detailed description
  * 
- * Check the <a href="group___a_r_tinterface.html">documentation of the ART interface</a> for a detailed description of its functions.
+ * Check the @ref ARTinterface_group "documentation of the ART interface" for a detailed description of its functions.
  */ 
 //---------------------------------------------------------------------------------------- 
 /** 
@@ -556,16 +556,16 @@ When calculation the impedance of a cylindrical tube, you would first create an 
  * 
  * The source code can be divided into several units:
  * 
-     - The <B><a href="sp__a_p_i.html">ART programmer's interface</a></B> provides simple functions which allow you to build your 
+     - The @ref ARTinterface_group "ART programmer's interface" provides simple functions which allow you to build your 
        own simulation applications. 
    
-     - The <B><a href="group___a_r_timpl.html">ART objects</a></B> are the objects the programmer's interface is built on. You can
+     - The @ref ARTimpl "ART objects" are the objects the programmer's interface is built on. You can
        also build your own applications by using these objects.   
    
-     - The <B><a href="class_a_r_tmodel_interface.html">ART model interface</a></B> is being developped to provide an easy way of adding custom
+     - The @ref ARTmodelInterfaceGroup "ART model interface" is being developped to provide an easy way of adding custom
        models to ART.
    
-     - The <B><a href="class_wave_object_interface.html">wave interface</a></B> standardizes a way of converting different types of waves as
+     - The @ref waveObjectInterfaceGroup "wave interface" standardizes a way of converting different types of waves as
        they are required by the models. 
  *  
  *
