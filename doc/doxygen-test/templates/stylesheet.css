@@ -17,14 +17,23 @@ body {
 div#projectname
 {
   color: #FFF;
-	font-size: 39px;
-	background: #09a030;
+  font-size: 39px;
+  background: #09a030;
   background: rgb(0,64,80);	
   margin: 0px;
-	padding-bottom: 20px;
-	padding-top: 20px;
+  padding-bottom: 20px;
+  padding-top: 20px;
 }
 
+td.projectname
+{
+  background-color: #004050;
+}
+
+div#top
+{
+  background-color: #004050;
+}
 
 
 /* @group Heading Levels */
@@ -268,7 +277,7 @@ div.contents {
 div#wholepage
 {
 	width:80%;
-	max-width: 850px;
+	max-width: 950px;
   margin-left:auto;
   margin-right:auto;
 }
@@ -304,6 +313,12 @@ td.indexvalue {
 	border: 1px solid #C4CFE5;
 	padding: 2px 10px;
 	margin: 2px 0px;
+}
+
+
+td.entry {
+  width: 290px;
+  vertical-align: top;
 }
 
 tr.memlist {
@@ -900,7 +915,7 @@ dl.bug
 	padding: 0px;
 	margin: 0px;
 	width: 100%;
-	border-bottom: 1px solid #5373B4;
+	/*border-bottom: 1px solid #5373B4;*/
 	background: #09a030;
 	background-color: transparent;
 
@@ -927,7 +942,7 @@ dl.bug
 }
 
 /* Sadjad: _berschreibt Eigenschaften aus tab.css */
-.my_tabs{
+.tabs{
     background-image: url(''); /*kein Bild!*/
     background-color:  rgb(0,64,80);
 
@@ -941,13 +956,13 @@ dl.bug
 
 
 
-.my_tablist {
+.tablist {
     margin: 0;
     padding: 0;
     display: table;
 }
 
-.my_tablist li {
+.tablist li {
     float: left;
     display: table-cell;
     background-image: url('mein_tab_inaktiv.png');
@@ -959,16 +974,15 @@ dl.bug
 }
 
 
-.my_tablist li.my_current {
+.tablist li.current {
     margin-top: 0px;
     margin-bottom: 0px;
     line-height: 36px;
 }
 
-.my_tablist a {
+.tablist a {
     display: block;
-    padding: 0 20px;
-    padding: 0 20px;
+    /*padding: 0 20px;*/
     font-weight: bold;
     background-image:url('mein_tab_inaktiv.png');
     background-repeat:no-repeat;
@@ -979,11 +993,11 @@ dl.bug
     outline: none;
 }
 
-.my_tablist a {
+.tablist a {
     padding: 0 10px;
 }
 
-.my_tablist a:hover {
+.tablist a:hover {
     background-image: url('mein_tab_h.png');
     background-repeat:repeat-x;
     color: #000;
@@ -991,7 +1005,7 @@ dl.bug
     text-decoration: none;
 }
 
-.my_tablist li:hover 
+.tablist li:hover 
 {
     margin-bottom: 0px;
     line-height: 36px;
@@ -1001,31 +1015,99 @@ dl.bug
 a:hover span {
 	color: #000000;
 }
-  */
-.my_tablist li.my_current a {
+*/
+.tablist li.current a {
     background-image: url('mein_tab_aktiv.png');
     background-repeat:repeat-x;
     background-color: #FFF;
     color: #000;
-    /*text-shadow: 0px 1px 1px rgba(0, 0, 0, 1.0);*/
+    /* text-shadow: 0px 1px 1px rgba(0, 0, 0, 1.0);*/
 }
 
+
+/*
+.tabs, .tabs2, .tabs3 {
+    background-image: url('tab_b.png');
+    width: 100%;
+    z-index: 101;
+    font-size: 13px;
+    font-family: 'Lucida Grande',Geneva,Helvetica,Arial,sans-serif;
+}
+
+.tabs2 {
+    font-size: 10px;
+}
+.tabs3 {
+    font-size: 9px;
+}
+*/
+/*
+.tablist {
+    margin: 0;
+    padding: 0;
+    display: table;
+}
+
+
+.tablist li {
+    float: left;
+    display: table-cell;
+    background-image: url('tab_b.png');
+    line-height: 36px;
+    list-style: none;
+}
+
+
+
+.tablist a {
+    display: block;
+    padding: 0 20px;
+    font-weight: bold;
+    background-image:url('tab_s.png');
+    background-repeat:no-repeat;
+    background-position:right;
+    color: #28545D;
+    text-shadow: 0px 1px 1px rgba(255, 255, 255, 0.9);
+    text-decoration: none;
+    outline: none;
+}
+
+.tabs3 .tablist a {
+    padding: 0 10px;
+}
+
+.tablist a:hover {
+    background-image: url('tab_h.png');
+    background-repeat:repeat-x;
+    color: #fff;
+    text-shadow: 0px 1px 1px rgba(0, 0, 0, 1.0);
+    text-decoration: none;
+}
+
+.tablist li.current a {
+    background-image: url('tab_a.png');
+    background-repeat:repeat-x;
+    color: #fff;
+    text-shadow: 0px 1px 1px rgba(0, 0, 0, 1.0);
+}
+*/
+
 /* no standard navigation bars, we built our own */
-#navrow1, #navrow2
+/*#navrow1, #navrow2
 {
   display: none;
 }
-
+*/
 /*aktives tab in unteren 2eilen: ohne schwarzen rand oben, ohne schatten*/
-.tablist li.current a 
+/*.tablist li.current a 
 {
     color: #000;
     background-image: url('mein_tab_aktiv2.png');
     text-shadow: none;
 }
-
+*/
 /*untere menues kleiner und text ohne schatten!*/
-.tabs, .tabs2, .tabs3
+/*.tabs, .tabs2, .tabs3
 {
     height:24px;
     font-size: 10px;
@@ -1048,7 +1130,7 @@ a:hover span {
 .tablist a:hover {
     text-shadow: none;
 }
-
+*/
 /* untere navigationsreihen ohne hintergrundleiste */
 #navrow3, #navrow4,
 #navrow3 .tablist li, #navrow4 .tablist li
