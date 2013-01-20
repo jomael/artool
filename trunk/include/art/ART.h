@@ -1,39 +1,40 @@
 /**************************************************************************
-*	*
-*	Acoustic Research Tool (ART)	*
-*	*
-*   A Simulation Framework with Modelling Library for Acoustic Systems	*
-*	*
-*	Project of the Workgroup 2 of the Technical Committee	*
-*	Musical Acoustics of the European Acoustics Association EAA)	*
-*	*
-*   http://www.eaa-fenestra.org/technical-committees/ma/workgroups/wg2	*
-*	*
-*  Copyright (C) 2011 by the authors and their organisations:	*
-*	Alistair Braden	1)	*
-*	Wilfried Kausel	2)	kausel(at)mdw.ac.at	*
-*	Delphine Chadefaux	2)	*
-*	Vasileios Chatziioannou	2)	*
-*	Sadjad Siddiq	2)	*
-*	*
-*	1) School of Physics and Astronomy, Univ. of Edinburgh, GB	*
-	(http://www.ph.ed.ac.uk/)	*
-*	2) Inst. of Music Acoustics, Univ. of Music, Vienna, AT	*
-	(http://iwk.mdw.ac.at)	*
-*	*
+*                                                                         *
+*                   Acoustic Research Tool (ART)                          *
+*                                                                         *
+*   A Simulation Framework with Modelling Library for Acoustic Systems    *
+*                                                                         *
+*         Project of the Workgroup 2 of the Technical Committee           *
+*      Musical Acoustics of the European Acoustics Association EAA)       *
+*                                                                         *
+*   http://www.eaa-fenestra.org/technical-committees/ma/workgroups/wg2    *
+*                                                                         *
+*  Copyright (C) 2011 by the authors and their organisations:             *
+*    Alistair Braden            1)                                        *
+*    Wilfried Kausel            2)         kausel(at)mdw.ac.at            *
+*    Delphine Cadefaux          2)                                        *
+*    Vasileios Chatziioannou    2)                                        *
+*    Sadjad Siddiq              2)                                        *
+*    Clemens Geyer              2)                                        *
+*                                                                         *
+*    1) School of Physics and Astronomy, Univ. of Edinburgh, GB           *
+*       (http://www.ph.ed.ac.uk/)                                         *
+*    2) Inst. of Music Acoustics, Univ. of Music, Vienna, AT              *
+*       (http://iwk.mdw.ac.at)                                            *
+*                                                                         *
 *  This program is free software: you can redistribute it and/or modify   *
 *  it under the terms of the GNU General Public License as published by   *
-*  the Free Software Foundation, either version 3 of the License, or	*
-*  any later version.	*
-*	*
-*  This program is distributed in the hope that it will be useful,	*
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of	*
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the	*
-*  GNU General Public License for more details.	*
-*	*
-*  You should have received a copy of the GNU General Public License	*
+*  the Free Software Foundation, either version 3 of the License, or      *
+*  any later version.                                                     *
+*                                                                         *
+*  This program is distributed in the hope that it will be useful,        *
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          *
+*  GNU General Public License for more details.                           *
+*                                                                         *
+*  You should have received a copy of the GNU General Public License      *
 *  along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
-*	*
+*                                                                         *
 ***************************************************************************/
 
 
@@ -233,68 +234,69 @@
  *  and 0.5 cm radius and send the frequency and magnitude columns of the resulting binary 
  *  stream to the plot program. The programme will simulate the tube at equally spaced 
  *  frequencies between 50 Hz and 1000 Hz with 5 Hz increment and won't read the input stream.
-
-\verbatim
-art -freq 50 1000 5 -cyl 100 0.5 | plot -sig 3 -xcol 1 -ycol 2 -nam ImpMag -xu [Hz] -yu [acOhm] -tit "Tube 1m" 
-\endverbatim
-
+ *
+ *  @verbatim
+art -freq 50 1000 5 -cyl 100 0.5 | plot -sig 3 -xcol 1 -ycol 2 -nam ImpMag -xu [Hz] -yu [acOhm] -tit "Tube 1m"
+    @endverbatim
+ *
+ *
  *  To do the same and see a numerical table with three columns (f, mag, arg) instead of 
  *  plotting the binary stream, type:
-
-\verbatim
+ *
+ *  @verbatim
 art -freq 50 1000 5 -cyl 100 0.5 | bin2flo -columns 3 -nocount 
-\endverbatim
-
+    @endverbatim
+ *
  *  To do the same but calculate resonant frequencies and magnitudes instead of generating a binary plot stream:
-
-\verbatim
+ *
+ *  @verbatim
 art -freq 50 1000 5 1 -cyl 100 0.5
-\endverbatim
-
+    @endverbatim
+ *
  *  To simulate a complete trumpet described in an @ref s_instfiles "instrument file", type:
-
-\verbatim
+ *
+ *  @verbatim
 art -freq 50 1000 5 -list trumpet.ins | plot -sig 3 -xcol 1 -ycol 2 -nam ImpMag -xu Hz -yu Ohm -tit "Trumpet"
-\endverbatim
+    @endverbatim
  * 
- * @section s_instfiles Instrument file format   
-
-The programme defines its instruments in a top-down, object-oriented approach. The .ins 
-file-format likewise represents instruments in this manner. An instrument consists of a 
-list of elements describing its geometry, each of which has parameters specifying the 
-exact dimensions.
-
-@subsection ss_elements Element types
-\par
-0 - bore discontinuity (input radius, output radius, T, L, H, CO2) <BR> 
-1 - cylinder (length, radius, T, L, H, CO2)<BR> 
-2 - cone section (length, input radius, output radius, T, L, H, CO2) <BR> 
-3 - Bessel horn section (length, input radius, output radius, flare coefficient, T, L, H, CO2) <BR> 
-4 - list element (filename)   <BR> 
-5 - cylindrical bend (length, radius, bend radius, T, L, H, CO2) <BR> 
-6 - conical bend (length, input radius, output radius, bend radius, T, L, H, CO2) <BR> 
-7 - termination element (type of termination [can be 0=reflecting or 1=Zorumski], T, L, H, CO2) <BR> 
-8 - branch element (calculation model, number of holes, T, L, H, CO2) <BR>
-
-where <BR> 
-
-T...temperature in degree centigrade (default is 21 C) <BR>
-L...loss factor (default is 1) <BR>
-H...air humidity in percent<BR>
-CO2...CO<sub>2</sub> content of air in ppm  <BR>
-The unit of length is cm.<BR>
-
-@subsection ss_instspec Format specification
-
-A .ins file is a list of element types followed by relevant parameters separated by commas. 
-Whitespace is permitted, but parameters must be on the same line as the element type. Any 
-lines starting with a semi-colon ; are ignored as comments. Comments may not be placed on 
-the same line as commands. Lines may not begin (or consist solely of) whitespace. The first 
-non-commented line of the file defines the name of the instrument. 
-
-
-@subsection ss_instex Example file
-@verbatim
+ *  @section s_instfiles Instrument file format
+ *
+ *  The programme defines its instruments in a top-down, object-oriented approach. The .ins
+ *  file-format likewise represents instruments in this manner. An instrument consists of a
+ *  list of elements describing its geometry, each of which has parameters specifying the
+ *  exact dimensions.
+ *
+ *  @subsection ss_elements Element types
+ *  \par
+ *  0 - bore discontinuity (input radius, output radius, T, L, H, CO2) <BR>
+ *  1 - cylinder (length, radius, T, L, H, CO2)<BR>
+ *  2 - cone section (length, input radius, output radius, T, L, H, CO2) <BR>
+ *  3 - Bessel horn section (length, input radius, output radius, flare coefficient, T, L, H, CO2) <BR>
+ *  4 - list element (filename)   <BR>
+ *  5 - cylindrical bend (length, radius, bend radius, T, L, H, CO2) <BR>
+ *  6 - conical bend (length, input radius, output radius, bend radius, T, L, H, CO2) <BR>
+ *  7 - termination element (type of termination [can be 0=reflecting or 1=Zorumski], T, L, H, CO2) <BR>
+ *  8 - branch element (calculation model, number of holes, T, L, H, CO2) <BR>
+ *
+ *  where <BR>
+ *
+ *  T...temperature in degree centigrade (default is 21 C) <BR>
+ *  L...loss factor (default is 1) <BR>
+ *  H...air humidity in percent<BR>
+ *  CO2...CO<sub>2</sub> content of air in ppm  <BR>
+ *  The unit of length is cm.<BR>
+ *
+ *  @subsection ss_instspec Format specification
+ *
+ *  A .ins file is a list of element types followed by relevant parameters separated by commas.
+ *  Whitespace is permitted, but parameters must be on the same line as the element type. Any
+ *  lines starting with a semi-colon ; are ignored as comments. Comments may not be placed on
+ *  the same line as commands. Lines may not begin (or consist solely of) whitespace. The first
+ *  non-commented line of the file defines the name of the instrument.
+ *
+ *
+ *  @subsection ss_instex Example file
+ *  @verbatim
 Test Instrument
 ; - this is a comment
 1, 10.0, 1.5
@@ -305,19 +307,19 @@ Test Instrument
 ;
 4, filename.ins 
 ; ^ this loads a list element and appends it.
-@endverbatim
-
+    @endverbatim
+ *
  *  @section s_learnmore Learn more about ART and TAP:
  *  
  *  - enter <KBD>"art -?"</KBD> for a complete list of options
  *  - type one of the following commands to learn more about other parts of TAP:
-
-\verbatim
+ *
+ *  @verbatim
 bin2flo -?
 plot -?
 stim -?
-\endverbatim
-
+    @endverbatim
+ *
  *  - Read the TAP reference manual (download on sourceforge project page)
  *   
  */

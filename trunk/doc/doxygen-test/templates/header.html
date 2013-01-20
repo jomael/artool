@@ -1,41 +1,54 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-  <meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
-  <title>$title</title>
-  <link href="$relpath$tabs.css" rel="stylesheet" type="text/css"/>
-  <link href="$relpath$stylesheet.css" rel="stylesheet" type="text/css" />
-  $treeview
-  $search
-  $mathjax
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<!--BEGIN PROJECT_NAME--><title>$projectname: $title</title><!--END PROJECT_NAME-->
+<!--BEGIN !PROJECT_NAME--><title>$title</title><!--END !PROJECT_NAME-->
+<!-- <link href="$relpath$tabs.css" rel="stylesheet" type="text/css"/> -->
+<link href="stylesheet.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="$relpath$jquery.js"></script>
+<script type="text/javascript" src="$relpath$dynsections.js"></script>
+$treeview
+$search
+$mathjax
+<link href="$relpath$stylesheet.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-  <div id="wholepage">
-    <div id="top"><!-- do not remove this div! -->
-      <div id="projectname">Acoustic Research Tool (ART v0.8)</div>
-    
-      <!-- main navigation -->
-      <div id="my_navrow" class="my_tabs">
-        <ul class="my_tablist">
-          <li><a href="index.html"><span>Intro</span></a></li>
-          <li><a href="sp__a_c_t.html"><span>Command&#160;Line&#160;Tool</span></a></li>
-          <li><a href="sp__a_p_i.html"><span>Programmer's&#160;Interface</span></a></li>
-          <li class="my_current"><a href="sp__e_a_p.html"><span>Programmer's&#160;Guide</span></a></li>
-          <li><a href="https://sourceforge.net/projects/artool/"><span>Download</span></a></li>
-          <li><a href="sp_about.html"><span>About</span></a></li>
-        </ul>
-      </div>
-    
-      <!-- sub navigation -->
-      <div id="my_navrow2" class="tabs2">
-        <ul class="tablist">
-          <li><a href="sp__e_a_p.html"><span>Intro</span></a></li>
-          <li class="current"><a href="group___a_r_timpl.html"><span>ART&#160;Objects</span></a></li>
-          <li><a href="group___a_r_tmodel_interface_group.html"><span>Model&#160;Interface</span></a></li>
-          <li><a href="group__wave_object_interface_group.html"><span>Wave&#160;Interface</span></a></li>
-          <li><a href="annotated.html"><span>Class&#160;List</span></a></li>
-          <li><a href="hierarchy.html"><span>Class&#160;Hierarchy</span></a></li>
-          <li><a href="functions.html"><span>Class&#160;Members</span></a></li>
-        </ul>
-      </div>
-<!-- Header End -->           
+<div id="wholepage">
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+
+<!--BEGIN TITLEAREA-->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <!--BEGIN PROJECT_LOGO-->
+  <td id="projectlogo"><img alt="Logo" src="$relpath$$projectlogo"/></td>
+  <!--END PROJECT_LOGO-->
+  <!--BEGIN PROJECT_NAME-->
+  <td style="padding-left: 0.5em;" class="projectname">
+   <div id="projectname">$projectname
+   <!--BEGIN PROJECT_NUMBER-->&#160;<span id="projectnumber">$projectnumber</span><!--END PROJECT_NUMBER-->
+   </div>
+   <!--BEGIN PROJECT_BRIEF--><div id="projectbrief">$projectbrief</div><!--END PROJECT_BRIEF-->
+  </td>
+  <!--END PROJECT_NAME-->
+  <!--BEGIN !PROJECT_NAME-->
+   <!--BEGIN PROJECT_BRIEF-->
+    <td style="padding-left: 0.5em;">
+    <div id="projectbrief">$projectbrief</div>
+    </td>
+   <!--END PROJECT_BRIEF-->
+  <!--END !PROJECT_NAME-->
+  <!--BEGIN DISABLE_INDEX-->
+   <!--BEGIN SEARCHENGINE-->
+   <td>$searchbox</td>
+   <!--END SEARCHENGINE-->
+  <!--END DISABLE_INDEX-->
+ </tr>
+ </tbody>
+</table>
+</div>
+<!--END TITLEAREA-->
+<!-- end header part -->
