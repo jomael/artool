@@ -106,11 +106,12 @@
  * and prototype applications will be made available, too. Contributions in terms of 
  * comments, ideas, conceptual proposals as well as actual C-code are highly welcome.
  * 
- * @subsection ssec_status Project Status (Version 0.9)
+ * @subsection ssec_status Project Status (Version 0.10)
  *   
  * This project is still in an early stage. Nevertheless a preliminary working release has 
  * already been published. Although the concept does include other simulation domains, 
- * only frequency domain models have been implemented up to now. The currently existing 
+ * only frequency and a limited number of time domain models have been
+ * implemented up to now. The currently existing
  * code allows to calculate input impedances of arbitrary bore profiles consisting of 
  * cylindrical sections, conical sections, bessel horn sections, exponential horn 
  * sections, bent cylindrical and conical tubes, bore discontinuities and branches (tone 
@@ -121,6 +122,20 @@
  * carbon dioxide content as well as a separate boundary layer loss factor can be 
  * specified for each individual section of the bore profile. Termination impedances can 
  * be chosen from a range of predefined radiation models.
+ *
+ * In the time domain, basic modules for Digital Waveguides (DWGs) have been implemented.
+ * The current release includes DWGs for
+ * - Cylindrical bores / fractional delays (@ref DWGcylinderModule),
+ * - Cylindrical junctions (@ref DWGcylinderJunctionModule),
+ * - Conical bores (@ref DWGconeModule) and
+ * - Conical bore junctions (@ref DWGconeJunctionModule).
+ * Moreover, several standard modules (sine wave, heaviside, amplification, etc.)
+ * which are commonly used in any time-domain simulation have been implemented.
+ * The most flexible module is the @ref inputFunctionModule which is able to
+ * calculate the output based on any given mathematical formula and multiple inputs.
+ * As by version 0.10, only the @ref sp_API "ART programmer's interface" implements
+ * the time-domain simulation.
+ *
  *
  * @section sec_tb Theoretical background 
  *
