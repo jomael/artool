@@ -59,13 +59,24 @@
 /** Limit maximum number of elements a buffer might contain. */
 static const ::size_t _max_size = (1<<25);
 
+/**
+ * @brief A generic buffer which may be either used as a simple vector or ring buffer.
+ * @details The implementation of this class is based on the STL vector and behaves
+ *          exactly like it in case it is used as an array. Only the methods referenced by
+ *          the muParser have been implemented - some missing parts like iterators are not
+ *          available but can still be implemented.
+ */
 template <typename _Type, typename _Alloc = std::allocator<_Type> > class mpBuffer
 {
 public:
 
+  /** Reference type of the data being stored in the vector. */
   typedef _Type& reference;
+  /** Constant reference type of the data being stored in the vector. */
   typedef const _Type& const_reference;
+  /** Pointer type of the data being stored in the vector. */
   typedef _Type* pointer;
+  /** Constant pointer type of the data being stored in the vector. */
   typedef const _Type* const_pointer;
 
   /* currently, we don't need any iterators... */
@@ -76,14 +87,19 @@ public:
   typedef const int const_reverse_iterator;
   */
 
+  /** The standard size type is int to allow negative indices for access. */
   typedef int size_type;
-  typedef int difference_type;
 
+  /** Data type of the data being stored. */
   typedef _Type value_type;
+  /** Allocator type for the used data type. */
   typedef _Alloc allocator_type;
 
 protected:
+  /* ================ */
   /* member variables */
+  /* ================ */
+
   /** Current number of elements in use. */
   size_type _size;
   
