@@ -74,14 +74,19 @@ ARTdataContainer::ARTdataContainer(const T_ART_Type dtyp, const int dlen, const 
 	{
 		array_type* tmpArray = new array_type(len, true);
 		ARTdataContainer* tmpARTdataContainer;
-		parser_ = new ParserX(mup::pckCOMPLEX_NO_STRING);
+//		CBG_DBL
+//		parser_ = new ParserX(mup::pckCOMPLEX_NO_STRING);
+		parser_ = new ParserX(mup::pckALL_NON_COMPLEX);
 		for (int i = 0; i < len; ++i)
 		{
 			// create empty ARTdataContainers of type complex
 			tmpARTdataContainer = new ARTdataContainer(varname);
-			tmpARTdataContainer->SetType(C_ART_cpx);
+//			CBG_DBL
+//			tmpARTdataContainer->SetType(C_ART_cpx);
+			tmpARTdataContainer->SetType(C_ART_dbl);
 			// initialize all values of ARTdataContainer to zero...
-			tmpARTdataContainer->SetVal(std::complex<double>(0,0));
+//			tmpARTdataContainer->SetVal(std::complex<double>(0,0));
+			tmpARTdataContainer->SetVal(static_cast<double>(0));
 			// set all values to invalid
 			tmpARTdataContainer->valid_ = false;
 			tmpARTdataContainer->parser_ = parser_;
@@ -351,16 +356,22 @@ ARTdataContainer::ARTdataContainer(const ARTdataContainer& orig) :
 		ARTdataContainer* tmpARTdataContainer;
 		ARTdataContainer* oldARTdataContainer;
 
-		parser_ = new ParserX(mup::pckCOMPLEX_NO_STRING);
+//		CBG_DBL
+//		parser_ = new ParserX(mup::pckCOMPLEX_NO_STRING);
+		parser_ = new ParserX(mup::pckCOMMON_NO_STR);
+
 
 		for (int i = 0; i < len; ++i)
 		{
 			oldARTdataContainer = dynamic_cast<ARTdataContainer*>((*oldArray)[i]);
 			// create empty ARTdataContainers of type complex
 			tmpARTdataContainer = new ARTdataContainer(*oldARTdataContainer);
-			tmpARTdataContainer->SetType(C_ART_cpx);
+//			CBG_DBL
+//			tmpARTdataContainer->SetType(C_ART_cpx);
+			tmpARTdataContainer->SetType(C_ART_dbl);
 			// initialize all values of ARTdataContainer to zero...
-			tmpARTdataContainer->SetVal(std::complex<double>(0,0));
+//			tmpARTdataContainer->SetVal(std::complex<double>(0,0));
+			tmpARTdataContainer->SetVal(static_cast<double>(0));
 			// set all values to invalid
 			tmpARTdataContainer->valid_ = false;
 			tmpARTdataContainer->parser_ = parser_;
@@ -1532,7 +1543,9 @@ void ARTdataContainer::resizeArray(int newSize)
 	for (idx = oldSize; idx < newSize; ++idx)
 	{
 		tmp = new ARTdataContainer();
-		tmp->SetType(C_ART_cpx);
+//		CBG_DBL
+//		tmp->SetType(C_ART_cpx);
+		tmp->SetType(C_ART_dbl);
 //		tmp->SetVal(std::complex<double>(0,0));
 		tmp->valid_ = false;
 		tmp->parser_ = parser_;
