@@ -219,7 +219,8 @@ MUP_NAMESPACE_START
     pckSTRING          = 1 << 4,
     pckALL_COMPLEX     = pckCOMMON | pckCOMPLEX | pckSTRING | pckUNIT,
     pckALL_NON_COMPLEX = pckCOMMON | pckNON_COMPLEX | pckSTRING | pckUNIT,
-    pckCOMPLEX_NO_STRING = pckCOMMON | pckCOMPLEX | pckUNIT //Sadjad
+    pckCOMPLEX_NO_STRING = pckCOMMON | pckCOMPLEX | pckUNIT, //Sadjad
+    pckCOMMON_NO_STR   = pckCOMMON | pckNON_COMPLEX | pckUNIT
   };
 
   //------------------------------------------------------------------------------

@@ -83,10 +83,14 @@ public:
 };
 
 ARTItimeModule::localParameterType::localParameterType(const string& name, const string sds, const string lds, const string htm) :
-		timeProperty(C_ART_cpx, 0, name, sds, lds, htm)
+//    CBG_DBL
+//		timeProperty(C_ART_cpx, 0, name, sds, lds, htm)
+      timeProperty(C_ART_dbl, 0, name, sds, lds, htm)
 {
 	// create new parser for local parameters
-	parser_ = new ParserX(mup::pckCOMPLEX_NO_STRING);
+//  CBG_DBL
+//	parser_ = new ParserX(mup::pckCOMPLEX_NO_STRING);
+    parser_ = new ParserX(mup::pckCOMMON_NO_STR);
 	SetParserVar(name);
 }
 
@@ -139,7 +143,9 @@ ARTItimeModule::OPortType::OPortType(const T_ART_Type dtyp,
 
 void ARTItimeModule::OPortType::initPortValue(const string& expr) const
 {
-	ParserX* tmpParser = new ParserX(mup::pckCOMPLEX_NO_STRING);
+//  CBG_DBL
+//	ParserX* tmpParser = new ParserX(mup::pckCOMPLEX_NO_STRING);
+    ParserX* tmpParser = new ParserX(mup::pckCOMMON_NO_STR);
 	try
 	{
 		tmpParser->DefineVar(GetVarName(), GetParserVar());
