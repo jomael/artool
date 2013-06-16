@@ -1192,7 +1192,7 @@ __DECLSPEC P_ART_DataProp __CALLCONV ARTGetPortFromTModule	(P_ART_TModule module
 /**
  * Calculates the output value of the given port at the specified time index.s
  * @param port Port object, of which the timing value shall be calculated.
- * @idx Time index of the interested value.
+ * @param idx Time index of the interested value.
  * @returns T_ART_Cmplx value or <0,0> in case of an error.
  * @throws ARTerror if not using the DLL interface.
  */
