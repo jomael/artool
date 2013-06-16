@@ -46,16 +46,15 @@ ARTsimulator::~ARTsimulator()
 {
 	// IMPORTANT: do NOT free the memory of the parser here!
 	//delete (parser_);
-	//delete userElements;
 }
 
 
 //**************************************************************************************************************
 // ARTfreqSimulator
 
-ARTfreqSimulator::ARTfreqSimulator(const string name, const string domain, const string wavetype,
+ARTfreqSimulator::ARTfreqSimulator(const string name, const string wavetype,
              const string sds, const string lds, const string htm) :
-			 ARTsimulator(name, domain, sds, lds, htm), wavetype_(wavetype)
+			 ARTsimulator(name, "FrequencyDomain", sds, lds, htm), wavetype_(wavetype)
 {
 
 	/*
@@ -93,9 +92,9 @@ ARTfreqSimulator::ARTfreqSimulator(const string name, const string domain, const
 //**************************************************************************************************************
 // ARTtimeSimulator
 
-ARTtimeSimulator::ARTtimeSimulator(const string name, const string domain,
-								   const string sds, const string lds, const string htm) :
-	ARTsimulator(name, domain, sds, lds, htm)
+ARTtimeSimulator::ARTtimeSimulator(const string name, const string sds,
+								   const string lds, const string htm) :
+	ARTsimulator(name, "TimeDomain", sds, lds, htm)
 //	_simulParams()
 {
 	initStandardSimulParams();

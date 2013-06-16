@@ -59,91 +59,197 @@ using namespace mup;
 class ARTItimeModule;
 
 /**
- * Simulators belong to a simulation domain (frequency, time) and simulate waves of a
- * certain type (plain, spherical, multimodal).
+ * Simulators belong to a simulation domain (frequency, time) and simulate waves
+ * of a certain type (plain, spherical, multimodal). This is the parent class
+ * for all implementations of a simulator in ART.
  */
 class ARTsimulator : public ARTobject {
 protected:
-	ARTproperty domain_; //frequency or (some day) time
-	ParserX* parser_;
+
+  /** Defines the domain type (frequency or time) of the current simulator. */
+  ARTproperty domain_;
+
+  /**
+   * A parser object which can be used for assignment calculations of global
+   * simulation parameters.
+   */
+  ParserX* parser_;
+
 public:
 
-	ARTsimulator(const string name, const string domain="invalidDomain",
-				 const string sds="", const string lds="", const string htm="");
+  /**
+   * @brief Creates a new Simulator object.
+   * @param[in] name Defines the unique identifier of the simulator.
+   * @param[in] domain Defines the domain type of the simulator.
+   * @param[in] sds Short description (single line) of the created simulator.
+   * @param[in] lds Long description of the created simulator.
+   * @param[in] htm Path to help file in HTML format.
+   */
+  ARTsimulator(const string name, const string domain="invalidDomain",
+      const string sds="", const string lds="", const string htm="");
 
-	virtual ARTproperty* GetDomain() {return &domain_;}
-	virtual ParserX* GetParser() {return parser_;}
+  /**
+   * @brief Returns the current domain of the simulator.
+   */
+  virtual ARTproperty* GetDomain() {return &domain_;}
+  /**
+   * @brief Returns the global parser object of the simulator.
+   */
+  virtual ParserX* GetParser() {return parser_;}
 
-	virtual ARTdataProp* FindDataPropInSimulator(string exp);
-	virtual ~ARTsimulator();
-	//these lists point into list of AcousticResearchTool Object
-	ARTlistProp* userElements;
-	ARTlistProp* circuits;
+  /**
+   * @brief Returns a data property with the specified name if it is saved in
+   *        the current simulator.
+   * @param[in] exp The name/identifier of the property. May contain a dot '.'
+   *            in order to access hierarchical properties, e.g., "foo.bar".
+   * @exception ARTerror In case the specified property could not be found in
+   *            the current simulator.
+   */
+  virtual ARTdataProp* FindDataPropInSimulator(string exp);
+  /**
+   * @brief The destructor of the simulator class is doing nothing as all saved
+   *        properties will be deallocated by the destructor of the ARTObject
+   *        class.
+   */
+  virtual ~ARTsimulator();
+
+  //these lists point into list of AcousticResearchTool Object
+  /**
+   * Pointer to the user elements of the simulator, mainly used by the
+   * frequency Simulator.
+   */
+  ARTlistProp* userElements;
+  /**
+   * Pointer to all internal circuits, mainly used by the frequency Simulator.
+   */
+  ARTlistProp* circuits;
 };
 
+/**
+ * @brief Implementation of a simulator for the frequency domain.
+ */
 class ARTfreqSimulator : public ARTsimulator
 {
 protected:
-	ARTproperty wavetype_; //plain, spherical, multimodal
-	ARTdataContainer* frqGrid;
-	ARTdataContainer* wfrqGrid;
-	ARTdataContainer* modes;
+  /**
+   * Defines the wave type of the simulation - plain, spherical or multimodal.
+   */
+  ARTproperty wavetype_;
+  ARTdataContainer* frqGrid;
+  ARTdataContainer* wfrqGrid;
+  ARTdataContainer* modes;
 public:
 
-	ARTfreqSimulator(const string name, const string domain="FrequencyDomain", const string wavetype="MultiModal",
-					 const string sds="", const string lds="", const string htm="");
+  ARTfreqSimulator(const string name, const string wavetype="MultiModal",
+      const string sds="", const string lds="", const string htm="");
 
-	//void SetMultimodeParameters(ARTdataProp* fmin, ARTdataProp* fmax, ARTdataProp* fstep, ARTdataProp* modes);
+  //void SetMultimodeParameters(ARTdataProp* fmin, ARTdataProp* fmax, ARTdataProp* fstep, ARTdataProp* modes);
 
-	virtual ARTdataContainer* GetFrequencyGrid() {return frqGrid;}
-	virtual ARTdataContainer* GetAngularFrequencyGrid() {return wfrqGrid;}
-	virtual ARTdataContainer* GetNumberOfModes() {return modes;}
+  virtual ARTdataContainer* GetFrequencyGrid() {return frqGrid;}
+  virtual ARTdataContainer* GetAngularFrequencyGrid() {return wfrqGrid;}
+  virtual ARTdataContainer* GetNumberOfModes() {return modes;}
 
-	virtual ARTproperty* GetWavetype() {return &wavetype_;}
+  virtual ARTproperty* GetWavetype() {return &wavetype_;}
 
-	virtual ~ARTfreqSimulator() {}
+  virtual ~ARTfreqSimulator() {}
 };
 
-
+/**
+ * @brief Implementation of a simulator in the time domain
+ */
 class ARTtimeSimulator : public ARTsimulator
 {
 public:
 
-	ARTtimeSimulator(const string name, const string domain="TimeDomain",
-					 const string sds="", const string lds="", const string htm="");
+  /**
+   * @brief Creates a new Simulator object.
+   * @param[in] name Defines the unique identifier of the simulator.
+   * @param[in] sds Short description (single line) of the created simulator.
+   * @param[in] lds Long description of the created simulator.
+   * @param[in] htm Path to help file in HTML format.
+   */
+  ARTtimeSimulator(const string name, const string sds="",
+      const string lds="", const string htm="");
 
-	virtual void AddTimeModule(ARTItimeModule* timeModule);
-	virtual void AddSimulationParameter(const string& name, const string& expr);
-	virtual void AddSimulationParameter(const string& name, const std::complex<double>& val);
-	virtual void AddSimulationParameter(const string& name, double val);
+  /**
+   * @brief Adds a time module to the current simulation.
+   * @exception ARTerror If a module with the same name is already part of the
+   *            current simulator.
+   */
+  virtual void AddTimeModule(ARTItimeModule* timeModule);
+  /**
+   * @brief Adds a global parameter to the current simulator.
+   * @param[in] name A unique identifier for the simulation parameter.
+   * @param[in] expr A calculation expression for the paramenter.
+   * @exception ARTerror If a parameter with the same name is already part of
+   *            the current simulator.
+   */
+  virtual void AddSimulationParameter(const string& name, const string& expr);
+  /**
+   * @brief Adds a global parameter to the current simulator.
+   * @param[in] name A unique identifier for the simulation parameter.
+   * @param[in] val A complex number to initialize the parameter.
+   * @exception ARTerror If a parameter with the same name is already part of
+   *            the current simulator.
+   */
+  virtual void AddSimulationParameter(const string& name, const std::complex<double>& val);
+  /**
+   * @brief Adds a global parameter to the current simulator.
+   * @param[in] name A unique identifier for the simulation parameter.
+   * @param[in] val A real number to initialize the parameter.
+   * @exception ARTerror If a parameter with the same name is already part of
+   *            the current simulator.
+   */
+  virtual void AddSimulationParameter(const string& name, double val);
 
-	virtual void SimulateTimeStep(int idx);
+  virtual void SimulateTimeStep(int idx);
 
-	virtual void SetSimulationParameter(const string& name, const string& expr);
-	virtual void SetSimulationParameter(const string& name, const std::complex<double>& val);
-	virtual void SetSimulationParameter(const string& name, double val);
+  /**
+   * @brief Sets the value of a global parameter of the current simulator.
+   * @param[in] name The unique identifier of the global parameter.
+   * @param[in] val A calculation expression for the parameter.
+   * @exception ARTerror If no parameter with the specified name could be found
+   *            in the current simulator.
+   */
+  virtual void SetSimulationParameter(const string& name, const string& expr);
+  /**
+   * @brief Sets the value of a global parameter of the current simulator.
+   * @param[in] name The unique identifier of the global parameter.
+   * @param[in] val The complex value to set the parameter.
+   * @exception ARTerror If no parameter with the specified name could be found
+   *            in the current simulator.
+   */
+  virtual void SetSimulationParameter(const string& name, const std::complex<double>& val);
+  /**
+   * @brief Sets the value of a global parameter of the current simulator.
+   * @param[in] name The unique identifier of the global parameter.
+   * @param[in] val The real value to set the parameter.
+   * @exception ARTerror If no parameter with the specified name could be found
+   *            in the current simulator.
+   */
+  virtual void SetSimulationParameter(const string& name, double val);
 
-	virtual ARTdataProp* FindDataPropInSimulator(string exp);
-	virtual ARTItimeModule* FindTimeModuleInSimulator(string exp);
+  virtual ARTdataProp* FindDataPropInSimulator(string exp);
+  virtual ARTItimeModule* FindTimeModuleInSimulator(string exp);
 
-	virtual ~ARTtimeSimulator();
+  virtual ~ARTtimeSimulator();
 protected:
-	struct simulParameterType
-	{
-		ARTdataContainer* _val;
-		ParserX* _parser;
-	};
-	typedef std::map<const string, simulParameterType*> simulParameterMap;
-	typedef simulParameterMap::iterator simulParameterMapIterator;
+  struct simulParameterType
+  {
+    ARTdataContainer* _val;
+    ParserX* _parser;
+  };
+  typedef std::map<const string, simulParameterType*> simulParameterMap;
+  typedef simulParameterMap::iterator simulParameterMapIterator;
 
-	//simulParameterMap _simulParams;
+  //simulParameterMap _simulParams;
 
-	virtual void initStandardSimulParams();
+  virtual void initStandardSimulParams();
 
-	virtual void clean();
-	virtual void addParamsToModule(ARTItimeModule* timeModule);
-	//virtual void addParamToCurrentModules(const string& name, simulParameterType* newParam);
-	virtual void addParamToCurrentModules(ARTdataProp* newParam);
+  virtual void clean();
+  virtual void addParamsToModule(ARTItimeModule* timeModule);
+  //virtual void addParamToCurrentModules(const string& name, simulParameterType* newParam);
+  virtual void addParamToCurrentModules(ARTdataProp* newParam);
 
 };
 
