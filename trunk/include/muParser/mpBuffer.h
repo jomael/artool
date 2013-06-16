@@ -37,13 +37,6 @@
 *                                                                         *
 ***************************************************************************/
 
-/*
- * mpBuffer.h
- *
- *  Created on: May 27, 2012
- *      Author: cbg
- */
-
 #ifndef MPBUFFER_H_
 #define MPBUFFER_H_
 
@@ -96,9 +89,6 @@ public:
   typedef _Alloc allocator_type;
 
 protected:
-  /* ================ */
-  /* member variables */
-  /* ================ */
 
   /** Current number of elements in use. */
   size_type _size;
@@ -113,22 +103,22 @@ protected:
   bool _is_ringbuffer;
 
   /**
-    * In case of a ring buffer, this is the index to the first valid element.
-    * Initial value is -1.
-    */
+   * In case of a ring buffer, this is the index to the first valid element.
+   * Initial value is -1.
+   */
   size_type _first;
   /**
-    * In case of a ring buffer, this is the index to the last valid element.
-    * Initial value is -1.
-    */
+   * In case of a ring buffer, this is the index to the last valid element.
+   * Initial value is -1.
+   */
   mutable size_type _last;
 
   /** Saves the number of currently used elements for a ring buffer. */
   mutable size_type _used_elements;
 
   /**
-   * @brief Releases all elements by calling the destructor of the saved elements
-   *        and deallocating all needed memory.
+   * @brief Releases all elements by calling the destructor of the saved
+   *        elements and deallocating all needed memory.
    */
   virtual void clean()
   {
@@ -141,10 +131,12 @@ protected:
 
 public:
 
-  /* ============ */
-  /* constructors */
-  /* ============ */
-
+  /**
+   * @brief Creates a new buffer object with no elements. The default buffer
+   *        type is array.
+   * @param[in] a Defines the allocator type for the class which shall be saved
+   *            in the buffer. Defaults to the standard allocator.
+   */
   explicit mpBuffer(const allocator_type& a = allocator_type() ) :
     _size(0),
     //_capacity(0),
@@ -157,6 +149,16 @@ public:
     _used_elements(0)
   {}
 
+  /**
+   * @brief Creates a new buffer object with the specified number of elements
+   *        and the specified type.
+   * @param[in] n Initial size of the array.
+   * @param[in] rb Defines the type of the array: If set to true, the buffer is
+   *            a ring buffer, otherwise, it will be an array.
+   * @param[in] v Defines the class type which shall be saved in the buffer.
+   * @param[in] a Defines the allocator type for the class which shall be saved
+   *            in the buffer. Defaults to the standard allocator.
+   */
   explicit mpBuffer(size_type n,
                     bool rb = false,
                     const value_type& v = value_type(),
@@ -183,7 +185,11 @@ public:
   }
 
   /**
-   * Copy constructor.
+   * @brief Creates a new buffer by copying all elements of the specified
+   *        buffer object.
+   * @param[in] buf The buffer to copy.
+   * @warning Take care when copying a buffer containing pointers to elements -
+   *          only the pointers will be copied, but not the elements themselves.
    */
   mpBuffer(const mpBuffer<value_type, allocator_type>& buf) :
     _size(buf._size),
@@ -208,6 +214,13 @@ public:
 
   }
 
+  /**
+   * @brief Assignment operator - deallocates all currently saved object in the
+   *        buffer and creates a copy of the specified buffer.
+   * @param[in] buf The buffer to copy.
+   * @warning Take care when copying a buffer containing pointers to elements -
+   *          only the pointers will be copied, but not the elements themselves.
+   */
   virtual mpBuffer& operator=(const mpBuffer<value_type, allocator_type>& buf)
   {
     clean();
@@ -232,29 +245,41 @@ public:
     return *this;
   }
 
-  /* ========== */
-  /* destructor */
-  /* ========== */
+
+  /**
+   * @brief The destructor of the mpBuffer class.
+   */
   virtual ~mpBuffer()
   {
     // just call clean to release all elements
     clean();
   }
 
-  /* ======================= */
-  /* public capacity methods */
-  /* ======================= */
 
+  /**
+   * @brief Returns the current size of the buffer.
+   */
   inline virtual size_type size() const
   {
     return _size;
   }
 
+  /**
+   * @brief Returns the maximum number of elements which can be saved in a the
+   *        buffer class.
+   */
   inline virtual size_type max_size() const
   {
     return _max_size;
   }
 
+  /**
+   * @brief Resizes the current buffer to the given size.
+   * @param[in] sz The size of the new buffer.
+   * @param[in] c The class type of the elements to save in the buffer.
+   * @exception std::length_error If the new size of a ring buffer will be
+   *            less than the current number of elements in use.
+   */
   void virtual resize(size_type sz, value_type c = value_type() )
   {
 #if defined _MSC_VER && _MSC_VER <= 1200
@@ -286,30 +311,30 @@ public:
     else
     // if we have a ring buffer, copy all elements from first to last
     {
-    	size_type newElementPtr, oldElementPtr, copySize;
-    	int elementsCopied;
+      size_type newElementPtr, oldElementPtr, copySize;
+      int elementsCopied;
 
-    	if (sz < _used_elements)
-    	{
-    		throw std::length_error("Can not decrease size of ring buffer: too much elements in use!");
-    	}
+      if (sz < _used_elements)
+      {
+          throw std::length_error("Can not decrease size of ring buffer: too many elements in use!");
+      }
 
-    	copySize = (sz > _size) ? _size : sz;
-    	newElementPtr = _first % sz;
-    	oldElementPtr = _first % _size;
+      copySize = (sz > _size) ? _size : sz;
+      newElementPtr = _first % sz;
+      oldElementPtr = _first % _size;
 
-    	for (elementsCopied = 0; elementsCopied < copySize; ++elementsCopied)
-    	{
-    		_allocator.construct(&(newFields[newElementPtr]), _fields[oldElementPtr]);
-    		newElementPtr = (newElementPtr + sz - 1) % sz;
-    		oldElementPtr = (oldElementPtr + _size - 1) % _size;
-    	}
+      for (elementsCopied = 0; elementsCopied < copySize; ++elementsCopied)
+      {
+          _allocator.construct(&(newFields[newElementPtr]), _fields[oldElementPtr]);
+          newElementPtr = (newElementPtr + sz - 1) % sz;
+          oldElementPtr = (oldElementPtr + _size - 1) % _size;
+      }
 
-    	for (elementsCopied = _size; elementsCopied < sz; ++elementsCopied)
-    	{
-    		_allocator.construct(&(newFields[newElementPtr]), c);
-    		newElementPtr = (newElementPtr + sz - 1) % sz;
-    	}
+      for (elementsCopied = _size; elementsCopied < sz; ++elementsCopied)
+      {
+          _allocator.construct(&(newFields[newElementPtr]), c);
+          newElementPtr = (newElementPtr + sz - 1) % sz;
+      }
 
 
     }
@@ -324,21 +349,33 @@ public:
 
   }
 
+  /**
+   * @brief Returns the capacity of the current buffer which is equal to the
+   *        size.
+   */
   inline virtual size_type capacity() const
   {
     //return _capacity;
     return _size;
   }
 
+  /**
+   * @brief Returns true if the current amount of saved elements is zero.
+   */
   inline virtual bool empty() const
   {
     return (_size == 0);
   }
 
-  /* ======================= */
-  /* public capacity methods */
-  /* ======================= */
 
+  /**
+   * @brief Returns the element currently saved at the specified position. This
+   *        function behaves the same for the array and ring buffer
+   *        implementation and does not change the _used_elements field.
+   * @param[in] n The position of the element saved in the buffer.
+   * @exception std::out_of_range If the specified position is not within
+   *            0 <= n < size.
+   */
   inline virtual reference at(size_type n)
   {
     if ((n >= _size) || (n < 0))
@@ -347,6 +384,14 @@ public:
     return _fields[n];
   }
 
+  /**
+   * @brief Returns the element currently saved at the specified position. This
+   *        function behaves the same for the array and ring buffer
+   *        implementation and does not change the _used_elements field.
+   * @param[in] n The index of the element saved in the buffer.
+   * @exception std::out_of_range If the specified position is not within
+   *            0 <= n < size.
+   */
   inline virtual const_reference at(size_type n) const
   {
     if ((n >= _size) || (n < 0))
@@ -358,68 +403,89 @@ public:
     return _fields[n];
   }
 
+  /**
+   * @brief Returns the element currently saved at the specified position, but
+   *        uses a modulo operation in case of a ring buffer.
+   * @param[in] n The index of the element saved in the buffer.
+   * @exception std::out_of_range If the current buffer is an array and the
+   *            index is not within 0 <= n < size or the number of used elements
+   *            in the ring buffer is greater than the current size.
+   */
   inline virtual reference operator[](size_type n)
   {
-  	if (!_is_ringbuffer && (n >= _size || n < 0))
-			throw std::out_of_range("mpBuffer has not been accessed properly");
+    if (!_is_ringbuffer && (n >= _size || n < 0))
+      throw std::out_of_range("mpBuffer has not been accessed properly");
 
-		// save original index
-		size_type idx = n;
+    // save original index
+    size_type idx = n;
 
-		n = n % _size;
-		n = (n < 0) ? (n + _size) : n;
-		reference retVal = _fields[n];
+    n = n % _size;
+    n = (n < 0) ? (n + _size) : n;
+    reference retVal = _fields[n];
 
-//		std::cout << "operator[]: _first = " << _first << ", idx = " << idx
-//				<< ", _used_elements = " << _used_elements
-//				<< ", _size = " << _size << std::endl;
+//    std::cout << "operator[]: _first = " << _first << ", idx = " << idx
+//        << ", _used_elements = " << _used_elements
+//        << ", _size = " << _size << std::endl;
 
-		// save the lowest index of the current array access:
-		// if the currently used buffer size is less than the
-		// difference between current index and
-		if ((_first - idx) >= _used_elements)
-		{
-			// if we cannot increase the number of used elements, throw
-			// an out of range exception
-			if ((_first - idx) > _size)
-				throw std::out_of_range("Ring buffer access to element which is currently in use");
+    // save the lowest index of the current array access:
+    // if the currently used buffer size is less than the
+    // difference between current index and the first element in use,
+    // we have to increase the number of used elements
+    if ((_first - idx) >= _used_elements)
+    {
+      // if we cannot increase the number of used elements, throw
+      // an out of range exception
+      if ((_first - idx) > _size)
+        throw std::out_of_range("Ring buffer access to element which is currently in use");
 
-			_used_elements = (_first - idx) + 1;
+      _used_elements = (_first - idx) + 1;
 
-			_last = idx;
-		}
+      _last = idx;
+    }
 
-		return retVal;
+	return retVal;
   }
 
+  /**
+   * @brief Returns the element currently saved at the specified position, but
+   *        uses a modulo operation in case of a ring buffer.
+   * @param[in] n The index of the element saved in the buffer.
+   * @exception std::out_of_range If the current buffer is an array and the
+   *            index is not within 0 <= n < size or the number of used elements
+   *            in the ring buffer is greater than the current size.
+   */
   inline virtual const_reference operator[](size_type n) const
   {
-  	if (!_is_ringbuffer && ((n >= _size) ||(n < 0)))
-			throw std::out_of_range("mpBuffer has not been accessed properly");
+    if (!_is_ringbuffer && ((n >= _size) ||(n < 0)))
+      throw std::out_of_range("mpBuffer has not been accessed properly");
 
-  	size_type idx = n;
+    size_type idx = n;
 
-		n = n % _size;
-		n = (n < 0) ? (n + _size) : n;
+    n = n % _size;
+    n = (n < 0) ? (n + _size) : n;
 
-		// save the lowest index of the current array access:
-		// if the currently used buffer size is less than the
-		// difference between current index and
-		if ((_first - idx) >= _used_elements)
-		{
-			// if we cannot increase the number of used elements, throw
-			// an out of range exception
-			if ((_first - idx) > _size)
-				throw std::out_of_range("Ring buffer access to element which is currently in use");
+    // save the lowest index of the current array access:
+    // if the currently used buffer size is less than the
+    // difference between current index and the first element in use,
+    // we have to increase the number of used elements
+    if ((_first - idx) >= _used_elements)
+    {
+      // if we cannot increase the number of used elements, throw
+      // an out of range exception
+      if ((_first - idx) > _size)
+        throw std::out_of_range("Ring buffer access to element which is currently in use");
 
-			_used_elements = (_first - idx) + 1;
+      _used_elements = (_first - idx) + 1;
 
-			_last = idx;
-		}
+      _last = idx;
+    }
 
-		return _fields[n];
+    return _fields[n];
   }
 
+  /**
+   * @brief Returns the first element of the current buffer.
+   */
   inline virtual reference front()
   {
     reference retVal = (_is_ringbuffer) ?
@@ -427,6 +493,9 @@ public:
     return retVal;
   }
 
+  /**
+   * @brief Returns the first element of the current buffer.
+   */
   inline virtual const_reference front() const
   {
     const_reference retVal = (_is_ringbuffer) ?
@@ -435,6 +504,9 @@ public:
     return retVal;
   }
 
+  /**
+   * @brief Returns the last element of the current buffer.
+   */
   inline virtual reference back()
   {
     reference retVal = (_is_ringbuffer) ?
@@ -442,6 +514,9 @@ public:
     return retVal;
   }
 
+  /**
+   * @brief Returns the last element of the current buffer.
+   */
   inline virtual const_reference back() const
   {
     const_reference retVal = (_is_ringbuffer) ?
@@ -450,14 +525,14 @@ public:
     return retVal;
   }
 
+  /**
+   * @brief Returns the allocator type of the current buffer.
+   */
   inline virtual allocator_type get_allocator() const
   {
     return _allocator;
   }
 
-  /* ================================= */
-  /* public extensions for ring buffer */
-  /* ================================= */
 
   /**
    * @brief Sets the current index of the ring buffer to the given
@@ -477,11 +552,17 @@ public:
 
   }
 
+  /**
+   * @brief Returns the first element saved in the current buffer.
+   */
   inline virtual size_type getFirst() const
   {
   	return _first;
   }
 
+  /**
+   * @brief Returns the last element saved in the current buffer.
+   */
   inline virtual size_type getLast() const
 	{
 		return _last;
@@ -500,8 +581,8 @@ public:
 
 
   /**
-   * @brief Returns true if the current buffer implements a
-   *        a ring buffer, otherwise false.
+   * @brief Returns true if the current buffer behaves like a a ring buffer,
+   *        false otherwise.
    */
   inline virtual bool isRingBuffer() const
   {
@@ -509,7 +590,7 @@ public:
   }
 
   /**
-   * @brief Sets the current behavior to a ring buffer.
+   * @brief Sets the current buffer to behave like a ring buffer.
    */
   inline virtual void setRingBuffer()
   {
@@ -517,7 +598,7 @@ public:
   }
 
   /**
-   * @brief Set the current behavior to a vector.
+   * @brief Sets the current buffer to behave like a vector.
    */
   inline virtual void setVector()
   {
