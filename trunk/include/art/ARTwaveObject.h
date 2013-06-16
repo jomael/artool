@@ -206,8 +206,8 @@ class WaveObjectMMImpedance : public WaveObjectInterface
 	 * data container which will be used as internal data container to store the wave.
 	 * @param out The data container that should be used to store the wave.
 	 * @param MMimpedanceFunc The functionoid used for calculation the values of this 
-	 *    waveobject.
-   * @param frq The frequency grid giving the frequency for every index.              		  
+	 *        waveobject.
+	 * @param frq The frequency grid giving the frequency for every index.
 	 */	
 	WaveObjectMMImpedance( ARTdataContainer* out, ARTfunctionoid* MMimpedanceFunc = NULL, ARTdataContainer* frq = NULL )
 	: frequencies(frq)
