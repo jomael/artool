@@ -221,13 +221,13 @@ P_ART_Simulator __CALLCONV ARTCreateSimulator    (const char* name, const char* 
 		//check if wavetype is valid
 		if (! ARTCheckPropertyCapability("WaveType", wavetype))
 			throw ARTerror("ARTCreateSimulator", "The specified wave type is invalid.");
-		simulator = new ARTfreqSimulator(name, domain, wavetype);
+		simulator = new ARTfreqSimulator(name, wavetype);
 		simulator->userElements = simulator->AppendListProp("UserElements");
 		simulator->circuits = simulator->AppendListProp("Circuits");
 	}
 	else if (!strcmp(domain, "TimeDomain"))
 	{
-		simulator = new ARTtimeSimulator(name, domain);
+		simulator = new ARTtimeSimulator(name);
 		simulator->userElements = simulator->AppendListProp("TimeModules");
 	}
 
