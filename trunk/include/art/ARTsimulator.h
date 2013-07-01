@@ -202,12 +202,18 @@ public:
    */
   virtual void AddSimulationParameter(const string& name, double val);
 
+  /**
+   * @brief Simulates the time step of the given index.
+   * @param[in] idx The index to simulate.
+   * @exception ARTerror If no global parameter "t" could be found in the
+   *            current simulator.
+   */
   virtual void SimulateTimeStep(int idx);
 
   /**
    * @brief Sets the value of a global parameter of the current simulator.
    * @param[in] name The unique identifier of the global parameter.
-   * @param[in] val A calculation expression for the parameter.
+   * @param[in] expr A calculation expression for the parameter.
    * @exception ARTerror If no parameter with the specified name could be found
    *            in the current simulator.
    */
@@ -229,26 +235,50 @@ public:
    */
   virtual void SetSimulationParameter(const string& name, double val);
 
+  /**
+   * @copydoc ARTsimulator::FindDataPropInSimulator()
+   */
   virtual ARTdataProp* FindDataPropInSimulator(string exp);
+
+  /**
+   * @brief Returns a time module with the given name if it is part of the
+   *        current simulator.
+   * @param[in] exp Name of the time module to find.
+   * @exception ARTerror If no time valid module with the given name could be
+   *            found.
+   */
   virtual ARTItimeModule* FindTimeModuleInSimulator(string exp);
 
+  /**
+   * @brief Destructor of the ARTtimeSimulator class.
+   */
   virtual ~ARTtimeSimulator();
 protected:
-  struct simulParameterType
-  {
-    ARTdataContainer* _val;
-    ParserX* _parser;
-  };
-  typedef std::map<const string, simulParameterType*> simulParameterMap;
-  typedef simulParameterMap::iterator simulParameterMapIterator;
 
-  //simulParameterMap _simulParams;
-
+  /**
+   * @brief Adds the default global parameters (sampling frequency "T" and
+   *        global time "t") to the current simulator. Will be called by the
+   *        class constructor.
+   */
   virtual void initStandardSimulParams();
 
+  /**
+   * @brief Deallocates all previously allocated objects. Currently not used.
+   */
   virtual void clean();
+
+  /**
+   * @brief Adds all global parameters to the given time module.
+   * @param[in] timeModule Time module to which the parameters will be added.
+   */
   virtual void addParamsToModule(ARTItimeModule* timeModule);
-  //virtual void addParamToCurrentModules(const string& name, simulParameterType* newParam);
+
+  /**
+   * @brief Adds a new global parameter to all currently registered time
+   *        modules.
+   * @param[in] newParam The new global parameter which will be registered to
+   *            all current time modules.
+   */
   virtual void addParamToCurrentModules(ARTdataProp* newParam);
 
 };
