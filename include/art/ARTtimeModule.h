@@ -427,39 +427,140 @@ public:
 };
 
 
+/**
+ * @brief This class is a generic time module and allows the user to create
+ *        individual ports which can be connected to any other class
+ *        implementing the ARTItimeModule interface.
+ *
+ * @details It implements all abstract methods of the ARTItimeModule class and
+ *          additionally provides methods to add output ports and local
+ *          parameters to the current time module. Output ports of a module can
+ *          access local and global paremters as well as other output and input
+ *          ports of the same time module. Output ports of other time modules
+ *          can be accessed by creating an input port and referencing the output
+ *          port of the other time module.
+ */
 class ARTtimeModule : public ARTItimeModule
 {
 public:
 
+  /**
+   * @brief Constructor of the ARTtimeModule class.
+   * @param[in] name Represents the unique identifier of the time module.
+   * @param[in] sds Short description (single line) of the time module.
+   * @param[in] lds Long description of the time module.
+   * @param[in] htm Path to help file in HTML format.
+   */
   explicit ARTtimeModule(const string& name="TimeModule", const string& sds="", const string& lds="", const string& htm="");
-  //	explicit ARTtimeModule(const ARTtimeModule& orig);
 
+
+  /**
+   * @brief Factory function which creates a new generic time module object
+   *        with the given input parameters.
+   * @param[in] name Represents the unique identifier of the time module.
+   * @param[in] sds Short description (single line) of the time module.
+   * @param[in] lds Long description of the time module.
+   * @param[in] htm Path to help file in HTML format.
+   */
   virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
 
+
+  /**
+   * @copydoc ARTItimeModule::addIPort()
+   */
   virtual void addIPort(const string& name, const ARTdataProp* refPort);
+  /**
+   * @brief Creates a new output port to the
+   * @details
+   * @param[in] name The locally unique name of the port.
+   * @param[in] expr A parser expression
+   * @param[in] size Optional parameter defining the size of the ring buffer.
+   *                 Default is 20.
+   * @exception ARTerror If another object (parameter or port) with the same
+   *            name already exists in the current time module.
+   */
   virtual void addOPort(const string& name, const string& expr, unsigned int size = 20);
 
+  /**
+   * @brief Adds a new local parameter with the given name and evaluation
+   *        expression to the current time module.
+   * @param[in] name Locally unique identifier.
+   * @param[in] expr A parser expression defining the value of the local
+   *                 parameter.
+   * @exception ARTerror If another object (parameter or port) with the same
+   *            name already exists in the current time module.
+   */
   virtual void addLocalParameter(const string& name, const string& expr);
+  /**
+   * @brief Adds a new local parameter with the given name and initial value
+   *        to the current time module.
+   * @param[in] name Locally unique identifier.
+   * @param[in] val Real initial value of the local parameter.
+   * @exception ARTerror If another object (parameter or port) with the same
+   *            name already exists in the current time module.
+   */
   virtual void addLocalParameter(const string& name, const double val);
+  /**
+   * @brief Adds a new local parameter with the given name and initial value
+   *        to the current time module.
+   * @param[in] name Locally unique identifier.
+   * @param[in] val Complex initial value of the local parameter..
+   * @exception ARTerror If another object (parameter or port) with the same
+   *            name already exists in the current time module.
+   */
   virtual void addLocalParameter(const string& name, const std::complex<double>& val);
 
+  /**
+   * @copydoc ARTItimeModule::addGlobalParameter()
+   */
   virtual void addGlobalParameter(const ARTdataProp* parameter);
+  /**
+   * @copydoc ARTItimeModule::removeGlobalParameter()
+   */
   virtual void removeGlobalParameter(const string& name);
 
+  /**
+   * @copydoc ARTItimeModule::setCurrentIndex()
+   */
   virtual void setCurrentIndex(int idx);
+  /**
+   * @copydoc ARTItimeModule::simulateCurrentIndex()
+   */
   virtual void simulateCurrentIndex(int idx);
 
-  //	virtual ARTtimeModule& operator=(const ARTtimeModule& orig);
-
+  /**
+   * @brief Destructor of the ARTtimeModule class.
+   */
   virtual ~ARTtimeModule();
 
 protected:
 
+  /**
+   * @brief Registers the variable with the given name to the parsers of all
+   *        output ports and local parameters.
+   * @param[in] name Name of the variable. Must be identical to the name used in
+   *            all parser expressions.
+   * @param[in] var Reference to the variable object which will be registered.
+   */
   inline virtual void addVariableToParsers(const string& name, const Variable& var);
+  /**
+   * @brief Removes the reference of the variable with the given name from the
+   *        parsers of all output ports and local parameters.
+   * @param[in] name The identifier of the variable which shall be removed.
+   */
   inline virtual void removeVariableFromParsers(const string& name);
 
+  /**
+   * @brief Register all locally available variables (from input ports, output
+   *        ports, local and global parameters) to the given parser object.
+   * @param[in] parser Pointer to the parser to which all current variables will
+   *            be registered.
+   */
   inline virtual void registerAllVariablesToParser(ParserX* parser);
 
+  /**
+   * @brief Cleans up the class before it is destroyed.
+   */
   inline virtual void clean();
   //	inline virtual void copy(const ARTtimeModule& orig);
 
