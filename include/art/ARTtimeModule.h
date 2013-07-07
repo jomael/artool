@@ -222,14 +222,16 @@ public:
   };
 
   /**
-   * This class represents an input function or lookup table. It is mainly used
-   * inputs for simulations. For example, the transfer function of an instrument
-   * can be saved in the function port of a module. Another module with a
-   * convolution function may just refer to two output ports from which one is
-   * a function port saving the transfer function. It has the same interface
-   * as the OPortType class, but uses an array instead of the resizable ring
-   * buffer in order to save the values. A function port is usually only
-   * initialized before the simulation starts and not changed later.
+   * @brief This class represents an input function or lookup table.
+   * @details It is mainly used as inputs for simulations. For example, the
+   *          transfer function of an instrument can be saved in the function
+   *          port of a module. Another module with a convolution function may
+   *          just refer to two output ports from which one is a function port
+   *          saving the transfer function. It has the same interface as the
+   *          OPortType class, but uses an array instead of the resizable ring
+   *          buffer in order to save the values. A function port is usually
+   *          only initialized before the simulation starts and not changed
+   *          later.
    */
   class FPortType : public OPortType
   {
