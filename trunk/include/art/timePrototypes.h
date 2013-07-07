@@ -1,41 +1,41 @@
 /**************************************************************************
-*                                                                         *
-*                   Acoustic Research Tool (ART)                          *
-*                                                                         *
-*   A Simulation Framework with Modelling Library for Acoustic Systems    *
-*                                                                         *
-*         Project of the Workgroup 2 of the Technical Committee           *
-*      Musical Acoustics of the European Acoustics Association EAA)       *
-*                                                                         *
-*   http://www.eaa-fenestra.org/technical-committees/ma/workgroups/wg2    *
-*                                                                         *
-*  Copyright (C) 2013 by the authors and their organisations:             *
-*    Alistair Braden            1)                                        *
-*    Wilfried Kausel            2)         kausel(at)mdw.ac.at            *
-*    Delphine Cadefaux          2)                                        *
-*    Vasileios Chatziioannou    2)                                        *
-*    Sadjad Siddiq              2)                                        *
-*    Clemens Geyer              2)                                        *
-*                                                                         *
-*    1) School of Physics and Astronomy, Univ. of Edinburgh, GB           *
-*       (http://www.ph.ed.ac.uk/)                                         *
-*    2) Inst. of Music Acoustics, Univ. of Music, Vienna, AT              *
-*       (http://iwk.mdw.ac.at)                                            *
-*                                                                         *
-*  This program is free software: you can redistribute it and/or modify   *
-*  it under the terms of the GNU General Public License as published by   *
-*  the Free Software Foundation, either version 3 of the License, or      *
-*  any later version.                                                     *
-*                                                                         *
-*  This program is distributed in the hope that it will be useful,        *
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of         *
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          *
-*  GNU General Public License for more details.                           *
-*                                                                         *
-*  You should have received a copy of the GNU General Public License      *
-*  along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
-*                                                                         *
-***************************************************************************/
+ *                                                                         *
+ *                   Acoustic Research Tool (ART)                          *
+ *                                                                         *
+ *   A Simulation Framework with Modelling Library for Acoustic Systems    *
+ *                                                                         *
+ *         Project of the Workgroup 2 of the Technical Committee           *
+ *      Musical Acoustics of the European Acoustics Association EAA)       *
+ *                                                                         *
+ *   http://www.eaa-fenestra.org/technical-committees/ma/workgroups/wg2    *
+ *                                                                         *
+ *  Copyright (C) 2013 by the authors and their organisations:             *
+ *    Alistair Braden            1)                                        *
+ *    Wilfried Kausel            2)         kausel(at)mdw.ac.at            *
+ *    Delphine Cadefaux          2)                                        *
+ *    Vasileios Chatziioannou    2)                                        *
+ *    Sadjad Siddiq              2)                                        *
+ *    Clemens Geyer              2)                                        *
+ *                                                                         *
+ *    1) School of Physics and Astronomy, Univ. of Edinburgh, GB           *
+ *       (http://www.ph.ed.ac.uk/)                                         *
+ *    2) Inst. of Music Acoustics, Univ. of Music, Vienna, AT              *
+ *       (http://iwk.mdw.ac.at)                                            *
+ *                                                                         *
+ *  This program is free software: you can redistribute it and/or modify   *
+ *  it under the terms of the GNU General Public License as published by   *
+ *  the Free Software Foundation, either version 3 of the License, or      *
+ *  any later version.                                                     *
+ *                                                                         *
+ *  This program is distributed in the hope that it will be useful,        *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of         *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          *
+ *  GNU General Public License for more details.                           *
+ *                                                                         *
+ *  You should have received a copy of the GNU General Public License      *
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
+ *                                                                         *
+ ***************************************************************************/
 
 /*
  * timePrototypes.h
@@ -49,213 +49,744 @@
 
 #include "ARTtimeModule.h"
 
+/**
+ * @brief Represents a time module with a single function output port which is
+ *        used as lookup table.
+ * @details The main difference to other time modules is that the value of the
+ * output ports are predefined and not simulated. This module is perfectly
+ * feasible to save transfer functions of instruments which will later be input
+ * for a convolution function.
+ * @see ARTItimeModule::FPortType
+ */
 class inputFunctionModule : public ARTItimeModule
 {
 protected:
-	FPortType* out_;
+  /** Pointer to the output function port.*/
+  FPortType* out_;
 public:
-	explicit inputFunctionModule(const string& name="InputFunctionModule", const string& sds="", const string& lds="", const string& htm="");
 
-	virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
+  /**
+   * @brief Constructor of the inputFunctionModule class.
+   * @param[in] name Represents the unique identifier of the input function
+   *            module.
+   * @param[in] sds Short description (single line) of the input function
+   *            module.
+   * @param[in] lds Long description of the input function module.
+   * @param[in] htm Path to help file in HTML format.
+   */
+  explicit inputFunctionModule(const string& name="InputFunctionModule", const string& sds="", const string& lds="", const string& htm="");
+
+  /**
+   * @brief Factory function which creates a new function time module object
+   *        with the given input parameters.
+   * @param[in] name Represents the unique identifier of the input function
+   *            module.
+   * @param[in] sds Short description (single line) of the input function
+   *            module.
+   * @param[in] lds Long description of the input function module.
+   * @param[in] htm Path to help file in HTML format.
+   */
+  virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
 
 
-	virtual void addIPort(const string& name, const ARTdataProp* refPort);
-	virtual void defineOPort(int len, const string& expr);
-	virtual ARTdataProp* getPort(const string& name);
+  /**
+   * @copydoc ARTItimeModule::addIPort()
+   */
+  virtual void addIPort(const string& name, const ARTdataProp* refPort);
+  /**
+   * @brief Creates a new function output port with the given length and the
+   *        initial expression.
+   * @param[in] len The length of the function port. The length will not be
+   *            adapted during the simulation.
+   * @param[in] expr An initial evaluation expression for the function port.
+   * @exception ARTerror If the given length is less or equal zero.
+   */
+  virtual void defineOPort(int len, const string& expr);
+  /**
+   * @brief Returns a pointer to the port object with the given name.
+   * @details The input function module only has a single valid name for an
+   *          output port which is called "out". Trying to get any other
+   *          property with another name will trigger an exception.
+   * @exception ARTerror If no port with the given name could be found in the
+   *            current module.
+   */
+  virtual ARTdataProp* getPort(const string& name);
 
-//	virtual void addGlobalParameter(const ARTdataProp* parameter);
-//	virtual void removeGlobalParameter(const string& name);
+  /**
+   * @brief This method does not do anything as this module does not evaluate
+   *        any expressions during the simulation.
+   */
+  virtual void setCurrentIndex(int idx) {}
+  /**
+   * @brief This method does not do anything as this module does not evaluate
+   *        any expressions during the simulation.
+   */
+  virtual void simulateCurrentIndex(int idx) {}
 
-	// do nothing
-	virtual void setCurrentIndex(int idx) {}
-	virtual void simulateCurrentIndex(int idx) {}
-
-	virtual ~inputFunctionModule();
+  /**
+   * @brief Destructor of the inptFunctionModule class.
+   */
+  virtual ~inputFunctionModule();
 };
 
+/**
+ * @brief This module creates a Dirac impulse and has a single output port.
+ * @details The default amplitude value of the impulse is "1", but can be
+ *          manually set via the local parameter "A".
+ */
 class impulseModule : public ARTItimeModule
 {
 protected:
-	OPortType* out_;
+  /** Pointer to the single output port of the module. */
+  OPortType* out_;
 public:
-	explicit impulseModule(const string& name = "ImpulseModule", const string& sds="", const string& lds="", const string& htm="");
-	virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
+  /**
+   * @brief Constructor of the impulseModule class.
+   * @param[in] name Represents the unique identifier of the impulse module.
+   * @param[in] sds Short description (single line) of the impulse module.
+   * @param[in] lds Long description of the impulse module.
+   * @param[in] htm Path to help file in HTML format.
+   */
+  explicit impulseModule(const string& name = "ImpulseModule", const string& sds="", const string& lds="", const string& htm="");
+  /**
+   * @brief Factory function which creates a new impulse module object with the
+   *        given input parameters.
+   * @param[in] name Represents the unique identifier of the impulse module.
+   * @param[in] sds Short description (single line) of the impulse module.
+   * @param[in] lds Long description of the impulse module.
+   * @param[in] htm Path to help file in HTML format.
+   */
+  virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
 
-	virtual void addIPort(const string& name, const ARTdataProp* refPort);
-	virtual ARTdataProp* getPort(const string& name);
+  /**
+   * @brief Always throws an ARTerror exception as this module does not allow
+   *        to add any input ports.
+   * @param[in] name Locally unique identifier of the new input port - will
+   *            be ignored.
+   * @param[in] refPort Pointer to an existing output port which will be
+   *            associated with the new input port - will be ignored.
+   */
+  virtual void addIPort(const string& name, const ARTdataProp* refPort);
+  /**
+   * @brief Returns a pointer to the port object with the given name.
+   * @details The impulse module only has a single valid name for an output
+   *          port which is called "out". Trying to get any other property with
+   *          another name will trigger an exception.
+   * @exception ARTerror If no port with the given name could be found in the
+   *            current module.
+   */
+  virtual ARTdataProp* getPort(const string& name);
 
-	virtual void setCurrentIndex(int idx);
-	virtual void simulateCurrentIndex(int idx);
+  /**
+   * @copydoc ARTItimeModule::setCurrentIndex()
+   */
+  virtual void setCurrentIndex(int idx);
+  /**
+   * @copydoc ARTItimeModule::simulateCurrentIndex()
+   */
+  virtual void simulateCurrentIndex(int idx);
 
-	virtual ~impulseModule() {}
+  /**
+   * @brief Destructor of the impulseModule class.
+   */
+  virtual ~impulseModule() {}
 protected:
-	virtual void initLocalParams();
+  /**
+   * @brief Internal method which creates and initializes all needed local
+   *        parameters.
+   */
+  virtual void initLocalParams();
 };
 
+/**
+ * @brief This module implements the Heaviside step function and only has a
+ *        single output port.
+ * @details Like the impulseModule, the amplitude of the step function can be
+ *          set via the local parameter "A".
+ */
 class heavisideModule : public ARTItimeModule
 {
 protected:
-	OPortType* out_;
+  /** Pointer to the single output port of the module. */
+  OPortType* out_;
 public:
-	explicit heavisideModule(const string& name = "HeavisideModule", const string& sds="", const string& lds="", const string& htm="");
-	virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
+  /**
+   * @brief Constructor of the heavisideModule class.
+   * @param[in] name Represents the unique identifier of the Heaviside module.
+   * @param[in] sds Short description (single line) of the Heaviside module.
+   * @param[in] lds Long description of the Heaviside module.
+   * @param[in] htm Path to help file in HTML format.
+   */
+  explicit heavisideModule(const string& name = "HeavisideModule", const string& sds="", const string& lds="", const string& htm="");
+  /**
+   * @brief Factory function which creates a new Heaviside module object with
+   *        the given input parameters.
+   * @param[in] name Represents the unique identifier of the Heaviside module.
+   * @param[in] sds Short description (single line) of the Heaviside module.
+   * @param[in] lds Long description of the Heaviside module.
+   * @param[in] htm Path to help file in HTML format.
+   */
+  virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
 
-	virtual void addIPort(const string& name, const ARTdataProp* refPort);
-	virtual ARTdataProp* getPort(const string& name);
+  /**
+   * @brief Always throws an ARTerror exception as this module does not allow
+   *        to add any input ports.
+   * @param[in] name Locally unique identifier of the new input port - will
+   *            be ignored.
+   * @param[in] refPort Pointer to an existing output port which will be
+   *            associated with the new input port - will be ignored.
+   */
+  virtual void addIPort(const string& name, const ARTdataProp* refPort);
+  /**
+   * @brief Returns a pointer to the port object with the given name.
+   * @details The Heaviside module only has a single valid name for an output
+   *          port which is called "out". Trying to get any other property with
+   *          another name will trigger an exception.
+   * @exception ARTerror If no port with the given name could be found in the
+   *            current module.
+   */
+  virtual ARTdataProp* getPort(const string& name);
 
-	virtual void setCurrentIndex(int idx);
-	virtual void simulateCurrentIndex(int idx);
+  /**
+   * @copydoc ARTItimeModule::setCurrentIndex()
+   */
+  virtual void setCurrentIndex(int idx);
+  /**
+   * @copydoc ARTItimeModule::simulateCurrentIndex()
+   */
+  virtual void simulateCurrentIndex(int idx);
 
-	virtual ~heavisideModule() {}
+  /**
+   * @brief Destructor of the heavisideModule.
+   */
+  virtual ~heavisideModule() {}
 protected:
-	virtual void initLocalParams();
+  /**
+   * @brief Internal method which creates and initializes all needed local
+   *        parameters.
+   */
+  virtual void initLocalParams();
 };
 
-class rectengularModule : public ARTItimeModule
+/**
+ * @brief Implements a module creating a rectangular signal which can be further
+ *        processed by other time modules.
+ * @details Three local parameters can be set:
+ *   - <b> \c S </b> defines the starting time of the rectangular function in
+ *     seconds. Defaults to "0".
+ *   - <b> \c E </b> defines the end time of the rectangular function in
+ *     seconds. Defaults to "1".
+ *   - <b> \c A </b> defines the amplitude of the rectangular function. Defaults
+ *     to "1".
+ */
+class rectangularModule : public ARTItimeModule
 {
 protected:
-	OPortType* out_;
+  /** Pointer to the single output port of the module. */
+  OPortType* out_;
 public:
-	explicit rectengularModule(const string& name = "RectengularModule", const string& sds="", const string& lds="", const string& htm="");
-	virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
+  /**
+   * @brief Constructor of the rectangularModule class.
+   * @param[in] name Represents the unique identifier of the rectangular module.
+   * @param[in] sds Short description (single line) of the rectangular module.
+   * @param[in] lds Long description of the rectangular module.
+   * @param[in] htm Path to help file in HTML format.
+   */
+  explicit rectangularModule(const string& name = "RectangularModule", const string& sds="", const string& lds="", const string& htm="");
+  /**
+   * @brief Factory function which creates a new rectangular module object with
+   *        the given input parameters.
+   * @param[in] name Represents the unique identifier of the rectangular module.
+   * @param[in] sds Short description (single line) of the rectangular module.
+   * @param[in] lds Long description of the rectangular module.
+   * @param[in] htm Path to help file in HTML format.
+   */
+  virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
 
-	virtual void addIPort(const string& name, const ARTdataProp* refPort);
-	virtual ARTdataProp* getPort(const string& name);
+  /**
+   * @brief Always throws an ARTerror exception as this module does not allow
+   *        to add any input ports.
+   * @param[in] name Locally unique identifier of the new input port - will
+   *            be ignored.
+   * @param[in] refPort Pointer to an existing output port which will be
+   *            associated with the new input port - will be ignored.
+   */
+  virtual void addIPort(const string& name, const ARTdataProp* refPort);
+  /**
+   * @brief Returns a pointer to the port object with the given name.
+   * @details The rectangular module only has a single valid name for an output
+   *          port which is called "out". Trying to get any other property with
+   *          another name will trigger an exception.
+   * @exception ARTerror If no port with the given name could be found in the
+   *            current module.
+   */
+  virtual ARTdataProp* getPort(const string& name);
 
-	virtual void setCurrentIndex(int idx);
-	virtual void simulateCurrentIndex(int idx);
+  /**
+   * @copydoc ARTItimeModule::setCurrentIndex()
+   */
+  virtual void setCurrentIndex(int idx);
+  /**
+   * @copydoc ARTItimeModule::simulateCurrentIndex()
+   */
+  virtual void simulateCurrentIndex(int idx);
 
-	virtual ~rectengularModule() {}
+  /**
+   * @brief Destructor of the rectangularModule class.
+   */
+  virtual ~rectangularModule() {}
 protected:
-	virtual void initLocalParams();
+  /**
+   * @brief Internal method which creates and initializes all needed local
+   *        parameters.
+   */
+  virtual void initLocalParams();
 };
 
+/**
+ * @brief Implements a simple module which amplifies the signal connected to the
+ *        input port with a given amplification factor.
+ * @details The class has a single input port called "in" and a single output
+ *          port called "out". The local parameter "A" defines the amplification
+ *          factor and can be set via the setLocalParameter() methods.
+ */
 class amplificationModule : public ARTItimeModule
 {
 protected:
-	OPortType* out_;
-	IPortType* in_;
+  /** Pointer to the single output port of the module. */
+  OPortType* out_;
+  /** Pointer to the single input port of the module. */
+  IPortType* in_;
 public:
-	explicit amplificationModule(const string& name = "AmplificationModule", const string& sds="", const string& lds="", const string& htm="");
-	virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
+  /**
+   * @brief Constructor of the amplificationModule class.
+   * @param[in] name Represents the unique identifier of the amplification
+   *            module.
+   * @param[in] sds Short description (single line) of the amplification module.
+   * @param[in] lds Long description of the amplification module.
+   * @param[in] htm Path to help file in HTML format.
+   */
+  explicit amplificationModule(const string& name = "AmplificationModule", const string& sds="", const string& lds="", const string& htm="");
+  /**
+   * @brief Factory function which creates a new amplification module object
+   *        with the given input parameters.
+   * @param[in] name Represents the unique identifier of the amplification
+   *            module.
+   * @param[in] sds Short description (single line) of the amplification module.
+   * @param[in] lds Long description of the amplification module.
+   * @param[in] htm Path to help file in HTML format.
+   */
+  virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
 
-	virtual void addIPort(const string& name, const ARTdataProp* refPort);
-	virtual ARTdataProp* getPort(const string& name);
+  /**
+   * @brief Adds a new input port to the current time module.
+   * @param[in] name Locally unique identifier of the new input port. Always has
+   *            to be "in" for the amplification module.
+   * @param[in] refPort Pointer to an existing output port which will be
+   *            associated with the new input port.
+   * @exception ARTerror If the given name is different to "in" or the provided
+   *            port is no valid output port object.
+   */
+  virtual void addIPort(const string& name, const ARTdataProp* refPort);
+  /**
+   * @brief Returns a pointer to the port object with the given name.
+   * @details The amplification module only has a single valid name for an
+   *          output port which is called "out". Trying to get any other
+   *          property with another name will trigger an exception.
+   * @exception ARTerror If no port with the given name could be found in the
+   *            current module.
+   */
+  virtual ARTdataProp* getPort(const string& name);
 
-	virtual void setCurrentIndex(int idx);
-	virtual void simulateCurrentIndex(int idx);
+  /**
+   * @copydoc ARTItimeModule::setCurrentIndex()
+   */
+  virtual void setCurrentIndex(int idx);
+  /**
+   * @copydoc ARTItimeModule::simulateCurrentIndex()
+   */
+  virtual void simulateCurrentIndex(int idx);
 
-	virtual ~amplificationModule() {}
+  /**
+   * @brief Destructor of the amplificationModule class.
+   */
+  virtual ~amplificationModule() {}
 protected:
-	virtual void initLocalParams();
+  /**
+   * @brief Internal method which creates and initializes all needed local
+   *        parameters.
+   */
+  virtual void initLocalParams();
 };
 
+/**
+ * @brief This module delays the input signal by the given delay in seconds, but
+ *        rounds to the next closes sample.
+ * @details The local parameter "Delay" specifies the delay in seconds and can
+ *          be set via the setLocalParameter() functions. The module has a
+ *          single input port called "in" and a single output port called "out".
+ *          This module should only be used if the delay is either an exact
+ *          multiple of the sampling period or precision does not matter.
+ *          Otherwise, it is highly recommended to use the
+ *          fractionalDelayModule.
+ */
 class simpleDelayModule : public ARTItimeModule
 {
 protected:
-	OPortType* out_;
-	IPortType* in_;
+  /** Pointer to the single output port of the module. */
+  OPortType* out_;
+  /** Pointer to the single input port of the module. */
+  IPortType* in_;
 public:
-	explicit simpleDelayModule(const string& name = "SimpleDelayModule", const string& sds="", const string& lds="", const string& htm="");
-	virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
+  /**
+   * @brief Constructor of the simpleDelayModule class.
+   * @param[in] name Represents the unique identifier of the simple delay
+   *            module.
+   * @param[in] sds Short description (single line) of the simple delay module.
+   * @param[in] lds Long description of the simple delay module.
+   * @param[in] htm Path to help file in HTML format.
+   */
+  explicit simpleDelayModule(const string& name = "SimpleDelayModule", const string& sds="", const string& lds="", const string& htm="");
+  /**
+   * @brief Factory function which creates a new simple delay module object
+   *        with the given input parameters.
+   * @param[in] name Represents the unique identifier of the simple delay module.
+   * @param[in] sds Short description (single line) of the simple delay module.
+   * @param[in] lds Long description of the simple delay module.
+   * @param[in] htm Path to help file in HTML format.
+   */
+  virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
 
-	virtual void addIPort(const string& name, const ARTdataProp* refPort);
-	virtual ARTdataProp* getPort(const string& name);
+  /**
+   * @brief Adds a new input port to the current time module.
+   * @param[in] name Locally unique identifier of the new input port. Always has
+   *            to be "in" for the simple delay module.
+   * @param[in] refPort Pointer to an existing output port which will be
+   *            associated with the new input port.
+   * @exception ARTerror If the given name is different to "in" or the provided
+   *            port is no valid output port object.
+   */
+  virtual void addIPort(const string& name, const ARTdataProp* refPort);
+  /**
+   * @brief Returns a pointer to the port object with the given name.
+   * @details The simple delay module only has a single valid name for an output
+   *          port which is called "out". Trying to get any other property with
+   *          another name will trigger an exception.
+   * @exception ARTerror If no port with the given name could be found in the
+   *            current module.
+   */
+  virtual ARTdataProp* getPort(const string& name);
 
-	virtual void setCurrentIndex(int idx);
-	virtual void simulateCurrentIndex(int idx);
+  /**
+   * @copydoc ARTItimeModule::setCurrentIndex()
+   */
+  virtual void setCurrentIndex(int idx);
+  /**
+   * @copydoc ARTItimeModule::simulateCurrentIndex()
+   */
+  virtual void simulateCurrentIndex(int idx);
 
-	virtual ~simpleDelayModule() {}
+  /**
+   * @brief Destructor of the simpleDelayModule class.
+   */
+  virtual ~simpleDelayModule() {}
 protected:
-	virtual void initLocalParams();
+  /**
+   * @brief Internal method which creates and initializes all needed local
+   *        parameters.
+   */
+  virtual void initLocalParams();
 };
 
+/**
+ * @brief Implements a module which simply adds two input signals and presents
+ *        the result at its single output port.
+ * @details There are no local parameters which can be set. The only requirement
+ *          before simulating is to connect the input signals to either input
+ *          port "in1" or "in2".
+ */
 class addModule : public ARTItimeModule
 {
 protected:
-	OPortType* out_;
+  /** Pointer to the single output port of the module. */
+  OPortType* out_;
 public:
-	explicit addModule(const string& name = "AddModule", const string& sds="", const string& lds="", const string& htm="");
-	virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
+  /**
+   * @brief Constructor of the addModule class.
+   * @param[in] name Represents the unique identifier of the add module.
+   * @param[in] sds Short description (single line) of the add module.
+   * @param[in] lds Long description of the add module.
+   * @param[in] htm Path to help file in HTML format.
+   */
+  explicit addModule(const string& name = "AddModule", const string& sds="", const string& lds="", const string& htm="");
+  /**
+   * @brief Factory function which creates a new add module object with the
+   *        given input parameters.
+   * @param[in] name Represents the unique identifier of the add module.
+   * @param[in] sds Short description (single line) of the add module.
+   * @param[in] lds Long description of the add module.
+   * @param[in] htm Path to help file in HTML format.
+   */
+  virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
 
-	virtual void addIPort(const string& name, const ARTdataProp* refPort);
-	virtual ARTdataProp* getPort(const string& name);
+  /**
+   * @brief Adds a new input port to the current time module.
+   * @param[in] name Locally unique identifier of the new input port. Has either
+   *            to be "in1" or "in2" for the add module.
+   * @param[in] refPort Pointer to an existing output port which will be
+   *            associated with the new input port.
+   * @exception ARTerror If the given name is different to "in1" or "in2" or the
+   *            provided port is no valid output port object.
+   */
+  virtual void addIPort(const string& name, const ARTdataProp* refPort);
+  /**
+   * @brief Returns a pointer to the port object with the given name.
+   * @details The add module only has a single valid name for an output
+   *          port which is called "out". Trying to get any other property with
+   *          another name will trigger an exception.
+   * @exception ARTerror If no port with the given name could be found in the
+   *            current module.
+   */
+  virtual ARTdataProp* getPort(const string& name);
 
-	virtual void setCurrentIndex(int idx);
-	virtual void simulateCurrentIndex(int idx);
+  /**
+   * @copydoc ARTItimeModule::setCurrentIndex()
+   */
+  virtual void setCurrentIndex(int idx);
+  /**
+   * @copydoc ARTItimeModule::simulateCurrentIndex()
+   */
+  virtual void simulateCurrentIndex(int idx);
 
-	virtual ~addModule() {}
+  /**
+   * @brief Destructor of the addModule class.
+   */
+  virtual ~addModule() {}
 };
 
+/**
+ * @brief Implements a module which simply multiplies two input signals and
+ *        presents the result at its single output port.
+ * @details There are no local parameters which can be set. The only requirement
+ *          before simulating is to connect the input signals to either input
+ *          port "in1" or "in2".
+ */
 class multiplicationModule : public ARTItimeModule
 {
 protected:
-	OPortType* out_;
+  /** Pointer to the single output port of the module. */
+  OPortType* out_;
 public:
-	explicit multiplicationModule(const string& name = "MultiplicationModule", const string& sds="", const string& lds="", const string& htm="");
-	virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
+  /**
+   * @brief Constructor of the multiplicationModule class.
+   * @param[in] name Represents the unique identifier of the multiplication
+   *            module.
+   * @param[in] sds Short description (single line) of the multiplication
+   *            module.
+   * @param[in] lds Long description of the multiplication module.
+   * @param[in] htm Path to help file in HTML format.
+   */
+  explicit multiplicationModule(const string& name = "MultiplicationModule", const string& sds="", const string& lds="", const string& htm="");
+  /**
+   * @brief Factory function which creates a new multiplication module object
+   *        with the given input parameters.
+   * @param[in] name Represents the unique identifier of the multiplication
+   *            module.
+   * @param[in] sds Short description (single line) of the multiplication
+   *            module.
+   * @param[in] lds Long description of the multiplication module.
+   * @param[in] htm Path to help file in HTML format.
+   */
+  virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
 
-	virtual void addIPort(const string& name, const ARTdataProp* refPort);
-	virtual ARTdataProp* getPort(const string& name);
+  /**
+   * @brief Adds a new input port to the current time module.
+   * @param[in] name Locally unique identifier of the new input port. Has either
+   *            to be "in1" or "in2" for the multiplication module.
+   * @param[in] refPort Pointer to an existing output port which will be
+   *            associated with the new input port.
+   * @exception ARTerror If the given name is different to "in1" or "in2" or the
+   *            provided port is no valid output port object.
+   */
+  virtual void addIPort(const string& name, const ARTdataProp* refPort);
+  /**
+   * @brief Returns a pointer to the port object with the given name.
+   * @details The multiplication module only has a single valid name for an
+   *          output port which is called "out". Trying to get any other
+   *          property with another name will trigger an exception.
+   * @exception ARTerror If no port with the given name could be found in the
+   *            current module.
+   */
+  virtual ARTdataProp* getPort(const string& name);
 
-	virtual void setCurrentIndex(int idx);
-	virtual void simulateCurrentIndex(int idx);
+  /**
+   * @copydoc ARTItimeModule::setCurrentIndex()
+   */
+  virtual void setCurrentIndex(int idx);
+  /**
+   * @copydoc ARTItimeModule::simulateCurrentIndex()
+   */
+  virtual void simulateCurrentIndex(int idx);
 
-	virtual ~multiplicationModule() {}
+  /**
+   * @brief Destructor of the multiplicationModule class.
+   */
+  virtual ~multiplicationModule() {}
 };
 
+/**
+ * @brief Implements a module creating a sine wave signal which can be further
+ *        processed by other time modules.
+ * @details Three local parameters can be set:
+ *   - <b> \c A </b> defines the amplitude of the sine wave. Defaults to "1".
+ *   - <b> \c f </b> defines the frequency of the sine wave in Hz. Defaults
+ *     to "10".
+ *   - <b> \c Delta </b> defines the phase (delay) of the sine wave in seconds.
+ *     Defaults to "0".
+ */
 class sinewaveModule : public ARTItimeModule
 {
 protected:
-	OPortType* out_;
+  /** Pointer to the single output port of the module. */
+  OPortType* out_;
 public:
-	explicit sinewaveModule(const string& name = "SinewaveModule", const string& sds="", const string& lds="", const string& htm="");
-	virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
+  /**
+   * @brief Constructor of the sinewaveModule class.
+   * @param[in] name Represents the unique identifier of the sine wave module.
+   * @param[in] sds Short description (single line) of the sine wave module.
+   * @param[in] lds Long description of the sine wave module.
+   * @param[in] htm Path to help file in HTML format.
+   */
+  explicit sinewaveModule(const string& name = "SinewaveModule", const string& sds="", const string& lds="", const string& htm="");
+  /**
+   * @brief Factory function which creates a new multiplication module object
+   *        with the given input parameters.
+   * @param[in] name Represents the unique identifier of the sine wave module.
+   * @param[in] sds Short description (single line) of the sine wave module.
+   * @param[in] lds Long description of the sine wave module.
+   * @param[in] htm Path to help file in HTML format.
+   */
+  virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
 
-	virtual void addIPort(const string& name, const ARTdataProp* refPort);
-	virtual ARTdataProp* getPort(const string& name);
+  /**
+   * @brief Always throws an ARTerror exception as this module does not allow
+   *        to add any input ports.
+   * @param[in] name Locally unique identifier of the new input port - will
+   *            be ignored.
+   * @param[in] refPort Pointer to an existing output port which will be
+   *            associated with the new input port - will be ignored.
+   */
+  virtual void addIPort(const string& name, const ARTdataProp* refPort);
+  /**
+   * @brief Returns a pointer to the port object with the given name.
+   * @details The sine wave module only has a single valid name for an
+   *          output port which is called "out". Trying to get any other
+   *          property with another name will trigger an exception.
+   * @exception ARTerror If no port with the given name could be found in the
+   *            current module.
+   */
+  virtual ARTdataProp* getPort(const string& name);
 
-	virtual void setCurrentIndex(int idx);
-	virtual void simulateCurrentIndex(int idx);
+  /**
+   * @copydoc ARTItimeModule::setCurrentIndex()
+   */
+  virtual void setCurrentIndex(int idx);
+  /**
+   * @copydoc ARTItimeModule::simulateCurrentIndex()
+   */
+  virtual void simulateCurrentIndex(int idx);
 
-	virtual ~sinewaveModule() {}
+  /**
+   * @brief Destructor of the multiplicationModule class.
+   */
+  virtual ~sinewaveModule() {}
 protected:
-	virtual void initLocalParams();
+  /**
+   * @brief Internal method which creates and initializes all needed local
+   *        parameters.
+   */
+  virtual void initLocalParams();
 };
 
+/**
+ * @brief Abstract class which provides internal methods which can be re-used
+ *        by all modules requiring fractional delay filters.
+ * @details This class cannot be instantiated and only provides constructor,
+ *          destructor and internal functions to calculate parameters for
+ *          Lagrange FIR and Thiran IIR filters.
+ */
 class genericDelayModule : public ARTItimeModule
 {
 public:
-	explicit genericDelayModule(const string& name, const string& sds="", const string& lds="", const string& htm="") :
-			ARTItimeModule(name, sds, lds, htm) {}
-	~genericDelayModule() {}
+  /**
+   * @brief Constructor of the genericDelayModule class.
+   * @param[in] name Represents the unique identifier of the generic delay
+   *            module.
+   * @param[in] sds Short description (single line) of the generic delay module.
+   * @param[in] lds Long description of the generic delay module.
+   * @param[in] htm Path to help file in HTML format.
+   */
+  explicit genericDelayModule(const string& name, const string& sds="", const string& lds="", const string& htm="") :
+  ARTItimeModule(name, sds, lds, htm) {}
+  /**
+   * @brief Destructor of the genericDelayModule class.
+   */
+  ~genericDelayModule() {}
 protected:
-	virtual double getLagrangeParams(int n, int N, double D);
-	virtual double getThiranParams(int n, int N, double D);
 
-	virtual double fac(int n);
-	virtual double binom(int n, int k);
+  /**
+   * @brief Calculates the Lagrange filter parameters for the given input
+   *        values.
+   * @param[in] n Defines the position of the filter parameter. 0 <= n <= N.
+   * @param[in] N Defines the order of the filter.
+   * @param[in] D Defines the delay in samples (not in seconds).
+   */
+  virtual double getLagrangeParams(int n, int N, double D);
+  /**
+   * @brief Calculates the Thiran filter parameters for the given input
+   *        values.
+   * @param[in] n Defines the position of the filter parameter. 0 <= n <= N.
+   * @param[in] N Defines the order of the filter.
+   * @param[in] D Defines the delay in samples (not in seconds).
+   */
+  virtual double getThiranParams(int n, int N, double D);
+
+  /**
+   * @brief Returns the faculty (n!) of the given number.
+   * @param[in] n The integer for which the faculty will be calculated.
+   * @note For invalid input, i.e., n < 0, the function will return 1.
+   */
+  virtual double fac(int n);
+  /**
+   * @brief Returns the binomial coefficient for "n choose k".
+   * @param[in] n Factor "n" of the binomial coefficient.
+   * @param[in] k Factor "k" of the binomial coefficient.
+   * @note The function does not do any boundary checks, i.e., whether k <= n.
+   *       This may cause useless results of the function although no exception
+   *       will be thrown.
+   */
+  virtual double binom(int n, int k);
 };
 
 class fractionalDelayModule : public genericDelayModule
 {
 protected:
-	OPortType* out_;
-	IPortType* in_;
+  OPortType* out_;
+  IPortType* in_;
 public:
-	explicit fractionalDelayModule(const string& name="FractionalDelayModule", const string& sds="", const string& lds="", const string& htm="");
-	virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
+  explicit fractionalDelayModule(const string& name="FractionalDelayModule", const string& sds="", const string& lds="", const string& htm="");
+  virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
 
-	virtual void addIPort(const string& name, const ARTdataProp* refPort);
-	virtual ARTdataProp* getPort(const string& name);
+  virtual void addIPort(const string& name, const ARTdataProp* refPort);
+  virtual ARTdataProp* getPort(const string& name);
 
-	virtual void setCurrentIndex(int idx);
-	virtual void simulateCurrentIndex(int idx);
+  virtual void setCurrentIndex(int idx);
+  virtual void simulateCurrentIndex(int idx);
 
-	virtual ~fractionalDelayModule() {}
+  virtual ~fractionalDelayModule() {}
 protected:
-	virtual void initLocalParams();
-	virtual void initSimulation();
+  virtual void initLocalParams();
+  virtual void initSimulation();
 
 
 };
@@ -263,55 +794,55 @@ protected:
 class DWGcylinderModule : public genericDelayModule
 {
 protected:
-	IPortType* p1p_;
-	OPortType* p2p_;
-	OPortType* p1m_;
-	IPortType* p2m_;
+  IPortType* p1p_;
+  OPortType* p2p_;
+  OPortType* p1m_;
+  IPortType* p2m_;
 
-	OPortType* p1pbuf_;
-	OPortType* p2mbuf_;
+  OPortType* p1pbuf_;
+  OPortType* p2mbuf_;
 
 public:
-	explicit DWGcylinderModule(const string& name="DWGCylinderModule", const string& sds="", const string& lds="", const string& htm="");
-	virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
+  explicit DWGcylinderModule(const string& name="DWGCylinderModule", const string& sds="", const string& lds="", const string& htm="");
+  virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
 
-	virtual void addIPort(const string& name, const ARTdataProp* refPort);
-	virtual ARTdataProp* getPort(const string& name);
+  virtual void addIPort(const string& name, const ARTdataProp* refPort);
+  virtual ARTdataProp* getPort(const string& name);
 
-	virtual void setCurrentIndex(int idx);
-	virtual void simulateCurrentIndex(int idx);
+  virtual void setCurrentIndex(int idx);
+  virtual void simulateCurrentIndex(int idx);
 
-	virtual ~DWGcylinderModule() {}
+  virtual ~DWGcylinderModule() {}
 protected:
-	virtual void initLocalParams();
-	virtual void initSimulation();
+  virtual void initLocalParams();
+  virtual void initSimulation();
 
 };
 
 class DWGcylinderJunctionModule : public ARTItimeModule
 {
 protected:
-	IPortType* p1p_;
-	OPortType* p2p_;
-	OPortType* p1m_;
-	IPortType* p2m_;
+  IPortType* p1p_;
+  OPortType* p2p_;
+  OPortType* p1m_;
+  IPortType* p2m_;
 
-	localParameterType* r1_;
-	localParameterType* r2_;
+  localParameterType* r1_;
+  localParameterType* r2_;
 
 public:
-	explicit DWGcylinderJunctionModule(const string& name="DWGCylinderJunctionModule", const string& sds="", const string& lds="", const string& htm="");
-	virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
+  explicit DWGcylinderJunctionModule(const string& name="DWGCylinderJunctionModule", const string& sds="", const string& lds="", const string& htm="");
+  virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
 
-	virtual void addIPort(const string& name, const ARTdataProp* refPort);
-	virtual ARTdataProp* getPort(const string& name);
+  virtual void addIPort(const string& name, const ARTdataProp* refPort);
+  virtual ARTdataProp* getPort(const string& name);
 
-	virtual void setCurrentIndex(int idx);
-	virtual void simulateCurrentIndex(int idx);
+  virtual void setCurrentIndex(int idx);
+  virtual void simulateCurrentIndex(int idx);
 
-	virtual ~DWGcylinderJunctionModule() {}
+  virtual ~DWGcylinderJunctionModule() {}
 protected:
-	virtual void initLocalParams();
+  virtual void initLocalParams();
 
 };
 
@@ -319,52 +850,52 @@ class DWGconeModule : public DWGcylinderModule
 {
 
 public:
-	explicit DWGconeModule(const string& name="DWGConeModule", const string& sds="", const string& lds="", const string& htm="");
-	virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
+  explicit DWGconeModule(const string& name="DWGConeModule", const string& sds="", const string& lds="", const string& htm="");
+  virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
 
-	virtual ~DWGconeModule() {}
+  virtual ~DWGconeModule() {}
 protected:
-	virtual void initLocalParams();
-	virtual void initSimulation();
-	virtual void calculateConeApex();
+  virtual void initLocalParams();
+  virtual void initSimulation();
+  virtual void calculateConeApex();
 
 };
 
 class DWGconeJunctionModule : public ARTItimeModule
 {
 protected:
-	IPortType* p1p_;
-	OPortType* p2p_;
-	OPortType* p1m_;
-	IPortType* p2m_;
+  IPortType* p1p_;
+  OPortType* p2p_;
+  OPortType* p1m_;
+  IPortType* p2m_;
 
-	OPortType* rz_;
+  OPortType* rz_;
 
-	localParameterType* r1_;
-	localParameterType* r2_;
-	localParameterType* S1_;
-	localParameterType* S2_;
+  localParameterType* r1_;
+  localParameterType* r2_;
+  localParameterType* S1_;
+  localParameterType* S2_;
 
 public:
-	explicit DWGconeJunctionModule(const string& name="DWGConeJunctionModule", const string& sds="", const string& lds="", const string& htm="");
-	virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
+  explicit DWGconeJunctionModule(const string& name="DWGConeJunctionModule", const string& sds="", const string& lds="", const string& htm="");
+  virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
 
-	virtual void addIPort(const string& name, const ARTdataProp* refPort);
-	virtual ARTdataProp* getPort(const string& name);
+  virtual void addIPort(const string& name, const ARTdataProp* refPort);
+  virtual ARTdataProp* getPort(const string& name);
 
-	virtual void setCurrentIndex(int idx);
-	virtual void simulateCurrentIndex(int idx);
+  virtual void setCurrentIndex(int idx);
+  virtual void simulateCurrentIndex(int idx);
 
-	virtual ~DWGconeJunctionModule() {}
+  virtual ~DWGconeJunctionModule() {}
 protected:
-	virtual void initLocalParams();
-	virtual void initSimulation();
+  virtual void initLocalParams();
+  virtual void initSimulation();
 
-	virtual void calculateConeApex();
+  virtual void calculateConeApex();
 
-	virtual double getB0(const string& method);
-	virtual double getB1(const string& method);
-	virtual double getA1(const string& method);
+  virtual double getB0(const string& method);
+  virtual double getB1(const string& method);
+  virtual double getA1(const string& method);
 
 };
 

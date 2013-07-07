@@ -985,7 +985,7 @@ AcousticResearchTool::AcousticResearchTool() : ARTobject("ART","Acoustic Researc
 	obj = prototypeModels->AppendObject(new ARTtimeModule());
 	obj = prototypeModels->AppendObject(new impulseModule());
 	obj = prototypeModels->AppendObject(new heavisideModule());
-	obj = prototypeModels->AppendObject(new rectengularModule());
+	obj = prototypeModels->AppendObject(new rectangularModule());
 	obj = prototypeModels->AppendObject(new amplificationModule());
 	obj = prototypeModels->AppendObject(new simpleDelayModule());
 	obj = prototypeModels->AppendObject(new addModule());
