@@ -1014,7 +1014,7 @@ void DWGcylinderModule::initLocalParams()
 
   // save standard length of implemented filter
   tmpParam = new localParameterType("length", "length of the cylinder in m");
-  tmpParam->SetVal(50);
+  tmpParam->SetVal(0.05);
   AppendDataProp(tmpParam);
 }
 
@@ -1590,7 +1590,7 @@ void DWGconeJunctionModule::initLocalParams()
   AppendDataProp(tmpParam);
 
   // save standard value for length of the left cone
-  tmpParam = new localParameterType("llength", "radius of the length of the left cone in m (used in boreprofile mode)");
+  tmpParam = new localParameterType("llength", "length of the left cone in m (used in boreprofile mode)");
   tmpParam->SetVal(0.1);
   AppendDataProp(tmpParam);
 
@@ -1605,7 +1605,7 @@ void DWGconeJunctionModule::initLocalParams()
   AppendDataProp(tmpParam);
 
   // save standard value for length of the right cone
-  tmpParam = new localParameterType("rlength", "radius of the length of the right cone in m (used in boreprofile mode)");
+  tmpParam = new localParameterType("rlength", "length of the right cone in m (used in boreprofile mode)");
   tmpParam->SetVal(0.1);
   AppendDataProp(tmpParam);
 

@@ -659,7 +659,7 @@ public:
    */
   explicit sinewaveModule(const string& name = "SinewaveModule", const string& sds="", const string& lds="", const string& htm="");
   /**
-   * @brief Factory function which creates a new multiplication module object
+   * @brief Factory function which creates a new sine wave module object
    *        with the given input parameters.
    * @param[in] name Represents the unique identifier of the sine wave module.
    * @param[in] sds Short description (single line) of the sine wave module.
@@ -768,133 +768,548 @@ protected:
   virtual double binom(int n, int k);
 };
 
+/**
+ * @brief This module delays the input signal by the given delay in seconds by
+ *        using FIR or IIR filters.
+ * @details You can specify the filter type, the filter order and the delay of
+ *          the signal. Bear in mind that these filters may not be stable
+ *          depending on the given parameters. Recommended boundaries for Delay
+ *          D (in samples) and filter order N:
+ *   - (N/2 + 1) <= D <= (N/2 - 1) for Lagrange filters with even order,
+ *   - (N-1)/2 <= D <= (N+1)/2 for Lagrange filters with odd order and
+ *   - N - 0.5 <= D <= N + 0.5 for Thiran filters.
+ *
+ * Three local parameters can be set:
+ *   - <b> \c type </b> defines the type of the filter. "lagrange" results in
+ *     and FIR, "thiran" in an IIR filter. Defaults to "lagrange".
+ *   - <b> \c order </b> defines the order of the filter. Defaults to "5".
+ *   - <b> \c Delay </b> defines the delay of the signal in seconds. Defaults
+ *     to "0".
+ */
 class fractionalDelayModule : public genericDelayModule
 {
 protected:
+  /** Pointer to the single output port of the module. */
   OPortType* out_;
+  /** Pointer to the single input port of the module. */
   IPortType* in_;
 public:
+  /**
+   * @brief Constructor of the fractionalDelayModule class.
+   * @param[in] name Represents the unique identifier of the fractional delay
+   *            module.
+   * @param[in] sds Short description (single line) of the fractional delay
+   *            module.
+   * @param[in] lds Long description of the fractional delay module.
+   * @param[in] htm Path to help file in HTML format.
+   */
   explicit fractionalDelayModule(const string& name="FractionalDelayModule", const string& sds="", const string& lds="", const string& htm="");
+  /**
+   * @brief Factory function which creates a new fractional delay module object
+   *        with the given input parameters.
+   * @param[in] name Represents the unique identifier of the fractional delay
+   *            module.
+   * @param[in] sds Short description (single line) of the fractional delay
+   *            module.
+   * @param[in] lds Long description of the fractional delay module.
+   * @param[in] htm Path to help file in HTML format.
+   */
   virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
 
+  /**
+   * @brief Adds a new input port to the current time module.
+   * @param[in] name Locally unique identifier of the new input port. Always has
+   *            to be "in" for the fraction delay module.
+   * @param[in] refPort Pointer to an existing output port which will be
+   *            associated with the new input port.
+   * @exception ARTerror If the given name is different to "in" or the provided
+   *            port is no valid output port object.
+   */
   virtual void addIPort(const string& name, const ARTdataProp* refPort);
+  /**
+   * @brief Returns a pointer to the port object with the given name.
+   * @details The fractional delay module only has a single valid name for an
+   *          output port which is called "out". Trying to get any other
+   *          property with another name will trigger an exception.
+   * @exception ARTerror If no port with the given name could be found in the
+   *            current module.
+   */
   virtual ARTdataProp* getPort(const string& name);
 
+  /**
+   * @copydoc ARTItimeModule::setCurrentIndex()
+   */
   virtual void setCurrentIndex(int idx);
+  /**
+   * @copydoc ARTItimeModule::simulateCurrentIndex()
+   */
   virtual void simulateCurrentIndex(int idx);
 
+  /**
+   * @brief Destructor of the fractionalDelayModule.
+   */
   virtual ~fractionalDelayModule() {}
 protected:
+  /**
+   * @brief Internal method which creates and initializes all needed local
+   *        parameters.
+   */
   virtual void initLocalParams();
+  /**
+   * @brief Internal method which prepares the filter function based on the
+   *        given filter type and delay by referring to the global sampling
+   *        period parameter "T".
+   * @exception ARTerror If the defined filter type does neither match
+   *            "lagrange" nor "thiran".
+   */
   virtual void initSimulation();
-
 
 };
 
+/**
+ * @brief Implements a digital waveguide module for cylinders.
+ * @details The module has two input and two output ports:
+ *   - <b> \c p1p </b> Input port for the forwards traveling wave.
+ *   - <b> \c p2p </b> Output port for the forwards traveling wave.
+ *   - <b> \c p1m </b> Input port for the backwards traveling wave.
+ *   - <b> \c p2m </b> Input port for the backwards traveling wave.
+ *
+ * The user can specify the following local parameters:
+ *   - <b> \c type </b> defines the type of the fractional delay filter and can
+ *     either be "lagrange" or "thiran". Defaults to "lagrange".
+ *   - <b> \c length </b> defines the length of the cylinder in m. Defaults to
+ *     0.05, i.e. 50 mm.
+ *
+ * The main advantage of using this module instead of the fractionalDelayModule
+ * if the fact that every parameter will be defined automatically - there is no
+ * need the define the filter order manually and check boundary conditions.
+ */
 class DWGcylinderModule : public genericDelayModule
 {
 protected:
+  /** Forwards traveling wave left input port. */
   IPortType* p1p_;
+  /** Forwards traveling wave right output port. */
   OPortType* p2p_;
+  /** Backwards traveling wave left output port. */
   OPortType* p1m_;
+  /** Backwards traveling wave right input port. */
   IPortType* p2m_;
 
+  /** Internal buffer for time delays - forwards traveling wave. */
   OPortType* p1pbuf_;
+  /** Internal buffer for time delays - backwards traveling wave. */
   OPortType* p2mbuf_;
 
 public:
+  /**
+   * @brief Constructor of the DWGcylinderModule class.
+   * @param[in] name Represents the unique identifier of the DWG cylinder
+   *            module.
+   * @param[in] sds Short description (single line) of the DWG cylinder
+   *            module.
+   * @param[in] lds Long description of the DWG cylinder module.
+   * @param[in] htm Path to help file in HTML format.
+   */
   explicit DWGcylinderModule(const string& name="DWGCylinderModule", const string& sds="", const string& lds="", const string& htm="");
+  /**
+   * @brief Factory function which creates a new DWG cylinder module object
+   *        with the given input parameters.
+   * @param[in] name Represents the unique identifier of the DWG cylinder
+   *            module.
+   * @param[in] sds Short description (single line) of the DWG cylinder
+   *            module.
+   * @param[in] lds Long description of the DWG cylinder module.
+   * @param[in] htm Path to help file in HTML format.
+   */
   virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
 
+  /**
+   * @brief Adds a new input port to the current time module.
+   * @param[in] name Locally unique identifier of the new input port. Either has
+   *            to be "p1p" or "p2m" for the DWG cylinder module.
+   * @param[in] refPort Pointer to an existing output port which will be
+   *            associated with the new input port.
+   * @exception ARTerror If the given name is different to "p1p" or "p2m" or the
+   *            provided port is no valid output port object.
+   */
   virtual void addIPort(const string& name, const ARTdataProp* refPort);
+  /**
+   * @brief Returns a pointer to the port object with the given name.
+   * @details The DWG cylinder module only has valid names for
+   *          output ports which are called "p2p" or "p1m". Trying to get any
+   *          other property with another name will trigger an exception.
+   * @exception ARTerror If no port with the given name could be found in the
+   *            current module.
+   */
   virtual ARTdataProp* getPort(const string& name);
 
+  /**
+   * @copydoc ARTItimeModule::setCurrentIndex
+   */
   virtual void setCurrentIndex(int idx);
+  /**
+   * @copydoc ARTItimeModule::simulateCurrentIndex
+   */
   virtual void simulateCurrentIndex(int idx);
 
+  /**
+   * @brief Destructor of the DWGcylinderModule class.
+   */
   virtual ~DWGcylinderModule() {}
 protected:
+  /**
+   * @brief Internal method which creates and initializes all needed local
+   *        parameters.
+   */
   virtual void initLocalParams();
+  /**
+   * @brief Internal method which prepares the cylinder function based on the
+   *        given filter type and delay by referring to the global sampling
+   *        period parameter "T".
+   * @exception ARTerror If the global parameter "c" for sound velocity cannot
+   *            be found and the method was neither "lagrange" nor "thiran".
+   */
   virtual void initSimulation();
 
 };
 
+/**
+ * @brief Implements a digital waveguide module for cylinder junctions.
+ * @details The module has two input and two output ports:
+ *   - <b> \c p1p </b> Input port for the forwards traveling wave.
+ *   - <b> \c p2p </b> Output port for the forwards traveling wave.
+ *   - <b> \c p1m </b> Input port for the backwards traveling wave.
+ *   - <b> \c p2m </b> Input port for the backwards traveling wave.
+ *
+ * To provide more flexibility, the module allows the user to specify all
+ * parameters in two ways: The traditional way is providing the radius of the
+ * wave spheres of the left and right end of the cone. The "boreprofile" mode
+ * is more flexible and lets the user define all measurements based on bore
+ * profiles, i.e., the radius at the left and the right end of the cone.
+ * The following local parameters can be specified:
+ *
+ *   - <b> \c r1 </b> Radius of the cylinder on the left side of the junction in
+ *     m. Defaults to 0.01, i.e., 10 mm.
+ *   - <b> \c r2 </b> Radius of the cylinder on the right side of the junction
+ *     in m. Defaults to 0.015, i.e., 15 mm.
+ */
 class DWGcylinderJunctionModule : public ARTItimeModule
 {
 protected:
+  /** Forwards traveling wave left input port. */
   IPortType* p1p_;
+  /** Forwards traveling wave right output port. */
   OPortType* p2p_;
+  /** Backwards traveling wave left output port. */
   OPortType* p1m_;
+  /** Backwards traveling wave right input port. */
   IPortType* p2m_;
 
+  /** Pointer to the parameter representing the radius of the left cylinder. */
   localParameterType* r1_;
+  /** Pointer to the parameter representing the radius of the right cylinder. */
   localParameterType* r2_;
 
 public:
+  /**
+   * @brief Constructor of the DWGCylinderJunctionModule class.
+   * @param[in] name Represents the unique identifier of the DWG cylinder
+   *            junction module.
+   * @param[in] sds Short description (single line) of the DWG cylinder junction
+   *            module.
+   * @param[in] lds Long description of the DWG cylinder junction module.
+   * @param[in] htm Path to help file in HTML format.
+   */
   explicit DWGcylinderJunctionModule(const string& name="DWGCylinderJunctionModule", const string& sds="", const string& lds="", const string& htm="");
+  /**
+   * @brief Factory function which creates a new DWG cylinder junction module
+   *        object with the given input parameters.
+   * @param[in] name Represents the unique identifier of the DWG cylinder
+   *            junction module.
+   * @param[in] sds Short description (single line) of the DWG cylinder junction
+   *            module.
+   * @param[in] lds Long description of the DWG cylinder junction module.
+   * @param[in] htm Path to help file in HTML format.
+   */
   virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
 
+  /**
+   * @brief Adds a new input port to the current time module.
+   * @param[in] name Locally unique identifier of the new input port. Either has
+   *            to be "p1p" or "p2m" for the DWG cylinder junction module.
+   * @param[in] refPort Pointer to an existing output port which will be
+   *            associated with the new input port.
+   * @exception ARTerror If the given name is different to "p1p" or "p2m" or the
+   *            provided port is no valid output port object.
+   */
   virtual void addIPort(const string& name, const ARTdataProp* refPort);
+  /**
+   * @brief Returns a pointer to the port object with the given name.
+   * @details The DWG cylinder junction module only has valid names
+   *          for output ports which are called "p2p" or "p1m". Trying to get
+   *          any other property with another name will trigger an exception.
+   * @exception ARTerror If no port with the given name could be found in the
+   *            current module.
+   */
   virtual ARTdataProp* getPort(const string& name);
 
+  /**
+   * @copydoc ARTItimeModule::setCurrentIndex
+   */
   virtual void setCurrentIndex(int idx);
+  /**
+   * @copydoc ARTItimeModule::simulateCurrentIndex
+   */
   virtual void simulateCurrentIndex(int idx);
 
+  /**
+   * @brief Destructor of the DWGcylinderJunctionModule class.
+   */
   virtual ~DWGcylinderJunctionModule() {}
 protected:
+  /**
+   * @brief Internal method which creates and initializes all needed local
+   *        parameters.
+   */
   virtual void initLocalParams();
 
 };
 
+/**
+ * @brief Implements a digital waveguide module for conical bores.
+ * @details The module has two input and two output ports:
+ *   - <b> \c p1p </b> Input port for the forwards traveling wave.
+ *   - <b> \c p2p </b> Output port for the forwards traveling wave.
+ *   - <b> \c p1m </b> Input port for the backwards traveling wave.
+ *   - <b> \c p2m </b> Input port for the backwards traveling wave.
+ *
+ * The user can specify the following local parameters:
+ *   - <b> \c type </b> defines the type of the fractional delay filter and can
+ *     either be "lagrange" or "thiran". Defaults to "lagrange".
+ *   - <b> \c length </b> defines the length of the cone in m. Defaults to
+ *     0.05, i.e. 50 mm.
+ *   - <b> \c mode </b> defines the interpretation of the parameters: "default"
+ *     means that r1 and r2 are interpreted as cone apex distances, whereas for
+ *     "boreprofile", the cone apex distances are calculated based on the given
+ *     radii of the left (r1) and right (r2) cone opening and the specified
+ *     length of the cone. Defaults to "default".
+ *   - <b> \c r1 </b> Radius of the left wave sphere in m in default mode or
+ *     radius of the left cone ending in boreprofile mode.
+ *   - <b> \c r2 </b> Radius of the right wave sphere in m in default mode or
+ *     radius of the right cone ending in boreprofile mode.
+ *
+ */
 class DWGconeModule : public DWGcylinderModule
 {
 
 public:
+  /**
+   * @brief Constructor of the DWGconeModule class.
+   * @param[in] name Represents the unique identifier of the DWG cone module.
+   * @param[in] sds Short description (single line) of the DWG cone module.
+   * @param[in] lds Long description of the DWG cone module.
+   * @param[in] htm Path to help file in HTML format.
+   */
   explicit DWGconeModule(const string& name="DWGConeModule", const string& sds="", const string& lds="", const string& htm="");
+  /**
+   * @brief Factory function which creates a new DWG cone module
+   *        object with the given input parameters.
+   * @param[in] name Represents the unique identifier of the DWG cone module.
+   * @param[in] sds Short description (single line) of the DWG cone module.
+   * @param[in] lds Long description of the DWG cone module.
+   * @param[in] htm Path to help file in HTML format.
+   */
   virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
 
+  /**
+   * @brief Destructor of the DWGconeModule class.
+   */
   virtual ~DWGconeModule() {}
 protected:
+  /**
+   * @brief Internal method which creates and initializes all needed local
+   *        parameters.
+   */
   virtual void initLocalParams();
+  /**
+   * @brief Internal method which prepares the cone function based on the
+   *        given filter type and delay by referring to the global sampling
+   *        period parameter "T".
+   * @exception ARTerror If the global parameter "c" for sound velocity cannot
+   *            be found and the method was neither "lagrange" nor "thiran".
+   */
   virtual void initSimulation();
+  /**
+   * @brief Calculates the cone apex radii and surface values if the parameter
+   *        values are given as a bore list.
+   */
   virtual void calculateConeApex();
 
 };
 
+/**
+ * @brief Implements a digital waveguide module for conical junctions.
+ * @details The module has two input and two output ports:
+ *   - <b> \c p1p </b> Input port for the forwards traveling wave.
+ *   - <b> \c p2p </b> Output port for the forwards traveling wave.
+ *   - <b> \c p1m </b> Input port for the backwards traveling wave.
+ *   - <b> \c p2m </b> Input port for the backwards traveling wave.
+ *
+ * The user can specify the following local parameters:
+ *   - <b> \c method </b> defines the method for calculating
+ *     the internal filter parameters. May be either "IIM", "BT" or "TICM".
+ *     Defaults to "IIM".
+ *   - <b> \c mode </b> defines the interpretation of the parameters: "default"
+ *     means that r1 and r2 are interpreted as cone apex distances, whereas for
+ *     "boreprofile", other parameters can be specified. Defaults to "default".
+ *   - <b> \c r1 </b> Radius of the left wave sphere in m (used in default
+ *     mode).
+ *   - <b> \c r2 </b> Radius of the right wave sphere in m (used in default
+ *     mode).
+ *   - <b> \c S1 </b> Area of the left wave sphere in m (used in default mode).
+ *   - <b> \c S2 </b> Area of the right wave sphere in m (used in default mode).
+ *   - <b> \c lr1 </b> Radius of the left end of the left cone in m (used in
+ *     boreprofile mode).
+ *   - <b> \c lr2 </b> Radius of the right end of the left cone in m (used in
+ *     boreprofile mode).
+ *   - <b> \c llength </b> Length of the left cone in m (used in
+ *     boreprofile mode).
+ *   - <b> \c rr1 </b> Radius of the left end of the right cone in m (used in
+ *     boreprofile mode).
+ *   - <b> \c rr2 </b> Radius of the right end of the right cone in m (used in
+ *     boreprofile mode)
+ *   - <b> \c rlength </b> Length of the right cone in m (used in
+ *     boreprofile mode).
+ *
+ */
 class DWGconeJunctionModule : public ARTItimeModule
 {
 protected:
+  /** Forwards traveling wave left input port. */
   IPortType* p1p_;
+  /** Forwards traveling wave right output port. */
   OPortType* p2p_;
+  /** Backwards traveling wave left output port. */
   OPortType* p1m_;
+  /** Backwards traveling wave right input port. */
   IPortType* p2m_;
 
+  /** Pointer to internal signal responsible for the output calculation. */
   OPortType* rz_;
 
+  /** Pointer to the left cone apex radius parameter. */
   localParameterType* r1_;
+  /** Pointer to the right cone apex radius parameter. */
   localParameterType* r2_;
+  /** Pointer to the left sphere surface parameter. */
   localParameterType* S1_;
+  /** Pointer to the right sphere surface parameter. */
   localParameterType* S2_;
 
 public:
+  /**
+   * @brief Constructor of the DWGconeJunctionModule class.
+   * @param[in] name Represents the unique identifier of the DWG cone
+   *            junction module.
+   * @param[in] sds Short description (single line) of the DWG cone junction
+   *            module.
+   * @param[in] lds Long description of the DWG cone junction module.
+   * @param[in] htm Path to help file in HTML format.
+   */
   explicit DWGconeJunctionModule(const string& name="DWGConeJunctionModule", const string& sds="", const string& lds="", const string& htm="");
+  /**
+   * @brief Factory function which creates a new DWG cone junction module
+   *        object with the given input parameters.
+   * @param[in] name Represents the unique identifier of the DWG cone
+   *            junction module.
+   * @param[in] sds Short description (single line) of the DWG cone junction
+   *            module.
+   * @param[in] lds Long description of the DWG cone junction module.
+   * @param[in] htm Path to help file in HTML format.
+   */
   virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
 
+  /**
+   * @brief Adds a new input port to the current time module.
+   * @param[in] name Locally unique identifier of the new input port. Either has
+   *            to be "p1p" or "p2m" for the DWG cone junction module.
+   * @param[in] refPort Pointer to an existing output port which will be
+   *            associated with the new input port.
+   * @exception ARTerror If the given name is different to "p1p" or "p2m" or the
+   *            provided port is no valid output port object.
+   */
   virtual void addIPort(const string& name, const ARTdataProp* refPort);
+  /**
+   * @brief Returns a pointer to the port object with the given name.
+   * @details The DWG cone junction module only has a valid names for
+   *          output ports which are called "p2p" or "p1m". Trying to get any
+   *          other property with another name will trigger an exception.
+   * @exception ARTerror If no port with the given name could be found in the
+   *            current module.
+   */
   virtual ARTdataProp* getPort(const string& name);
 
+  /**
+   * @copydoc ARTItimeModule::setCurrentIndex
+   */
   virtual void setCurrentIndex(int idx);
+  /**
+   * @copydoc ARTItimeModule::simulateCurrentIndex
+   */
   virtual void simulateCurrentIndex(int idx);
 
+  /**
+   * @brief Destructor of the DWGconeJunctionModule class.
+   */
   virtual ~DWGconeJunctionModule() {}
 protected:
+  /**
+   * @brief Internal method which creates and initializes all needed local
+   *        parameters.
+   */
   virtual void initLocalParams();
+  /**
+   * @brief Internal method which prepares the cone junction function based on
+   *        the calculated filter parameters.
+   */
   virtual void initSimulation();
 
+  /**
+   * @brief Calculates the cone apex radii and surface values if the parameter
+   *        values are given as a bore list.
+   */
   virtual void calculateConeApex();
 
+  /**
+   * @brief Calculates the b0 parameter of the filter function needed by the
+   *        cone junction.
+   * @param[in] method defines the method for calculating the filter parameter.
+   *            May either be "IIM", "TICM" or "BT".
+   * @excetion ARTerror If no global parameter "c" for the sound velocity was
+   *           defined in the current simulator or the given method cannot be
+   *           found.
+   */
   virtual double getB0(const string& method);
+  /**
+   * @brief Calculates the b1 parameter of the filter function needed by the
+   *        cone junction.
+   * @param[in] method defines the method for calculating the filter parameter.
+   *            May either be "IIM", "TICM" or "BT".
+   * @excetion ARTerror If no global parameter "c" for the sound velocity was
+   *           defined in the current simulator or the given method cannot be
+   *           found.
+   */
   virtual double getB1(const string& method);
+  /**
+   * @brief Calculates the a1 parameter of the filter function needed by the
+   *        cone junction.
+   * @param[in] method defines the method for calculating the filter parameter.
+   *            May either be "IIM", "TICM" or "BT".
+   * @excetion ARTerror If no global parameter "c" for the sound velocity was
+   *           defined in the current simulator or the given method cannot be
+   *           found.
+   */
   virtual double getA1(const string& method);
 
 };
