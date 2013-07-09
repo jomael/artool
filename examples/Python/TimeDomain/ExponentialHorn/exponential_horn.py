@@ -2,8 +2,16 @@
 
 """Test libartsim library with Python."""
 
+from sys import path,platform
+
+if platform.startswith("win"):
+  path.append("..\..")
+elif platform.startswith("linux"):
+  path.append("../..")
+
 from artsimdefs import *
 from math import exp
+from pylab import *
 
 # init simulation
 pSim = ARTRootObject()
@@ -138,15 +146,22 @@ for i in range (0,36):
 if (ARTSetParameter(sim, "DelayModule36.p2p[-1] = 0; DelayModule36.p1m[-1] = 0; Add.out[-1] = 0") == None):
   print ARTGetLastErrorMessage()
 
+expHorn = [0 for x in range(500)]
+t = arange(0.0, 500/44.1, 1/44.1)
+
 for i in range(0, 500):
   # get data structure
   outVal = ARTGetComplexFromPort(outputPort, i)
+  expHorn[i] = outVal.re
   error = ARTGetLastErrorMessage()
   if (error != ""):
     print error
     break
   if (i >= 75 or outVal.re != 0):
     print "{0:.10f} {1}".format(i/44.1,outVal.re)
+
+plot(t,expHorn)
+show()
 
 ARTRootDestroy()
 
