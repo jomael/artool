@@ -147,31 +147,31 @@
  *
  * A <B>Cylinder</B> is characterised by its radius and length.
  * @image html cyl.png
- * @image latex cyl_l.pdf
+ * @image latex cyl_l.pdf "Parameters of a cylinder module."
  * A <B>Bore jump</B> must be inserted, where two sections with different perimeter meet. It is
  * only characterised by radius 1 and 2. 
  * @image html bj.png
- * @image latex bj_l.pdf
+ * @image latex bj_l.pdf "Parameters of a bore jump module."
  * A <B>Cone</B> is described by its length, radius 1 and 2. The perimeter increase of the
  * perimeter is linear.
  * @image html cone.png
- * @image latex cone_l.pdf
+ * @image latex cone_l.pdf "Parameters of a cone module."
  * A <B>Bessel horn</B> is defined by its length, radius 1, radius 2 and the flare 
  * parameter. The increase of the perimeter is non-linear. Use the flare parameter to
  * change the curvature. See Braden 2006, p. 132 for detailed formulae.
  * @image html bessel.png
- * @image latex bessel_l.pdf
+ * @image latex bessel_l.pdf "Parameters of a bessel horn."
  * A <B>tone hole</B> is a branch to a cylinder with an open end. Tone holes can only
  * be inserted between two other elements.   
  * @image html tonehole.png
- * @image latex tonehole_l.pdf
+ * @image latex tonehole_l.pdf "Parameters of a tone hole module."
  * 
  * A <B>termination element</B> can only be added at the end of the element. Use termination
  * elements to choose the radiation impedance. The radius r defines the radius of the circular
  * radiating surface. 
  * 
  * @image html termination.png
- * @image latex termination_l.pdf
+ * @image latex termination_l.pdf "Parameters of a termination module." width=0.5cm
  *
  * The cylinder and the cone are also available as bent elements. An additional property,
  * the bend radius, describes the curvature of the bend.  

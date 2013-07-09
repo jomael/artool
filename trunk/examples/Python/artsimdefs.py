@@ -4,9 +4,9 @@ from sys import platform
 
 # load dynamic library
 if platform.startswith("win"):
-	artsim = cdll.LoadLibrary("../release/artsim.dll")
+  artsim = cdll.LoadLibrary("../../../../release/artsim.dll")
 elif platform.startswith("linux"):
-	artsim = cdll.LoadLibrary("../release/libartsim.so")
+  artsim = cdll.LoadLibrary("../../../../release/libartsim.so")
 
 # set function handles
 
@@ -110,10 +110,10 @@ ARTGetLastErrorMessage.argtype = []
 
 # define c++ classes
 class T_ART_Cmplx(Structure):
-	_fields_ = [("re", c_double),("im", c_double)]
+  _fields_ = [("re", c_double),("im", c_double)]
 
 class T_ART_Tripl(Structure):
-	_fields_ = [("f", c_double), ("re", c_double), ("im", c_double)]
+  _fields_ = [("f", c_double), ("re", c_double), ("im", c_double)]
 
 ARTGetTriple.restype = T_ART_Tripl
 ARTGetComplexFromPort.restype = T_ART_Cmplx
