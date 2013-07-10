@@ -264,7 +264,7 @@ ARTItimeModule* rectangularModule::Create(const string& name, const string& sds,
 
 void rectangularModule::addIPort(const string& name, const ARTdataProp* refPort)
 {
-  throw ARTerror("rectengularModule::addIPort", "Operation not permitted for time module '%s1'.",
+  throw ARTerror("rectangularModule::addIPort", "Operation not permitted for time module '%s1'.",
       name_);
 }
 
@@ -272,7 +272,7 @@ ARTdataProp* rectangularModule::getPort(const string& name)
 {
   if (name != "out")
   {
-    throw ARTerror("rectengularModule::getPort", "Time module '%s1' has no port '%s2'.",
+    throw ARTerror("rectangularModule::getPort", "Time module '%s1' has no port '%s2'.",
         name_, name);
   }
   return out_;
@@ -619,7 +619,7 @@ void sinewaveModule::setCurrentIndex(int idx)
 
 void sinewaveModule::simulateCurrentIndex(int idx)
 {
-  //	cout << "evaluating module " << name_ << endl;
+//  cout << "evaluating module " << name_ << "," << idx << endl;
   out_->GetArrayElement(idx).EvaluateIfInvalid();
 }
 

@@ -185,7 +185,8 @@ void ARTtimeSimulator::AddSimulationParameter(const string& name, const string& 
   }
   catch(ARTerror& e)
   {
-    prop = new ARTdataProp(C_ART_cpx, 0, name);
+//    prop = new ARTdataProp(C_ART_cpx, 0, name);
+    prop = new ARTdataProp(C_ART_dbl, 0, name);
     prop->SetParser(parser_);
     prop->SetDefinition(expr, this);
     AppendDataProp(prop);

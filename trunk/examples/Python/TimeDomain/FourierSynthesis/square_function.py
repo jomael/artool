@@ -55,11 +55,11 @@ t = arange(0.0, 300/44100.0, 1/44100.0)
 for i in range(0, 300):
   # get data structure
   outVal = ARTGetComplexFromPort(outPort, i)
-  #print "{0:.10f} {1:.10f}".format(i/44.1,outVal.re)
   square[i] = outVal.re
+  # print "{0:.10f} {1:.10f}".format(i/44.1,outVal.re)
 
-#plot(t,square)
-#show()
+plot(t,square)
+show()
 
 
 # destroy all previously created objects
