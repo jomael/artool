@@ -1754,7 +1754,7 @@ int main(int argc, char **argv)
 
   pChar p0[100]; 
   char buf[1024];
-  buf[0] = '\0'; p0[0] = &buf[0];
+  buf[0] = '\0'; p0[0] = &buf[0]; p0[1] = &buf[0];
 
   bin  <= cmdln.isignal;
   bout <= cmdln.osignal;
