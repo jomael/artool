@@ -48,7 +48,7 @@
 
 MUP_NAMESPACE_START
 
-//Sadjad: war über MUP_NAMESPACE_START
+//Sadjad: war ueber MUP_NAMESPACE_START
 //using namespace std;
 using std::make_pair;
 
@@ -618,10 +618,15 @@ using std::make_pair;
       // Evaluate binary Operator and store the result in the 
       // Value Stack overwriting the first argument
       ptr_val_type buf(new Value);
-      pFun->Eval(buf, const_cast<ptr_val_type*>(pArg), iArgCount);
-      *pArg = buf;
+      // added by CBG: do not evaluate any functions when just
+      // querying expression variables
+      if (!m_bIsQueryingExprVar)
+      {
+        pFun->Eval(buf, const_cast<ptr_val_type*>(pArg), iArgCount);
+        *pArg = buf;
 
-      pFun->SetNumArgsPresent(iArgCount);
+        pFun->SetNumArgsPresent(iArgCount);
+      }
       
       if (!bOptimize)
       {
@@ -667,7 +672,15 @@ using std::make_pair;
     ptr_val_type vVal2 = a_stVal.pop();
     ptr_val_type vVal1 = a_stVal.pop();
     ptr_val_type bExpr = a_stVal.pop();
-    a_stVal.push( (bExpr->GetBool()) ? vVal1 : vVal2);
+    // added by CBG: no need to evaluate expression when we are just checking variable names
+    if (!m_bIsQueryingExprVar)
+    {
+      a_stVal.push( (bExpr->GetBool()) ? vVal1 : vVal2);
+    }
+    else
+    {
+      a_stVal.push(vVal1);
+    }
     
     // Result of if then else is always volatile, the
     // function optimizer won't handle it properly
@@ -677,10 +690,14 @@ using std::make_pair;
     ptr_tok_type opIf = a_stOpt.pop();
     m_nIfElseCounter--;
     
-    assert(opIf->GetCode()==cmIF);
-    TokenIf *pIfToken = MUP_TOK_CAST(TokenIf*, opIf.Get());
-    int offset = opElse->GetRPNIdx() - opIf->GetRPNIdx();
-    pIfToken->SetOffset(offset);
+    // added by CBG: no need to evaluate expression when we are just checking variable names
+    if (!m_bIsQueryingExprVar)
+    {
+      assert(opIf->GetCode()==cmIF);
+      TokenIf *pIfToken = MUP_TOK_CAST(TokenIf*, opIf.Get());
+      int offset = opElse->GetRPNIdx() - opIf->GetRPNIdx();
+      pIfToken->SetOffset(offset);
+    }
   }
 
   //---------------------------------------------------------------------------
@@ -783,6 +800,11 @@ using std::make_pair;
                 // It's time to apply the index operator
                 MUP_ASSERT(stVal.size()>=2);
                 ptr_val_type idx = stVal.pop();
+
+                // added by CBG: skip all following checks and simply continue
+                // parsing when just querying all variables
+                if (m_bIsQueryingExprVar)
+                  break;
 
                 if (!idx->IsInteger()) // || idx->GetFloat()<0)
                   Error(ecTYPE_CONFLICT_IDX, m_pTokenReader->GetPos(), stVal.top().Get());
