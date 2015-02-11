@@ -75,6 +75,21 @@ protected:
    */
   ParserX* parser_;
 
+//  typedef std::map<string,ARTobject*, std::less<std::basic_string<char> >,
+//      std::allocator<std::pair<const std::basic_string<char>, ARTobject*> > > ARTobjectMap;
+
+  /// Datatype for saving references to ARTdataProp objects with the given name
+  typedef std::map<string,ARTdataProp*> ARTdataPropMap;
+
+  /// Datatype to access the referenced ARTdataProp objects saved in the map
+  typedef ARTdataPropMap::value_type ARTdataPropMapValueType;
+
+  /**
+   * A map to all internally saved ARTdataProp objects (global and local
+   * variables, etc.)
+   */
+  ARTdataPropMap* pointerMap_;
+
 public:
 
   /**
@@ -123,6 +138,18 @@ public:
    * Pointer to all internal circuits, mainly used by the frequency Simulator.
    */
   ARTlistProp* circuits;
+
+  virtual ARTdataProp* AppendDataProp(const string name, ARTvariant* val, const string sds="", const string lds="", const string htm="");
+  virtual ARTdataProp* AppendDataProp(const string name, const double val, const string sds="", const string lds="", const string htm="");
+  virtual ARTdataProp* AppendDataProp(const string name, const float  val, const string sds="", const string lds="", const string htm="");
+  virtual ARTdataProp* AppendDataProp(const string name, const string  val, const string sds="", const string lds="", const string htm="");
+  virtual ARTdataProp* AppendDataProp(const string name, const int    val, const string sds="", const string lds="", const string htm="");
+  virtual ARTdataProp* AppendDataProp(ARTdataProp* dataProp);
+
+  virtual void RegisterDataProp(ARTdataProp* dataProp);
+  virtual void RegisterDataProp(ARTdataProp* dataProp, string& name);
+  virtual void UnregisterDataProp(ARTdataProp* dataProp);
+
 };
 
 /**

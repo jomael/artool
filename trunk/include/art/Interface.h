@@ -101,12 +101,12 @@ public:
 	virtual ~ARTcell() {}
 	virtual ARTcell* clone() {return new ARTcell(*this);}
 
-	const string& GetName() const {return name_;}
-	const string& GetShortDescription() const {return shortDesc_;}
-	const string& GetLongDescription() const {return longDesc_;}
-	const string& GetHelpFilename() const {return helpFile_;}
+	virtual const string& GetName() const {return name_;}
+	virtual const string& GetShortDescription() const {return shortDesc_;}
+	virtual const string& GetLongDescription() const {return longDesc_;}
+	virtual const string& GetHelpFilename() const {return helpFile_;}
 
-	void SetName(const string name) {name_ = name;}
+	virtual void SetName(const string name) {name_ = name;}
 
 };
 
@@ -135,51 +135,51 @@ public:
 	virtual ARTcell* clone() {return new ARTobject(*this);}
 
   /// iterate through property list (pass NULL to restart iteration, receive NULL after last element)
-	ARTproperty* GetProperties(ARTproperty* pos);
+	virtual ARTproperty* GetProperties(ARTproperty* pos);
 
   /// find and return named property (or return NULL if no match)
-	ARTproperty* FindProperty(const string nam) ;
+	virtual ARTproperty* FindProperty(const string nam) ;
 
 	///Append new property with given name to ARTobject
-	ARTproperty* AppendProperty(const string name, const string sds="", const string lds="", const string htm="") ;
+	virtual ARTproperty* AppendProperty(const string name, const string sds="", const string lds="", const string htm="") ;
 
   /// append new data property with given name to ARTobject
-	ARTdataProp* AppendDataProp(const string name, ARTvariant* val, const string sds="", const string lds="", const string htm="");
-	ARTdataProp* AppendDataProp(const string name, const double val, const string sds="", const string lds="", const string htm="");
-	ARTdataProp* AppendDataProp(const string name, const float  val, const string sds="", const string lds="", const string htm="");
-	ARTdataProp* AppendDataProp(const string name, const string  val, const string sds="", const string lds="", const string htm="");
-	ARTdataProp* AppendDataProp(const string name, const int    val, const string sds="", const string lds="", const string htm="");
-	ARTdataProp* AppendDataProp(const string name, const string* val, const string sds="", const string lds="", const string htm="");
-	ARTdataProp* AppendDataProp(ARTdataProp* dataProp) ;
+	virtual ARTdataProp* AppendDataProp(const string name, ARTvariant* val, const string sds="", const string lds="", const string htm="");
+	virtual ARTdataProp* AppendDataProp(const string name, const double val, const string sds="", const string lds="", const string htm="");
+	virtual ARTdataProp* AppendDataProp(const string name, const float  val, const string sds="", const string lds="", const string htm="");
+	virtual ARTdataProp* AppendDataProp(const string name, const string  val, const string sds="", const string lds="", const string htm="");
+	virtual ARTdataProp* AppendDataProp(const string name, const int    val, const string sds="", const string lds="", const string htm="");
+//	virtual ARTdataProp* AppendDataProp(const string name, const string* val, const string sds="", const string lds="", const string htm="");
+	virtual ARTdataProp* AppendDataProp(ARTdataProp* dataProp) ;
 
   /// append new listableProperty with given name
-	ARTlistProp* AppendListProp(const string name, const string sds="", const string lds="", const string htm="");
+	virtual ARTlistProp* AppendListProp(const string name, const string sds="", const string lds="", const string htm="");
 
   /// delete current property (which was recently accessed by GetProperties, FindProperty or AppendProperty)
-	bool DeleteProperty(ARTproperty* prp);
+	virtual bool DeleteProperty(ARTproperty* prp);
 
   /// iterate through method list (pass NULL to restart iteration, receive NULL after last element)
-	ARTmethod* GetMethods	(ARTmethod* pos);
+	virtual ARTmethod* GetMethods	(ARTmethod* pos);
 
   /// find and return named method (or return NULL if no match)
-	ARTmethod* FindMethod(const string nam) ;
+	virtual ARTmethod* FindMethod(const string nam) ;
 
   /// append new method with given name
-	ARTmethod* AppendMethod(const string name, const string sds="", const string lds="", const string htm="");
+	virtual ARTmethod* AppendMethod(const string name, const string sds="", const string lds="", const string htm="");
 
   /// delete current method (which was recently accessed by GetProperties, FindProperty or AppendProperty)
-	bool DeleteMethod(ARTmethod* mtd);
+	virtual bool DeleteMethod(ARTmethod* mtd);
 
-	void SetPropertyList(list<ARTproperty*> &l)
+	virtual void SetPropertyList(list<ARTproperty*> &l)
 	{
 		propertyList_ = l;
 	}
 
-	void CopyPropertyListEntries(ARTobject* obj);
-	void CopyMethodListEntries(ARTobject* obj);
+	virtual void CopyPropertyListEntries(ARTobject* obj);
+	virtual void CopyMethodListEntries(ARTobject* obj);
 
-	list<ARTproperty*> GetPropertyList(){return propertyList_;}
-	list<ARTmethod*> GetMethodList(){return methodList_;}
+	virtual list<ARTproperty*> GetPropertyList(){return propertyList_;}
+	virtual list<ARTmethod*> GetMethodList(){return methodList_;}
 
 };
 
@@ -316,6 +316,9 @@ private:
 	list<ARTobject*> objectList_;
 	list<ARTobject*>::iterator oiter_;
 public:
+
+	typedef list<ARTobject*>::size_type size_type;
+
 	ARTlistProp(const string name, const string sds="", const string lds="", const string htm="") : 
 				ARTproperty(name,sds,lds,htm,true),	
 				objectList_(list<ARTobject*>()), 
@@ -331,22 +334,25 @@ public:
 	}
 
 /// iterate through object list (pass NULL to restart iteration, receive NULL after last element)
-	ARTobject* GetObjects(ARTobject* pos);
+	virtual ARTobject* GetObjects(ARTobject* pos);
 
 /// find and return named object (or return NULL if no match)
-	ARTobject* FindObject(const string nam) ;
+	virtual ARTobject* FindObject(const string nam) ;
 
 /// append new object with given name
-	ARTobject* AppendObject(const string name, const string sds="", const string lds="", const string htm="");
+	virtual ARTobject* AppendObject(const string name, const string sds="", const string lds="", const string htm="");
 
 /// append object which is already created
-	ARTobject* AppendObject(ARTobject* object);
+	virtual ARTobject* AppendObject(ARTobject* object);
 
 /// delete object pos
-	bool DeleteObject(ARTobject* pos);
+	virtual bool DeleteObject(ARTobject* pos);
 
 /// replace all occurences of obj with newobj @returns the number of replacements
-	int ReplaceObject(ARTobject* obj,ARTobject* newobj);
+	virtual int ReplaceObject(ARTobject* obj,ARTobject* newobj);
+
+/// return the size of current list
+	virtual size_type Size();
 
 };
 
@@ -471,8 +477,10 @@ public:
 				prop = model->GetProperties(prop);
 			}
 		}
-		z_inp->Rename("Z_" + newname);
-		z_rad->Rename("ZR_" + newname);
+//		z_inp->Rename("Z_" + newname);
+//		z_rad->Rename("ZR_" + newname);
+		z_inp->Rename(newname + ".Z_");
+		z_rad->Rename(newname + ".ZR_");
 		SetName(newname);
 	}
 
@@ -582,7 +590,7 @@ public:
  * menu commands.
  */
 class AcousticResearchTool : public ARTobject {
-private:
+protected:
 public:
 	ARTlistProp* menuGroups; ///<shortcut pointers inside list
 	ARTlistProp* prototypeModels;///<prototype models
@@ -590,7 +598,9 @@ public:
 
 	AcousticResearchTool();
 	virtual ~AcousticResearchTool();
-	
+
+//	virtual ARTproperty* FindProperty(const string nam);
+
 	void ReplaceProgressFunction(TprogressFunction f)
 	{
 		ARTdataContainer::progressIndicator.SetProgressFunction(f);

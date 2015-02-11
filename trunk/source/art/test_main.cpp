@@ -4477,7 +4477,7 @@ TEST_DEF_END(testCircuitAsBranchImpedanceModes2)
 //******************************************************************************************************************************************
 #endif
 TestClass* ARTtimeSimulatorTests = new TestClass("ARTtimeSimulatorTests", AllMyTests);
-#ifndef _TIMEDEBUG
+//#ifdef _TIMEDEBUG
 TEST_DEF_START(DoublePortInitialization, ARTtimeSimulatorTests)
 
 	ARTtimeModule* timeModule;
@@ -4980,6 +4980,7 @@ TEST_DEF_START(FibonacciNumbers3, ARTtimeSimulatorTests)
 		ARTDestroyTModule(myTimeSimulator, timeModule);
 		ARTDestroyTModule(myTimeSimulator, timeModule2);
 		ARTDestroySimulator(myTimeSimulator);
+		ARTRootDestroy();
 
 	}
 
@@ -5522,6 +5523,65 @@ TEST_DEF_START(FractionalDelay, ARTtimeSimulatorTests)
 
 TEST_DEF_END(FractionalDelay)
 
+TEST_DEF_START(FindNames, ARTtimeSimulatorTests)
+
+        AcousticResearchTool* ART;
+        ARTtimeSimulator* myTimeSimulator1;
+        ARTtimeSimulator* myTimeSimulator2;
+        ARTtimeModule* timeModule1;
+//        ARTtimeModule* timeModule2;
+
+
+        virtual void prepare()
+        {
+//                ART = new AcousticResearchTool();
+//                myTimeSimulator1 = new ARTtimeSimulator("TestSim2");
+//                myTimeSimulator2 = new ARTtimeSimulator("TestSim2");
+//                myTimeSimulator1->userElements = new ARTlistProp("testList");
+//                timeModule1 = new ARTtimeModule("myModule");
+        }
+
+        virtual bool run()
+        {
+
+                try
+                {
+//                        std::cout << "# of simulators: " << ART->simulators->Size() << std::endl;
+
+
+
+//                        ART->simulators->AppendObject(myTimeSimulator1);
+//                        myTimeSimulator->AddTimeModule(timeModule1);
+
+//                        std::cout << "# of simulators: " << ART->simulators->Size() << std::endl;
+
+//                        ART->simulators->AppendObject(myTimeSimulator2);
+
+//                        std::cout << "# of simulators: " << ART->simulators->Size() << std::endl;
+
+                        ARTCreateSimulator("myTimeSimulator1", "TimeDomain", "");
+
+                        return true;
+                }
+                catch (ARTerror& e)
+                {
+                      string err = e.GetErrorMessage();
+                      std::cout << "\n\n" << err;
+                        return false;
+                }
+
+        }
+
+        virtual void unprepare()
+        {
+//                delete (myTimeSimulator1->userElements);
+                //delete myTimeSimulator;
+//                delete ART;
+                 ARTRootDestroy();
+        }
+
+TEST_DEF_END(FindNames)
+
 
 //TEST_DEF_START(DWGCylinder, ARTtimeSimulatorTests)
 //
@@ -5602,7 +5662,7 @@ TEST_DEF_END(FractionalDelay)
 //	}
 //
 //TEST_DEF_END(DWGCylinder)
-#endif
+//#endif
 
 //TEST_DEF_START(ResizeTest, ARTtimeSimulatorTests)
 //

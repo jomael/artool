@@ -183,7 +183,7 @@ bool __CALLCONV ARTCheckPropertyCapability(const char* property, const char* cap
 	bool hasCapability = false;
 	ARTdataProp* capabilities = static_cast<ARTdataProp*>(art->FindProperty(property));
 	int i = 0;
-	while ((possibleCapability = ARTGetString(capabilities, i)))
+	while ((i < capabilities->len) && (possibleCapability = ARTGetString(capabilities, i)))
 	{
 		if (0 == strcmp(possibleCapability, capability))
 		{
@@ -204,7 +204,7 @@ P_ART_Simulator __CALLCONV ARTCreateSimulator    (const char* name, const char* 
 		std::cout << "ARTCreateSimulator("<< name << "," << domain << "," << wavetype << ");\n";
 	#endif
 	//check if art exists
-	//if (art == NULL) throw ARTerror("ARTCreateSimulator", "ARTRootObject not created"); 
+	//if (art == NULL) throw ARTerror("ARTCreateSimulator", "ARTRootObject not created");
 	if (art == NULL) art = new AcousticResearchTool();
 
 	//check if simulator with name already exists, if so throw exception. There must not be two simulators with the same name.
@@ -212,7 +212,7 @@ P_ART_Simulator __CALLCONV ARTCreateSimulator    (const char* name, const char* 
 	if (simulator) throw ARTerror("ARTCreateSimulator", "A simulator with the name '%s1' already exists.", name);
 
 	//check if domain is valid 
-	if (! ARTCheckPropertyCapability("SimulationDomain", domain)) 
+	if (!ARTCheckPropertyCapability("SimulationDomain", domain))
 		throw ARTerror("ARTCreateSimulator", "The specified domain is invalid.");
 
 	//create simulator
@@ -329,6 +329,40 @@ P_ART_Element    __CALLCONV ARTCreateElement     (P_ART_Simulator simulator, con
 
 		ARTelement* newElement = new ARTelement(name,"","","",(ARTmodelInterface*)prototype, simulator);
 		
+		// now register all data properties of the new ARTelement
+		// to the current simulator
+		ARTproperty* prop = newElement->GetProperties(NULL);
+
+		while (prop)
+		{
+		  ARTdataProp* dataProp = dynamic_cast<ARTdataProp*>(prop);
+
+		  if (dataProp)
+		  {
+		    string tempName(name);
+		    tempName += "." + dataProp->GetName();
+		    simulator->RegisterDataProp(dataProp, tempName);
+		  }
+
+		  prop = newElement->GetProperties(prop);
+		}
+
+		prop = newElement->model->GetProperties(NULL);
+
+		while (prop)
+		{
+		  ARTdataProp* dataProp = dynamic_cast<ARTdataProp*>(prop);
+
+		  if (dataProp)
+		  {
+		    string tempName(name);
+		    tempName += "." + dataProp->GetName();
+		    simulator->RegisterDataProp(dataProp, tempName);
+		  }
+
+		  prop = newElement->model->GetProperties(prop);
+		}
+
 		simulator->userElements->AppendObject(newElement);
 		return newElement;
 	      
@@ -1163,7 +1197,7 @@ bool            __CALLCONV ARTSetInteger         (P_ART_Variant pprp, int idx, i
 float         __CALLCONV ARTGetFloat           (P_ART_Variant pprp, int idx)
 {
 	DLL_ERRORHANDLING_BEGIN
-  if (pprp == NULL) return NULL;
+  if (pprp == NULL) return 0;
   else if (pprp->typ == C_ART_flo)    return (pprp->val->f);
   else if (pprp->typ == C_ART_nflo)
   {   
@@ -1172,7 +1206,7 @@ float         __CALLCONV ARTGetFloat           (P_ART_Variant pprp, int idx)
 	  else
 		throw ARTerror("ARTGetFloat","The index is out of bounds.");
   }
-  else return NULL;
+  else return 0;
 	DLL_ERRORHANDLING_END
 }
 
@@ -1192,7 +1226,7 @@ bool            __CALLCONV ARTSetFloat           (P_ART_Variant pprp, int idx, f
 double         __CALLCONV ARTGetDouble           (P_ART_Variant pprp, int idx)
 {
 	DLL_ERRORHANDLING_BEGIN
-  if (pprp == NULL) return NULL;
+  if (pprp == NULL) return 0;
   else if (pprp->typ == C_ART_dbl)    return (pprp->val->d);
   else if (pprp->typ == C_ART_ndbl)
   {   
@@ -1201,7 +1235,7 @@ double         __CALLCONV ARTGetDouble           (P_ART_Variant pprp, int idx)
 	  else
 		throw ARTerror("ARTGetDouble","The index is out of bounds.");
   }
-  else return NULL;
+  else return 0;
 	DLL_ERRORHANDLING_END
 }
 

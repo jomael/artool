@@ -380,6 +380,11 @@ int ARTlistProp::ReplaceObject(ARTobject* obj,ARTobject* newobj)
 	return i;
 }
 
+ARTlistProp::size_type ARTlistProp::Size()
+{
+	return objectList_.size();
+}
+
 ARTelement::ARTelement(const string name, const string sds, const string lds, const string htm, ARTmodelInterface* prototype, ARTsimulator* sim)
 : ARTmodelInterface(name,sds,lds,htm),
   //propMatrix(NULL),
@@ -422,6 +427,8 @@ ARTelement::ARTelement(const string name, const string sds, const string lds, co
 	//Set the output data container of the wave object to a property we append to the object
 	z_inp = AppendDataProp("Z_" + name, 0, "The propagated impedance at this element's or circuit's entry.");
 	z_rad = AppendDataProp("ZR_" + name, 0, "The radiation impedance at this element's or circuit's opening.");
+//	z_inp = AppendDataProp(name + ".Z_", 0, "The propagated impedance at this element's or circuit's entry.");
+//	z_rad = AppendDataProp(name + ".ZR_", 0, "The radiation impedance at this element's or circuit's opening.");
 	wavefrontOut = new WaveObjectMMImpedance(z_inp, NULL, NULL);
 }
 
@@ -1006,6 +1013,37 @@ AcousticResearchTool::AcousticResearchTool() : ARTobject("ART","Acoustic Researc
 //--------------------------------------------------------------------------------------------------------------
 
 AcousticResearchTool::~AcousticResearchTool() {}
+
+//ARTproperty* AcousticResearchTool::FindProperty(const string nam)
+//{
+//	ARTproperty* prop = NULL;
+////	ARTsimulator* sim = dynamic_cast<ARTsimulator*>(simulators->GetObjects(NULL));
+//
+//	std::cout << "BLABLA" << std::endl;
+//	return ARTobject::FindProperty(nam);
+//
+//	// if we only have 1 simulator
+//	if (simulators->Size() == 1)
+//	{
+//	      // special treatment for this case?
+//	}
+//
+//	while (sim)
+//	{
+//		try
+//		{
+//			sim->FindDataPropInSimulator(nam);
+//		}
+//		catch(...)
+//		{
+//			// if any exception happened, we did not find any property with
+//			// the given name
+//			prop = NULL;
+//		}
+//		sim = dynamic_cast<ARTsimulator*>(simulators->GetObjects(sim));
+//	}
+//	return prop;
+//}
 
 //**************************************************************************************************************
 
