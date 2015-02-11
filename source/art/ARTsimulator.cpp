@@ -58,7 +58,7 @@ using std::stringstream;
 ARTsimulator::ARTsimulator(const string name, const string domain,
     const string sds, const string lds, const string htm) :
     ARTobject(name,sds,lds,htm), domain_(domain), parser_(new ParserX(mup::pckCOMPLEX_NO_STRING)),
-    userElements(NULL)
+    pointerMap_(new ARTdataPropMap()), userElements(NULL)
 {
 }
 
@@ -66,7 +66,13 @@ ARTsimulator::ARTsimulator(const string name, const string domain,
 /// Finds the data property represented by the string exp; This can be a data property of an element or model in the simulator (then the string is something like "Cyl.length") or a data property of the simulator itself.
 ARTdataProp* ARTsimulator::FindDataPropInSimulator(string exp)
 {
-  ARTdataProp* prop;
+  ARTdataProp* dataProp = NULL;
+
+  dataProp = (*pointerMap_)[exp];
+
+  if (dataProp == NULL) throw ARTerror("ARTsimulator::FindDataPropInSimulator", "Simulator '%s1' does not contain any object with the name '%s2'.",  this->name_, exp);
+
+  /*
   //try to find a property of the simulator with name *exp*
   prop = dynamic_cast<ARTdataProp*>( FindProperty( strcrop( exp ) ));
   //if not found, try to find a property *exp* in the element list
@@ -78,13 +84,109 @@ ARTdataProp* ARTsimulator::FindDataPropInSimulator(string exp)
     prop = dynamic_cast<ARTdataProp*>(element->model->FindProperty( strcrop(nameparts[1]).c_str() ));
     if (prop == NULL) throw ARTerror("ARTsimulator::FindDataPropInSimulator", "The element '%s1' does not have the specified data property '%s2'.",  strcrop(nameparts[0]).c_str() ,  strcrop(nameparts[1]).c_str() );
   }
-  return prop;
+  */
+  return dataProp;
+}
+
+ARTdataProp* ARTsimulator::AppendDataProp(const string name, ARTvariant* val, const string sds, const string lds, const string htm)
+{
+  ARTdataProp* dataProp = ARTobject::AppendDataProp(name, val, sds, lds, htm);
+//  std::cout << "pointerMap[" << dataProp->GetName() << "] = " << dataProp << std::endl;
+  (*pointerMap_)[dataProp->GetName()] = dataProp;
+  return dataProp;
+}
+
+ARTdataProp* ARTsimulator::AppendDataProp(const string name, const double val, const string sds, const string lds, const string htm)
+{
+  ARTdataProp* dataProp = ARTobject::AppendDataProp(name, val, sds, lds, htm);
+//  std::cout << "pointerMap[" << dataProp->GetName() << "] = " << dataProp << std::endl;
+  (*pointerMap_)[dataProp->GetName()] = dataProp;
+  return dataProp;
+}
+
+ARTdataProp* ARTsimulator::AppendDataProp(const string name, const float  val, const string sds, const string lds, const string htm)
+{
+  ARTdataProp* dataProp = ARTobject::AppendDataProp(name, val, sds, lds, htm);
+//  std::cout << "pointerMap[" << dataProp->GetName() << "] = " << dataProp << std::endl;
+  (*pointerMap_)[dataProp->GetName()] = dataProp;
+  return dataProp;
+}
+
+ARTdataProp* ARTsimulator::AppendDataProp(const string name, const string val, const string sds, const string lds, const string htm)
+{
+  ARTdataProp* dataProp = ARTobject::AppendDataProp(name, val, sds, lds, htm);
+//  std::cout << "pointerMap[" << dataProp->GetName() << "] = " << dataProp << std::endl;
+  (*pointerMap_)[dataProp->GetName()] = dataProp;
+  return dataProp;
+}
+
+ARTdataProp* ARTsimulator::AppendDataProp(const string name, const int val, const string sds, const string lds, const string htm)
+{
+  ARTdataProp* dataProp = ARTobject::AppendDataProp(name, val, sds, lds, htm);
+//  std::cout << "pointerMap[" << dataProp->GetName() << "] = " << dataProp << std::endl;
+  (*pointerMap_)[dataProp->GetName()] = dataProp;
+  return dataProp;
+}
+
+ARTdataProp* ARTsimulator::AppendDataProp(ARTdataProp* dataProp)
+{
+//  std::cout << "pointerMap[" << dataProp->GetName() << "] = " << dataProp << std::endl;
+  (*pointerMap_)[dataProp->GetName()] = dataProp;
+  return ARTobject::AppendDataProp(dataProp);
+}
+
+void ARTsimulator::RegisterDataProp(ARTdataProp* dataProp)
+{
+  if (dataProp)
+  {
+//    std::cout << "pointerMap[" << dataProp->GetName() << "] = " << dataProp << std::endl;
+    (*pointerMap_)[dataProp->GetName()] = dataProp;
+  }
+  else
+  {
+    ARTerror* e = new ARTerror("Error in simulator '%s1' - no valid dataProp in method RegisterDataProp().",
+                               name_);
+    throw e;
+  }
+}
+
+void ARTsimulator::RegisterDataProp(ARTdataProp* dataProp, string& name)
+{
+  if (dataProp)
+  {
+//    std::cout << "pointerMap[" << name << "] = " << dataProp << std::endl;
+    (*pointerMap_)[name] = dataProp;
+  }
+  else
+  {
+    ARTerror* e = new ARTerror("Error in simulator '%s1' - no valid dataProp in method RegisterDataProp().",
+                               name_);
+    throw e;
+  }
+}
+
+void ARTsimulator::UnregisterDataProp(ARTdataProp* dataProp)
+{
+  if (dataProp)
+  {
+    (*pointerMap_).erase(dataProp->GetName());
+  }
+  else
+  {
+    ARTerror* e = new ARTerror("Error in simulator '%s1' - no valid dataProp in method RemoveDataProp().",
+			       name_);
+    throw e;
+  }
 }
 
 ARTsimulator::~ARTsimulator()
 {
   // IMPORTANT: do NOT free the memory of the parser here!
   //delete (parser_);
+
+  // delete pointerMap_ as we are assuming the map itself is empty because all
+  // items should have been removed by the destructors of the saved variables
+  delete(pointerMap_);
 }
 
 
