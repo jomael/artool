@@ -357,8 +357,12 @@ void WindInstrument::append (HornElement* a, bool addJumps) {
 		list<HornElement*>::iterator tempIter = elementList_.end();
 		tempIter--;
 		if((*tempIter)->type()==-1){tempIter--;}
-			a->settempC( (*tempIter)->gettempC());
-			a->setlossF( (*tempIter)->getlossF());
+		/* [SB, Ticket #4] Adding checks to ensure that 
+		 * temperature and loss factor files explicitly given in the files 
+		 * are not overwritten with previous values
+		 */
+		if (!a->gettempC()) a->settempC((*tempIter)->gettempC());
+		if (!a->getlossF()) a->setlossF((*tempIter)->getlossF());
 	}
 	if(elementList_.size()==0){a->FirstElement(1);}
 	else if(elementList_.size()!=0){a->FirstElement(0);}
