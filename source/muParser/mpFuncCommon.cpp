@@ -30,7 +30,7 @@
 
 #include "mpValue.h"
 #include "mpParserBase.h"
-
+#include <algorithm>
 
 MUP_NAMESPACE_START
 

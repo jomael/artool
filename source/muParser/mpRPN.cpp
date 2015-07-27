@@ -27,7 +27,7 @@
 #include "mpICallback.h"
 #include "mpError.h"
 
-
+#include <algorithm>
 MUP_NAMESPACE_START
 
   //---------------------------------------------------------------------------
