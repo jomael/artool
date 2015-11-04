@@ -1,20 +1,34 @@
 cmake_minimum_required (VERSION 2.6)
 
+#option(RELEASE "Create project for the release version of ARTool. Default is set to \"ON\"" ON)
+#option(DEBUG "Create project for the interactive debug version of ARTool. Default is set to \"OFF\"" OFF)
+#option(ARTINTERFACEDEBUG "Create project for the non-interactive debug version of ARTool. It includes unit and integration tests which should all pass successfully. Default is set to \"OFF\"" OFF)
+
 # a configuration has to be specified
 if ((NOT DEFINED RELEASE) AND (NOT DEFINED DEBUG) AND (NOT DEFINED ARTINTERFACEDEBUG))
+#if ((NOT RELEASE) AND (NOT DEBUG) AND (NOT ARTINTERFACEDEBUG))
 	message(FATAL_ERROR
 		"Please specify one of the following configurations:\n\tRELEASE\n\tDEBUG\n\tARTINTERFACEDEBUG\ne.g. \"cmake -DRELEASE=ON .\""
 	)
+# MS Visual Studio is causing some issues when the project file is created by CMake.
+#elseif (DEFINED UNIX)
+elseif (DEFINED MSVC)
+	message(FATAL_ERROR
+		"This CMakeFile is only compatible with GCC. Please use any of the available MS Visual Studio Solution files for building ARTool on Windows with a Microsoft Compiler."
+	)	
 endif()
 
 project(art)
 
-include_directories(../include ../include/ga ../include/art ../include/fortran ../include/muParser ../source)
+include_directories(../include ../include/ga ../include/art ../include/fortran ../include/muParser ../include/gtest ../include/gmock ../source)
 
 set(ART_SOURCE_DIR ../source/art)
 set(GA_SOURCE_DIR ../source/ga)
 set(MUPARSER_SOURCE_DIR ../source/muParser)
 set(FORTRAN_SOURCE_DIR ../source/fortran)
+
+set(GTEST_SOURCE_DIR ../source/gtest)
+set(GMOCK_SOURCE_DIR ../source/gmock)
 
 if (DEFINED RELEASE)
 	set(LIBRARY_OUTPUT_PATH ../release)
@@ -163,83 +177,121 @@ add_executable(art
 	${ART_SOURCES}
 )
 
-add_dependencies(art
-	fortran
-	ga
-	muparser
-)
-
-target_link_libraries(art
-	fortran
-	ga
-	muparser
-)
-
-
-# add standard definitions for release build
 if (DEFINED ARTINTERFACEDEBUG)
-	add_definitions(-D_DEBUG -DARTinterfaceTest)
+	set(GTEST_SOURCES 
+		${GTEST_SOURCE_DIR}/gtest-all.cc
+	)
+
+	set(GMOCK_SOURCES 
+		${GMOCK_SOURCE_DIR}/gmock-all.cc
+	)
+
+	source_group(gtest_src FILES
+		${GTEST_SOURCES}
+	)
+
+	source_group(gmock_src FILES
+		${GMOCK_SOURCES}
+	)
+	add_library(gtest STATIC
+		${GTEST_SOURCES}
+	)
+
+	add_library(gmock STATIC
+		${GMOCK_SOURCES}
+	)
+
+	add_dependencies(art
+		fortran
+		ga
+		muparser
+		gmock
+		gtest
+	)
+
+	target_link_libraries(art
+		fortran
+		ga
+		muparser
+		gmock
+		gtest
+	)
+
+	add_definitions(-D_DEBUG -DARTinterfaceTest -ggdb)
+
+	set_target_properties(gtest
+		PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -Wno-unused-parameter -Wall -Wextra -pedantic -std=c++11 -pthread"
+	)
+
+	set_target_properties(gmock
+		PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -Wno-unused-parameter -Wall -Wextra -pedantic -std=c++11"
+	)
+
+	set_target_properties(art
+		PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -Wno-unused-parameter -Wall -Wextra -pedantic -std=c++98"
+		LINK_FLAGS "-lpthread -Xlinker tokens.lds"
+	)
+
+
 elseif ((DEFINED RELEASE) OR (DEFINED DEBUG))
+
+	add_dependencies(art
+		fortran
+		ga
+		muparser
+	)
+
+	target_link_libraries(art
+		fortran
+		ga
+		muparser
+	)
+
 	add_library(artsim SHARED
 		${ART_SOURCES}
 	)
+
 	add_dependencies(artsim
 		fortran
 		ga
 		muparser
 	)
+
 	target_link_libraries(artsim
 		fortran
 		ga
 		muparser
 	)
-	if (DEFINED CMAKE_COMPILER_IS_GNUCXX AND (NOT DEFINED WIN32))
-		set_target_properties(artsim
-			PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -Wno-unused-parameter -Wall -Wextra -pedantic -std=c++98"
-			COMPILE_DEFINITIONS "DLL"
-			LINK_FLAGS "-Xlinker tokens.lds"
-		)
-	elseif (DEFINED MSVC)
-		set_target_properties(artsim
-			PROPERTIES COMPILE_FLAGS "/W4"
-			COMPILE_DEFINITIONS "DLL"
-		)
-	endif()
-	if (DEFINED RELEASE)
-		add_definitions(-D_CONSOLE)
-	else()
-		add_definitions(-D_DEBUG -D_CONSOLE)
-	endif()
-endif()
 
-if (DEFINED CMAKE_COMPILER_IS_GNUCXX AND (NOT DEFINED WIN32))
 	set_target_properties(art
 		PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -Wno-unused-parameter -Wall -Wextra -pedantic -std=c++98"
 		LINK_FLAGS "-Xlinker tokens.lds"
 	)
-	set_target_properties(fortran
-		PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings"
+	
+	set_target_properties(artsim
+		PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -Wno-unused-parameter -Wall -Wextra -pedantic -std=c++98"
+		COMPILE_DEFINITIONS "DLL"
+		LINK_FLAGS "-Xlinker tokens.lds"
 	)
-	set_target_properties(ga
-		PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings"
-	)
-	set_target_properties(muparser
-		PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings"
-	)
-elseif (DEFINED MSVC)
-	set_target_properties(art
-		PROPERTIES COMPILE_FLAGS "/W4"
-	)
-	set_target_properties(fortran
-		PROPERTIES COMPILE_FLAGS "/W0"
-	)
-	set_target_properties(ga
-		PROPERTIES COMPILE_FLAGS "/W0"
-	)
-	set_target_properties(muparser
-		PROPERTIES COMPILE_FLAGS "/W0"
-	)
+
+	if (DEFINED RELEASE)
+		add_definitions(-D_CONSOLE)
+	else()
+		add_definitions(-D_DEBUG -D_CONSOLE -ggdb)
+	endif()
+
 endif()
+
+set_target_properties(fortran
+	PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings"
+)
+set_target_properties(ga
+	PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings"
+)
+set_target_properties(muparser
+	PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings"
+)
+
 
 # enable packaging for release build
 if ((DEFINED RELEASE) AND (DEFINED UNIX))
