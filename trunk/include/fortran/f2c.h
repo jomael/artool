@@ -7,8 +7,32 @@
 #ifndef F2C_INCLUDE
 #define F2C_INCLUDE
 
+/* Find out the current platform (macros for Windows). */
+#if _WIN32 || _WIN64
+#  if _WIN64
+#    define ENVIRONMENT64
+#  else
+#    define ENVIRONMENT32
+#  endif
+#endif
+
+/* Find out the current platform (macros for Linux). */
+#if __GNUC__
+#  if __x86_64__ || __ppc64__
+#    define ENVIRONMENT64
+#  else
+#    define ENVIRONMENT32
+#  endif
+#endif
+
+#ifdef ENVIRONMENT32
 typedef long int integer;
 typedef unsigned long int uinteger;
+#elif defined ENVIRONMENT64
+typedef int integer;
+typedef unsigned int uinteger;
+#endif
+
 typedef char *address;
 typedef short int shortint;
 typedef float real;
