@@ -269,7 +269,7 @@ elseif ((DEFINED RELEASE) OR (DEFINED DEBUG))
 	)
 	
 	set_target_properties(artsim
-		PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -Wno-unused-parameter -Wall -Wextra -pedantic -std=c++98"
+		PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -Wno-unused-parameter -Wall -Wextra -pedantic -std=c++98 -fPIC"
 		COMPILE_DEFINITIONS "DLL"
 		LINK_FLAGS "-Xlinker tokens.lds"
 	)
@@ -283,13 +283,13 @@ elseif ((DEFINED RELEASE) OR (DEFINED DEBUG))
 endif()
 
 set_target_properties(fortran
-	PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings"
+	PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -fPIC"
 )
 set_target_properties(ga
-	PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings"
+	PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -fPIC"
 )
 set_target_properties(muparser
-	PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings"
+	PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -fPIC"
 )
 
 
