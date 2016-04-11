@@ -1,3 +1,5 @@
+#ifdef __XXX___
+#error "THIS FILE SHOULD NOT BE USED IN ART!"
 
 #include "mpARTValue.h"
 #include "mpError.h"
@@ -825,3 +827,5 @@ MUP_NAMESPACE_START
 		m_pCache = pCache;
 	}
 }	// namespace mu
+
+#endif

@@ -2,9 +2,9 @@ CXX=g++
 CC=gcc
 CXXFLAGS=-I../../../../include/art -Wall -Wextra 
 CFLAGS=-I../../../../include/art -Wall -Wextra
-LFLAGS=-Wl,-rpath=../../../../release -L . -l:../../../../release/libartsim.so -lm
+LFLAGS=-Wl,-rpath=../../../../../out/release -L . -l:../../../../../out/release/libartsim.so -lm
 
-all: ../../../../release/libartsim.so test_cpp  test_c
+all: ../../../../../out/release/libartsim.so test_cpp  test_c
 
 test_cpp: testlibart.cpp Makefile
 	$(CXX) -o $@ $(CXXFLAGS) $< $(LFLAGS)
