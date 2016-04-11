@@ -4,9 +4,9 @@ from sys import platform
 
 # load dynamic library
 if platform.startswith("win"):
-  artsim = cdll.LoadLibrary("../../../../release/artsim.dll")
+  artsim = cdll.LoadLibrary("../../../../../out/release/artsim.dll")
 elif platform.startswith("linux"):
-  artsim = cdll.LoadLibrary("../../../../release/libartsim.so")
+  artsim = cdll.LoadLibrary("../../../../../out/release/libartsim.so")
 
 # set function handles
 
