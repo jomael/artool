@@ -1,7 +1,4 @@
-
-
-#ifdef ARTinterfaceTest //Test the ARTinterface functions
-
+#include "ARTTest/test_main.h"
 
 #if defined (_MSC_VER) && _MSC_VER <= 1200
 	#include "common_vs6.hpp"
@@ -61,18 +58,18 @@ class TestClass
 		{
 			success = true;
 			std::cout <<  "\n" << prefix << "SUITE " << description << ":\n";
-			//prepare(); //NOT called! ((un)prepare methods are called in loop below, from where run() is called. calling run from here would mean we call it twice...)	
+			//prepare(); //NOT called! ((un)prepare methods are called in loop below, from where run() is called. calling run from here would mean we call it twice...)
 			if (testList.size()==0) std::cout << prefix << "\t(empty)\n";
 			for (::size_t i = 0; i < testList.size(); i++)
 			{
 				testList[i]->prepare();
 				//make sure that sub-suites (if there are any, prefix this)
 				testList[i]->addMessagePrefix(prefix + "\t");
-				testList[i]->success = testList[i]->run(); 
+				testList[i]->success = testList[i]->run();
 				if (!testList[i]->success)
 				{
 					success = false;
-					SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_INTENSITY); 
+					SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_INTENSITY);
 					#ifdef __linux__
 					std::cout << "\033[1;31m";
 					#endif
@@ -84,7 +81,7 @@ class TestClass
 				}
 				else
 				{
-					SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN ); 
+					SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN );
 					#ifdef __linux__
 					std::cout << "\033[1;32m";
 					#endif
@@ -99,18 +96,18 @@ class TestClass
 			//unprepare();
 			return success;
 		}
-			
+
 
 	public:
 
-		string description; 
+		string description;
 		bool success;
 		TestClass(string desc = "", TestClass* in_suite = NULL)
 		: description(desc)
 		{
 			//add this test to a suite
-			if (in_suite) 
-			{	
+			if (in_suite)
+			{
 				in_suite->add(this);
 				suite = in_suite;
 			}
@@ -122,13 +119,13 @@ class TestClass
 
 		virtual bool runTests() //the public function to run all tests (and (un)prepare them)!
 		{
-			prepare();	
+			prepare();
 			bool success = run();
 			unprepare();
 			return success;
 		}
 
-		virtual void printTree() 
+		virtual void printTree()
 		{
 			std::cout << prefix << "SUITE " << description << ":\n";
 			for (::size_t i = 0; i < testList.size(); i++)
@@ -138,7 +135,7 @@ class TestClass
 			}
 		}
 
-		virtual void printSummary(bool top = true) 
+		virtual void printSummary(bool top = true)
 		{
 			bool overallsuccess = true;
 			if (testList.size()!=0) std::cout <<  "\n" << prefix << "SUITE " << description << ":\n";
@@ -5751,50 +5748,75 @@ bool percent(double p, const char* msg)
 	return true;
 }
 
-int main(int argc, char **argv) 
-{	
-	//AllMyTests->printTree();
+using ::testing::AtLeast;
+using ::testing::Return;
 
-	try
-	{
+// This test should pass
+TEST(ARTVariantChecks, SetVal1)
+{
+  MockARTvariant variable;
 
-		bool success = AllMyTests->runTests();
-		//bool success = testCircuitAsBranchImpedanceModes2Object->runTests();
-		
+  EXPECT_CALL(variable, SetVal(testing::Matcher<int>(2), testing::Matcher<int>(0)));
+  EXPECT_CALL(variable, IsEqual(static_cast<ARTvariant*>(0)));
 
-		if (success)
-		{
-			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN );
-			#ifdef __linux__
-			std::cout << "\n\n\033[1;32mAll tests successful!\033[0m\n\n";
-			#else
-			std::cout << "\n\nAll tests successful!\n\n";
-			#endif
-			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN); 
-		}
-		else
-		{
-			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_INTENSITY);
-			#ifdef __linux__
-			std::cout << "\n\n\033[1;31mSome tests FAILED!\033[0m\n\n";
-			#else
-			std::cout << "\n\nSome tests FAILED!\n\n";
-			#endif
-			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN); 
-		}
-
-	}
-	catch(ARTerror e)
-	{	
-		string err = e.GetErrorMessage();
-		std::cout << "\n\n" << err;
-	}
-
-	//print summary, as other messages might drown in debugging output
-	//AllMyTests->printSummary();
-
-	return 0;
+  // should pass
+  variable.SetVal(2,0);
+  variable.IsEqual(static_cast<ARTvariant*>(0));
 }
-#endif //if not ARTinterfaceTest
-	//end of Sadjad's test stuff
-	
+
+TEST(ARTCellChecks, CellChecks1)
+{
+  ARTcell cell("OldName", "Short Description", "Long Description",
+		   "Helpfile Name");
+
+  EXPECT_EQ("OldName", cell.GetName());
+
+  cell.SetName("NewName");
+
+  EXPECT_EQ("NewName", cell.GetName());
+
+}
+
+
+int main(int argc, char **argv)
+{
+  ::testing::InitGoogleMock(&argc, argv);
+
+  try
+  {
+
+      bool success = AllMyTests->runTests();
+      //bool success = testCircuitAsBranchImpedanceModes2Object->runTests();
+
+
+      if (success)
+	{
+	  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_GREEN );
+#ifdef __linux__
+	  std::cout << "\n\n\033[1;32mAll tests successful!\033[0m\n\n";
+#else
+	  std::cout << "\n\nAll tests successful!\n\n";
+#endif
+	  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
+	}
+      else
+	{
+	  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_INTENSITY);
+#ifdef __linux__
+	  std::cout << "\n\n\033[1;31mSome tests FAILED!\033[0m\n\n";
+#else
+	  std::cout << "\n\nSome tests FAILED!\n\n";
+#endif
+	  SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_RED | FOREGROUND_BLUE | FOREGROUND_GREEN);
+	}
+
+  }
+  catch(ARTerror e)
+  {
+      string err = e.GetErrorMessage();
+      std::cout << "\n\n" << err;
+  }
+
+  return RUN_ALL_TESTS();
+}
+
