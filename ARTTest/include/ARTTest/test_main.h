@@ -29,38 +29,6 @@
 #include "gtest.h"
 
 
-/*
- * Definitions for mock class of ARTvariant
- */
-
-class MockARTvariant : public ARTvariant
-
-{
-public:
-
-  MOCK_METHOD2(SetVal, void(const int i, const int ind));
-  MOCK_METHOD2(SetVal, void(const double d, const int ind));
-  MOCK_METHOD2(SetVal, void(const float f, const int ind));
-  MOCK_METHOD2(SetVal, void(std::complex<double>, const int ind));
-  MOCK_METHOD3(SetVal, void(const double re, const double im, const int ind));
-  MOCK_METHOD1(SetVal, void(const char* s));
-  MOCK_METHOD2(SetVal, void(const char* s, int ind));
-
-  MOCK_METHOD2(SetType, void(T_ART_Type t, int l));
-
-  MOCK_METHOD0(GetTypeString, std::string());
-
-  MOCK_METHOD1(IsEqual, bool(ARTvariant* other));
-  MOCK_METHOD1(IsEqual, bool(const char* s));
-
-  MOCK_METHOD1(SetArrayLength, void(int l));
-
-  MOCK_METHOD0(clone, ARTvariant*(void));
-
-};
-
-
-
 #endif /*ARTinterfaceTest*/
 
 #endif /* TEST_MAIN_H */
