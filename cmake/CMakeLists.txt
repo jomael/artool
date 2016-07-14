@@ -153,10 +153,12 @@ if (ARTINTERFACEDEBUG)
 		gtest
       )
 
-	add_definitions(-D_DEBUG -DARTinterfaceTest -ggdb)
+	#add_definitions(-D_DEBUG -DARTinterfaceTest -ggdb)
+	add_definitions(-D_DEBUG -DARTinterfaceTest -DGTEST_HAS_PTHREAD=0 -ggdb)
 
 	set_target_properties(gtest
-		PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -Wno-unused-parameter -Wall -Wextra -pedantic -std=c++11 -pthread -fPIC"
+	#	PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -Wno-unused-parameter -Wall -Wextra -pedantic -std=c++11 -pthread -fPIC"
+		PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -Wno-unused-parameter -Wall -Wextra -pedantic -std=c++11 -fPIC"
 	)
 
 	set_target_properties(gmock
@@ -165,7 +167,8 @@ if (ARTINTERFACEDEBUG)
 
 	set_target_properties(arttest
 		PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -Wno-unused-parameter -Wall -Wextra -pedantic -std=c++98"
-		LINK_FLAGS "-lpthread -Xlinker tokens.lds"
+		#LINK_FLAGS "-lpthread -Xlinker tokens.lds"
+		LINK_FLAGS "-Xlinker tokens.lds"
 	)
 
 
