@@ -155,21 +155,22 @@ if (ARTINTERFACEDEBUG)
 
 	#add_definitions(-D_DEBUG -DARTinterfaceTest -ggdb)
 	add_definitions(-D_DEBUG -DARTinterfaceTest -DGTEST_HAS_PTHREAD=0 -ggdb)
+	if(CMAKE_COMPILER_IS_GNUCXX)
+		set_target_properties(gtest
+		#	PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -Wno-unused-parameter -Wall -Wextra -pedantic -std=c++11 -pthread -fPIC"
+				PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -Wno-unused-parameter -Wall -Wextra -pedantic -std=c++11 -fPIC"
+		)
 
-	set_target_properties(gtest
-	#	PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -Wno-unused-parameter -Wall -Wextra -pedantic -std=c++11 -pthread -fPIC"
-		PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -Wno-unused-parameter -Wall -Wextra -pedantic -std=c++11 -fPIC"
-	)
+		set_target_properties(gmock
+			PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -Wno-unused-parameter -Wall -Wextra -pedantic -std=c++11 -fPIC"
+		)
 
-	set_target_properties(gmock
-		PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -Wno-unused-parameter -Wall -Wextra -pedantic -std=c++11 -fPIC"
-	)
-
-	set_target_properties(arttest
-		PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -Wno-unused-parameter -Wall -Wextra -pedantic -std=c++98"
-		#LINK_FLAGS "-lpthread -Xlinker tokens.lds"
-		LINK_FLAGS "-Xlinker tokens.lds"
-	)
+		set_target_properties(arttest
+			PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -Wno-unused-parameter -Wall -Wextra -pedantic -std=c++98"
+			#LINK_FLAGS "-lpthread -Xlinker tokens.lds"
+			LINK_FLAGS "-Xlinker tokens.lds"
+		)
+	endif(CMAKE_COMPILER_IS_GNUCXX)
 
 
 elseif (RELEASE OR DEBUG)
@@ -201,17 +202,18 @@ elseif (RELEASE OR DEBUG)
 		ga
 		muparser
 	)
-
-	set_target_properties(art
-		PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -Wno-unused-parameter -Wall -Wextra -pedantic -std=c++98"
-		LINK_FLAGS "-Xlinker tokens.lds"
-	)
-	
-	set_target_properties(artsim
-		PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -Wno-unused-parameter -Wall -Wextra -pedantic -std=c++98 -fPIC"
-		COMPILE_DEFINITIONS "DLL"
-		LINK_FLAGS "-Xlinker tokens.lds"
-	)
+	if(CMAKE_COMPILER_IS_GNUCXX)
+		set_target_properties(art
+			PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -Wno-unused-parameter -Wall -Wextra -pedantic -std=c++98"
+			LINK_FLAGS "-Xlinker tokens.lds"
+		)
+		
+		set_target_properties(artsim
+			PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -Wno-unused-parameter -Wall -Wextra -pedantic -std=c++98 -fPIC"
+			COMPILE_DEFINITIONS "DLL"
+			LINK_FLAGS "-Xlinker tokens.lds"
+		)
+	endif(CMAKE_COMPILER_IS_GNUCXX)
 
 	if (DEFINED RELEASE)
 		add_definitions(-D_CONSOLE)
@@ -221,15 +223,17 @@ elseif (RELEASE OR DEBUG)
 
 endif()
 
-set_target_properties(fortran
-	PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -fPIC"
-)
-set_target_properties(ga
-	PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -fPIC"
-)
-set_target_properties(muparser
-	PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -fPIC"
-)
+if(CMAKE_COMPILER_IS_GNUCXX)
+	set_target_properties(fortran
+		PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -fPIC"
+	)
+	set_target_properties(ga
+		PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -fPIC"
+	)
+	set_target_properties(muparser
+		PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -fPIC"
+	)
+endif(CMAKE_COMPILER_IS_GNUCXX)
 
 
 # enable packaging for release build
