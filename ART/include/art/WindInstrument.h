@@ -48,12 +48,16 @@
 #include "HornElement.h"
 #include "ImpedanceCurve.h"
 
+#include "BoreJumpSection.h"
+#include "CylinderSection.h"
+#include "ConeSection.h"
+#include "Branch.h"
+#include "CylinderBendSection.h"
+#include "ConeBendSection.h"
+#include "TerminationElement.h"
+
 #include <string>
 using namespace std;
-
-#include <ga/ga.h>
-#include <ga/GAListGenome.h> 
-#include <ga/GAGenome.h>
 
 #include "matrix.h"
 
