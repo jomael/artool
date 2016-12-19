@@ -40,18 +40,26 @@
 #ifndef ARTMODELINTERFACE_H
 #define ARTMODELINTERFACE_H
 
-#include "ARTwaveObject.h"
+//#include "ARTwaveObject.h"
 //#include "ARTsimulator.h"
+#include <vector>
+#include "ARTobject.h"
+#include "ARTerror.h"
 
-// forward declaration
+// forward declarations
+class ARTsimulator;
 class ARTfreqSimulator;
+class WaveObjectInterface;
+class ARTcircuit;
+
+using std::string;
 
 //prototype: a blueprint of a model (same class), but without simulator (NULL).
 //model: a copy of a prototype used by an element
 //element: a part of an instrument, simulated using a model
 
 //in implementierung sind model und element objekte der gleichen klasse
-//objekte in array prototypes sind prototypen, die sich clonen können, wenn man ein element des
+//objekte in array prototypes sind prototypen, die sich clonen kï¿½nnen, wenn man ein element des
 //prototyps haben will. Gibt es bei diesem Ansatz ein Problem??
 //--> ja, ein prototyp wird nie wie ein element eingesetzt; wenn benutzer einen prototyp schreibt sollte er sich
 //gar nicht darum knmmern mnssen, wie der prototyp eingesetzt wird. Elemente setzten dann ihre kopie vom

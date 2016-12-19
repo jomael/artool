@@ -158,15 +158,20 @@ if (ARTINTERFACEDEBUG)
 	if(CMAKE_COMPILER_IS_GNUCXX)
 		set_target_properties(gtest
 		#	PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -Wno-unused-parameter -Wall -Wextra -pedantic -std=c++11 -pthread -fPIC"
-				PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -Wno-unused-parameter -Wall -Wextra -pedantic -std=c++11 -fPIC"
+			PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -Wno-unused-parameter -Wall -Wextra -pedantic -std=c++11 -fPIC"
 		)
 
 		set_target_properties(gmock
 			PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -Wno-unused-parameter -Wall -Wextra -pedantic -std=c++11 -fPIC"
 		)
 
+		set_target_properties(art
+			PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -Wno-unused-parameter -Wall -Wextra -pedantic -std=c++98 -fpermissive"
+			LINK_FLAGS "-Xlinker tokens.lds"
+		)
+
 		set_target_properties(arttest
-			PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -Wno-unused-parameter -Wall -Wextra -pedantic -std=c++98"
+			PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -Wno-unused-parameter -Wall -Wextra -pedantic -std=c++98 -fpermissive"
 			#LINK_FLAGS "-lpthread -Xlinker tokens.lds"
 			LINK_FLAGS "-Xlinker tokens.lds"
 		)
@@ -204,12 +209,12 @@ elseif (RELEASE OR DEBUG)
 	)
 	if(CMAKE_COMPILER_IS_GNUCXX)
 		set_target_properties(art
-			PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -Wno-unused-parameter -Wall -Wextra -pedantic -std=c++98"
+			PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -Wno-unused-parameter -Wall -Wextra -pedantic -std=c++98 -fpermissive"
 			LINK_FLAGS "-Xlinker tokens.lds"
 		)
 		
 		set_target_properties(artsim
-			PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -Wno-unused-parameter -Wall -Wextra -pedantic -std=c++98 -fPIC"
+			PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -Wno-unused-parameter -Wall -Wextra -pedantic -std=c++98 -fPIC -fpermissive"
 			COMPILE_DEFINITIONS "DLL"
 			LINK_FLAGS "-Xlinker tokens.lds"
 		)
@@ -228,7 +233,7 @@ if(CMAKE_COMPILER_IS_GNUCXX)
 		PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -fPIC"
 	)
 	set_target_properties(ga
-		PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -fPIC"
+		PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -fpermissive -fPIC"
 	)
 	set_target_properties(muparser
 		PROPERTIES COMPILE_FLAGS "-Wno-deprecated -Wno-write-strings -fPIC"

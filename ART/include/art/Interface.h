@@ -40,6 +40,11 @@
 #ifndef INTERFACE_H
 #define INTERFACE_H
 
+#include "ARTmodelinterface.h"
+#include "ARTcell.h"
+#include "ARTobject.h"
+
+
 #include <stdlib.h>
 #include <list>
 #include <string>
@@ -77,114 +82,7 @@ class ARTelement;
 class ARTsimulator;		 
 class ARTcircuit;		 
 
-/**
- * The base class for all classes containing name, short and long description of an object 
- * and HTML explanation.
- */ 
-class ARTcell {
-private:
-protected:
-	string name_;		/**< Identifier of ARTObject */
-	string shortDesc_;	/**< Short Description of ARTObject (single line hint) */
-	string longDesc_;	/**< Long Description of ARTObject (multi line text) */
-	string helpFile_;	/**< File name of HTML help file for ARTObject */
-public:
-	ARTcell(const string name="", const string sds="", const string lds="", const string htm="") : name_(name), shortDesc_(sds), longDesc_(lds), helpFile_(htm) {}
-	ARTcell(const ARTcell& orig) /**< copy constructor */
-	{
-		name_ = orig.name_;
-		shortDesc_ = orig.shortDesc_;
-		longDesc_ = orig.longDesc_;
-		helpFile_ = orig.helpFile_;
-	}
-
-	virtual ~ARTcell() {}
-	virtual ARTcell* clone() {return new ARTcell(*this);}
-
-	virtual const string& GetName() const {return name_;}
-	virtual const string& GetShortDescription() const {return shortDesc_;}
-	virtual const string& GetLongDescription() const {return longDesc_;}
-	virtual const string& GetHelpFilename() const {return helpFile_;}
-
-	virtual void SetName(const string name) {name_ = name;}
-
-};
-
-/**
- * This is the base class for all acoustic objects. It contains fields for name, 
- * descriptions and properties.
- */
-class ARTobject : public ARTcell {
-private:
-protected:
-	list<ARTproperty*>	propertyList_; 
-	list<ARTproperty*>::iterator piter_;
-	list<ARTmethod*>	methodList_;
-	list<ARTmethod*>::iterator miter_;
-public:
-	/// objects must have a name, the rest is optional
-	ARTobject(const string name, const string sds="", const string lds="", const string htm="") : ARTcell(name,sds,lds,htm),
-		propertyList_(list<ARTproperty*>()),	piter_(propertyList_.begin()),
-		methodList_(list<ARTmethod*>()),		miter_(methodList_.begin()) {}
-
-	ARTobject(const ARTobject& orig); ///<copy constructor 
-	
-
-	virtual ~ARTobject();
-
-	virtual ARTcell* clone() {return new ARTobject(*this);}
-
-  /// iterate through property list (pass NULL to restart iteration, receive NULL after last element)
-	virtual ARTproperty* GetProperties(ARTproperty* pos);
-
-  /// find and return named property (or return NULL if no match)
-	virtual ARTproperty* FindProperty(const string nam) ;
-
-	///Append new property with given name to ARTobject
-	virtual ARTproperty* AppendProperty(const string name, const string sds="", const string lds="", const string htm="") ;
-
-  /// append new data property with given name to ARTobject
-	virtual ARTdataProp* AppendDataProp(const string name, ARTvariant* val, const string sds="", const string lds="", const string htm="");
-	virtual ARTdataProp* AppendDataProp(const string name, const double val, const string sds="", const string lds="", const string htm="");
-	virtual ARTdataProp* AppendDataProp(const string name, const float  val, const string sds="", const string lds="", const string htm="");
-	virtual ARTdataProp* AppendDataProp(const string name, const string  val, const string sds="", const string lds="", const string htm="");
-	virtual ARTdataProp* AppendDataProp(const string name, const int    val, const string sds="", const string lds="", const string htm="");
-//	virtual ARTdataProp* AppendDataProp(const string name, const string* val, const string sds="", const string lds="", const string htm="");
-	virtual ARTdataProp* AppendDataProp(ARTdataProp* dataProp) ;
-
-  /// append new listableProperty with given name
-	virtual ARTlistProp* AppendListProp(const string name, const string sds="", const string lds="", const string htm="");
-
-  /// delete current property (which was recently accessed by GetProperties, FindProperty or AppendProperty)
-	virtual bool DeleteProperty(ARTproperty* prp);
-
-  /// iterate through method list (pass NULL to restart iteration, receive NULL after last element)
-	virtual ARTmethod* GetMethods	(ARTmethod* pos);
-
-  /// find and return named method (or return NULL if no match)
-	virtual ARTmethod* FindMethod(const string nam) ;
-
-  /// append new method with given name
-	virtual ARTmethod* AppendMethod(const string name, const string sds="", const string lds="", const string htm="");
-
-  /// delete current method (which was recently accessed by GetProperties, FindProperty or AppendProperty)
-	virtual bool DeleteMethod(ARTmethod* mtd);
-
-	virtual void SetPropertyList(list<ARTproperty*> &l)
-	{
-		propertyList_ = l;
-	}
-
-	virtual void CopyPropertyListEntries(ARTobject* obj);
-	virtual void CopyMethodListEntries(ARTobject* obj);
-
-	virtual list<ARTproperty*> GetPropertyList(){return propertyList_;}
-	virtual list<ARTmethod*> GetMethodList(){return methodList_;}
-
-};
-
-
-#include "ARTmodelinterface.h" //braucht ARTobject!
+ //braucht ARTobject!
 
 /**
  * Objects of this class are sets of strings (see ARTcell for details), that represent the 
