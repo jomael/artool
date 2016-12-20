@@ -55,14 +55,21 @@
 #endif
 #include "art.clp"
 
-#include "Interface.h"
 #include "ART.h"
 //#include "strparsing.h"
 //#include "ARTmodel.h"
 #include "ARTdataContainer.h"
 #include "ARTsimulator.h"
+#include "ARTelement.h"
+#include "ARTprototype.h"
+#include "ARTcircuit.h"
+#include "ARTmethod.h"
 #include "ARTtimeModule.h"
 #include "timePrototypes.h"
+#include "AcousticResearchTool.h"
+
+#include "strparsing.h"
+
 
 #define NOERROR_ 0
 #define ERROR_ -1

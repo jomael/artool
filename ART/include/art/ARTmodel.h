@@ -40,13 +40,21 @@
 #ifndef ARTMODEL_H
 #define ARTMODEL_H
 
+#include "ART.h"
 #include "ARTwaveObject.h"
 #include "ARTlink.h"
-#include "ART.h"
-#include "Interface.h"
 #include "ARTsimulator.h"
 #include "strparsing.h"
-#include "ARTmodelinterface.h"
+#include "ARTmodelInterface.h"
+#include "ARTcircuit.h"
+
+#include "CylinderSection.h"
+#include "CylinderBendSection.h"
+#include "Branch.h"
+#include "TerminationElement.h"
+#include "BoreJumpSection.h"
+#include "ConeSection.h"
+#include "ConeBendSection.h"
 
 /** \addtogroup ARTmodelInterfaceGroup ARTmodelInterface
  * @{

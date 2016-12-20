@@ -48,12 +48,11 @@
 
 // includes from muParser
 #include "mpParser.h" //braucht ARTvariant
-//#include "mpARTValue.h"
+#include "mpARTValue.h"
 #include "mpIValue.h"
 #include "mpTypes.h"
 
 #include "ARTerror.h"
-
 
 using namespace mup;
 

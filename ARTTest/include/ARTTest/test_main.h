@@ -23,7 +23,6 @@
 
 #include "ART.h"
 #include "ARTlink.h"
-#include "Interface.h"
 
 #include "gmock.h"
 #include "gtest.h"

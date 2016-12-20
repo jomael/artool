@@ -23,20 +23,20 @@
 
 #include "ART.h"
 #include "ARTlink.h"
-#include "Interface.h"
 
 #include "gmock.h"
 #include "gtest.h"
 
 #include "art.clp"
-#include "Interface.h"
 #include "ARTsimulator.h"
 #include "ART.h"
+#include "ARTmethod.h"
 #include "ARTwaveObject.h"
 #include "ARTmodel.h"
 
 #include "ARTtimeModule.h"
 #include "timePrototypes.h"
+#include "AcousticResearchTool.h"
 
 #define TEST_DEF_START(test_id, suite) \
         class test_id : public TestClass \
