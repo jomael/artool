@@ -40,9 +40,11 @@
 #ifndef ARTFUNCTIONOID_H
 #define ARTFUNCTIONOID_H
 
+#include <vector>
+
 #include "ARTerror.h"
 #include "ARTlink.h"
-#include "Interface.h"
+//#include "ARTelement.h"
 
 /** \addtogroup ARTimpl ART implementation
  * @{
@@ -64,8 +66,8 @@ gleichzeitig ein zeiger auf eines der folgenden Objekte mitgegeben. Der Datencon
 Adresse in das Feld out_ des Funktionoides.
 
 Dem Konstruktor eines jeden Funktionoides werden als Parameter zeiger auf die Datenkontainer nbergeben, 
-die fnr den Rechenvorgang benötigt werden. Dies kann als eingefrorener Funktionsaufruf betrachtet werden,
-denn erst wenn der Datenkontainer, zu welchem der Funktionoid gehört, ausgewertet werden soll, wird die
+die fnr den Rechenvorgang benï¿½tigt werden. Dies kann als eingefrorener Funktionsaufruf betrachtet werden,
+denn erst wenn der Datenkontainer, zu welchem der Funktionoid gehï¿½rt, ausgewertet werden soll, wird die
 Kernfunktion des Funktionoides (ApplyFunction) aufgerufen. Diese Funktion weiss, auf welche Weise der 
 Ausgabewert (also der Wert des in out_ angebundenen Datenkontainers) aus den Parametern berechnet 
 wird.

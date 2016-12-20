@@ -50,7 +50,7 @@
 #include <string>
 #include <complex>
 
-#include "Interface.h"
+#include "ARTobject.h"
 #include "ARTsimulator.h"
 #include "mpParser.h"
 

@@ -1,11 +1,12 @@
 
 #ifndef ARTFUNCTIONOID_CPP
 #define ARTFUNCTIONOID_CPP
-	
 
-#include "Interface.h"
-#include "ARTlink.h"
 #include "ARTfunctionoid.h"
+#include "ARTdataContainer.h"
+
+#include "ARTlink.h"
+
 
 void ARTfunctionoid::SetDependencies()
 {

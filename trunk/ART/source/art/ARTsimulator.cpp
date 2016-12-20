@@ -45,8 +45,11 @@
  */
 
 #include <sstream>
+#include "strparsing.h"
 #include "ARTsimulator.h"
+#include "ARTlistProp.h"
 #include "ARTtimeModule.h"
+#include "ARTfunctionoid.h"
 
 using namespace mup;
 

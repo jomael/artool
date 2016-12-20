@@ -50,7 +50,9 @@
 //#include <list>
 #include <map>
 #include "mpParser.h"
-#include "Interface.h"
+#include "ARTobject.h"
+#include "ARTproperty.h"
+#include "ARTdataProp.h"
 
 using namespace mup;
 //using std::list;

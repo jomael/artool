@@ -45,11 +45,10 @@
 #include <vector>
 #include "ARTobject.h"
 #include "ARTerror.h"
+#include "ARTsimulator.h"
+#include "ARTwaveObject.h"
 
 // forward declarations
-class ARTsimulator;
-class ARTfreqSimulator;
-class WaveObjectInterface;
 class ARTcircuit;
 
 using std::string;
@@ -173,4 +172,4 @@ class ARTmodelInterface : public ARTobject
  * End of documentation group ARTmodelInterface
  */
 
-#endif
+#endif /* ARTMODELINTERFACE_H */

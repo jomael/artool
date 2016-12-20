@@ -3,10 +3,13 @@
 #define ARTDATACONTAINER_CPP
 
 #include <iostream>
-#include "Interface.h"
-#include "ARTsimulator.h"
 #include "ARTdataContainer.h"
+#include "ARTsimulator.h"
 #include "ARTlink.h"
+#include "ARTfunctionoid.h"
+#include "ARTobject.h"
+#include "ARTelement.h"
+
 
 //#define _DBG_MSG(a) {cout << __FILE__ << "::" <<__func__ << "("<< a << ")" << endl;}
 #define _DBG_MSG(a)
@@ -1814,7 +1817,7 @@ void ARTdataContainer::resizeArray(int newSize)
 				case C_ART_int:
 				case C_ART_flo:
 				case C_ART_dbl: return 0; break;
-				case C_ART_cpx: return val->c.im; break; //Imaginärteil der komplexen Zahl
+				case C_ART_cpx: return val->c.im; break; //Imaginï¿½rteil der komplexen Zahl
 
 				case C_ART_nint:
 				case C_ART_nflo:

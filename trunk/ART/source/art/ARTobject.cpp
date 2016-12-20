@@ -37,7 +37,8 @@
 ***************************************************************************/
 
 #include "ARTobject.h"
-#include "Interface.h"
+#include "ARTmethod.h"
+#include "ARTlistProp.h"
 #include "ARTsimulator.h"
 
 
@@ -290,12 +291,4 @@ void ARTobject::CopyMethodListEntries(ARTobject* obj)
                 *miter_ = (ARTmethod*)((*miter_)->clone());
                 ++miter_;
         }
-}
-
-void ARTmodelInterface::SetSimulator(ARTsimulator* sim)
-{
-//      if (sim->GetDomain()->GetName() == "FrequencyDomain")
-//      {
-                simulator = dynamic_cast<ARTfreqSimulator*>(sim);
-//      }
 }
