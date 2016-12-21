@@ -1,3 +1,6 @@
+#ifndef CONE_SECTION_H
+#define CONE_SECTION_H
+
 #include "HornElement.h"
 class ConeSection : public HornElement {
 public:
@@ -146,3 +149,4 @@ protected:
 	double rIn_, rOut_, flare_;
 	double minLength_, maxLength_, minRin_, maxRin_, minRout_, maxRout_, maxFlare_, minFlare_;
 };
+#endif //CONE_SECTION_H

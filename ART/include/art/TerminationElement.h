@@ -1,3 +1,5 @@
+#ifndef TERMINATION_ELEMENT_H
+#define TERMINATION_ELEMENT_H
 #include "HornElement.h"
 
 //Element which contains the radiation impedance
@@ -59,3 +61,4 @@ protected:
 	int PrevType_, Test_, Contrib_;
 	double minLength_, maxLength_, minRadius_, maxRadius_;
 };
+#endif //TERMINATION_ELEMENT_H

@@ -186,6 +186,24 @@ const string TERMINATIONELEMENT_TYPE_STR="7";
 const string BRANCH_TYPE_STR="8";
 const string INPUT_TYPE_STR="9";
 
+const long P= 103325;
+float DT(const float T);
+double T_Kelvin(const float T);
+double f(const float T);
+double psv(const float T);
+double xw(const float T,const float h);
+double C2(const float T, const float h, const float xc);
+double C(const float T);
+double RHO2(const float T, const float h);
+double RHO(const float T);
+float ETA(const float T);
+
+
+double r_v(const double w, const double Sm, const float T, const float L, const float h);
+double r_zero(const double Si, const float T, const float h, const float xc);
+dcomp Z_c(const double w, const double Si, const double Sm, const float T, const float L, const float h, const float xc);
+dcomp Gamma(const double w, const double Sm, const float T, const float L, const float h, const float xc);
+
 class HornElement {
 public:
 

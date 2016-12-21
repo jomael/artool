@@ -1,3 +1,5 @@
+#ifndef BRANCH_H
+#define BRANCH_H
 #include "HornElement.h"
 
 //Connexion between a hole and the main section
@@ -46,3 +48,4 @@ protected:
 	vector<dcomp> Zb_;
 };
 
+#endif //BRANCH_H

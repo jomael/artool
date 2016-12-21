@@ -1,3 +1,6 @@
+#ifndef CYLINDER_SECTION_H
+#define CYLINDER_SECTION_H
+
 #include "HornElement.h"
 
 class CylinderSection : public HornElement {
@@ -66,3 +69,4 @@ protected:
 	double radius_;
 	double minLength_, maxLength_, minRadius_, maxRadius_;
 };
+#endif //CYLINDER_SECTION_H

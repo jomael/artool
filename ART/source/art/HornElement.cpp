@@ -62,13 +62,14 @@
 
 	//Maths sub-functions for TLA Input Impedance calculations
 
-#define DT (T - 26.85)
-#define t (T + 273.15)
-#define P (103325)
-#define xw (h*f(T)*psv(T)/P)
+float DT(const float T){ return (T - 26.85);}
+double T_Kelvin(const float T) {return(T + 273.15);}
+
 
 double f(const float T) {return (1.00062+(3.14e-8)*P+(5.6e-7)*T*T);}
-double psv(const float T) {return (exp((1.2811805e-5)*t*t - (1.950987e-2)*t + 34.04926034 - (6.3536311e3)/t));}
+double psv(const float T) {double t = T_Kelvin(T); return (exp((1.2811805e-5)*t*t - (1.950987e-2)*t + 34.04926034 - (6.3536311e3)/t));}
+
+double xw(const float T,const float h){return (h*f(T)*psv(T)/P);}
 
 bool bendwarning = false;
 bool bendwarningrad = false;
@@ -76,23 +77,24 @@ bool bendwarningrad = false;
 
 //C2: Speed of sound with Temperature, Pressure, CO2 and water vapor molar fractions, and Humidity dependencies: 
 //More Accurate than C. C2 is used in the following code
-double C2(const float T, const float h, const float xc)   { 
-		return(331.5024 + 0.603055*T - 0.000528*T*T 
-			+ (51.471935 + 0.1495874*T - 0.000782*T*T)*xw
-			+ (-1.82e-7 + (3.73e-8)*T + (-2.93e-10)*T*T)*P
-			+ (-85.20931 - 0.228525*T + (5.91e-5)*T*T)*xc
-			-2.835149*xw*xw + (-2.15e-13)*P*P + 29.179762*xc*xc
-			+ 0.000486*xw*xc*P)*100;
-			// Chadefaux, p. 14 refers to: Cramer, JASA 93
+double C2(const float T, const float h, const float xc)   {
+  double  xw_h=xw(T,h);
+  return(331.5024 + 0.603055*T - 0.000528*T*T 
+	 + (51.471935 + 0.1495874*T - 0.000782*T*T)*xw_h
+	 + (-1.82e-7 + (3.73e-8)*T + (-2.93e-10)*T*T)*P
+	 + (-85.20931 - 0.228525*T + (5.91e-5)*T*T)*xc
+	 -2.835149*xw_h*xw_h + (-2.15e-13)*P*P + 29.179762*xc*xc
+	 + 0.000486*xw_h*xc*P)*100;
+  // Chadefaux, p. 14 refers to: Cramer, JASA 93
 }
 //C: Speed of sound with Temperature dependency
-double C(const float T)   { return(3.4723e4 * (1+0.00166*DT)); } 	//Speed of sound in air in cm/s
+double C(const float T)   { return(3.4723e4 * (1+0.00166*DT(T))); } 	//Speed of sound in air in cm/s
 
 //RHO2: take into account more dependency than RHO but there's no big difference between both (RHO2 is used in the code)
-double RHO2(const float T, const float h)   { return((1/(287.06*t))*(P - 230.617*h*exp((17.5043*T)/(241.2+T))))/1000;}
-double RHO(const float T) { return(1.1769e-3 * (1-0.00335*DT));}	//Density of ambient air in g/cm^3
+double RHO2(const float T, const float h)   {double t=T_Kelvin(T); return((1/(287.06*t))*(P - 230.617*h*exp((17.5043*T)/(241.2+T))))/1000;}
+double RHO(const float T) { return(1.1769e-3 * (1-0.00335*DT(T)));}	//Density of ambient air in g/cm^3
 
-float ETA(const float T)  { return(1.846e-4 * (1+0.0025*DT)); }		//Shear viscosity in g/(cm s)
+float ETA(const float T)  { return(1.846e-4 * (1+0.0025*DT(T))); }		//Shear viscosity in g/(cm s)
 
 
 double r_v(const double w, const double Sm, const float T, const float L, const float h)  {return (sqrt(RHO2(T,h)*w*Sm/ETA(T)/L/M_PI));}

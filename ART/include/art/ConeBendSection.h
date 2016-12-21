@@ -1,3 +1,6 @@
+#ifndef CONE_BEND_SECTION_H
+#define  CONE_BEND_SECTION_H
+
 #include "HornElement.h"
 class ConeBendSection : public HornElement {
 public:
@@ -93,3 +96,4 @@ protected:
 	LeG_quadrature leg; // function for Gauss-Legendre quadrature
 
 };
+#endif //CONE_BEND_SECTION_H

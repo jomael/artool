@@ -1,7 +1,7 @@
-#include "HornElement.h"
+#ifndef CYLINDER_BEND_SECTION_H
+#define CYLINDER_BEND_SECTION_H
 
-#ifndef CYLINDERBENDSECTION_H
-#define CYLINDERBENDSECTION_H
+#include "HornElement.h"
 
 class CylinderBendSection : public HornElement {
 public:
@@ -95,5 +95,5 @@ protected:
 		F_ = Matrix(nModes_, nModes_);
 	}
 };
+#endif //CYLINDER_BEND_SECTION_H
 
-#endif /* CYLINDERBENDSECTION_H */
