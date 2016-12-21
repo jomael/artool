@@ -1,0 +1,42 @@
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+#EMacs artifacts
+*~
+*\#
+
+#CMake Cache
+cmake/CMakeCache.txt
+cmake/CMakeFiles/
+cmake/Makefile
+cmake/cmake_install.cmake
