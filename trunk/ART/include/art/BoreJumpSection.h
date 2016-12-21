@@ -1,3 +1,5 @@
+#ifndef BORE_JUMP_SECTION_H
+#define  BORE_JUMP_SECTION_H
 #include "HornElement.h"
 
 class BoreJumpSection : public HornElement {
@@ -61,3 +63,4 @@ protected:
 	//Allows the GA to define this by jumpSize and leave rIn to be given by previous rOut.
 
 };
+#endif // BORE_JUMP_SECTION_H
