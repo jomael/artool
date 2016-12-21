@@ -67,7 +67,7 @@
 #include "ARTtimeModule.h"
 #include "timePrototypes.h"
 #include "AcousticResearchTool.h"
-
+#include "WindInstrument.h"
 #include "strparsing.h"
 
 

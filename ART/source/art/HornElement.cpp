@@ -934,15 +934,6 @@ void HornElement::cylBendMultimodeAccumulate (const double w, const double lengt
 			if(i>=nModes_ && j<nModes_) (*a)(i,j) = X(i-nModes_,j)*X(i-nModes_,j) + X(i-nModes_,j)*Dbend(i-nModes_,j)*X(i-nModes_,j);
 		}
 	}	
-
-
-
-
-
-
-
-
-
 }
 
 /*
@@ -987,17 +978,6 @@ bool HornElement::haveInitMatrices=false;
 #ifdef TRACE
 //ofstream HornElement::clogf;
 #endif
-
-
-
-
-
-
-
-
-
-
-
 
 #endif
 
