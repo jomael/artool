@@ -1,21 +1,21 @@
-#ifndef CONE_SECTION_H
-#define CONE_SECTION_H
+#ifndef BESSEL_SECTION_H
+#define BESSEL_SECTION_H
 
 #include "HornElement.h"
-class ConeSection : public HornElement {
+class BesselSection : public HornElement {
 public:
 
-	ConeSection(const double length, const double rDiff);
-	ConeSection(const bool canModify=false, const bool canSplit=false, const double length=100.0, 
-		const double rIn=1.0, const double rOut=2.0, const float tempC=21.0, const float lossF=1.0, 
+	BesselSection(const bool canModify=false, const bool canSplit=false, const double length=100.0, 
+		const double rIn=1.0, const double rOut=2.0, const double flare=2, const float tempC=21.0, const float lossF=1.0, 
 		const float humidity=80, const float xc=382, const string name = " ", Matrix MA=NULL, 
-		Matrix MB=NULL, double rr=0.0, const double rDiff=-0.0) :
-		HornElement(tempC,lossF,humidity/100,xc/1e06,name,CONESECTION_TYPE,MA,MB,rr,length, 
-		canSplit, canModify), rIn_(rIn), rOut_(rOut), rDiff_(rDiff) {}
-	ConeSection(const bool canModify, const bool canSplit, const double minLength, const double maxLength, 
-		const double minRin, const double maxRin, const double minRout, const double maxRout); //max&min values
-	ConeSection(HornElement *c);
-	~ConeSection();
+		Matrix MB=NULL, double rr=0.0) :
+		HornElement(tempC,lossF,humidity/100,xc/1e06,name,BESSELSECTION_TYPE,MA,MB,rr,length, 
+		canSplit, canModify), rIn_(rIn), rOut_(rOut), flare_(flare) {}
+	
+	BesselSection(const bool canModify, const bool canSplit, const double minLength, const double maxLength, const double minRin, const double maxRin, 
+		const double minRout, const double maxRout, const double minFlare, const double maxFlare); //max&min values
+	BesselSection(HornElement *c);
+	~BesselSection();
 
 	virtual ARTvariant* getPropertyPointer(const char* name)
 	{
@@ -28,8 +28,10 @@ public:
 		if (0 == strcmp(name,"humidity")) {var->typ = C_ART_nflo;	var->val->nf = &(humidity_);	return var; }
 		if (0 == strcmp(name,"r1"))		{var->typ = C_ART_ndbl;	var->val->nd = &(rIn_);	return var; }
 		if (0 == strcmp(name,"r2"))		{var->typ = C_ART_ndbl;	var->val->nd = &(rOut_);	return var; }
+		if (0 == strcmp(name,"flare"))		{var->typ = C_ART_ndbl;	var->val->nd = &(flare_);	return var; }
 
 		//otherwise return the struct with type undefined
+		std::cout << "undef!\n";
 		var->typ = C_ART_undef;
 		return var;
 	}
@@ -39,18 +41,25 @@ public:
 	void rIn(const double rIn) {rIn_=rIn;}
 	double rOut() const {return rOut_;}
 	void rOut(const double rOut) {rOut_=rOut;}
-	double gradientIn() const {return (rOut_ - rIn_) / length_;}
-	double gradientOut() const {return (rOut_ - rIn_) / length_;}
-	double findRadius (const double x) const;
+	double flare() const {return flare_;}
+	void flare(const double flare) {flare_=flare;}
+	double gradientIn() const;
+	double gradientOut() const;
+	double findRadius(const double x) const;
 	double findPosition (const double r) const;
+	double findExtremeRadius (const double x, const bool isMax) const;
 	string getSaveString() const;
+	bool nudgeFlare (const double target) {	const double epsilon = -1/flare_; const double b = pow( length_/(pow(rIn_, epsilon)-pow(rOut_, epsilon)) , flare_);	const double x0 = pow(rOut_/b, epsilon);
+		std::cout << gradientIn() << ", " << flare_; flare_ = target /b / pow(x0+length_, -1-flare_); std::cout << "& " << gradientIn() << "*  " << target << ", " << flare_ << "\n";
+		if (fabs(gradientIn()-target)>0.01) nudgeFlare(target);
+			return (flare_>minFlare_ && flare_<maxFlare_);}
 
 // methods needed by optimiser
 	int mutate (const float pmut, const float mu, const double previousRout);
-	bool split(list<HornElement*> &l, list<HornElement*>::iterator &iter);
 	void elementCrossover (const HornElement& m, HornElement* s, HornElement* b, const float pcross);
+	bool split(list<HornElement*> &l, list<HornElement*>::iterator &iter);
 	void elementInitialise(const double previousRout);
-	HornElement* clone() {return new ConeSection(this);}
+	HornElement* clone() {return new BesselSection(this);}
 	void print() const ;
 
 // object member functions for Mapes-Riordian Tla (spherical waves)
@@ -60,16 +69,14 @@ public:
 
 // object member functions (multi modal waves)
 	void multimodeInputImpedance (const double w, const bool bends, Matrix *Zout) ;
-	void multimodeInputImpedance (const double w, const double Xin, const double Xout, const double Rin, const double Rout, const bool bends, Matrix *Zout) ;
 	void multimodeRadiationImpedance(const double w, const bool bends, const int IndFreq, Matrix* result) const;
 	void multimodeRadiationImpedanceClosedEnd(const double w, const bool bends, Matrix* result) const;
 	void multimodeRadiationImpedanceOpenEnd(const double w, const bool bends, Matrix* result) const;
 	void multimodeRadiationImpedanceTerminated(const double w, const bool bends, Matrix* result, const dcomp z_trm) const;
-	int MultimodeAccumulate (const double w, int IndFreq, const bool bends, Matrix *a, const int Ind, vector<int>&mem, Matrix *zt,list<Matrix> *ImpedanceList,vector<int> &IndHole);
+	int MultimodeAccumulate (const double w,int IndFreq, const bool bends, Matrix *a, const int Ind, vector<int>&mem, Matrix *zt,list<Matrix> *ImpedanceList,vector<int> &IndHole);
 
 protected:
-	double rIn_, rOut_, rDiff_;
-	double minLength_, maxLength_, minRin_, maxRin_, minRout_, maxRout_;
+	double rIn_, rOut_, flare_;
+	double minLength_, maxLength_, minRin_, maxRin_, minRout_, maxRout_, maxFlare_, minFlare_;
 };
-
-#endif //CONE_SECTION_H
+#endif //BESSEL_SECTION_H

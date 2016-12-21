@@ -55,6 +55,7 @@
 #include "BoreJumpSection.h"
 #include "ConeSection.h"
 #include "ConeBendSection.h"
+#include "BesselSection.h"
 
 /** \addtogroup ARTmodelInterfaceGroup ARTmodelInterface
  * @{
