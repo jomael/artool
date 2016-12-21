@@ -204,6 +204,9 @@ double r_zero(const double Si, const float T, const float h, const float xc);
 dcomp Z_c(const double w, const double Si, const double Sm, const float T, const float L, const float h, const float xc);
 dcomp Gamma(const double w, const double Sm, const float T, const float L, const float h, const float xc);
 
+extern bool bendwarning;
+extern bool bendwarningrad;
+
 class HornElement {
 public:
 

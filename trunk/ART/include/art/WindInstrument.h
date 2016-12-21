@@ -51,6 +51,7 @@
 #include "BoreJumpSection.h"
 #include "CylinderSection.h"
 #include "ConeSection.h"
+#include "BesselSection.h"
 #include "Branch.h"
 #include "CylinderBendSection.h"
 #include "ConeBendSection.h"

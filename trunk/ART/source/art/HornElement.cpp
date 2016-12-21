@@ -55,6 +55,8 @@
 #ifndef min
 #define min(a,b)            (((a) < (b)) ? (a) : (b))
 #endif
+bool bendwarning = false;
+bool bendwarningrad = false;
 
 // ############## TLA CALCULATIONS (i.e. plane-wave assumption) ######################
 // series of functions to implement the impedance theory for simple geometries
@@ -70,10 +72,6 @@ double f(const float T) {return (1.00062+(3.14e-8)*P+(5.6e-7)*T*T);}
 double psv(const float T) {double t = T_Kelvin(T); return (exp((1.2811805e-5)*t*t - (1.950987e-2)*t + 34.04926034 - (6.3536311e3)/t));}
 
 double xw(const float T,const float h){return (h*f(T)*psv(T)/P);}
-
-bool bendwarning = false;
-bool bendwarningrad = false;
-
 
 //C2: Speed of sound with Temperature, Pressure, CO2 and water vapor molar fractions, and Humidity dependencies: 
 //More Accurate than C. C2 is used in the following code
