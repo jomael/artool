@@ -108,6 +108,34 @@ ARTGetLastErrorMessage = artsim.ARTGetLastErrorMessage
 ARTGetLastErrorMessage.restype = c_char_p
 ARTGetLastErrorMessage.argtype = []
 
+ARTGetProperties = artsim.ARTGetProperties
+ARTGetProperties.restype = c_void_p
+ARTGetProperties.argtype = [c_void_p, c_void_p]
+
+ARTGetDataProperties = artsim.ARTGetDataProperties
+ARTGetDataProperties.restype = c_void_p
+ARTGetDataProperties.argtype = [c_void_p, c_void_p]
+
+ARTGetName = artsim.ARTGetName
+ARTGetName.restype = c_char_p
+ARTGetName.argtype = [c_void_p]
+
+ARTGetValue = artsim.ARTGetValue
+ARTGetValue.restype = c_void_p
+ARTGetValue.argtype = [c_void_p]
+
+ARTGetString = artsim.ARTGetString
+ARTGetString.restype = c_char_p
+ARTGetString.argtype = [c_void_p, c_int]
+
+ARTGetDefinitionString = artsim.ARTGetDefinitionString
+ARTGetDefinitionString.restype = c_char_p
+ARTGetDefinitionString.argtype = [c_void_p]
+
+ARTGetLongDescription = artsim.ARTGetLongDescription
+ARTGetLongDescription.restype = c_char_p
+ARTGetLongDescription.argtype = [c_void_p]
+
 # define c++ classes
 class T_ART_Cmplx(Structure):
   _fields_ = [("re", c_double),("im", c_double)]
