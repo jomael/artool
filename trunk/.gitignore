@@ -40,6 +40,11 @@ cmake/CMakeCache.txt
 cmake/CMakeFiles/
 cmake/Makefile
 cmake/cmake_install.cmake
+cmake/CPackConfig.cmake
+cmake/CPackSourceConfig.cmake
 
 #Python
 *.pyc
+
+#Shellscript hacks
+cmake/clean_build_*

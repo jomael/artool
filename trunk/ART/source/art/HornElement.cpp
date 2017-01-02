@@ -62,7 +62,7 @@ bool bendwarningrad = false;
 // series of functions to implement the impedance theory for simple geometries
 // Methods themselves require little commenting; see the references for details of the theory.
 
-	//Maths sub-functions for TLA Input Impedance calculations
+//Maths sub-functions for TLA Input Impedance calculations
 
 float DT(const float T){ return (T - 26.85);}
 double T_Kelvin(const float T) {return(T + 273.15);}
