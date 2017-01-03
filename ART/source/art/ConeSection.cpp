@@ -9,10 +9,10 @@ ConeSection::ConeSection(const double length, const double rDiff) {
 	rIn_ = 0.0; //Will be modified into feasible values when initialised.
 	rOut_ = 0.0;
 	rDiff_ = rDiff;
-	tempC_=21.0;
-	lossF_=1.0;
-		humidity_ = 0.8; 		
-	xc_ = 0.000382;
+	tempC_=DFLT_TEMP_C;
+	lossF_=DFLT_TEMP_C;
+	humidity_ = DFLT_HUMIDITY/100; 		
+	xc_ = DFLT_CO2_PPM/10e7;
 	minLength_ = length;
 	maxLength_ = length;
 	minRin_ = -1.0;

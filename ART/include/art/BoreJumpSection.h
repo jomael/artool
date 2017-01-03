@@ -5,7 +5,7 @@
 class BoreJumpSection : public HornElement {
 public:
 	BoreJumpSection(const double rIn=0.0, const double rOut=0.0, const float tempC=21.0, 
-		const float lossF=1.0, const float humidity=80, const float xc=382, const string name = " ", 
+		const float lossF=DFLT_LOSS_F, const float humidity=DFLT_HUMIDITY, const float xc=DFLT_CO2_PPM, const string name = " ", 
 		Matrix MA=NULL, Matrix MB=NULL, double rr=0.0, double length=0.0, bool canModify=false, 
 		bool canSplit=false, double jumpSize=0.0) :
 		HornElement(tempC, lossF, humidity/100, xc/1e06, name, BOREJUMPSECTION_TYPE, MA, MB, rr, length, canSplit, canModify),

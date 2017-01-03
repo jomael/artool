@@ -7,7 +7,8 @@ class Branch : public HornElement{
 public:
 	Branch(const bool canModify=false, const bool canSplit=false, 
 		const int NbHole = 1, const double rIn = 1.0, const double rOut = 1.0, const int SimpleModel = 1, 
-		const float tempC=21.0, const float lossF=1.0, const float humidity=80, const float xc=382, 
+		const float tempC=DFLT_TEMP_C, const float lossF=DFLT_LOSS_F,
+	       const float humidity=DFLT_HUMIDITY, const float xc=DFLT_CO2_PPM, 
 		const string name = " ", Matrix MA=NULL, Matrix MB=NULL, double rr=0.0) : 
 		HornElement(tempC,lossF,humidity/100,xc/1e06,name,BRANCH_TYPE,MA,MB,rr,0, 
 		canSplit, canModify), rIn_(rIn), rOut_(rOut), SimpleModel_(SimpleModel),
