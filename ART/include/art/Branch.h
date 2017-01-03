@@ -10,7 +10,9 @@ public:
 		const float tempC=DFLT_TEMP_C, const float lossF=DFLT_LOSS_F,
 	       const float humidity=DFLT_HUMIDITY, const float xc=DFLT_CO2_PPM, 
 		const string name = " ", Matrix MA=NULL, Matrix MB=NULL, double rr=0.0) : 
-		HornElement(tempC,lossF,humidity/100,xc/1e06,name,BRANCH_TYPE,MA,MB,rr,0, 
+
+
+  HornElement(tempC,lossF,humidity/100,xc/1e06,name,BRANCH_TYPE,MA,MB,rr,0, 
 		canSplit, canModify), rIn_(rIn), rOut_(rOut), SimpleModel_(SimpleModel),
 		NbHole_(NbHole) {}
 	Branch(HornElement* c);
