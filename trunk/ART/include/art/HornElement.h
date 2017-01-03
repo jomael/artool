@@ -207,11 +207,17 @@ dcomp Gamma(const double w, const double Sm, const float T, const float L, const
 extern bool bendwarning;
 extern bool bendwarningrad;
 
+//DEFAULT VALUES
+const float DFLT_TEMP_C = 21.0 /*in Celsius */;
+const float DFLT_HUMIDITY = 80 /* Relative humidity in % */;
+const float DFLT_CO2_PPM = 382 /*in parts per million - ppm */;
+const float DFLT_LOSS_F = 1.0 /*Loss Factor */;
+
 class HornElement {
 public:
 
-	HornElement(const float tempC=21.0, const float lossF=1.0, const float humidity=80, 
-		const float xc=382, const string name=" ", int type=-1, Matrix MA=NULL, Matrix MB=NULL, 
+	HornElement(const float tempC=DFLT_TEMP_C, const float lossF=DFLT_LOSS_F, const float humidity=DFLT_HUMIDITY, 
+		const float xc=DFLT_CO2_PPM, const string name=" ", int type=-1, Matrix MA=NULL, Matrix MB=NULL, 
 		double rr=0.0, double length=0.0, const bool canSplit=false, const bool canModify=false): type_(type), name_(name), tempC_(tempC), humidity_(humidity), xc_(xc),
 		lossF_(lossF), FirstElement_(0), length_(length), canModify_(canModify), canSplit_(canSplit), MA_(MA), MB_(MB), rr_(rr) {}
 	virtual ~HornElement() {}
@@ -256,22 +262,22 @@ public:
 	virtual void FirstElement(const int val) {FirstElement_=val;}	//useful in the bore list case for the transmission matrix's calculation (to know when we stop)
 	virtual int FirstElement() const {return FirstElement_;}
 
-	void settempC(float tempC) {tempC_ = tempC;}		// tempC_ local temperature in degC, defaults to 21
+	void settempC(float tempC) {tempC_ = tempC;}		// tempC_ local temperature in degC, defaults to DFLT_TEMP_C
 	float gettempC() const {return tempC_;}
 //	virtual void tempC(const float tempC) {tempC_=tempC;}	// details left up to descendents
 //	virtual float tempC() const {return tempC_;}
 
-	void setlossF(float lossF) {lossF_ = lossF;}		// lossF_ local loss factor, defaults to 1
+	void setlossF(float lossF) {lossF_ = lossF;}		// lossF_ local loss factor, defaults to DFLT_LOSS_F
 	float getlossF() const {return lossF_;}
 //	virtual void lossF(const float lossF) {lossF_=lossF;}	// details left up to descendents
 //	virtual float lossF() const {return lossF_;}
 
-	void sethumidity(float humidity) {humidity_ = humidity;} //humidity factor, defaults to 80%		
+	void sethumidity(float humidity) {humidity_ = humidity;} //humidity factor, defaults to DFLT_HUMIDITY		
 	float gethumidity() const {return humidity_;}
 //	virtual void humidity(const float humidity) {humidity_=humidity;}
 //	virtual float humidity() const {return humidity_;}	
 
-	void setxc(float xc) {xc_ = xc;}		//CO2 molar fraction, defaults to 382.0 ppm	
+	void setxc(float xc) {xc_ = xc;}		//CO2 molar fraction, defaults to DFLT_CO2_PPM	
 	float getxc() const {return xc_;}
 //	virtual void xc(const float xc) {xc_=xc;}
 //	virtual float xc() const {return xc_;}

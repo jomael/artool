@@ -6,8 +6,8 @@
 class TerminationElement : public HornElement {
 public:
 	TerminationElement(const bool canModify=false, const bool canSplit=false, int test=0,int Contrib=1, const double RadiationRadius=1.0, const double PrevInputRadius  = 1.0, const int PrevType=1, 
-		const int radiation_type = 0,const char filename[100] = " ",const float tempC=21.0, const float lossF=1.0, 
-		const float humidity=80, const float xc=382, const string name = " ", Matrix MA=NULL, 
+		const int radiation_type = 0,const char filename[100] = " ",const float tempC=DFLT_TEMP_C, const float lossF=DFLT_LOSS_F, 
+		const float humidity=DFLT_HUMIDITY, const float xc=DFLT_CO2_PPM, const string name = " ", Matrix MA=NULL, 
 		Matrix MB=NULL, double rr=0.0) :
 		HornElement(tempC,lossF,humidity/100,xc/1e06,name,TERMINATIONELEMENT_TYPE,MA,MB,rr,0, 
 		canSplit, canModify), RADIATION_TYPE_(radiation_type), FILENAME_(filename), NAME_(name),
