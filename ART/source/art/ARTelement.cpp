@@ -39,7 +39,7 @@
 
 #include "ARTelement.h"
 
-ARTelement::ARTelement(const string name, const string sds, const string lds, const string htm, ARTmodelInterface* prototype, ARTsimulator* sim)
+ARTelement::ARTelement(const string name, const string sds, const string lds, const string htm, ARTmodelInterface* prototype, ARTSimulator* sim)
 : ARTmodelInterface(name,sds,lds,htm),
   //propMatrix(NULL),
   model(NULL),
@@ -105,7 +105,7 @@ void ARTelement::PrepareCalculation()
         while(prop); //until no prop. is found, it's NULL then...
 }
 
-void ARTelement::SetScope(ARTsimulator* sim)
+void ARTelement::SetScope(ARTSimulator* sim)
 {
         if (sim == NULL)
                 throw ARTerror("ARTelement::SetScope", "The specified simulator is invalid.");

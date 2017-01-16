@@ -56,7 +56,7 @@
 
 using namespace mup;
 
-class ARTsimulator;
+class ARTSimulator;
 class ARTobject;
 // cbg: forward declaration
 class ARTfunctionoid;
@@ -172,7 +172,7 @@ public:
 protected:
 	string definition_;	///< textual representation of property value (symbolic expression)
 	ParserX* parser_;	///< expression parser instance
-	ARTsimulator* scope_;	///< scope of variable names
+	ARTSimulator* scope_;	///< scope of variable names
 	string varname_; ///< name of corresponding variable in parser
 	virtual int EvaluationCost();
  	virtual void Evaluate() const;
@@ -333,7 +333,7 @@ public:
 	string GetVarName() const {return varname_;}
 
 	// change definition string (no immediate re-evaluation)
-	void SetDefinition(const string& s, ARTsimulator* scope);
+	void SetDefinition(const string& s, ARTSimulator* scope);
 
 	// set definition string without setting the parser
 	void SetDefinition(const string& s);
@@ -344,8 +344,8 @@ public:
 	//see c-file
 	void ResetEvaluation();
 	//needed for debugging only
-	void SetScope(ARTsimulator* sim) {scope_ = sim;}
-	ARTsimulator* GetScope() {return scope_;}
+	void SetScope(ARTSimulator* sim) {scope_ = sim;}
+	ARTSimulator* GetScope() {return scope_;}
 
 	void SetFunction(ARTfunctionoid* func);
 

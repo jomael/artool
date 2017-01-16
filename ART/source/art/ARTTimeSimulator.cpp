@@ -54,7 +54,7 @@ using std::stringstream;
 
 ARTTimeSimulator::ARTTimeSimulator(const string name, const string sds,
     const string lds, const string htm) :
-    ARTsimulator(name, "TimeDomain", sds, lds, htm)
+    ARTSimulator(name, "TimeDomain", sds, lds, htm)
 //	_simulParams()
 {
   initStandardSimulParams();

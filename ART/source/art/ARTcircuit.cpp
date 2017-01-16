@@ -42,7 +42,7 @@
 
 //**************************************************************************************************************
 // ARTcircuit
-ARTcircuit::ARTcircuit(ARTsimulator* simulator, const string name, const string sds, const string lds, const string htm)
+ARTcircuit::ARTcircuit(ARTSimulator* simulator, const string name, const string sds, const string lds, const string htm)
         : ARTelement(name,sds,lds,htm), references(), impedanceCurve_(NULL), simulator_(simulator), wavefrontRadiation(NULL) // , wavefrontOut(NULL), wavefrontIn(NULL)
 
 {

@@ -28,7 +28,7 @@
 #include "gtest.h"
 
 #include "art.clp"
-#include "ARTsimulator.h"
+#include "ARTSimulator.h"
 #include "ART.h"
 #include "ARTmethod.h"
 #include "ARTwaveObject.h"

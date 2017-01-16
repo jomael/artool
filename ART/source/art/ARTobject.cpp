@@ -39,7 +39,7 @@
 #include "ARTobject.h"
 #include "ARTmethod.h"
 #include "ARTlistProp.h"
-#include "ARTsimulator.h"
+#include "ARTSimulator.h"
 
 
 //**************************************************************************************************************

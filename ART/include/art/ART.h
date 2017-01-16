@@ -836,7 +836,7 @@ typedef struct ARTdataProp ARTdataProp;
 typedef struct ARTlistProp ARTlistProp;
 typedef struct ARTmethod ARTmethod;
 typedef struct ARTvariant ARTvariant;
-typedef struct ARTsimulator ARTsimulator;
+typedef struct ARTSimulator ARTSimulator;
 typedef struct ARTcircuit ARTcircuit;
 typedef struct ARTelement ARTelement;
 typedef struct ARTItimeModule ARTItimeModule;
@@ -852,7 +852,7 @@ class ARTdataProp;
 class ARTlistProp;
 class ARTmethod;
 class ARTvariant;
-class ARTsimulator;
+class ARTSimulator;
 class ARTcircuit;
 class ARTelement;
 class ARTItimeModule;
@@ -872,7 +872,7 @@ typedef ARTdataProp*	P_ART_DataProp;
 typedef ARTlistProp*	P_ART_ListProp;
 typedef ARTmethod*	P_ART_Method;
 typedef ARTvariant*	P_ART_Variant;
-typedef ARTsimulator*   P_ART_Simulator;
+typedef ARTSimulator*   P_ART_Simulator;
 typedef ARTcircuit*	P_ART_Circuit;
 typedef ARTelement*	P_ART_Element;
 typedef ARTItimeModule* P_ART_TModule;
@@ -981,7 +981,7 @@ __DECLSPEC bool	__CALLCONV	ARTDestroySimulator	(P_ART_Simulator simulator);
  *    use ARTGetLastErrorMessage to get the error message.
  *  @throws ARTerror if not using the DLL interface.
  */ 
-__DECLSPEC bool	__CALLCONV	ARTSetFrequencyRange	(ARTsimulator* sim, double f_min, double f_max, double f_step);
+__DECLSPEC bool	__CALLCONV	ARTSetFrequencyRange	(ARTSimulator* sim, double f_min, double f_max, double f_step);
 
 /**
  * Sets the number of modes of a simulator.
@@ -991,7 +991,7 @@ __DECLSPEC bool	__CALLCONV	ARTSetFrequencyRange	(ARTsimulator* sim, double f_min
  *   use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror if not using the DLL interface.
  */  
-__DECLSPEC bool	__CALLCONV	ARTSetNModes	(ARTsimulator* sim, int Nmodes);
+__DECLSPEC bool	__CALLCONV	ARTSetNModes	(ARTSimulator* sim, int Nmodes);
 
 
 /**

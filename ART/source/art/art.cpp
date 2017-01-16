@@ -59,7 +59,7 @@
 //#include "strparsing.h"
 //#include "ARTmodel.h"
 #include "ARTdataContainer.h"
-#include "ARTsimulator.h"
+#include "ARTSimulator.h"
 #include "ARTFreqSimulator.h"
 #include "ARTTimeSimulator.h"
 #include "ARTelement.h"
@@ -217,7 +217,7 @@ P_ART_Simulator __CALLCONV ARTCreateSimulator    (const char* name, const char* 
 	if (art == NULL) art = new AcousticResearchTool();
 
 	//check if simulator with name already exists, if so throw exception. There must not be two simulators with the same name.
-	ARTsimulator* simulator = dynamic_cast<ARTsimulator*>(art->simulators->FindObject(name));
+	ARTSimulator* simulator = dynamic_cast<ARTSimulator*>(art->simulators->FindObject(name));
 	if (simulator) throw ARTerror("ARTCreateSimulator", "A simulator with the name '%s1' already exists.", name);
 
 	//check if domain is valid 
@@ -274,7 +274,7 @@ bool    __CALLCONV ARTDestroySimulator     (P_ART_Simulator simulator)
 	DLL_ERRORHANDLING_END
 }
 
-bool __CALLCONV ARTSetFrequencyRange    (ARTsimulator* sim, double f_min, double f_max, double f_step)
+bool __CALLCONV ARTSetFrequencyRange    (ARTSimulator* sim, double f_min, double f_max, double f_step)
 {
 	DLL_ERRORHANDLING_BEGIN
 	if (art == NULL) art = new AcousticResearchTool();
@@ -294,7 +294,7 @@ bool __CALLCONV ARTSetFrequencyRange    (ARTsimulator* sim, double f_min, double
 
 
 
-bool __CALLCONV ARTSetNModes    (ARTsimulator* sim, int Nmodes)
+bool __CALLCONV ARTSetNModes    (ARTSimulator* sim, int Nmodes)
 {
 	DLL_ERRORHANDLING_BEGIN
 	ARTdataProp* modes = static_cast<ARTdataProp*>(sim->FindProperty("NumberOfModes"));
