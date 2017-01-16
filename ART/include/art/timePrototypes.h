@@ -47,7 +47,7 @@
 #ifndef TIMEPROTOTYPES_H_
 #define TIMEPROTOTYPES_H_
 
-#include "ARTtimeModule.h"
+#include "ARTItimeModule.h"
 
 /**
  * @brief Represents a time module with a single function output port which is
