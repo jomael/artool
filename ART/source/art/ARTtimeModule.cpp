@@ -547,7 +547,7 @@ void ARTItimeModule::removeGlobalParameter(const string& name)
 
 void ARTItimeModule::setSimulator(ARTsimulator* sim)
 {
-  _simulator = dynamic_cast<ARTtimeSimulator*>(sim);
+  _simulator = dynamic_cast<ARTTimeSimulator*>(sim);
   ARTproperty* iter = GetProperties(NULL);
   OPortType* oPort;
   while (iter)

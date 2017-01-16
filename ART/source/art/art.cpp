@@ -60,6 +60,8 @@
 //#include "ARTmodel.h"
 #include "ARTdataContainer.h"
 #include "ARTsimulator.h"
+#include "ARTFreqSimulator.h"
+#include "ARTTimeSimulator.h"
 #include "ARTelement.h"
 #include "ARTprototype.h"
 #include "ARTcircuit.h"
@@ -228,13 +230,13 @@ P_ART_Simulator __CALLCONV ARTCreateSimulator    (const char* name, const char* 
 		//check if wavetype is valid
 		if (! ARTCheckPropertyCapability("WaveType", wavetype))
 			throw ARTerror("ARTCreateSimulator", "The specified wave type is invalid.");
-		simulator = new ARTfreqSimulator(name, wavetype);
+		simulator = new ARTFreqSimulator(name, wavetype);
 		simulator->userElements = simulator->AppendListProp("UserElements");
 		simulator->circuits = simulator->AppendListProp("Circuits");
 	}
 	else if (!strcmp(domain, "TimeDomain"))
 	{
-		simulator = new ARTtimeSimulator(name);
+		simulator = new ARTTimeSimulator(name);
 		simulator->userElements = simulator->AppendListProp("TimeModules");
 	}
 
@@ -329,7 +331,7 @@ P_ART_Element    __CALLCONV ARTCreateElement     (P_ART_Simulator simulator, con
 
 		if (simulator->GetDomain()->GetName() == "FrequencyDomain")
 		{
-			ARTfreqSimulator* freqSimulator = dynamic_cast<ARTfreqSimulator*>(simulator);
+			ARTFreqSimulator* freqSimulator = dynamic_cast<ARTFreqSimulator*>(simulator);
 			method = prototype->FindMethod(freqSimulator->GetWavetype()->GetName().c_str());
 			if (method == NULL) throw ARTerror("ARTCreateElement", "The prototype model does not support the wavetype of the simulator.");
 		}
@@ -417,7 +419,7 @@ P_ART_Element    __CALLCONV ARTChangeElementModel     (P_ART_Simulator simulator
 
 		if (simulator->GetDomain()->GetName() == "FrequencyDomain")
 		{
-			ARTfreqSimulator* freqSimulator = dynamic_cast<ARTfreqSimulator*>(simulator);
+			ARTFreqSimulator* freqSimulator = dynamic_cast<ARTFreqSimulator*>(simulator);
 			method = prototype->FindMethod(freqSimulator->GetWavetype()->GetName().c_str());
 			if (method == NULL) throw ARTerror("ARTChangeElementType", "The prototype model does not support the wavetype of the simulator.");
 		}
@@ -567,7 +569,7 @@ P_ART_DataProp    __CALLCONV ARTSetParameter     (P_ART_Simulator simulator, con
 		//check if the string has some content
 		if (s != "")
 		{
-			ARTtimeSimulator* tSim = dynamic_cast<ARTtimeSimulator*>(simulator);
+			ARTTimeSimulator* tSim = dynamic_cast<ARTTimeSimulator*>(simulator);
 			// in case of a frequency simulator
 			if (tSim == NULL)
 			{
@@ -674,7 +676,7 @@ P_ART_TModule __CALLCONV ARTCreateTModule	(P_ART_Simulator simulator, const char
 {
 	DLL_ERRORHANDLING_BEGIN
 	ARTItimeModule* newModule;
-	ARTtimeSimulator* sim = dynamic_cast<ARTtimeSimulator*>(simulator);
+	ARTTimeSimulator* sim = dynamic_cast<ARTTimeSimulator*>(simulator);
 	//check if the simulator is a valid object
 	if (sim == NULL) throw ARTerror("ARTCreateTModule", "Invalid time domain simulator");
 
@@ -754,7 +756,7 @@ __DECLSPEC bool __CALLCONV ARTAddLocalParamToTModule	(P_ART_TModule module, cons
 bool __CALLCONV ARTAddGlobalParamToTSimulator	(P_ART_Simulator simulator, const char* name, const char* expr)
 {
 	DLL_ERRORHANDLING_BEGIN
-	ARTtimeSimulator* sim = dynamic_cast<ARTtimeSimulator*>(simulator);
+	ARTTimeSimulator* sim = dynamic_cast<ARTTimeSimulator*>(simulator);
 	if (sim == NULL)
 	{
 		throw ARTerror("ARTAddGlobalParamToTSimulator", "The specified simulator is no valid time-domain simulator.");
@@ -770,7 +772,7 @@ bool __CALLCONV ARTConnectPorts	(P_ART_Simulator simulator, const char* expr)
 	vector<string> commands = strsplit(expr, ';');
 	::size_t commandIter;
 	ARTItimeModule *inModule, *outModule;
-	ARTtimeSimulator* sim = dynamic_cast<ARTtimeSimulator*>(simulator);
+	ARTTimeSimulator* sim = dynamic_cast<ARTTimeSimulator*>(simulator);
 	//check if the simulator is a valid object
 	if (sim == NULL) throw ARTerror("ARTCreateTModule", "Invalid time domain simulator");
 	for (commandIter = 0; commandIter < commands.size(); ++commandIter)
@@ -817,13 +819,13 @@ T_ART_Cmplx __CALLCONV ARTGetComplexFromPort(P_ART_DataProp port, int idx)
 	result.im = 0;
 	DLL_ERRORHANDLING_BEGIN
 	std::complex<double> tempResult;
-	ARTtimeSimulator* sim;
+	ARTTimeSimulator* sim;
 	ARTItimeModule::OPortType* oPort = dynamic_cast<ARTItimeModule::OPortType*>(port);
 	if (oPort == NULL)
 	{
 		throw ARTerror("ARTGetComplexFromPort", "The specified port is no valid output port!");
 	}
-	sim = dynamic_cast<ARTtimeSimulator*>(oPort->GetScope());
+	sim = dynamic_cast<ARTTimeSimulator*>(oPort->GetScope());
 	if (!sim)
 	{
 		throw ARTerror("ARTGetComplexFromPort", "Port '%s1' does not have a valid simulator!", oPort->GetName());

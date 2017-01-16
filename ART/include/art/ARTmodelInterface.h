@@ -45,7 +45,7 @@
 #include <vector>
 #include "ARTobject.h"
 #include "ARTerror.h"
-#include "ARTsimulator.h"
+#include "ARTFreqSimulator.h"
 #include "ARTwaveObject.h"
 
 // forward declarations
@@ -166,7 +166,7 @@ class ARTmodelInterface : public ARTobject
 		 * Prototypes need to write formulas for impedance calculation and must therefore have access to some 
 		 * properties of the simulator and circuit (which will in turn give access to some properties of the simulator)
 		 */     
-		ARTfreqSimulator* simulator;
+		ARTFreqSimulator* simulator;
 };
 /** @}
  * End of documentation group ARTmodelInterface

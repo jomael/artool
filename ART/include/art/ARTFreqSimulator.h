@@ -37,9 +37,52 @@
 *                                                                         *
 ***************************************************************************/
 
-#include "ARTmodelInterface.h"
 
-void ARTmodelInterface::SetSimulator(ARTsimulator* sim)
+#ifndef ARTFREQSIMULATOR_H_
+#define ARTFREQSIMULATOR_H_
+
+//#include <list>
+#include <map>
+#include "mpParser.h"
+#include "ARTobject.h"
+#include "ARTproperty.h"
+#include "ARTdataProp.h"
+#include "ARTsimulator.h"
+
+using namespace mup;
+//using std::list;
+
+// forward declaration
+class ARTItimeModule;
+
+/**
+ * @brief Implementation of a simulator for the frequency domain.
+ */
+class ARTFreqSimulator : public ARTsimulator
 {
-  simulator = dynamic_cast<ARTFreqSimulator*>(sim);
-}
+protected:
+  /**
+   * Defines the wave type of the simulation - plain, spherical or multimodal.
+   */
+  ARTproperty wavetype_;
+  ARTdataContainer* frqGrid;
+  ARTdataContainer* wfrqGrid;
+  ARTdataContainer* modes;
+public:
+
+  ARTFreqSimulator(const string name, const string wavetype="MultiModal",
+      const string sds="", const string lds="", const string htm="");
+
+  //void SetMultimodeParameters(ARTdataProp* fmin, ARTdataProp* fmax, ARTdataProp* fstep, ARTdataProp* modes);
+
+  virtual ARTdataContainer* GetFrequencyGrid() {return frqGrid;}
+  virtual ARTdataContainer* GetAngularFrequencyGrid() {return wfrqGrid;}
+  virtual ARTdataContainer* GetNumberOfModes() {return modes;}
+
+  virtual ARTproperty* GetWavetype() {return &wavetype_;}
+
+  virtual ~ARTFreqSimulator() {}
+};
+
+
+#endif /* ARTFREQSIMULATOR_H_ */
