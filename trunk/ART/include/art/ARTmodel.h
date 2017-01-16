@@ -43,7 +43,7 @@
 #include "ART.h"
 #include "ARTwaveObject.h"
 #include "ARTlink.h"
-#include "ARTsimulator.h"
+#include "ARTFreqSimulator.h"
 #include "strparsing.h"
 #include "ARTmodelInterface.h"
 #include "ARTcircuit.h"

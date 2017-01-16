@@ -37,9 +37,55 @@
 *                                                                         *
 ***************************************************************************/
 
-#include "ARTmodelInterface.h"
+#include <sstream>
+#include "strparsing.h"
+#include "ARTFreqSimulator.h"
+#include "ARTlistProp.h"
+#include "ARTtimeModule.h"
+#include "ARTfunctionoid.h"
 
-void ARTmodelInterface::SetSimulator(ARTsimulator* sim)
+using namespace mup;
+
+using std::stringstream;
+
+
+
+//**************************************************************************************************************
+// ARTfreqSimulator
+
+ARTFreqSimulator::ARTFreqSimulator(const string name, const string wavetype,
+    const string sds, const string lds, const string htm) :
+    ARTsimulator(name, "FrequencyDomain", sds, lds, htm), wavetype_(wavetype)
 {
-  simulator = dynamic_cast<ARTFreqSimulator*>(sim);
+
+  /*
+	The frequency grids are not supposed to be edited by the user and therefore no properties!
+	frqGrid = AppendDataProp("frqGrid", new ARTvariant(C_ART_ndbl), "The list of frequencies (in Hz) for which this simulator will calculate the impedance.");
+	wfrqGrid = AppendDataProp("wfrqGrid", new ARTvariant(C_ART_ndbl), "The list of frequencies (angular frequency) for which this simulator will calcualte the impedance.");
+   */
+  modes = AppendDataProp("NumberOfModes", 1, "The number of modes for which this simulator will calculate the impedance.");
+
+  ARTdataProp* fmin = AppendDataProp("LowerFrequencyLimit", 50.0, "The lower frequency (in Hz) of the range for which this simulator will calculate the impedance.");
+  ARTdataProp* fmax = AppendDataProp("HigherFrequencyLimit", 1800.0, "The higher frequency (in Hz) of the range for which this simulator will calculate the impedance.");
+  ARTdataProp* fstep = AppendDataProp("FrequencyStep", 5.0, "The frequency step (in Hz) used to go through the range for which this simulator will calculate the impedance.");
+
+  //add properties to parser
+  ARTproperty* prop = GetProperties(NULL);
+  while (prop)
+  {
+    //if it is a data property
+    ARTdataProp* dprop = dynamic_cast<ARTdataProp*>(prop);
+    if (dprop)
+    {
+      string varname = dprop->GetName();
+      dprop->SetParser(parser_);
+      dprop->SetParserVar(varname);
+      //std::cout << "Created Parser Var: " << varname << "\n";
+    }
+    prop = GetProperties(prop);
+  }
+
+  frqGrid = new ARTdataContainer("frqGrid", new ARTfrqGridFunc(fmin, fmax, fstep));
+  wfrqGrid = new ARTdataContainer("wfrqGrid", new ARTwfrqGridFunc(frqGrid));
+
 }
