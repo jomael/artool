@@ -144,7 +144,7 @@ class ARTmodelInterface : public ARTobject
 		 *  Prototypes need to write formulas for impedance calculation and must therefore have access to some 
 		 *  properties of the simulator and circuit (which will in turn give access to some properties of the simulator)
 		 */     		
-		void SetSimulator(ARTsimulator* sim);
+		void SetSimulator(ARTSimulator* sim);
 
 		/**
 		 *  Sets the circuit of the model to cir. The circuit must be set to the circuit which should be evaluated before evaluation.

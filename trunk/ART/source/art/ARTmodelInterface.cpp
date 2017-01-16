@@ -39,7 +39,7 @@
 
 #include "ARTmodelInterface.h"
 
-void ARTmodelInterface::SetSimulator(ARTsimulator* sim)
+void ARTmodelInterface::SetSimulator(ARTSimulator* sim)
 {
   simulator = dynamic_cast<ARTFreqSimulator*>(sim);
 }

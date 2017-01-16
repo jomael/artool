@@ -65,7 +65,7 @@ class ARTItimeModule;
  * of a certain type (plain, spherical, multimodal). This is the parent class
  * for all implementations of a simulator in ART.
  */
-class ARTsimulator : public ARTobject {
+class ARTSimulator : public ARTobject {
 protected:
 
   /** Defines the domain type (frequency or time) of the current simulator. */
@@ -102,7 +102,7 @@ public:
    * @param[in] lds Long description of the created simulator.
    * @param[in] htm Path to help file in HTML format.
    */
-  ARTsimulator(const string name, const string domain="invalidDomain",
+  ARTSimulator(const string name, const string domain="invalidDomain",
       const string sds="", const string lds="", const string htm="");
 
   /**
@@ -128,7 +128,7 @@ public:
    *        properties will be deallocated by the destructor of the ARTObject
    *        class.
    */
-  virtual ~ARTsimulator();
+  virtual ~ARTSimulator();
 
   //these lists point into list of AcousticResearchTool Object
   /**

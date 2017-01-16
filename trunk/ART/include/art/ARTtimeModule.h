@@ -403,7 +403,7 @@ public:
    * ports.
    * @param[in] sim A pointer to a valid ARTtimeSimulator object.
    */
-  virtual void setSimulator(ARTsimulator* sim);
+  virtual void setSimulator(ARTSimulator* sim);
   /**
    * @brief Sets the current time module and all output ports to the given time
    *        index.
