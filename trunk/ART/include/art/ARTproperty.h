@@ -43,7 +43,7 @@
 #include <stdlib.h>
 #include <list>
 
-#include "ARTcell.h"
+#include "Cell.h"
 
 /**
  * Objects of this class are sets of strings (see ARTcell for details), that represent the
