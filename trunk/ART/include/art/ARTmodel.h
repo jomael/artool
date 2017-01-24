@@ -46,7 +46,7 @@
 #include "ARTFreqSimulator.h"
 #include "strparsing.h"
 #include "ARTmodelInterface.h"
-#include "ARTcircuit.h"
+#include "Circuit.h"
 
 #include "CylinderSection.h"
 #include "CylinderBendSection.h"
