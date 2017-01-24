@@ -43,6 +43,10 @@ cmake/Makefile
 cmake/cmake_install.cmake
 cmake/CPackConfig.cmake
 cmake/CPackSourceConfig.cmake
+GPATH
+GRTAGS
+GSYMS
+GTAGS
 
 #Python
 *.pyc
