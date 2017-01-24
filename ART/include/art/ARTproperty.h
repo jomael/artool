@@ -51,7 +51,7 @@
  * saved in a list. This list can be queried* by the programme, to check if a given object
  * has a certain property.
  */
-class ARTproperty : public ARTcell {
+class ARTproperty : public ART::ARTcell {
 private:
         bool listable_;
 public:
