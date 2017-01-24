@@ -39,7 +39,7 @@
 
 #include "ARTcircuit.h"
 #include "ARTmodel.h"
-
+using namespace ART;
 //**************************************************************************************************************
 // ARTcircuit
 ARTcircuit::ARTcircuit(ARTSimulator* simulator, const string name, const string sds, const string lds, const string htm)
