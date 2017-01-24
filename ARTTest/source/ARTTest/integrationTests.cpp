@@ -6,7 +6,7 @@
  */
 
 #include "ARTTest/integrationTests.h"
-
+using namespace ART;
 
 //#define _TIMEDEBUG
 

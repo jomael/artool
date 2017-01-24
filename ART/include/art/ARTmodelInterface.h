@@ -49,8 +49,9 @@
 #include "ARTwaveObject.h"
 
 // forward declarations
-class ARTcircuit;
-
+namespace ART{
+  class ARTcircuit;
+}
 using std::string;
 
 //prototype: a blueprint of a model (same class), but without simulator (NULL).
@@ -151,7 +152,7 @@ class ARTmodelInterface : public ARTobject
 		 *  Prototypes need to write formulas for impedance calculation and must therefore have access to some 
 		 *  properties of the simulator and circuit (which will in turn give access to some properties of the simulator)
 		 */     		
-		void SetCircuit(ARTcircuit* cir) {circuit = cir;};
+		void SetCircuit(ART::ARTcircuit* cir) {circuit = cir;};
 
 	protected:
 		/**
@@ -159,7 +160,7 @@ class ARTmodelInterface : public ARTobject
 		 * Prototypes need to write formulas for impedance calculation and must therefore have access to some 
 		 * properties of the simulator and circuit (which will in turn give access to some properties of the simulator)
 		 */     
-		ARTcircuit* circuit; 
+		ART::ARTcircuit* circuit; 
 
 		/**
 		 * This field must contain a pointer to the simulator the element was created in.		
