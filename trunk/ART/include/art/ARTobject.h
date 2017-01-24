@@ -58,7 +58,7 @@ class ARTmethod;
  * This is the base class for all acoustic objects. It contains fields for name,
  * descriptions and properties.
  */
-class ARTobject : public ARTcell {
+class ARTobject : public ART::ARTcell {
 private:
 protected:
         list<ARTproperty*>      propertyList_;

@@ -828,7 +828,9 @@ When calculation the impedance of a cylindrical tube, you would first create an 
 
 #ifndef __cplusplus
 /* C struct declarations */
-typedef struct ARTcell ARTcell;
+namespace ART{
+  typedef struct ARTcell ARTcell;
+}
 typedef struct ARTobject ARTobject;
 typedef struct ARTproperty ARTproperty;
 typedef struct ARTdataContainer ARTdataContainer;
@@ -844,7 +846,9 @@ typedef int bool;
 
 #else
 /* CPP class declarations */
-class ARTcell;
+namespace ART{
+  class ARTcell;
+}
 class ARTobject;
 class ARTproperty;
 class ARTdataContainer;
@@ -864,7 +868,9 @@ class ARTItimeModule;
 #endif /* __cplusplus*/
 
 typedef const char*	pChar;
-typedef ARTcell*	P_ART_Cell;
+namespace ART{
+  typedef ARTcell*	P_ART_Cell;
+}
 typedef ARTobject*	P_ART_Object;
 typedef ARTproperty*	P_ART_Property;
 typedef ARTdataContainer*	P_ART_DataContainer;
@@ -1304,7 +1310,7 @@ __DECLSPEC P_ART_DataProp	__CALLCONV	ARTInputImpedance	(P_ART_Circuit circuit);
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror if not using the DLL interface.
  */
-__DECLSPEC const char*	__CALLCONV	ARTGetName	(P_ART_Cell  pobj);
+  __DECLSPEC const char*	__CALLCONV	ARTGetName	(ART::P_ART_Cell  pobj);
 
 /**
  * Returns the short description of an object.
@@ -1313,7 +1319,7 @@ __DECLSPEC const char*	__CALLCONV	ARTGetName	(P_ART_Cell  pobj);
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror if not using the DLL interface.
  */
-__DECLSPEC const char*	__CALLCONV	ARTGetShortDescription	(P_ART_Cell  pobj);
+  __DECLSPEC const char*	__CALLCONV	ARTGetShortDescription	(ART::P_ART_Cell  pobj);
 
 /**
  * Returns the long description of an object.
@@ -1323,7 +1329,7 @@ __DECLSPEC const char*	__CALLCONV	ARTGetShortDescription	(P_ART_Cell  pobj);
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror if not using the DLL interface.
  */
-__DECLSPEC const char*	__CALLCONV	ARTGetLongDescription	(P_ART_Cell  pobj);
+  __DECLSPEC const char*	__CALLCONV	ARTGetLongDescription	(ART::P_ART_Cell  pobj);
 
 /**
  * Returns the help filename of an object.
@@ -1333,7 +1339,7 @@ __DECLSPEC const char*	__CALLCONV	ARTGetLongDescription	(P_ART_Cell  pobj);
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror if not using the DLL interface.
   */
-__DECLSPEC const char*	__CALLCONV	ARTGetHelpFilename	(P_ART_Cell  pobj);
+  __DECLSPEC const char*	__CALLCONV	ARTGetHelpFilename	(ART::P_ART_Cell  pobj);
 
 /**
  * Returns true if the property is listable. If the property given is NULL, false is returned.

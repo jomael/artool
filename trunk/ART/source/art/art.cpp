@@ -90,7 +90,7 @@ FILE* logfil;
 	#define DLL_ERRORHANDLING_END
 	#define DLL_ERRORHANDLING_END_CUSTOM_RETURN(r)
 #endif
-
+using namespace ART;
 /**************************************************************************************************/
 /*                                         Static Objects                                         */
 /**************************************************************************************************/

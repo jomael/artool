@@ -10,7 +10,7 @@
 
 using ::testing::AtLeast;
 using ::testing::Return;
-
+using namespace ART;
 // This test should pass
 TEST(ARTVariantChecks, SetVal1)
 {
