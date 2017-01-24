@@ -46,7 +46,7 @@
 //#include "ARTfunctionoid.h"
 //#include "ARTdataContainer.h"
 
-#include "ARTcell.h"
+#include "Cell.h"
 
 /* forward declarations */
 class ARTproperty;
