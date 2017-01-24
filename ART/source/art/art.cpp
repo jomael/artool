@@ -64,7 +64,7 @@
 #include "ARTTimeSimulator.h"
 #include "ARTelement.h"
 #include "ARTprototype.h"
-#include "ARTcircuit.h"
+#include "Circuit.h"
 #include "ARTmethod.h"
 #include "ARTtimeModule.h"
 #include "timePrototypes.h"
