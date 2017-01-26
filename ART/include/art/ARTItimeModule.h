@@ -51,7 +51,9 @@ using std::string;
 using namespace mup;
 
 // forward declaration
-class ARTdataContainer;
+namespace ART{
+  class ARTdataContainer;
+}
 
 /**
  * @brief This class provides a generic interface for all time-domain simulations

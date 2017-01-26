@@ -13,8 +13,10 @@
 //--- ART Interface ------------------------------------------------------------------
 #include "ARTlink.h"
 
+namespace ART{
 // forward declaration
 struct ARTdataContainer;
+}
 //struct ARTvariant;
 
 /** \addtogroup ARTimpl
@@ -41,7 +43,7 @@ MUP_NAMESPACE_START
 		ARTValue(const char_type *val);
 		ARTValue(const cmplx_type &v);
 		ARTValue(const array_type &val);
-		ARTValue(ARTdataContainer* av);
+		ARTValue(ART::ARTdataContainer* av);
 
 		/** Array constructor */
 		ARTValue(int_type m, float_type v, T_ART_Type type = C_ART_ndbl);
@@ -85,7 +87,7 @@ MUP_NAMESPACE_START
 	private:
 
 		//ARTvariant* var;
-		ARTdataContainer* var;
+		ART::ARTdataContainer* var;
 		ARTValue* arrayVals; ///< Needed for arrays of ARTdataContainers
 		EFlags 			m_iFlags; ///< Additional flags
 		ValueCache	*m_pCache; ///< Pointer to the ARTValue Cache

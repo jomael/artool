@@ -21,7 +21,7 @@ namespace std
 {
 	#include <time.h>
 }
-
+using namespace ART;
 ARTdataContainer::ARTdataContainer() :
 		ARTvariant(),
 		IValue(cmVAL),

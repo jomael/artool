@@ -75,7 +75,7 @@ class WaveObjectInterface
 		 * @param out the data container the output is written to     		 
 		 */ 
     //Impedanz, eine eindimensionale Matrix komplexer Zahlen		 
-		virtual void ImpedanceMatrix(ARTdataContainer*& out) = 0; 
+  virtual void ImpedanceMatrix(ART::ARTdataContainer*& out) = 0; 
 
 		/**
 		 * This function must prepare the conversion of the waveobject to a multimode 
@@ -83,7 +83,7 @@ class WaveObjectInterface
 		 * @param out the data container the output is written to     		 
 		 */
     //multimodale Impedanzmatrix, also eine N_m x N_f Matrix komplexer Zahlen 
-		virtual void MultiModeImpedanceMatrix(ARTdataContainer*& out) = 0;
+  virtual void MultiModeImpedanceMatrix(ART::ARTdataContainer*& out) = 0;
 
 		/**
 		 * This function must prepare the conversion of the waveobject to a one-
@@ -91,7 +91,7 @@ class WaveObjectInterface
 		 * @param out the data container the output is written to     		 
 		 */
 		//šbertragungsfunktion, eine eindimensionale Matrix komplexer Zahlen
-		virtual void TransferMatrix(ARTdataContainer*& out) = 0;
+  virtual void TransferMatrix(ART::ARTdataContainer*& out) = 0;
 
 		/**
 		 * This function must prepare the conversion of the waveobject to a complex transfer 
@@ -99,21 +99,21 @@ class WaveObjectInterface
 		 * @param out the data container the output is written to     		 
 		 */
 		//multimodale _bertragungsfunktion, also eine N_m x N_f Matrix komplexer Zahlen 
-		virtual void MultiModeTransferMatrix(ARTdataContainer*& out) = 0; 
+  virtual void MultiModeTransferMatrix(ART::ARTdataContainer*& out) = 0; 
 
 		/**
 		 * This function must prepare the conversion of the waveobject to a one-dimensional
 		 * complex pressure matrix. 
 		 * @param out the data container the output is written to     		 
 		 */
-		virtual void PressureFlowMatrix(ARTdataContainer*& out) = 0;
+  virtual void PressureFlowMatrix(ART::ARTdataContainer*& out) = 0;
 
 		/**
 		 * This function must prepare the conversion of the waveobject to a 
 		 * complex pressure matrix of dimensions modes X modes. 
 		 * @param out the data container the output is written to     		 
 		 */
-		virtual void MultimodePressureFlowMatrix(ARTdataContainer*& out) = 0;
+  virtual void MultimodePressureFlowMatrix(ART::ARTdataContainer*& out) = 0;
 
 		//Zeitbereich / time domain
 		/**
@@ -121,7 +121,7 @@ class WaveObjectInterface
 		 * representing a pressure wave in the time domain.
 		 * @param out the data container the output is written to     		 
 		 */
-		virtual void PressureImpulse(ARTdataContainer*& out) = 0; 
+  virtual void PressureImpulse(ART::ARTdataContainer*& out) = 0; 
 		//ein Druckimpuls
 		
 		//Was noch??? / What else?
@@ -148,7 +148,7 @@ class WaveObjectMMImpedance : public WaveObjectInterface
 		   * @param impMatrix The input multimode impedance matrix.
 		   * @param frq The frequency grid giving the frequency in Hz for every index.              		  
 		   */		  
-			ConvertMMImpToImp(ARTdataContainer* impMatrix, ARTdataContainer* frq)
+	ConvertMMImpToImp(ART::ARTdataContainer* impMatrix, ART::ARTdataContainer* frq)
 			: z_matrix_(impMatrix), frequencies(frq)
 			{
 				if (!frq) throw ARTerror("ConvertMMImpToImp(Constructor)", "Argument '%s1' is NULL.","frq");
@@ -165,7 +165,7 @@ class WaveObjectMMImpedance : public WaveObjectInterface
 				for (int i=0; i<z_matrix_->len; i++) 
 				{
 					//std::cout << "Umrechnung in DC " << this << "\n";
-					ARTdataContainer::progressIndicator.Continue(out_->GetComplexity(),out_->GetVarName());
+				  ART::ARTdataContainer::progressIndicator.Continue(out_->GetComplexity(),out_->GetVarName());
 					out_->val->nt[i].f = frequencies->val->nd[i]; 
 					out_->val->nt[i].re = (*z_matrix_->val->nmx[i])(0,0).real() / 1.0E-5; //convert to Ohms (?)
 					out_->val->nt[i].im = (*z_matrix_->val->nmx[i])(0,0).imag() / 1.0E-5;
@@ -183,8 +183,8 @@ class WaveObjectMMImpedance : public WaveObjectInterface
 			virtual int GetIterationNumber() {return frequencies->len;} //z_matrix_->len;
 
 		private:
-			ARTdataContainer* z_matrix_;
-			ARTdataContainer* frequencies;
+			ART::ARTdataContainer* z_matrix_;
+			ART::ARTdataContainer* frequencies;
 	};
 	//End conversion functionoid class
 	
@@ -195,10 +195,10 @@ class WaveObjectMMImpedance : public WaveObjectInterface
 	 *    waveobject.     
 	 * @param frq The frequency grid giving the frequency for every index.     	
 	 */	
-	WaveObjectMMImpedance( string name , ARTfunctionoid* MMimpedanceFunc = NULL, ARTdataContainer* frq = NULL)
+ WaveObjectMMImpedance( string name , ARTfunctionoid* MMimpedanceFunc = NULL, ART::ARTdataContainer* frq = NULL)
 	: name_(name), frequencies(frq)
 	{
-		MMimpedance = new ARTdataContainer(name_,MMimpedanceFunc);
+	  MMimpedance = new ART::ARTdataContainer(name_,MMimpedanceFunc);
 	}
 
 	/**
@@ -209,7 +209,7 @@ class WaveObjectMMImpedance : public WaveObjectInterface
 	 *        waveobject.
 	 * @param frq The frequency grid giving the frequency for every index.
 	 */	
-	WaveObjectMMImpedance( ARTdataContainer* out, ARTfunctionoid* MMimpedanceFunc = NULL, ARTdataContainer* frq = NULL )
+ WaveObjectMMImpedance( ART::ARTdataContainer* out, ARTfunctionoid* MMimpedanceFunc = NULL, ART::ARTdataContainer* frq = NULL )
 	: frequencies(frq)
 	{
 		if (!out) throw ARTerror("WaveObjectMMImpedance(Constructor)", "Argument '%s1' is NULL.","out");
@@ -224,7 +224,7 @@ class WaveObjectMMImpedance : public WaveObjectInterface
 	 *    waveobject.
    * @param frq The frequency grid giving the frequency for every index.
 	 */
-	virtual void SetCalculation(ARTfunctionoid* MMimpedanceFunc, ARTdataContainer* frq)
+	virtual void SetCalculation(ARTfunctionoid* MMimpedanceFunc, ART::ARTdataContainer* frq)
 	{
 		if (!frq) throw ARTerror("SetCalculation", "Argument '%s1' is NULL.","frq");
 		frequencies = frq;
@@ -245,7 +245,7 @@ class WaveObjectMMImpedance : public WaveObjectInterface
 	 * to the pointer.	 
 	 */
 	//Frequenzbereich
-	virtual void MultiModeImpedanceMatrix(ARTdataContainer*& out )
+	virtual void MultiModeImpedanceMatrix(ART::ARTdataContainer*& out )
 	{
 		if (!MMimpedance) throw ARTerror("MultiModeImpedanceMatrix::ImpedanceMatrix", "MMimpedance is NULL.");
 		if (out) //if the user wants to use a custom data container
@@ -266,7 +266,7 @@ class WaveObjectMMImpedance : public WaveObjectInterface
 	 * @param out The data container that should be used to write the multimode impedance 
 	 * matrix wave to. If this is NULL a data container will be created.
    */     
-	virtual void ImpedanceMatrix(ARTdataContainer*& out )
+	virtual void ImpedanceMatrix(ART::ARTdataContainer*& out )
 	{
 		if (!frequencies) throw ARTerror("MultiModeImpedanceMatrix::ImpedanceMatrix", "frequencies is NULL.");
 		if (!MMimpedance) throw ARTerror("MultiModeImpedanceMatrix::ImpedanceMatrix", "MMimpedance is NULL.");
@@ -278,22 +278,22 @@ class WaveObjectMMImpedance : public WaveObjectInterface
 			out->SetFunction(new ConvertMMImpToImp(MMimpedance, frequencies));
 		}
 		else //if not, create one 
-			out = new ARTdataContainer("ImpedanceMatrix", new ConvertMMImpToImp(MMimpedance, frequencies));
+		  out = new ART::ARTdataContainer("ImpedanceMatrix", new ConvertMMImpToImp(MMimpedance, frequencies));
 	}
 
   ///not implemented -> throw ARTerror
-  virtual void TransferMatrix(ARTdataContainer*& out ) {throw ARTerror("WaveObjectMMImpedance::TransferMatrix", "The method is not implemented");}
-  virtual void MultiModeTransferMatrix(ARTdataContainer*& out ) {throw ARTerror("WaveObjectMMImpedance::MultiModeTransferMatrix", "The method is not implemented");} 
-  virtual void PressureFlowMatrix(ARTdataContainer*& out ) {throw ARTerror("WaveObjectMMImpedance::PressureFlowMatrix", "The method is not implemented");}
-  virtual void MultimodePressureFlowMatrix(ARTdataContainer*& out)  {throw ARTerror("WaveObjectMMImpedance::MultimodePressureFlowMatrix", "The method is not implemented");}
-  virtual void PressureImpulse(ARTdataContainer*& out ) {throw ARTerror("WaveObjectMMImpedance::PressureImpulse", "The method is not implemented");}
+	virtual void TransferMatrix(ART::ARTdataContainer*& out ) {throw ARTerror("WaveObjectMMImpedance::TransferMatrix", "The method is not implemented");}
+	virtual void MultiModeTransferMatrix(ART::ARTdataContainer*& out ) {throw ARTerror("WaveObjectMMImpedance::MultiModeTransferMatrix", "The method is not implemented");} 
+	virtual void PressureFlowMatrix(ART::ARTdataContainer*& out ) {throw ARTerror("WaveObjectMMImpedance::PressureFlowMatrix", "The method is not implemented");}
+	virtual void MultimodePressureFlowMatrix(ART::ARTdataContainer*& out)  {throw ARTerror("WaveObjectMMImpedance::MultimodePressureFlowMatrix", "The method is not implemented");}
+	virtual void PressureImpulse(ART::ARTdataContainer*& out ) {throw ARTerror("WaveObjectMMImpedance::PressureImpulse", "The method is not implemented");}
 	
 	//...und andere Umrechenfunktionen / and other conversion functions
 	private:
 	  /// pointer to the data container used to store the multimode impedance of this waveobject
-		ARTdataContainer* MMimpedance;
+	ART::ARTdataContainer* MMimpedance;
 		/// pointer to the data container specifying the frequency in Hz for every index
-		ARTdataContainer* frequencies;
+	ART::ARTdataContainer* frequencies;
 
 };
 
