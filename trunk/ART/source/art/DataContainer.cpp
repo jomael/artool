@@ -3,7 +3,7 @@
 #define ARTDATACONTAINER_CPP
 
 #include <iostream>
-#include "ARTdataContainer.h"
+#include "DataContainer.h"
 #include "ARTSimulator.h"
 #include "ARTlink.h"
 #include "ARTfunctionoid.h"
@@ -22,16 +22,16 @@ namespace std
 	#include <time.h>
 }
 using namespace ART;
-ARTdataContainer::ARTdataContainer() :
+DataContainer::DataContainer() :
 		ARTvariant(),
 		IValue(cmVAL),
 		valid_(false),
 		counted_(false),
 		eval_started(false),
 		func_(NULL),
-		clientList_(list<ARTdataContainer*>()),
+		clientList_(list<DataContainer*>()),
 		citer_(clientList_.begin()),
-		dependencyList_(list<ARTdataContainer*>()),
+		dependencyList_(list<DataContainer*>()),
 		diter_(dependencyList_.begin()),
 		parentContainer_(NULL),
 		definition_(""),
@@ -48,16 +48,16 @@ ARTdataContainer::ARTdataContainer() :
 	_DBG_MSG("");
 }
 
-ARTdataContainer::ARTdataContainer(const T_ART_Type dtyp, const int dlen, const string varname) :
+DataContainer::DataContainer(const T_ART_Type dtyp, const int dlen, const string varname) :
 		ARTvariant(dtyp, dlen),
 		IValue(cmVAL),
 		valid_(false),
 		counted_(false),
 		eval_started(false),
 		func_(NULL),
-		clientList_(list<ARTdataContainer*>()),
+		clientList_(list<DataContainer*>()),
 		citer_(clientList_.begin()),
-		dependencyList_(list<ARTdataContainer*>()),
+		dependencyList_(list<DataContainer*>()),
 		diter_(dependencyList_.begin()),
 		parentContainer_(NULL),
 		definition_(""),
@@ -76,26 +76,26 @@ ARTdataContainer::ARTdataContainer(const T_ART_Type dtyp, const int dlen, const 
 	if (typ == C_ART_na)
 	{
 		array_type* tmpArray = new array_type(len, true);
-		ARTdataContainer* tmpARTdataContainer;
+		DataContainer* tmpDataContainer;
 //		CBG_DBL
 //		parser_ = new ParserX(mup::pckCOMPLEX_NO_STRING);
 		parser_ = new ParserX(mup::pckALL_NON_COMPLEX);
 		for (int i = 0; i < len; ++i)
 		{
-			// create empty ARTdataContainers of type complex
-			tmpARTdataContainer = new ARTdataContainer(varname);
+			// create empty DataContainers of type complex
+			tmpDataContainer = new DataContainer(varname);
 //			CBG_DBL
-//			tmpARTdataContainer->SetType(C_ART_cpx);
-			tmpARTdataContainer->SetType(C_ART_dbl);
-			// initialize all values of ARTdataContainer to zero...
-//			tmpARTdataContainer->SetVal(std::complex<double>(0,0));
-			tmpARTdataContainer->SetVal(static_cast<double>(0));
+//			tmpDataContainer->SetType(C_ART_cpx);
+			tmpDataContainer->SetType(C_ART_dbl);
+			// initialize all values of DataContainer to zero...
+//			tmpDataContainer->SetVal(std::complex<double>(0,0));
+			tmpDataContainer->SetVal(static_cast<double>(0));
 			// set all values to invalid
-			tmpARTdataContainer->valid_ = false;
-			tmpARTdataContainer->parser_ = parser_;
-			tmpARTdataContainer->parentContainer_ = this;
-			tmpARTdataContainer->varname_ = varname_;
-			(*tmpArray)[i] = tmpARTdataContainer;
+			tmpDataContainer->valid_ = false;
+			tmpDataContainer->parser_ = parser_;
+			tmpDataContainer->parentContainer_ = this;
+			tmpDataContainer->varname_ = varname_;
+			(*tmpArray)[i] = tmpDataContainer;
 		}
 		// set current index to 0 indicating that it is now
 		// ready for external access
@@ -112,16 +112,16 @@ ARTdataContainer::ARTdataContainer(const T_ART_Type dtyp, const int dlen, const 
 	}
 }
 
-ARTdataContainer::ARTdataContainer(std::string name, ARTfunctionoid* func) :
+DataContainer::DataContainer(std::string name, ARTfunctionoid* func) :
 		ARTvariant(),
 		IValue(cmVAL),
 		valid_(false),
 		counted_(false),
 		eval_started(false),
 		func_(func),
-		clientList_(list<ARTdataContainer*>()),
+		clientList_(list<DataContainer*>()),
 		citer_(clientList_.begin()),
-		dependencyList_(list<ARTdataContainer*>()),
+		dependencyList_(list<DataContainer*>()),
 		diter_(dependencyList_.begin()),
 		parentContainer_(NULL),
 		definition_(""),
@@ -143,16 +143,16 @@ ARTdataContainer::ARTdataContainer(std::string name, ARTfunctionoid* func) :
 	}
 }
 
-ARTdataContainer::ARTdataContainer(const int i) :
+DataContainer::DataContainer(const int i) :
 		ARTvariant(i),
 		IValue(cmVAL),
 		valid_(true),
 		counted_(false),
 		eval_started(false),
 		func_(NULL),
-		clientList_(list<ARTdataContainer*>()),
+		clientList_(list<DataContainer*>()),
 		citer_(clientList_.begin()),
-		dependencyList_(list<ARTdataContainer*>()),
+		dependencyList_(list<DataContainer*>()),
 		diter_(dependencyList_.begin()),
 		parentContainer_(NULL),
 		definition_(""),
@@ -169,16 +169,16 @@ ARTdataContainer::ARTdataContainer(const int i) :
 	_DBG_MSG("int");
 }
 
-ARTdataContainer::ARTdataContainer(const double d) :
+DataContainer::DataContainer(const double d) :
 		ARTvariant(d),
 		IValue(cmVAL),
 		valid_(true),
 		counted_(false),
 		eval_started(false),
 		func_(NULL),
-		clientList_(list<ARTdataContainer*>()),
+		clientList_(list<DataContainer*>()),
 		citer_(clientList_.begin()),
-		dependencyList_(list<ARTdataContainer*>()),
+		dependencyList_(list<DataContainer*>()),
 		diter_(dependencyList_.begin()),
 		parentContainer_(NULL),
 		definition_(""),
@@ -195,16 +195,16 @@ ARTdataContainer::ARTdataContainer(const double d) :
 	_DBG_MSG("double");
 }
 
-ARTdataContainer::ARTdataContainer(const float f) :
+DataContainer::DataContainer(const float f) :
 		ARTvariant(f),
 		IValue(cmVAL),
 		valid_(true),
 		counted_(false),
 		eval_started(false),
 		func_(NULL),
-		clientList_(list<ARTdataContainer*>()),
+		clientList_(list<DataContainer*>()),
 		citer_(clientList_.begin()),
-		dependencyList_(list<ARTdataContainer*>()),
+		dependencyList_(list<DataContainer*>()),
 		diter_(dependencyList_.begin()),
 		parentContainer_(NULL),
 		definition_(""),
@@ -221,16 +221,16 @@ ARTdataContainer::ARTdataContainer(const float f) :
 	_DBG_MSG("float");
 }
 
-ARTdataContainer::ARTdataContainer(const char* s) :
+DataContainer::DataContainer(const char* s) :
 		ARTvariant(s),
 		IValue(cmVAL),
 		valid_(true),
 		counted_(false),
 		eval_started(false),
 		func_(NULL),
-		clientList_(list<ARTdataContainer*>()),
+		clientList_(list<DataContainer*>()),
 		citer_(clientList_.begin()),
-		dependencyList_(list<ARTdataContainer*>()),
+		dependencyList_(list<DataContainer*>()),
 		diter_(dependencyList_.begin()),
 		parentContainer_(NULL),
 		definition_(""),
@@ -247,16 +247,16 @@ ARTdataContainer::ARTdataContainer(const char* s) :
 	_DBG_MSG("const char*");
 }
 
-ARTdataContainer::ARTdataContainer(const char* s1, const char* s2) :
+DataContainer::DataContainer(const char* s1, const char* s2) :
 		ARTvariant(s1, s2),
 		IValue(cmVAL),
 		valid_(true),
 		counted_(false),
 		eval_started(false),
 		func_(NULL),
-		clientList_(list<ARTdataContainer*>()),
+		clientList_(list<DataContainer*>()),
 		citer_(clientList_.begin()),
-		dependencyList_(list<ARTdataContainer*>()),
+		dependencyList_(list<DataContainer*>()),
 		diter_(dependencyList_.begin()),
 		parentContainer_(NULL),
 		definition_(""),
@@ -273,16 +273,16 @@ ARTdataContainer::ARTdataContainer(const char* s1, const char* s2) :
 	_DBG_MSG("const char*, const char*");
 }
 
-ARTdataContainer::ARTdataContainer(const char* s1, const char* s2, const char* s3) :
+DataContainer::DataContainer(const char* s1, const char* s2, const char* s3) :
 		ARTvariant(s1, s2, s3),
 		IValue(cmVAL),
 		valid_(true),
 		counted_(false),
 		eval_started(false),
 		func_(NULL),
-		clientList_(list<ARTdataContainer*>()),
+		clientList_(list<DataContainer*>()),
 		citer_(clientList_.begin()),
-		dependencyList_(list<ARTdataContainer*>()),
+		dependencyList_(list<DataContainer*>()),
 		diter_(dependencyList_.begin()),
 		parentContainer_(NULL),
 		definition_(""),
@@ -299,16 +299,16 @@ ARTdataContainer::ARTdataContainer(const char* s1, const char* s2, const char* s
 	_DBG_MSG("const char*, const char*, const char*");
 }
 
-ARTdataContainer::ARTdataContainer(const char* s1, const char* s2, const char* s3, const char* s4) :
+DataContainer::DataContainer(const char* s1, const char* s2, const char* s3, const char* s4) :
 		ARTvariant(s1, s2, s3, s4),
 		IValue(cmVAL),
 		valid_(true),
 		counted_(false),
 		eval_started(false),
 		func_(NULL),
-		clientList_(list<ARTdataContainer*>()),
+		clientList_(list<DataContainer*>()),
 		citer_(clientList_.begin()),
-		dependencyList_(list<ARTdataContainer*>()),
+		dependencyList_(list<DataContainer*>()),
 		diter_(dependencyList_.begin()),
 		parentContainer_(NULL),
 		definition_(""),
@@ -326,7 +326,7 @@ ARTdataContainer::ARTdataContainer(const char* s1, const char* s2, const char* s
 }
 
 	///copy constructor
-ARTdataContainer::ARTdataContainer(const ARTdataContainer& orig) :
+DataContainer::DataContainer(const DataContainer& orig) :
 	ARTvariant(orig),
 	IValue(cmVAL),
 	valid_(orig.valid_),
@@ -349,15 +349,15 @@ ARTdataContainer::ARTdataContainer(const ARTdataContainer& orig) :
 	//arrayVals_(NULL), // TODO copy values!
 	m_pCache_(NULL)
 {
-	_DBG_MSG("const ARTdataContainer&");
+	_DBG_MSG("const DataContainer&");
 	// we have to handle array of data containers
 	if (typ == C_ART_na)
 	{
 		array_type* tmpArray = new array_type(len, true);
 		array_type* oldArray = (array_type*) (orig.val->na);
 
-		ARTdataContainer* tmpARTdataContainer;
-		ARTdataContainer* oldARTdataContainer;
+		DataContainer* tmpDataContainer;
+		DataContainer* oldDataContainer;
 
 //		CBG_DBL
 //		parser_ = new ParserX(mup::pckCOMPLEX_NO_STRING);
@@ -366,28 +366,28 @@ ARTdataContainer::ARTdataContainer(const ARTdataContainer& orig) :
 
 		for (int i = 0; i < len; ++i)
 		{
-			oldARTdataContainer = dynamic_cast<ARTdataContainer*>((*oldArray)[i]);
-			// create empty ARTdataContainers of type complex
-			tmpARTdataContainer = new ARTdataContainer(*oldARTdataContainer);
+			oldDataContainer = dynamic_cast<DataContainer*>((*oldArray)[i]);
+			// create empty DataContainers of type complex
+			tmpDataContainer = new DataContainer(*oldDataContainer);
 //			CBG_DBL
-//			tmpARTdataContainer->SetType(C_ART_cpx);
-			tmpARTdataContainer->SetType(C_ART_dbl);
-			// initialize all values of ARTdataContainer to zero...
-//			tmpARTdataContainer->SetVal(std::complex<double>(0,0));
-			tmpARTdataContainer->SetVal(static_cast<double>(0));
+//			tmpDataContainer->SetType(C_ART_cpx);
+			tmpDataContainer->SetType(C_ART_dbl);
+			// initialize all values of DataContainer to zero...
+//			tmpDataContainer->SetVal(std::complex<double>(0,0));
+			tmpDataContainer->SetVal(static_cast<double>(0));
 			// set all values to invalid
-			tmpARTdataContainer->valid_ = false;
-			tmpARTdataContainer->parser_ = parser_;
-			tmpARTdataContainer->parentContainer_ = this;
-			tmpARTdataContainer->varname_ = varname_;
-			tmpArray->at(i) = tmpARTdataContainer;
+			tmpDataContainer->valid_ = false;
+			tmpDataContainer->parser_ = parser_;
+			tmpDataContainer->parentContainer_ = this;
+			tmpDataContainer->varname_ = varname_;
+			tmpArray->at(i) = tmpDataContainer;
 		}
 		// save pointer to na field of val
 		val->na = (void *) tmpArray;
 	}
 }
 
-ARTdataContainer::~ARTdataContainer()
+DataContainer::~DataContainer()
 {
 	_DBG_MSG("");
 	//"Clients, you can't depend on this object anymore, because it will cease to exist!"
@@ -415,13 +415,13 @@ ARTdataContainer::~ARTdataContainer()
 	if (typ == C_ART_na)
 	{
 		array_type* tmpArray = (array_type *) (val->na);
-		ARTdataContainer* tmpARTdataContainer;
+		DataContainer* tmpDataContainer;
 		for (int i = 0; i < tmpArray->size(); ++i)
 		{
 			// we have to use the "at"-operator, otherwise
 			// we might get an out of range error
-			tmpARTdataContainer = dynamic_cast<ARTdataContainer*>(tmpArray->at(i));
-			delete tmpARTdataContainer;
+			tmpDataContainer = dynamic_cast<DataContainer*>(tmpArray->at(i));
+			delete tmpDataContainer;
 		}
 		delete parser_;
 	}
@@ -431,13 +431,13 @@ ARTdataContainer::~ARTdataContainer()
 	// in case of an array, remove all child elements
 	/*if (typ == C_ART_na)
 	{
-		delete[] dynamic_cast<ARTdataContainer*>(val->na);
+		delete[] dynamic_cast<DataContainer*>(val->na);
 	}*/
 
 	delete func_;
 }
 
-int ARTdataContainer::GetIterationNumber()
+int DataContainer::GetIterationNumber()
 {
 	_DBG_MSG("");
 	if (func_) return func_->GetIterationNumber();
@@ -445,17 +445,17 @@ int ARTdataContainer::GetIterationNumber()
 }
 
 //**************************************************************************************************************
-// ARTdataContainer
+// DataContainer
 /**
  * Description
  * @param b {bool}
  * @returns 
  */
-void ARTdataContainer::SetCountedFlag(bool b)
+void DataContainer::SetCountedFlag(bool b)
 {
 	_DBG_MSG("bool");
 	//to avoid circular references, check if we are already considering this dataContainer
-	if (eval_started) throw ARTerror("ARTdataContainer::SetCountedFlag", "Circular reference to dataContainer '%s1'.",varname_); 
+	if (eval_started) throw ARTerror("DataContainer::SetCountedFlag", "Circular reference to dataContainer '%s1'.",varname_); 
 
 	//remember we are considering this data container now.
 	eval_started = true;
@@ -477,7 +477,7 @@ void ARTdataContainer::SetCountedFlag(bool b)
  * IMPORTANT: This function must only be called when the data container is known to contain no circular dependencies, such as after aborting
  * an evaluation, since before evaluations circular dependencies always generate an error.
  */
-void ARTdataContainer::ResetEvaluation()
+void DataContainer::ResetEvaluation()
 {
 	_DBG_MSG("");
 	//reset the flag of this data container...
@@ -490,14 +490,14 @@ void ARTdataContainer::ResetEvaluation()
 /**
  * Just for debugging: to print the dependency tree...
  */
-void ARTdataContainer::DebugDepTree(const string intend, const string linebreak)
+void DataContainer::DebugDepTree(const string intend, const string linebreak)
 {
 	_DBG_MSG("const string, const string");
 	//to avoid circular references, check if we are already considering this dataContainer
 	if (eval_started) 
 	{
 		cout << intend << "CIRCULAR REF: " << varname_;
-		throw ARTerror("ARTdataContainer::DebugDebTree", "Circular reference to dataContainer '%s1'.",varname_); 
+		throw ARTerror("DataContainer::DebugDebTree", "Circular reference to dataContainer '%s1'.",varname_); 
 	}
 	//remember we are considering this data container now.
 	eval_started = true;
@@ -511,7 +511,7 @@ void ARTdataContainer::DebugDepTree(const string intend, const string linebreak)
 	eval_started = false; //we leave this data container
 } 
 
-string ARTdataContainer::WriteDepTree(const string intend, const string linebreak)
+string DataContainer::WriteDepTree(const string intend, const string linebreak)
 {
 	_DBG_MSG("const string, const string");
 	string thisbranch = "";
@@ -519,7 +519,7 @@ string ARTdataContainer::WriteDepTree(const string intend, const string linebrea
 	if (eval_started) 
 	{
 		thisbranch += intend + "CIRCULAR REF: " + varname_;
-		throw ARTerror("ARTdataContainer::DebugDebTree", "Circular reference to dataContainer '%s1'.",varname_); 
+		throw ARTerror("DataContainer::DebugDebTree", "Circular reference to dataContainer '%s1'.",varname_); 
 	}
 	//remember we are considering this data container now.
 	eval_started = true;
@@ -535,7 +535,7 @@ string ARTdataContainer::WriteDepTree(const string intend, const string linebrea
 	return thisbranch;
 } 
 
-void ARTdataContainer::AddPropertiesAsDependency(ARTobject* obj)
+void DataContainer::AddPropertiesAsDependency(ARTobject* obj)
 {
 	_DBG_MSG("ARTobject*");
 	//go through all DATAproperties of element and add as dependencies
@@ -557,17 +557,17 @@ void ARTdataContainer::AddPropertiesAsDependency(ARTobject* obj)
 	}
 }
 
-ARTprogressIndicator ARTdataContainer::progressIndicator = ARTprogressIndicator(NULL,0);
+ARTprogressIndicator DataContainer::progressIndicator = ARTprogressIndicator(NULL,0);
 
 //**************************************************************************************************************
-// ARTdataContainer
+// DataContainer
 
-void ARTdataContainer::SetDefinition(const string& s, ARTSimulator* scope)
+void DataContainer::SetDefinition(const string& s, ARTSimulator* scope)
 {
 	_DBG_MSG("const string&, ARTsimulator");
 	scope_ = scope;					
 	parser_ = scope_->GetParser();
- 	if (parser_ == NULL) throw ARTerror("ARTdataContainer::SetDefinition", "The simulator's parser is NULL");
+ 	if (parser_ == NULL) throw ARTerror("DataContainer::SetDefinition", "The simulator's parser is NULL");
 	//if there is a definition, only redefine if the new definition differs
 	if (definition_ != s)
 	{
@@ -597,16 +597,16 @@ void ARTdataContainer::SetDefinition(const string& s, ARTSimulator* scope)
 		}
 		catch( mup::ParserError& e )
 		{
-			throw ARTerror("ARTdataContainer::SetDefinition", "Error in Parser: '%s1'", e.GetMsg().c_str());;
+			throw ARTerror("DataContainer::SetDefinition", "Error in Parser: '%s1'", e.GetMsg().c_str());;
 		}
 
 	};
 }
 
-void ARTdataContainer::SetDefinition(const string& s)
+void DataContainer::SetDefinition(const string& s)
 {
 	_DBG_MSG("const string&");
-	if (parser_ == NULL) throw ARTerror("ARTdataContainer::SetDefinition", "The current parser is set to NULL");
+	if (parser_ == NULL) throw ARTerror("DataContainer::SetDefinition", "The current parser is set to NULL");
 	//if there is a definition, only redefine if the new definition differs
 	if (definition_ != s)
 	{
@@ -619,10 +619,10 @@ void ARTdataContainer::SetDefinition(const string& s)
 		if (typ == C_ART_na)
 		{
 			array_type* tmpArray = (array_type *) (val->na);
-			ARTdataContainer* tmp;
+			DataContainer* tmp;
 			for (int i = 0; i < len; ++i)
 			{
-				tmp = dynamic_cast<ARTdataContainer*>(tmpArray->at(i));
+				tmp = dynamic_cast<DataContainer*>(tmpArray->at(i));
 				tmp->definition_ = s;
 			}
 		}
@@ -631,7 +631,7 @@ void ARTdataContainer::SetDefinition(const string& s)
 }
 
 // return definition string
-const string& ARTdataContainer::GetDefinition()
+const string& DataContainer::GetDefinition()
 {
 	_DBG_MSG("");
 	//return the definition string - if it exists...
@@ -653,38 +653,38 @@ const string& ARTdataContainer::GetDefinition()
 		
 		//array or pointer types, convert value only when length of array is 1
 		case C_ART_nint:
-			if (len > 1) throw ARTerror("ARTdataContainer::GetValueAsDouble", "Invalid type conversion: nint with len>1 to double.");
-			if (len < 0) throw ARTerror("ARTdataContainer::GetValueAsDouble", "The data structure is an array type but was not initialized.");
+			if (len > 1) throw ARTerror("DataContainer::GetValueAsDouble", "Invalid type conversion: nint with len>1 to double.");
+			if (len < 0) throw ARTerror("DataContainer::GetValueAsDouble", "The data structure is an array type but was not initialized.");
 			Num << *(val->ni);
 			tempDef_ += Num.str();
 			break;
 
 		case C_ART_nflo: 
-			if (len > 1) throw ARTerror("ARTdataContainer::GetValueAsDouble", "Invalid type conversion: nflo with len>1 to double.");
-			if (len < 0) throw ARTerror("ARTdataContainer::GetValueAsDouble", "The data structure is an array type but was not initialized.");
+			if (len > 1) throw ARTerror("DataContainer::GetValueAsDouble", "Invalid type conversion: nflo with len>1 to double.");
+			if (len < 0) throw ARTerror("DataContainer::GetValueAsDouble", "The data structure is an array type but was not initialized.");
 			Num << *(val->nf);
 			tempDef_ += Num.str();
 			break;
 
 		case C_ART_ndbl: 
-			if (len > 1) throw ARTerror("ARTdataContainer::GetValueAsDouble", "Invalid type conversion: ndbl with len>1 to double.");
-			if (len < 0) throw ARTerror("ARTdataContainer::GetValueAsDouble", "The data structure is an array type but was not initialized.");
+			if (len > 1) throw ARTerror("DataContainer::GetValueAsDouble", "Invalid type conversion: ndbl with len>1 to double.");
+			if (len < 0) throw ARTerror("DataContainer::GetValueAsDouble", "The data structure is an array type but was not initialized.");
 			Num << *(val->nd);
 			tempDef_ += Num.str();
 			break;
 
 		case C_ART_nstr: 
-			if (len > 1) throw ARTerror("ARTdataContainer::GetValueAsDouble", "Invalid type conversion: ndbl with len>1 to double.");
-			if (len < 0) throw ARTerror("ARTdataContainer::GetValueAsDouble", "The data structure is an array type but was not initialized.");
+			if (len > 1) throw ARTerror("DataContainer::GetValueAsDouble", "Invalid type conversion: ndbl with len>1 to double.");
+			if (len < 0) throw ARTerror("DataContainer::GetValueAsDouble", "The data structure is an array type but was not initialized.");
 			tempDef_ += string(*(val->ns));
 			break;
 
-		default: throw ARTerror("ARTdataContainer::GetValueAsDouble", "Invalid type conversion to double: type is non-numeric, complex or triple.");
+		default: throw ARTerror("DataContainer::GetValueAsDouble", "Invalid type conversion to double: type is non-numeric, complex or triple.");
 	}//end switch
 	return tempDef_;
 }
 
-void ARTdataContainer::RedoDefinitionDependencies()
+void DataContainer::RedoDefinitionDependencies()
 {
 	_DBG_MSG("");
 	//only do something if there is a definition
@@ -721,14 +721,14 @@ void ARTdataContainer::RedoDefinitionDependencies()
 		}
 		catch( mup::ParserError& e )
 		{
-			throw ARTerror("ARTdataContainer::SetDefinition", "Error in Parser: '%s1'", e.GetMsg().c_str());;
+			throw ARTerror("DataContainer::SetDefinition", "Error in Parser: '%s1'", e.GetMsg().c_str());;
 		}
 
 	}
 }
 
 
-void ARTdataContainer::RemoveFromDefinition(ARTdataContainer *dependency)
+void DataContainer::RemoveFromDefinition(DataContainer *dependency)
 {
 	_DBG_MSG("");
 /*	string s = "[Invalid reference to " + dependency->varname_ + "]";
@@ -747,12 +747,12 @@ void ARTdataContainer::RemoveFromDefinition(ARTdataContainer *dependency)
 
 
 // expression evaluation cost
-int ARTdataContainer::EvaluationCost() 
+int DataContainer::EvaluationCost() 
 {
 	_DBG_MSG("");
 	//std::cout << "EvaluationCost() for " << varname_ << "\n";
 	//to avoid circular references, check if we are already counting calculations for this dataContainer
-	if (eval_started) throw ARTerror("ARTdataContainer::EvaluationCost", "Circular reference to dataContainer '%s1'.",varname_); 
+	if (eval_started) throw ARTerror("DataContainer::EvaluationCost", "Circular reference to dataContainer '%s1'.",varname_); 
 	//if this one was considered already (->it would be valid now) or is valid anyway, return 0
 	if (counted_ || valid_) 
 	{
@@ -766,10 +766,10 @@ int ARTdataContainer::EvaluationCost()
 	//check all dependencies for validity; if invalid: evaluate
 	for (diter_=dependencyList_.begin();diter_!=dependencyList_.end(); diter_++) 
 	{
-		//This function has no access to ARTdataContainer::EvaluationCost(), since that function is protected and this is the function
-		//of an external object (even if of a class derived from ARTdataContainer). However, since this object is derived from the prototype
+		//This function has no access to DataContainer::EvaluationCost(), since that function is protected and this is the function
+		//of an external object (even if of a class derived from DataContainer). However, since this object is derived from the prototype
 		//it has also inherited the function EvaluationCost(). Since it is a virtual function it is guaranteed, that it will be called for the right object.
-		calculations += ((ARTdataContainer*)(*diter_))->EvaluationCost();
+		calculations += ((DataContainer*)(*diter_))->EvaluationCost();
 	}
 	
 	//std::cout << "Evaluation estimate for '" << varname_ << "': " << calculations << " + " << GetIterationNumber() <<" = " << calculations + GetIterationNumber() << "\n";
@@ -785,20 +785,20 @@ int ARTdataContainer::EvaluationCost()
 }
 
 // expression evaluation
-void ARTdataContainer::Evaluate() const
+void DataContainer::Evaluate() const
 {
 //	_DBG_MSG2( definition_ );
-	//std::cout << "ARTdataContainer::Evaluate() " << val << " // " << varname_ << "////////////////////\n";
+	//std::cout << "DataContainer::Evaluate() " << val << " // " << varname_ << "////////////////////\n";
 	//to avoid circular references, check if we are already calculating this dataContainer
 	if (eval_started)
 	{
 		if (parentContainer_ && parentContainer_->parentModuleName_ != "")
 		{
-			throw ARTerror("ARTdataContainer::Evaluate", "Circular reference to dataContainer '%s1' of module '%s2'.", varname_, parentContainer_->parentModuleName_);
+			throw ARTerror("DataContainer::Evaluate", "Circular reference to dataContainer '%s1' of module '%s2'.", varname_, parentContainer_->parentModuleName_);
 		}
 		else
 		{
-			throw ARTerror("ARTdataContainer::Evaluate", "Circular reference to dataContainer '%s1'.", varname_);
+			throw ARTerror("DataContainer::Evaluate", "Circular reference to dataContainer '%s1'.", varname_);
 		}
 	}
 
@@ -809,11 +809,11 @@ void ARTdataContainer::Evaluate() const
 	for (diter_=dependencyList_.begin();diter_!=dependencyList_.end(); diter_++) 
 	{
 		//if (!(*diter_)->valid_) cout << "   -> evaluate dependency " << (*diter_)->GetVarName() << "\n";
-		((ARTdataContainer*)(*diter_))->EvaluateIfInvalid();
+		((DataContainer*)(*diter_))->EvaluateIfInvalid();
 	}
 	
 	//if functionoid AND parser are specified > error, because we don't know which one to evaluate
-	if ((func_) && (definition_ != "")) throw ARTerror("ARTdataContainer::Evaluate", "Function and parser expression specified for dataContainer '%s1'. Only either of them can be used.", varname_);
+	if ((func_) && (definition_ != "")) throw ARTerror("DataContainer::Evaluate", "Function and parser expression specified for dataContainer '%s1'. Only either of them can be used.", varname_);
 
 	//cout << "evaluated: " << varname_ << "\n";
 	//clock_t start = clock();
@@ -822,7 +822,7 @@ void ARTdataContainer::Evaluate() const
 		func_->ApplyFunction();	
 	else if (definition_ != "")
 	{
-		if (parser_ == NULL) throw ARTerror("ARTdataContainer::Evaluate", "Parser of dataContainer is null."); 
+		if (parser_ == NULL) throw ARTerror("DataContainer::Evaluate", "Parser of dataContainer is null."); 
 		try
 		{
 //			progressIndicator.Continue(complexity_,varname_);//count this evaluation
@@ -840,24 +840,24 @@ void ARTdataContainer::Evaluate() const
 		{
 			if (parentContainer_ && parentContainer_->parentModuleName_ != "")
 			{
-				throw ARTerror("ARTdataContainer::Evaluate", "Error in Parser when processing dataContainer '%s1' of module '%s2': '%s3'",
+				throw ARTerror("DataContainer::Evaluate", "Error in Parser when processing dataContainer '%s1' of module '%s2': '%s3'",
 						varname_, parentContainer_->parentModuleName_,  e.GetMsg().c_str());
 			}
 			else
 			{
-				throw ARTerror("ARTdataContainer::Evaluate", "Error in Parser when processing dataContainer '%s1': '%s2'", varname_, e.GetMsg().c_str());
+				throw ARTerror("DataContainer::Evaluate", "Error in Parser when processing dataContainer '%s1': '%s2'", varname_, e.GetMsg().c_str());
 			}
 		}
 		catch(std::out_of_range& oor)
 		{
 			if (parentContainer_ && parentContainer_->parentModuleName_ != "")
 			{
-				throw ARTerror("ARTdataContainer::Evaluate", "Error in Parser when processing dataContainer '%s1' of module '%s2': '%s3'",
+				throw ARTerror("DataContainer::Evaluate", "Error in Parser when processing dataContainer '%s1' of module '%s2': '%s3'",
 						varname_, parentContainer_->parentModuleName_,  oor.what());
 			}
 			else
 			{
-				throw ARTerror("ARTdataContainer::Evaluate", "Error in Parser when processing dataContainer '%s1': '%s2'", varname_, oor.what());
+				throw ARTerror("DataContainer::Evaluate", "Error in Parser when processing dataContainer '%s1': '%s2'", varname_, oor.what());
 			}
 		}
 	}
@@ -865,12 +865,12 @@ void ARTdataContainer::Evaluate() const
 	{
 		if (parentContainer_ && parentContainer_->parentModuleName_ != "")
 		{
-			throw ARTerror("ARTdataContainer::Evaluate", "No evaluating expression or functionoid specified for dataContainer '%s1' of module '%s2'.",
+			throw ARTerror("DataContainer::Evaluate", "No evaluating expression or functionoid specified for dataContainer '%s1' of module '%s2'.",
 					varname_, parentContainer_->parentModuleName_);
 		}
 		else
 		{
-			throw ARTerror("ARTdataContainer::Evaluate", "No evaluating expression or functionoid specified for dataContainer '%s1'.", varname_);
+			throw ARTerror("DataContainer::Evaluate", "No evaluating expression or functionoid specified for dataContainer '%s1'.", varname_);
 		}
 	}
 	//clock_t finish = clock();
@@ -888,11 +888,11 @@ void ARTdataContainer::Evaluate() const
 
 }
 
-bool ARTdataContainer::CheckValidity() 
+bool DataContainer::CheckValidity() 
 {
 	_DBG_MSG("");
 	//to avoid circular references, check if we are already considering this dataContainer
-	if (eval_started) throw ARTerror("ARTdataContainer::Evaluate", "Circular reference to dataContainer '%s1'.",varname_); 
+	if (eval_started) throw ARTerror("DataContainer::Evaluate", "Circular reference to dataContainer '%s1'.",varname_); 
 	//... and if we are not, remember we do so now.
 	eval_started = true;
 	//std::cout << "check " << varname_ << " is " << valid_ << endl;
@@ -905,7 +905,7 @@ bool ARTdataContainer::CheckValidity()
 	//check all dependencies for validity; if invalid: this one is invalid too!
 	for (diter_=dependencyList_.begin();diter_!=dependencyList_.end(); diter_++) 
 	{
-		if (! ((ARTdataContainer*)(*diter_))->CheckValidity()) 
+		if (! ((DataContainer*)(*diter_))->CheckValidity()) 
 		{
 			eval_started = false;
 			valid_ = false;
@@ -918,12 +918,12 @@ bool ARTdataContainer::CheckValidity()
 	return true;
 }
 
-void ARTdataContainer::SetFunction(ARTfunctionoid* func)
+void DataContainer::SetFunction(ARTfunctionoid* func)
 {
 	_DBG_MSG("ARTfunctionoid*");
 	//std::cout << "\n\nSTART (varname: " << varname_ << endl; DebugDepTree(""); std::cout << "END\n\n";
 
-	if (!func) throw ARTerror("ARTdataContainer::SetFunction", "Argument '%s1' is NULL.","func");
+	if (!func) throw ARTerror("DataContainer::SetFunction", "Argument '%s1' is NULL.","func");
 	//check if the function constructed and passed as argument is same as the one we have already
 	if (func_)
 		if (func_->IsSameFunctionoid(func))
@@ -952,14 +952,14 @@ void ARTdataContainer::SetFunction(ARTfunctionoid* func)
 	func_->SetDependencies();
 }
 
-float_type ARTdataContainer::GetFloat() const
+float_type DataContainer::GetFloat() const
 {
 	_DBG_MSG("");
 	//cout << __func__ << "(): valid_ = " << valid_ << endl;
 	if (!valid_) Evaluate();
 	float_type d;
 	array_type* tmpArray = (array_type *) (val->na);
-	ARTdataContainer* tmp;
+	DataContainer* tmp;
 	switch(typ)
 	{
 		//simple types: copy orig.value
@@ -969,22 +969,22 @@ float_type ARTdataContainer::GetFloat() const
 		case C_ART_cpx: d = val->c.re; break;
 
 		case C_ART_nint:
-			if (len > 1) throw ARTerror("ARTdataContainer::GetValueAsDouble", "Invalid type conversion: nint with len>1 to double.");
+			if (len > 1) throw ARTerror("DataContainer::GetValueAsDouble", "Invalid type conversion: nint with len>1 to double.");
 			else d = *(val->ni);
 			break;
 
 		case C_ART_nflo: 
-			if (len > 1) throw ARTerror("ARTdataContainer::GetValueAsDouble", "Invalid type conversion: nflo with len>1 to double.");
+			if (len > 1) throw ARTerror("DataContainer::GetValueAsDouble", "Invalid type conversion: nflo with len>1 to double.");
 			else d = *(val->nf);
 			break;
 
 		case C_ART_ndbl: 
-			if (len > 1) throw ARTerror("ARTdataContainer::GetValueAsDouble", "Invalid type conversion: ndbl with len>1 to double.");
+			if (len > 1) throw ARTerror("DataContainer::GetValueAsDouble", "Invalid type conversion: ndbl with len>1 to double.");
 			else d = *(val->nd);
 			break;
 
 		case C_ART_ncpx:
-			if (len > 1) throw ARTerror("ARTdataContainer::GetValueAsDouble", "Invalid type conversion: ncpx with len>1 to double.");
+			if (len > 1) throw ARTerror("DataContainer::GetValueAsDouble", "Invalid type conversion: ncpx with len>1 to double.");
 			else d = val->nc->re;
 			break;
 
@@ -992,27 +992,27 @@ float_type ARTdataContainer::GetFloat() const
 		case C_ART_na:
 			if (len > 1)
 			{
-				throw ARTerror("ARTdataContainer::GetValueAsDouble", "Invalid type conversion: ndbl with len>1 to double.");
+				throw ARTerror("DataContainer::GetValueAsDouble", "Invalid type conversion: ndbl with len>1 to double.");
 			}
 			else
 			{
-				tmp = dynamic_cast<ARTdataContainer*>((*tmpArray)[0]);
+				tmp = dynamic_cast<DataContainer*>((*tmpArray)[0]);
 				d = tmp->GetFloat();
 			}
 
 			break;
 
-		default: throw ARTerror("ARTdataContainer::GetValueAsDouble", "Invalid type conversion to double: type is non-numeric, complex or triple.");
+		default: throw ARTerror("DataContainer::GetValueAsDouble", "Invalid type conversion to double: type is non-numeric, complex or triple.");
 	}//end switch
 	return d;
 }
 
-//double ARTdataContainer::GetValueAsDoubleFromIndex(std::size_t ind)
+//double DataContainer::GetValueAsDoubleFromIndex(std::size_t ind)
 //{
 //	double retVal = 0;
 //	if (typ == C_ART_na)
 //	{
-//		/*ARTdataContainer* arrayElements = dynamic_cast<ARTdataContainer*>(val->na);
+//		/*DataContainer* arrayElements = dynamic_cast<DataContainer*>(val->na);
 //		if ((int) ind < len)
 //		{
 //			if (!arrayElements[ind].valid_)
@@ -1024,7 +1024,7 @@ float_type ARTdataContainer::GetFloat() const
 //		}
 //		else
 //		{
-//			throw ARTerror("ARTdataContainer::GetValueAsDoubleFromIndex", "Index out of bounds.");
+//			throw ARTerror("DataContainer::GetValueAsDoubleFromIndex", "Index out of bounds.");
 //		}*/
 //		retVal = (*aval)[ind].GetFloat();
 //	}
@@ -1032,27 +1032,27 @@ float_type ARTdataContainer::GetFloat() const
 //
 //}
 
-//void ARTdataContainer::SetInvalid(int st, int end)
+//void DataContainer::SetInvalid(int st, int end)
 //{
 //	if (typ == C_ART_na)
 //	{
-//		//ARTdataContainer* arrayElements = dynamic_cast<ARTdataContainer*>(val->na);
+//		//DataContainer* arrayElements = dynamic_cast<DataContainer*>(val->na);
 //		for (int i = st; i <= end; ++i)
 //		{
 //			//arrayElements[i].valid_ = false;
-//			ARTdataContainer* tmp = dynamic_cast<mup::ARTValue&>((*aval)[i]).GetContainer();
+//			DataContainer* tmp = dynamic_cast<mup::ARTValue&>((*aval)[i]).GetContainer();
 //			tmp->valid_ = false;
 //		}
 //	}
 //}
 
-int ARTdataContainer::GetInt() 
+int DataContainer::GetInt() 
 {
 	_DBG_MSG("");
 	if (!valid_) Evaluate(); 
 	int i;
 	array_type* tmpArray = (array_type *) (val->na);
-	ARTdataContainer* tmp;
+	DataContainer* tmp;
     switch(typ)
 	{
 		//simple types: copy orig.value
@@ -1062,44 +1062,44 @@ int ARTdataContainer::GetInt()
 		case C_ART_cpx: i = val->c.re; break;
 
 		case C_ART_nint:
-			if (len > 1) throw ARTerror("ARTdataContainer::GetValueAsInt", "Invalid type conversion: nint with len>1 to int.");
+			if (len > 1) throw ARTerror("DataContainer::GetValueAsInt", "Invalid type conversion: nint with len>1 to int.");
 			else i = *(val->ni);
 			break;
 
 		case C_ART_nflo: 
-			if (len > 1) throw ARTerror("ARTdataContainer::GetValueAsInt", "Invalid type conversion: nflo with len>1 to int.");
+			if (len > 1) throw ARTerror("DataContainer::GetValueAsInt", "Invalid type conversion: nflo with len>1 to int.");
 			else i = *(val->nf);
 			break;
 
 		case C_ART_ndbl: 
-			if (len > 1) throw ARTerror("ARTdataContainer::GetValueAsInt", "Invalid type conversion: ndbl with len>1 to int.");
+			if (len > 1) throw ARTerror("DataContainer::GetValueAsInt", "Invalid type conversion: ndbl with len>1 to int.");
 			else i = *(val->nd);
 			break;
 
 		case C_ART_ncpx:
-			if (len > 1) throw ARTerror("ARTdataContainer::GetValueAsInt", "Invalid type conversion: ncpx with len>1 to int.");
+			if (len > 1) throw ARTerror("DataContainer::GetValueAsInt", "Invalid type conversion: ncpx with len>1 to int.");
 			else i = val->nc->re;
 			break;
 
 		case C_ART_na:
 			if (len > 1)
 			{
-				throw ARTerror("ARTdataContainer::GetValueAsInt", "Invalid type conversion: na with len>1 to int.");
+				throw ARTerror("DataContainer::GetValueAsInt", "Invalid type conversion: na with len>1 to int.");
 			}
 			else
 			{
-				tmp = dynamic_cast<ARTdataContainer*>((*tmpArray)[0]);
+				tmp = dynamic_cast<DataContainer*>((*tmpArray)[0]);
 				//i = tmp->GetValueAsInt();
 				i = tmp->GetInt();
 			}
 			break;
-		default: throw ARTerror("ARTdataContainer::GetValueAsInt", "Invalid type conversion to int: type is non-numeric, complex or triple.");
+		default: throw ARTerror("DataContainer::GetValueAsInt", "Invalid type conversion to int: type is non-numeric, complex or triple.");
 	}//end switch
 	return i;
 }
 
 // direct change of data value (ignore definition string); set value pointer
-void ARTdataContainer::SetValue(ARTvariant* var) 
+void DataContainer::SetValue(ARTvariant* var) 
 {	
 	_DBG_MSG("ARTvariant*");
 	if (var)
@@ -1120,14 +1120,14 @@ void ARTdataContainer::SetValue(ARTvariant* var)
 	}
 }
 
-void ARTdataContainer::SetVal(const int i, const int ind)
+void DataContainer::SetVal(const int i, const int ind)
 {
 	_DBG_MSG("const int, const int");
 	// in case we have an array, we have to handle that separately
 	if (typ == C_ART_na)
 	{
 		array_type* tmpArray = (array_type *) (val->na);
-		ARTdataContainer* tmp = dynamic_cast<ARTdataContainer*>(tmpArray->at(ind));
+		DataContainer* tmp = dynamic_cast<DataContainer*>(tmpArray->at(ind));
 		tmp->SetVal(std::complex<double>((double) i,0));
 	}
 	else
@@ -1139,14 +1139,14 @@ void ARTdataContainer::SetVal(const int i, const int ind)
 
 }
 
-void ARTdataContainer::SetVal(const double d, const int ind)
+void DataContainer::SetVal(const double d, const int ind)
 {
 //	_DBG_MSG2("const double = " << d << ", const int = " << ind << ", name = " << varname_);
 	_DBG_MSG("const double, const int");
 	if (typ == C_ART_na)
 	{
 		array_type* tmpArray = (array_type *) (val->na);
-		ARTdataContainer* tmp = dynamic_cast<ARTdataContainer*>(tmpArray->at(ind));
+		DataContainer* tmp = dynamic_cast<DataContainer*>(tmpArray->at(ind));
 		tmp->SetVal(std::complex<double>(d,0));
 	}
 	else
@@ -1158,13 +1158,13 @@ void ARTdataContainer::SetVal(const double d, const int ind)
 
 }
 
-void ARTdataContainer::SetVal(const float f, const int ind)
+void DataContainer::SetVal(const float f, const int ind)
 {
 	_DBG_MSG("const float, const int");
 	if (typ == C_ART_na)
 	{
 		array_type* tmpArray = (array_type *) (val->na);
-		ARTdataContainer* tmp = dynamic_cast<ARTdataContainer*>(tmpArray->at(ind));
+		DataContainer* tmp = dynamic_cast<DataContainer*>(tmpArray->at(ind));
 		tmp->SetVal(std::complex<double>(f,0));
 	}
 	else
@@ -1176,7 +1176,7 @@ void ARTdataContainer::SetVal(const float f, const int ind)
 
 }
 
-void ARTdataContainer::SetVal(std::complex<double> c, const int ind)
+void DataContainer::SetVal(std::complex<double> c, const int ind)
 {
 	_DBG_MSG("std::complex, int");
 //	_DBG_MSG2("std::complex = ("<< c.real() << ", " << c.imag() << "), int");
@@ -1184,7 +1184,7 @@ void ARTdataContainer::SetVal(std::complex<double> c, const int ind)
 	if (typ == C_ART_na)
 	{
 		array_type* tmpArray = (array_type *) (val->na);
-		ARTdataContainer* tmp = dynamic_cast<ARTdataContainer*>(tmpArray->at(ind));
+		DataContainer* tmp = dynamic_cast<DataContainer*>(tmpArray->at(ind));
 		tmp->SetVal(c);
 	}
 	else
@@ -1196,13 +1196,13 @@ void ARTdataContainer::SetVal(std::complex<double> c, const int ind)
 
 }
 
-void ARTdataContainer::SetVal(const double re, const double im, const int ind)
+void DataContainer::SetVal(const double re, const double im, const int ind)
 {
 	_DBG_MSG("const double, const double, const int");
 	if (typ == C_ART_na)
 	{
 		array_type* tmpArray = (array_type *) (val->na);
-		ARTdataContainer* tmp = dynamic_cast<ARTdataContainer*>(tmpArray->at(ind));
+		DataContainer* tmp = dynamic_cast<DataContainer*>(tmpArray->at(ind));
 		tmp->SetVal(re, im);
 	}
 	else
@@ -1214,7 +1214,7 @@ void ARTdataContainer::SetVal(const double re, const double im, const int ind)
 
 }
 
-void ARTdataContainer::SetVal(const char* s)
+void DataContainer::SetVal(const char* s)
 {
 	_DBG_MSG("const char*");
 	ARTvariant::SetVal(s);
@@ -1222,7 +1222,7 @@ void ARTdataContainer::SetVal(const char* s)
 	valid_ = true;
 }
 
-void ARTdataContainer::SetVal(const char* s, int ind)
+void DataContainer::SetVal(const char* s, int ind)
 {
 	_DBG_MSG("const char* s, int");
 	ARTvariant::SetVal(s, ind);
@@ -1231,10 +1231,10 @@ void ARTdataContainer::SetVal(const char* s, int ind)
 }
 
 // mark value as invalid and invalidate all dependent data containers
-void ARTdataContainer::Invalidate()
+void DataContainer::Invalidate()
 {
 	_DBG_MSG( varname_ );
-//	if (eval_started) throw ARTerror("ARTdataContainer::Invalidate", "Circular reference to dataContainer '%s1'.",varname_); 
+//	if (eval_started) throw ARTerror("DataContainer::Invalidate", "Circular reference to dataContainer '%s1'.",varname_); 
 //	eval_started = true;
 	//std::cout << varname_ << " invalidated.\n";										
 	valid_ = false;											// re-evaluation necessary, invalidate clients
@@ -1243,13 +1243,13 @@ void ARTdataContainer::Invalidate()
 }										
 
 // invalidate clients
-void ARTdataContainer::NotifyClients() 
+void DataContainer::NotifyClients() 
 {
 	_DBG_MSG("");
 	for (citer_=clientList_.begin();citer_!=clientList_.end(); citer_++) {(*citer_)->Invalidate();};
 }	
 
-int ARTdataContainer::GetEvaluationCost() 
+int DataContainer::GetEvaluationCost() 
 {
 	_DBG_MSG("");
 	//Display debug information
@@ -1262,17 +1262,17 @@ int ARTdataContainer::GetEvaluationCost()
 
 // notification about new client
 // enter calling object into clientList if it is not already there
-void ARTdataContainer::AddNotify(ARTdataContainer* client) 
+void DataContainer::AddNotify(DataContainer* client) 
 {		
-	_DBG_MSG("ARTdataContainer*");
+	_DBG_MSG("DataContainer*");
 	for (citer_=clientList_.begin();citer_!=clientList_.end(); citer_++) {if ((*citer_) == client) break;}
 	if (citer_ == clientList_.end()) clientList_.push_back(client);
 }	 
 
 //observe AND be notified
-void ARTdataContainer::AddDependency(ARTdataContainer* dependency) 
+void DataContainer::AddDependency(DataContainer* dependency) 
 {		
-	_DBG_MSG("ARTdataContainer*");
+	_DBG_MSG("DataContainer*");
 	for (diter_=dependencyList_.begin();diter_!=dependencyList_.end(); diter_++) 
 	{
 		if ((*diter_) == dependency) break;
@@ -1282,7 +1282,7 @@ void ARTdataContainer::AddDependency(ARTdataContainer* dependency)
 	dependency->AddNotify(this);
 }	 
 
-void ARTdataContainer::RemoveAllDependencies()
+void DataContainer::RemoveAllDependencies()
 {
 	_DBG_MSG("");
 	//std::cout << "DC " << this->varname_ << " (" << this << ") remove all dependencies:\n";
@@ -1299,13 +1299,13 @@ void ARTdataContainer::RemoveAllDependencies()
 	dependencyList_.clear();
 }
 
-//void ARTdataContainer::AddPropertiesAsDependency(ARTobject* obj);
+//void DataContainer::AddPropertiesAsDependency(ARTobject* obj);
 
 // notification about loss of client
 // remove calling object from clientList if it is there
-void ARTdataContainer::DoNotNotify(ARTdataContainer* client) 
+void DataContainer::DoNotNotify(DataContainer* client) 
 {		
-	_DBG_MSG("ARTdataContainer*");
+	_DBG_MSG("DataContainer*");
 	/*for (citer_=clientList_.begin();citer_!=clientList_.end(); citer_++) {
 		if ((*citer_) == client) {clientList_.erase(citer_); break;}
 	}*/
@@ -1313,9 +1313,9 @@ void ARTdataContainer::DoNotNotify(ARTdataContainer* client)
 	clientList_.remove(client);
 }
 
-void ARTdataContainer::RemoveDependency(ARTdataContainer* dependency) 
+void DataContainer::RemoveDependency(DataContainer* dependency) 
 {		
-	_DBG_MSG("ARTdataContainer*");
+	_DBG_MSG("DataContainer*");
 /*	for (diter_=dependencyList_.begin();diter_!=dependencyList_.end(); diter_++) 
 	{
 		if ((*diter_) == dependency) {dependencyList_.erase(diter_); break;}
@@ -1324,7 +1324,7 @@ void ARTdataContainer::RemoveDependency(ARTdataContainer* dependency)
 	dependencyList_.remove(dependency);
 }	 
 
-void ARTdataContainer::Rename(const string& newname)
+void DataContainer::Rename(const string& newname)
 {
 	_DBG_MSG("const string&");
 	//if there is a definition, change the name in the definition (replace old name with new name)
@@ -1343,7 +1343,7 @@ void ARTdataContainer::Rename(const string& newname)
 	varname_ = newname;
 }
 
-void ARTdataContainer::SetParser(mup::ParserX *p){
+void DataContainer::SetParser(mup::ParserX *p){
 	_DBG_MSG("ParserX*");
 	parser_ = p;
 	// if we have a valid name, register it in parser
@@ -1357,10 +1357,10 @@ void ARTdataContainer::SetParser(mup::ParserX *p){
 	if (typ == C_ART_na)
 	{
 		array_type* tmpArray = (array_type *) (val->na);
-		ARTdataContainer* tmp;
+		DataContainer* tmp;
 		for (int i = 0; i < len; ++i)
 		{
-			tmp = dynamic_cast<ARTdataContainer*>(tmpArray->at(i));
+			tmp = dynamic_cast<DataContainer*>(tmpArray->at(i));
 			//cout << "Set parser of element [" << i << "]" << endl;
 			tmp->parser_ = p;
 			//cout << "Done" << endl;
@@ -1370,10 +1370,10 @@ void ARTdataContainer::SetParser(mup::ParserX *p){
 }
 
 
-void ARTdataContainer::SetParserVar(const string& varname)
+void DataContainer::SetParserVar(const string& varname)
 {
 	_DBG_MSG("const string&");
-//	if (!parser_) throw ARTerror("ARTdataContainer::CreateParserVar","A parser variable for datacontainer '%s1' can not be created, because the datacontainer's parser pointer is NULL. Please use SetParser() to specify which parser the data container should use.",varname_);
+//	if (!parser_) throw ARTerror("DataContainer::CreateParserVar","A parser variable for datacontainer '%s1' can not be created, because the datacontainer's parser pointer is NULL. Please use SetParser() to specify which parser the data container should use.",varname_);
 	// if we have already a variable created, destroy it
 	if (parserVarDefined_)
 	{
@@ -1409,20 +1409,20 @@ void ARTdataContainer::SetParserVar(const string& varname)
 	}
 	catch(mup::ParserError& e)
 	{
-		throw ARTerror("ARTdataContainer::CreateParserVar", "Error in Parser: '%s1'", e.GetMsg());
+		throw ARTerror("DataContainer::CreateParserVar", "Error in Parser: '%s1'", e.GetMsg());
 	}
 }
 
-const Variable& ARTdataContainer::GetParserVar() const
+const Variable& DataContainer::GetParserVar() const
 {
 	if (avar_ == NULL)
 	{
-		throw ARTerror("ARTdataContainer::GetParserVar", "Current variable of data container '%s1' not defined!", varname_);
+		throw ARTerror("DataContainer::GetParserVar", "Current variable of data container '%s1' not defined!", varname_);
 	}
 	return *avar_;
 }
 
-const Variable& ARTdataContainer::GetParserVar()
+const Variable& DataContainer::GetParserVar()
 {
 	if (avar_ == NULL)
 	{
@@ -1431,10 +1431,10 @@ const Variable& ARTdataContainer::GetParserVar()
 	return *avar_;
 }
 
-void ARTdataContainer::DestroyParserVar()
+void DataContainer::DestroyParserVar()
 {
 	_DBG_MSG("");
-//	if (!parser_) throw ARTerror("ARTdataContainer::DestroyParserVar","A parser variable for datacontainer '%s1' was created, but the datacontainers parser pointer is NULL. Please use SetParser() to specify which parser the data container should use.",varname_);
+//	if (!parser_) throw ARTerror("DataContainer::DestroyParserVar","A parser variable for datacontainer '%s1' was created, but the datacontainers parser pointer is NULL. Please use SetParser() to specify which parser the data container should use.",varname_);
 	try 
 	{
 		//delete value
@@ -1450,34 +1450,34 @@ void ARTdataContainer::DestroyParserVar()
 	}
 	catch(mup::ParserError& e)
 	{
-		throw ARTerror("ARTdataContainer::DestroyParserVar", "Error in Parser: '%s1'", e.GetMsg());
+		throw ARTerror("DataContainer::DestroyParserVar", "Error in Parser: '%s1'", e.GetMsg());
 	}
 }
 
-string ARTdataContainer::DebugInfo()
+string DataContainer::DebugInfo()
 {
 	_DBG_MSG("");
-	ARTdataContainer* cd;
-	ARTdataContainer* dc;
+	DataContainer* cd;
+	DataContainer* dc;
 	string t = varname_ + "\n[meldet Aenderungen bei:";
 	for (citer_=clientList_.begin();citer_!=clientList_.end(); citer_++) 
 	{
-		cd = dynamic_cast<ARTdataContainer*>(*citer_);
+		cd = dynamic_cast<DataContainer*>(*citer_);
 		if (cd) t = t  + " " + cd->GetVarName();
 		else
 		{
-			dc = dynamic_cast<ARTdataContainer*>(*citer_);
+			dc = dynamic_cast<DataContainer*>(*citer_);
 			if (dc) t = t  + " " + dc->GetVarName();
 		}
 	}
 	t= t + "]\n[abhaengig von:";
 	for (diter_=dependencyList_.begin();diter_!=dependencyList_.end(); diter_++) 
 	{
-		cd = dynamic_cast<ARTdataContainer*>(*diter_);
+		cd = dynamic_cast<DataContainer*>(*diter_);
 		if (cd) t = t + " " + cd->GetVarName();
 		else
 		{
-			dc = dynamic_cast<ARTdataContainer*>(*diter_);
+			dc = dynamic_cast<DataContainer*>(*diter_);
 			if (dc) t = t  + " " + dc->GetVarName();
 		}
 	}
@@ -1485,25 +1485,25 @@ string ARTdataContainer::DebugInfo()
 	return t;
 }
 
-ARTdataContainer& ARTdataContainer::GetArrayElement(int idx)
+DataContainer& DataContainer::GetArrayElement(int idx)
 {
 	_DBG_MSG("int");
 	array_type* tmpArray = (array_type *) (val->na);
-	ARTdataContainer* tmp;
+	DataContainer* tmp;
 	switch (typ)
 	{
 		case C_ART_na:
-			tmp = dynamic_cast<ARTdataContainer*>((*tmpArray)[idx]);
+			tmp = dynamic_cast<DataContainer*>((*tmpArray)[idx]);
 			return *tmp;
 			break;
 		default:
-			throw ARTerror("ARTdataContainer::GetArrayElement", "Data container '%s1' is no container of other data containers.", varname_);
+			throw ARTerror("DataContainer::GetArrayElement", "Data container '%s1' is no container of other data containers.", varname_);
 			break;
 	}
 	return *this;
 }
 
-void ARTdataContainer::SetCurrentIndex(int idx)
+void DataContainer::SetCurrentIndex(int idx)
 {
 	_DBG_MSG("int");
 	array_type* tmpArray = (array_type *) (val->na);
@@ -1526,17 +1526,17 @@ void ARTdataContainer::SetCurrentIndex(int idx)
 	}
 }
 
-void ARTdataContainer::resizeArray(int newSize)
+void DataContainer::resizeArray(int newSize)
 {
 	_DBG_MSG("int");
 	array_type* tmpArray = (array_type *) (val->na);
-	ARTdataContainer* tmp;
+	DataContainer* tmp;
 	array_type::size_type oldSize, elementPtr, idx;
 	oldSize = tmpArray->size();
 
 //	for (idx = 0; idx < tmpArray->size(); ++idx)
 //	{
-//		tmp = dynamic_cast<ARTdataContainer*>(tmpArray->at(idx));
+//		tmp = dynamic_cast<DataContainer*>(tmpArray->at(idx));
 //		cout << "Content[" << idx << "] = " << tmp->val->c.re << endl;
 //	}
 
@@ -1545,7 +1545,7 @@ void ARTdataContainer::resizeArray(int newSize)
 
 	for (idx = oldSize; idx < newSize; ++idx)
 	{
-		tmp = new ARTdataContainer();
+		tmp = new DataContainer();
 //		CBG_DBL
 //		tmp->SetType(C_ART_cpx);
 		tmp->SetType(C_ART_dbl);
@@ -1563,7 +1563,7 @@ void ARTdataContainer::resizeArray(int newSize)
 
 //	for (idx = 0; idx < tmpArray->size(); ++idx)
 //	{
-//		tmp = dynamic_cast<ARTdataContainer*>(tmpArray->at(idx));
+//		tmp = dynamic_cast<DataContainer*>(tmpArray->at(idx));
 //		cout << "Content[" << idx << "] = " << tmp->val->c.re << endl;
 //	}
 //
@@ -1572,7 +1572,7 @@ void ARTdataContainer::resizeArray(int newSize)
 }
 
 // former ARTValue
-//ARTValue& ARTdataContainer::operator=(const ARTdataContainer &a_Val)
+//ARTValue& DataContainer::operator=(const DataContainer &a_Val)
 //	{
 //		_DBG_MSG("const ARTValue&");
 //		//Assign(a_Val);
@@ -1581,11 +1581,11 @@ void ARTdataContainer::resizeArray(int newSize)
 //	}
 
 	//---------------------------------------------------------------------------
-	IValue& ARTdataContainer::operator[](std::size_t i)
+	IValue& DataContainer::operator[](std::size_t i)
 	{
 		_DBG_MSG(varname_ << " std::size_t = " << (int) i);
 		array_type* tmpArray = (array_type *) (val->na);
-		ARTdataContainer* tmp;
+		DataContainer* tmp;
 		array_type::size_type arraySize;
 		switch (typ)
 		{
@@ -1595,7 +1595,7 @@ void ARTdataContainer::resizeArray(int newSize)
 				{
 					resizeArray(arraySize + 5);
 				}
-				tmp = dynamic_cast<ARTdataContainer*>((*tmpArray)[i]);
+				tmp = dynamic_cast<DataContainer*>((*tmpArray)[i]);
 				return *tmp;
 				break;
 			default:
@@ -1606,11 +1606,11 @@ void ARTdataContainer::resizeArray(int newSize)
 	}
 
 	//---------------------------------------------------------------------------
-	IValue& ARTdataContainer::operator[](int i)
+	IValue& DataContainer::operator[](int i)
 	{
 		_DBG_MSG(varname_ << " int i = " << i);
 		array_type* tmpArray = (array_type *) (val->na);
-		ARTdataContainer* tmp;
+		DataContainer* tmp;
 		array_type::size_type arraySize;
 		switch (typ)
 		{
@@ -1621,7 +1621,7 @@ void ARTdataContainer::resizeArray(int newSize)
 				{
 					resizeArray(arraySize + 5);
 				}
-				tmp = dynamic_cast<ARTdataContainer*>((*tmpArray)[i]);
+				tmp = dynamic_cast<DataContainer*>((*tmpArray)[i]);
 				return *tmp;
 				break;
 			default:
@@ -1632,28 +1632,28 @@ void ARTdataContainer::resizeArray(int newSize)
 	}
 
 	//---------------------------------------------------------------------------
-	IToken* ARTdataContainer::Clone() const
+	IToken* DataContainer::Clone() const
 	{
 		_DBG_MSG("");
-		return new ARTdataContainer(*this);
+		return new DataContainer(*this);
 	}
 
 	//---------------------------------------------------------------------------
-	Value* ARTdataContainer::AsValue()
+	Value* DataContainer::AsValue()
 	{
 		_DBG_MSG("");
 		return new Value(*this);
 	}
 
 	//---------------------------------------------------------------------------
-	IValue* ARTdataContainer::AsIValue()
+	IValue* DataContainer::AsIValue()
 	{
 		_DBG_MSG("");
 		return this;
 	}
 
 	//---------------------------------------------------------------------------
-//	void ARTdataContainer::Assign(const ARTValue &ref)
+//	void DataContainer::Assign(const ARTValue &ref)
 //	{
 //		_DBG_MSG("const ARTValue&");
 //		if (this==&ref)
@@ -1663,7 +1663,7 @@ void ARTdataContainer::resizeArray(int newSize)
 //		deleteVar();
 //
 //		//copy value
-//		var = new ARTdataContainer(*ref.var);
+//		var = new DataContainer(*ref.var);
 //		own = true;
 //
 //		m_iFlags = ref.m_iFlags;
@@ -1687,7 +1687,7 @@ void ARTdataContainer::resizeArray(int newSize)
 //	}
 
 	//---------------------------------------------------------------------------
-	IValue& ARTdataContainer::operator=(bool val) //should I even care about booleans?
+	IValue& DataContainer::operator=(bool val) //should I even care about booleans?
 	{
 		_DBG_MSG("bool");
 		SetVal(val);
@@ -1725,7 +1725,7 @@ void ARTdataContainer::resizeArray(int newSize)
 	}
 
 	//---------------------------------------------------------------------------
-	IValue& ARTdataContainer::operator=(int_type a_iVal)
+	IValue& DataContainer::operator=(int_type a_iVal)
 	{
 		_DBG_MSG("int_type");
 		SetVal(a_iVal);
@@ -1733,7 +1733,7 @@ void ARTdataContainer::resizeArray(int newSize)
 	}
 
 	//---------------------------------------------------------------------------
-	IValue& ARTdataContainer::operator=(float_type val)
+	IValue& DataContainer::operator=(float_type val)
 	{
 		_DBG_MSG("float_type");
 		SetVal(val);
@@ -1741,7 +1741,7 @@ void ARTdataContainer::resizeArray(int newSize)
 	}
 
 	//---------------------------------------------------------------------------
-	IValue& ARTdataContainer::operator=(string_type a_sVal)
+	IValue& DataContainer::operator=(string_type a_sVal)
 	{
 		_DBG_MSG("string_type");
 		SetVal(a_sVal.c_str());
@@ -1749,7 +1749,7 @@ void ARTdataContainer::resizeArray(int newSize)
 	}
 
 	//---------------------------------------------------------------------------
-	IValue& ARTdataContainer::operator=(const char_type *a_szVal)
+	IValue& DataContainer::operator=(const char_type *a_szVal)
 	{
 		_DBG_MSG("const char_type*");
 		SetVal(a_szVal);
@@ -1757,7 +1757,7 @@ void ARTdataContainer::resizeArray(int newSize)
 	}
 
 	//---------------------------------------------------------------------------
-	IValue& ARTdataContainer::operator=(const array_type &a_vVal)
+	IValue& DataContainer::operator=(const array_type &a_vVal)
 	{
 		_DBG_MSG("const array_type&");
 		// TODO: implement this correctly
@@ -1765,7 +1765,7 @@ void ARTdataContainer::resizeArray(int newSize)
 	}
 
 	//---------------------------------------------------------------------------
-	IValue& ARTdataContainer::operator=(const cmplx_type &val)
+	IValue& DataContainer::operator=(const cmplx_type &val)
 	{
 		_DBG_MSG(varname_ << " const cmplx_type& " << val.real() << ","<< val.imag());
 		SetVal(val);
@@ -1773,7 +1773,7 @@ void ARTdataContainer::resizeArray(int newSize)
 	}
 
 	//---------------------------------------------------------------------------
-	char_type ARTdataContainer::GetType() const
+	char_type DataContainer::GetType() const
 	{
 		_DBG_MSG("");
 		switch (typ)
@@ -1803,10 +1803,10 @@ void ARTdataContainer::resizeArray(int newSize)
 	}
 
 	//---------------------------------------------------------------------------
-	float_type ARTdataContainer::GetImag() const
+	float_type DataContainer::GetImag() const
 	{
 		_DBG_MSG("");
-		ARTdataContainer* tmp;
+		DataContainer* tmp;
 		array_type* tmpArray = (array_type*) (val->na);
 		if (!valid_) Evaluate();
 		try
@@ -1837,7 +1837,7 @@ void ARTdataContainer::resizeArray(int newSize)
 					if (len > 1) throw ParserError();
 					else
 					{
-						tmp = dynamic_cast<ARTdataContainer*>((*tmpArray)[0]);
+						tmp = dynamic_cast<DataContainer*>((*tmpArray)[0]);
 						return tmp->val->c.im;
 					}
 
@@ -1870,7 +1870,7 @@ void ARTdataContainer::resizeArray(int newSize)
 	}
 
 	//---------------------------------------------------------------------------
-	const cmplx_type& ARTdataContainer::GetComplex() const
+	const cmplx_type& DataContainer::GetComplex() const
 	{
 		_DBG_MSG("");
 //		return m_val;
@@ -1891,13 +1891,13 @@ void ARTdataContainer::resizeArray(int newSize)
 			tmp = cmplx_type(val->c.re,val->c.im);
 			break;
 		default:
-			throw ARTerror("ARTdataContainer::GetComplex()", "The current data type cannot be converted into a complex value!");
+			throw ARTerror("DataContainer::GetComplex()", "The current data type cannot be converted into a complex value!");
 		}
 		return tmp;
 	}
 
 	//---------------------------------------------------------------------------
-	const string_type& ARTdataContainer::GetString() const
+	const string_type& DataContainer::GetString() const
 	{
 		_DBG_MSG("");
 /*		CheckType('s');
@@ -1917,7 +1917,7 @@ void ARTdataContainer::resizeArray(int newSize)
 	}
 
 	//---------------------------------------------------------------------------
-	bool ARTdataContainer::GetBool() const
+	bool DataContainer::GetBool() const
 	{
 		_DBG_MSG("");
 /*		CheckType('b');
@@ -1926,7 +1926,7 @@ void ARTdataContainer::resizeArray(int newSize)
 	}
 
 	//---------------------------------------------------------------------------
-	const array_type& ARTdataContainer::GetArray() const
+	const array_type& DataContainer::GetArray() const
 	{
 		_DBG_MSG("");
 		/*CheckType('a');
@@ -1961,7 +1961,7 @@ void ARTdataContainer::resizeArray(int newSize)
 	}
 
 	//---------------------------------------------------------------------------
-	void ARTdataContainer::CheckType(char_type a_cType) const
+	void DataContainer::CheckType(char_type a_cType) const
 	{
 		_DBG_MSG("char_type");
 		if (GetType()!=a_cType)
@@ -1987,7 +1987,7 @@ void ARTdataContainer::resizeArray(int newSize)
 	}
 
 	//---------------------------------------------------------------------------
-	bool ARTdataContainer::IsVolatile() const
+	bool DataContainer::IsVolatile() const
 	{
 		_DBG_MSG("");
 		return IsFlagSet(IValue::flVOLATILE);
@@ -1995,7 +1995,7 @@ void ARTdataContainer::resizeArray(int newSize)
 	}
 
 //	//---------------------------------------------------------------------------
-//	string_type ARTdataContainer::AsciiDump() const
+//	string_type DataContainer::AsciiDump() const
 //	{
 //		_DBG_MSG("");
 //		stringstream_type ss;
@@ -2035,7 +2035,7 @@ void ARTdataContainer::resizeArray(int newSize)
 //	}
 //
 //	//---------------------------------------------------------------------------
-//	void ARTdataContainer::Release()
+//	void DataContainer::Release()
 //	{
 //		_DBG_MSG("");
 //		if (m_pCache_)
@@ -2046,7 +2046,7 @@ void ARTdataContainer::resizeArray(int newSize)
 //	}
 //
 //	//---------------------------------------------------------------------------
-//	void ARTdataContainer::BindToCache(ValueCache *pCache)
+//	void DataContainer::BindToCache(ValueCache *pCache)
 //	{
 //		_DBG_MSG("");
 //		m_pCache_ = pCache;

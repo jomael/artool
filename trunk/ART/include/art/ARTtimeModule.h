@@ -60,7 +60,7 @@ using namespace mup;
 
 namespace ART{
   // forward declaration
-class ARTdataContainer;
+class DataContainer;
 }
 
 

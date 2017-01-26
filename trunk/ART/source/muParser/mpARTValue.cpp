@@ -5,7 +5,7 @@
 #include "mpError.h"
 #include "mpValueCache.h"
 #include "mpValue.h"
-#include "ARTdataContainer.h"
+#include "DataContainer.h"
 
 //#define _DBG_MSG(a) {cout << __FILE__ << "::" <<__func__ << "("<< a << ")" << endl;}
 #define _DBG_MSG(a)
@@ -19,7 +19,7 @@ MUP_NAMESPACE_START
 		,m_iFlags(flNONE)
 		,m_pCache(NULL)
 	{
-		var = new ARTdataContainer(0.0);
+		var = new DataContainer(0.0);
 		own = true;
 		_DBG_MSG("");
 	}
@@ -31,7 +31,7 @@ MUP_NAMESPACE_START
 		,m_iFlags(flNONE)
 		,m_pCache(NULL)
 	{
-		var = new ARTdataContainer(a_iVal);
+		var = new DataContainer(a_iVal);
 		own = true;
 		_DBG_MSG("int_type");
 	}
@@ -44,7 +44,7 @@ MUP_NAMESPACE_START
 		,m_pCache(NULL)
 	{
 		//we don't have a boolean type...
-		var = new ARTdataContainer((int)(a_bVal));
+		var = new DataContainer((int)(a_bVal));
 		own = true;
 		_DBG_MSG("bool_type");
 	}
@@ -56,7 +56,7 @@ MUP_NAMESPACE_START
 		,m_iFlags(flNONE)
 		,m_pCache(NULL)
 	{
-		var = new ARTdataContainer(a_sVal.c_str());
+		var = new DataContainer(a_sVal.c_str());
 		own = true;
 		_DBG_MSG("string_type");
 	}
@@ -68,7 +68,7 @@ MUP_NAMESPACE_START
 		,m_iFlags(flNONE)
 		,m_pCache(NULL)
 	{
-		var = new ARTdataContainer(type);
+		var = new DataContainer(type);
 		var->SetArrayLength(array_size);
 		int i;
 		switch (type)
@@ -97,20 +97,20 @@ MUP_NAMESPACE_START
 				own = true;
 				break;
 			case C_ART_na:
-				// create new ARTdataContainer array
-				var->val->na = new ARTdataContainer[array_size];
+				// create new DataContainer array
+				var->val->na = new DataContainer[array_size];
 				// create new ARTValue array, containing references
-				// to ARTdataContainer values
+				// to DataContainer values
 				arrayVals = new ARTValue[array_size];
 				for (i = 0; i < array_size; i++)
 				{
 					// set and initialize all elements
 					var->val->na[i].SetType(C_ART_dbl);
 					var->val->na[i].SetVal(static_cast<double>(val));
-					// remove local ARTdataContainer object
+					// remove local DataContainer object
 					arrayVals[i].deleteVar();
-					// set reference of ARTValue to ARTdataContainer
-					arrayVals[i].var = dynamic_cast<ARTdataContainer*>(&(var->val->na[i]));
+					// set reference of ARTValue to DataContainer
+					arrayVals[i].var = dynamic_cast<DataContainer*>(&(var->val->na[i]));
 				}
 				own = true;
 				break;
@@ -150,7 +150,7 @@ MUP_NAMESPACE_START
 		,m_iFlags(flNONE)
 		,m_pCache(NULL)
 	{
-		var = new ARTdataContainer(a_szVal);
+		var = new DataContainer(a_szVal);
 		own = true;
 		_DBG_MSG("const char_type*");
 	}
@@ -162,7 +162,7 @@ MUP_NAMESPACE_START
 		,m_iFlags(flNONE)
 		,m_pCache(NULL)
 	{
-		var = new ARTdataContainer(C_ART_cpx);
+		var = new DataContainer(C_ART_cpx);
 		var->val->c.re = v.real();
 		var->val->c.im =v.imag();
 		own = true;
@@ -176,7 +176,7 @@ MUP_NAMESPACE_START
 		,m_iFlags(flNONE)
 		,m_pCache(NULL)
 	{
-		var = new ARTdataContainer(val);
+		var = new DataContainer(val);
 		own = true;
 		_DBG_MSG("float_type");
 	}
@@ -196,19 +196,19 @@ MUP_NAMESPACE_START
 		_DBG_MSG("array_type&");
 	}
 
-	ARTValue::ARTValue(ARTdataContainer* av)
+	ARTValue::ARTValue(DataContainer* av)
 		:IValue(cmVAL)
 		,arrayVals(NULL)
 		,m_iFlags(flNONE)
 		,m_pCache(NULL)
 	{
 		var = av;
-		own = false; //var is connected to foreign ARTdataContainer, so var must not be destroyed by this object
+		own = false; //var is connected to foreign DataContainer, so var must not be destroyed by this object
 		// if data container is of type array, we have to initialize the local value array
 		if (var->typ == C_ART_na)
 		{
 			arrayVals = new ARTValue[var->len];
-			ARTdataContainer* arrayElements = dynamic_cast<ARTdataContainer*>(var->val->na);
+			DataContainer* arrayElements = dynamic_cast<DataContainer*>(var->val->na);
 			for (int i = 0; i < var->len; ++i)
 			{
 				// delete standard var object
@@ -218,7 +218,7 @@ MUP_NAMESPACE_START
 				arrayVals[i].var = &(arrayElements[i]);
 			}
 		}
-		_DBG_MSG("ARTdataContainer*");
+		_DBG_MSG("DataContainer*");
 	}
 
 	//---------------------------------------------------------------------------
@@ -311,7 +311,7 @@ MUP_NAMESPACE_START
 	//---------------------------------------------------------------------------
 	ARTValue::~ARTValue()
 	{
-		// if we are saving an array, we have to delete all ARTdataContainers
+		// if we are saving an array, we have to delete all DataContainers
 		// we have to free the inner data containers before we can delete the
 		// variable
 		if (arrayVals != NULL)
@@ -319,7 +319,7 @@ MUP_NAMESPACE_START
 			delete[] arrayVals;
 			if (own)
 			{
-				delete[] dynamic_cast<ARTdataContainer*>(var->val->na);
+				delete[] dynamic_cast<DataContainer*>(var->val->na);
 			}
 		}
 		if (own)
@@ -361,7 +361,7 @@ MUP_NAMESPACE_START
 		deleteVar();
 
 		//copy value
-		var = new ARTdataContainer(*ref.var);
+		var = new DataContainer(*ref.var);
 		own = true;
 
 		m_iFlags = ref.m_iFlags;
@@ -397,7 +397,7 @@ MUP_NAMESPACE_START
 	void ARTValue::Reset()
 	{
 		deleteVar();
-		var = new ARTdataContainer();
+		var = new DataContainer();
 		own = true;
 
 		m_iFlags = flNONE;
@@ -522,7 +522,7 @@ MUP_NAMESPACE_START
 	{
 		_DBG_MSG("");
 
-		ARTdataContainer* tmp = dynamic_cast<ARTdataContainer*>(var);
+		DataContainer* tmp = dynamic_cast<DataContainer*>(var);
 		//cout << "in GetFloat()" << endl;
 		return static_cast<float_type>(tmp->GetValueAsDouble());
 		/*if (tmp != NULL)
@@ -650,8 +650,8 @@ MUP_NAMESPACE_START
 					if (var->len > 1) throw ParserError();
 					else
 					{
-						ARTdataContainer* tmp;
-						tmp = dynamic_cast<ARTdataContainer*>(var);
+						DataContainer* tmp;
+						tmp = dynamic_cast<DataContainer*>(var);
 						return tmp->GetValueAsDouble();
 					}
 

@@ -44,23 +44,23 @@
 #include <list>
 
 #include "ARTproperty.h"
-#include "ARTdataContainer.h"
+#include "DataContainer.h"
 
 using std::string;
 
 /**
  * A value with a concrete name belonging to an ARTobject is represented by an
- * ARTdataProperty. Just like an ARTdataContainer it can specify some way of recalculating
- * itself. (see ARTdataContainer for details)
+ * ARTdataProperty. Just like an DataContainer it can specify some way of recalculating
+ * itself. (see DataContainer for details)
  */
-class ARTdataProp : public ARTproperty, public ART::ARTdataContainer {
+class ARTdataProp : public ARTproperty, public ART::DataContainer {
 public:
         ARTdataProp(const T_ART_Type dtyp, const int dlen, const string name, const string sds="", const string lds="", const string htm="") :
-  ARTproperty(name,sds,lds,htm,false), ART::ARTdataContainer(dtyp, dlen, name), range(NULL) {}
+  ARTproperty(name,sds,lds,htm,false), ART::DataContainer(dtyp, dlen, name), range(NULL) {}
 
         /** copy constructor */
         ARTdataProp(const ARTdataProp& orig)
-	  : ARTproperty(orig), ART::ARTdataContainer(orig)
+	  : ARTproperty(orig), ART::DataContainer(orig)
         {
                 if (orig.range)
                         range = orig.range->clone();

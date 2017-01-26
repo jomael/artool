@@ -54,7 +54,7 @@ namespace ART{
   class ARTcircuit : public ARTelement {
   private:
     vector<ARTelement*> references;
-    ARTdataContainer* impedanceCurve_; //Input impedance as triple vector (f, re, im)
+    DataContainer* impedanceCurve_; //Input impedance as triple vector (f, re, im)
     ARTSimulator* simulator_;
     WaveObjectInterface* wavefrontRadiation; //Wave object representing the radiation impedance of the circuit. This object is constructed in prepareCalculation
 

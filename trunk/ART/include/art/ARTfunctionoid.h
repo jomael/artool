@@ -52,7 +52,7 @@
 
 //forward declarations of classes defined in interface.h, because this file is inserted there before the declarations come.
 namespace ART{
-  class ARTdataContainer;
+  class DataContainer;
 }
 class ARTelement;		
 //Basisklasse eines Funktionoides / base class of a functionoid
@@ -61,8 +61,8 @@ class ARTelement;
 	Deutsch:
 	******
 Die folgenden Funktionsobjekte (Funktionoide oder Funktoren) sind das Gleiche, was Parserformeln fnr 
-ARTdataContainer sind: Berechnungsanleitungen. Sie stellen den ARTdataContainern Funktionen zum 
-errechnen ihres Wertes zur Verfngung. Beim Erstellen eines ARTdataContainers wird dem Konstruktor
+DataContainer sind: Berechnungsanleitungen. Sie stellen den DataContainern Funktionen zum 
+errechnen ihres Wertes zur Verfngung. Beim Erstellen eines DataContainers wird dem Konstruktor
 gleichzeitig ein zeiger auf eines der folgenden Objekte mitgegeben. Der Datencontainer schreibt seine 
 Adresse in das Feld out_ des Funktionoides.
 
@@ -74,7 +74,7 @@ Ausgabewert (also der Wert des in out_ angebundenen Datenkontainers) aus den Par
 wird.
 
 Fnr die Berechnung eines bestimmten Wertes reicht es den Datenkontainer, der diesen Wert enthSlt, 
-abzufragen. Durch Aufrufe von Funktionoidkernfunktionen (innerhalb von ARTdataContainer-Objekten) 
+abzufragen. Durch Aufrufe von Funktionoidkernfunktionen (innerhalb von DataContainer-Objekten) 
 und Parserevaluierungen (innerhalb von ARTdataCointainer-Objekten) werden erst alle Werte berechnet, die 
 fnr den abgefragten Wert eine Rolle spielen, dann wird der abgefragte Wert berechnet.
 
@@ -84,9 +84,9 @@ alle von ihm abhSngigen ungnltig. Ein Datenkontainer behSlt seinen Wert, bis er 
 	English:
 	******* */
 /**
-The function objects (functionoids or functors) derived from this base class are the same as formulas in ARTdataContainers:
-instructions for calculation. They provide functions for calculation to ARTdataContainers. When
-creating an ARTdataContainer, the constructor gets a pointer to one of these functionoids. The
+The function objects (functionoids or functors) derived from this base class are the same as formulas in DataContainers:
+instructions for calculation. They provide functions for calculation to DataContainers. When
+creating an DataContainer, the constructor gets a pointer to one of these functionoids. The
 dataContainer writes its address to the functionoid's field out_. 
 
 Pointers to dataContainers needed for calculation are passed to the constructor of the functionoid. This can
@@ -109,7 +109,7 @@ public:
 	/**
 	 * Every functionoid must provide a function to calculate the value of its output data container. 
 	 * The calculation takes place in this very function. Note that you have to call
-	 * ARTdataContainer::progressIndicator.Continue() frequently to communicate the status of calculation
+	 * DataContainer::progressIndicator.Continue() frequently to communicate the status of calculation
 	 * to the user and to check if the user wishes to abort. If you are using a loop in your function,
 	 * call the function in every iteration. Note that the number of times this function is called here
 	 * must be exactly the same number returned by GetIterationNumber for evaluation cost estimation
@@ -119,7 +119,7 @@ public:
 	 * bool carryon = true;	 
 	 * for (f=fmin + fstep*(fmin==0.0), j = 0; (j<flen) && carryon; f+=fstep, j++)
 	 * {                    	 
-	 *   carryon = ARTdataContainer::progressIndicator.Continue(out_->GetComplexity(),out_->GetVarName());
+	 *   carryon = DataContainer::progressIndicator.Continue(out_->GetComplexity(),out_->GetVarName());
 	 *   ...
 	 * }
 	 * @endcode
@@ -137,16 +137,16 @@ public:
 	///Given a pointer of type ARTfunctionoid (or subtypes), the functionoid needs to decide if the pointer represents the same function.
 	virtual bool IsSameFunctionoid(ARTfunctionoid* f) = 0; //{return false;}
 
-  ///This function should determine the number of iterations as exactly as possible according to the current state of all dependencies so that the evaluation cost of this data container can be estimated. (The user should take care to keep data containers like frequency grids or other determining the number of iterations valid before estimating the evaluation cost!) This number should be exactly the same as the number of times the function ARTdataContainer::progressIndicator.Continue is called in the functionoid's applyFunction. 
+  ///This function should determine the number of iterations as exactly as possible according to the current state of all dependencies so that the evaluation cost of this data container can be estimated. (The user should take care to keep data containers like frequency grids or other determining the number of iterations valid before estimating the evaluation cost!) This number should be exactly the same as the number of times the function DataContainer::progressIndicator.Continue is called in the functionoid's applyFunction. 
 	virtual int GetIterationNumber()= 0; //{return false;}
 
 	//Der Ausgabedatenkontainer, dem der Funktionoid im Konstruktor nbergeben wird, setzt den zeiger out_ auf sich.
 	///The dataContainer, to which this functionoid is passed as an argument in the constructor, automatically sets the pointer out_ on itself.
-	void SetOutput(ART::ARTdataContainer* out) {out_ = out;}
+	void SetOutput(ART::DataContainer* out) {out_ = out;}
 
 protected:
-	ART::ARTdataContainer* out_; ///set by SetOutput() in constructor of data container	
-	vector<ART::ARTdataContainer*> in_; ///pointers to input arguments, this vector is used to register dependencies.
+	ART::DataContainer* out_; ///set by SetOutput() in constructor of data container	
+	vector<ART::DataContainer*> in_; ///pointers to input arguments, this vector is used to register dependencies.
 	//a second vector for input arguments that are objects like hosts ??
 };
 
@@ -155,7 +155,7 @@ protected:
 class ARTmmRadImpFunc : public ARTfunctionoid
 {
 public:
- ARTmmRadImpFunc(ARTelement* host, ART::ARTdataContainer* frequencies, ART::ARTdataContainer* modes, bool hasBends)
+ ARTmmRadImpFunc(ARTelement* host, ART::DataContainer* frequencies, ART::DataContainer* modes, bool hasBends)
 	: host_(host), hasBends_(hasBends), frequencies_(frequencies), modes_(modes)
 	{
 		if (!host) throw ARTerror("ARTmmRadImpFunc(Constructor)", "Argument '%s1' is NULL.","host");
@@ -173,15 +173,15 @@ public:
 private:
 	ARTelement* host_;
 	bool hasBends_;
-	ART::ARTdataContainer* frequencies_;
-	ART::ARTdataContainer* modes_;
+	ART::DataContainer* frequencies_;
+	ART::DataContainer* modes_;
 };
 
 //functionoid as wrapper for frq-Grid
 class ARTfrqGridFunc : public ARTfunctionoid
 {
 public:
- ARTfrqGridFunc(ART::ARTdataContainer* lowfrq, ART::ARTdataContainer* highfrq, ART::ARTdataContainer* frqStep)
+ ARTfrqGridFunc(ART::DataContainer* lowfrq, ART::DataContainer* highfrq, ART::DataContainer* frqStep)
 		: lowfrq_(lowfrq), highfrq_(highfrq), frqStep_(frqStep)
 	{
 		if (!lowfrq_) throw ARTerror("ARTfrqGridFunc(constructor)", "The argument 'lowfrq' is NULL.");
@@ -198,16 +198,16 @@ public:
 	virtual int GetIterationNumber();
 
 private:
-	ART::ARTdataContainer* lowfrq_;
-	ART::ARTdataContainer* highfrq_;
-	ART::ARTdataContainer* frqStep_;
+	ART::DataContainer* lowfrq_;
+	ART::DataContainer* highfrq_;
+	ART::DataContainer* frqStep_;
 };
 
 //functionoid as wrapper for wfrq-Grid
 class ARTwfrqGridFunc : public ARTfunctionoid
 {
 public:
- ARTwfrqGridFunc(ART::ARTdataContainer* frqGrid)
+ ARTwfrqGridFunc(ART::DataContainer* frqGrid)
 	: frequencies_(frqGrid)
 	{
 		if (!frqGrid) throw ARTerror("ARTwfrqGridFunc(Constructor)", "Argument '%s1' is NULL.","frqGrid");
@@ -220,7 +220,7 @@ public:
 	virtual int GetIterationNumber();
 
 private:
-	ART::ARTdataContainer* frequencies_;
+	ART::DataContainer* frequencies_;
 };
 
 

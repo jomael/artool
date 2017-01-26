@@ -15,7 +15,7 @@
 
 namespace ART{
 // forward declaration
-struct ARTdataContainer;
+struct DataContainer;
 }
 //struct ARTvariant;
 
@@ -43,7 +43,7 @@ MUP_NAMESPACE_START
 		ARTValue(const char_type *val);
 		ARTValue(const cmplx_type &v);
 		ARTValue(const array_type &val);
-		ARTValue(ART::ARTdataContainer* av);
+		ARTValue(ART::DataContainer* av);
 
 		/** Array constructor */
 		ARTValue(int_type m, float_type v, T_ART_Type type = C_ART_ndbl);
@@ -87,8 +87,8 @@ MUP_NAMESPACE_START
 	private:
 
 		//ARTvariant* var;
-		ART::ARTdataContainer* var;
-		ARTValue* arrayVals; ///< Needed for arrays of ARTdataContainers
+		ART::DataContainer* var;
+		ARTValue* arrayVals; ///< Needed for arrays of DataContainers
 		EFlags 			m_iFlags; ///< Additional flags
 		ValueCache	*m_pCache; ///< Pointer to the ARTValue Cache
 		bool own; ///< does the var pointer only belong to this object?

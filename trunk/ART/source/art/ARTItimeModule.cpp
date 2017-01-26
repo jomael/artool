@@ -96,7 +96,7 @@ ARTItimeModule::OPortType::OPortType(const T_ART_Type dtyp,
   //	}
   //	else
   //	{
-  //		throw ARTerror("ARTItimeModule::OPortType::OPortType", "No valid parser has been created. Please check source code of ARTdataContainer!");
+  //		throw ARTerror("ARTItimeModule::OPortType::OPortType", "No valid parser has been created. Please check source code of DataContainer!");
   //	}
 }
 
@@ -122,22 +122,22 @@ void ARTItimeModule::OPortType::initPortValue(const string& expr) const
 
 void ARTItimeModule::OPortType::initPortValue(double value, int idx) const
 {
-  const ARTdataContainer* tmpContainer = dynamic_cast<const ARTdataContainer*>(this);
-  ARTdataContainer& port = const_cast<ARTdataContainer&>(*tmpContainer);
+  const DataContainer* tmpContainer = dynamic_cast<const DataContainer*>(this);
+  DataContainer& port = const_cast<DataContainer&>(*tmpContainer);
   port[idx] = value;
 }
 
 void ARTItimeModule::OPortType::initPortValue(std::complex<double>& value, int idx) const
 {
-  const ARTdataContainer* tmpContainer = dynamic_cast<const ARTdataContainer*>(this);
-  ARTdataContainer& port = const_cast<ARTdataContainer&>(*tmpContainer);
+  const DataContainer* tmpContainer = dynamic_cast<const DataContainer*>(this);
+  DataContainer& port = const_cast<DataContainer&>(*tmpContainer);
   port[idx] = value;
 }
 
 //IValue& ARTItimeModule::OPortType::operator[](::size_t idx)
 //{
 ////	cout << "ARTItimeModule::OPortType::operator[size_t " << idx << "]" << endl;
-//	ARTdataContainer& tmpContainer = GetArrayElement(idx);
+//	DataContainer& tmpContainer = GetArrayElement(idx);
 //	if (!tmpContainer.IsValid())
 //	{
 ////		cout << idx << " INVALID!" << endl;
@@ -148,13 +148,13 @@ void ARTItimeModule::OPortType::initPortValue(std::complex<double>& value, int i
 ////		cout << idx << " VALID!" << endl;
 //	}
 //
-//	return ARTdataContainer::operator[](idx);
+//	return DataContainer::operator[](idx);
 //}
 //
 //IValue& ARTItimeModule::OPortType::operator[](int idx)
 //{
 ////	cout << "ARTItimeModule::OPortType::operator[int " << idx << "]" << endl;
-//	ARTdataContainer& tmpContainer = GetArrayElement(idx);
+//	DataContainer& tmpContainer = GetArrayElement(idx);
 //	if (!tmpContainer.IsValid())
 //	{
 ////		cout << idx << " INVALID!" << endl;
@@ -165,7 +165,7 @@ void ARTItimeModule::OPortType::initPortValue(std::complex<double>& value, int i
 ////		cout << idx << " VALID!" << endl;
 //	}
 //
-//	return ARTdataContainer::operator[](idx);
+//	return DataContainer::operator[](idx);
 //}
 
 //IValue& ARTItimeModule::OPortType::GetPortValue(::size_t idx)
@@ -180,7 +180,7 @@ void ARTItimeModule::OPortType::initPortValue(std::complex<double>& value, int i
 //		throw ARTerror("ARTPortType::initPortValue", "No valid time simulator set for current port '%s1'.", name_);
 //	}
 //
-//	ARTdataContainer& tmpContainer = GetArrayElement(idx);
+//	DataContainer& tmpContainer = GetArrayElement(idx);
 //
 //	if (tVal_.GetFloat() != (float_type) idx)
 //	{
@@ -205,7 +205,7 @@ void ARTItimeModule::OPortType::initPortValue(std::complex<double>& value, int i
 //	}
 //
 ////	cout << "ARTItimeModule::OPortType::GetPortValue(" << idx << ")" << endl;
-//	ARTdataContainer& tmpContainer = GetArrayElement(idx);
+//	DataContainer& tmpContainer = GetArrayElement(idx);
 //
 //	if (tVal_.GetFloat() != (float_type) idx)
 //	{
@@ -244,16 +244,16 @@ ARTItimeModule::FPortType::FPortType(const int dlen,
 IValue& ARTItimeModule::FPortType::operator[](std::size_t idx)
 {
   array_type* tmpArray = (array_type *) (val->na);
-  ARTdataContainer* tmp;
-  tmp = dynamic_cast<ARTdataContainer*>((*tmpArray)[idx]);
+  DataContainer* tmp;
+  tmp = dynamic_cast<DataContainer*>((*tmpArray)[idx]);
   return *tmp;
 }
 
 IValue& ARTItimeModule::FPortType::operator[](int idx)
 {
   array_type* tmpArray = (array_type *) (val->na);
-  ARTdataContainer* tmp;
-  tmp = dynamic_cast<ARTdataContainer*>((*tmpArray)[idx]);
+  DataContainer* tmp;
+  tmp = dynamic_cast<DataContainer*>((*tmpArray)[idx]);
   return *tmp;
 }
 
@@ -278,14 +278,14 @@ IValue& ARTItimeModule::FPortType::operator[](int idx)
 //void ARTItimeModule::FPortType::initPortValue(double value, int idx) const
 //{
 //	array_type* tmpArray = (array_type*) (val->na);
-//	ARTdataContainer* tmp = dynamic_cast<ARTdataContainer*>((*tmpArray)[idx]);
+//	DataContainer* tmp = dynamic_cast<DataContainer*>((*tmpArray)[idx]);
 //	tmp->SetVal(value);
 //}
 //
 //void ARTItimeModule::FPortType::initPortValue(std::complex<double>& value, int idx) const
 //{
 //	array_type* tmpArray = (array_type*) (val->na);
-//	ARTdataContainer* tmp = dynamic_cast<ARTdataContainer*>((*tmpArray)[idx]);
+//	DataContainer* tmp = dynamic_cast<DataContainer*>((*tmpArray)[idx]);
 //	tmp->SetVal(value);
 //}
 

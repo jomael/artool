@@ -43,7 +43,7 @@
 #include <string>
 
 #include "ARTmodelInterface.h"
-#include "ARTdataContainer.h"
+#include "DataContainer.h"
 
 using std::string;
 
@@ -56,8 +56,8 @@ using std::string;
  */
 class ARTelement : public ARTmodelInterface {
 public:
-  ART::ARTdataContainer* z_rad; //Radiaton impedance
-  ART::ARTdataContainer* z_inp; //multimode input impedance
+  ART::DataContainer* z_rad; //Radiaton impedance
+  ART::DataContainer* z_inp; //multimode input impedance
 
         ARTmodelInterface* model; //a clone of the prototype model
 
@@ -162,7 +162,7 @@ public:
 //              while (piter_ != propertyList_.end())
 //              {
 //                      p = dynamic_cast<ARTdataProp*>(*piter_);
-//                      if (p) ((ARTdataContainer*)p)->SetParser(sim->GetParser());
+//                      if (p) ((DataContainer*)p)->SetParser(sim->GetParser());
 //                      piter_++;
 //              }
 //      }

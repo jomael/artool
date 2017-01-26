@@ -85,7 +85,7 @@ ARTFreqSimulator::ARTFreqSimulator(const string name, const string wavetype,
     prop = GetProperties(prop);
   }
 
-  frqGrid = new ARTdataContainer("frqGrid", new ARTfrqGridFunc(fmin, fmax, fstep));
-  wfrqGrid = new ARTdataContainer("wfrqGrid", new ARTwfrqGridFunc(frqGrid));
+  frqGrid = new DataContainer("frqGrid", new ARTfrqGridFunc(fmin, fmax, fstep));
+  wfrqGrid = new DataContainer("wfrqGrid", new ARTwfrqGridFunc(frqGrid));
 
 }

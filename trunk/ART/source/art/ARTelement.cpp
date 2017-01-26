@@ -118,7 +118,7 @@ void ARTelement::SetScope(ARTSimulator* sim)
         while (piter_ != propertyList_.end())
         {
                 p = dynamic_cast<ARTdataProp*>(*piter_);
-                if (p) ((ARTdataContainer*)p)->SetParser(sim->GetParser());
+                if (p) ((DataContainer*)p)->SetParser(sim->GetParser());
                 piter_++;
         }
 }

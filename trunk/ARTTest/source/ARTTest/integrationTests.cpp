@@ -173,9 +173,9 @@ TestClass* AllMyTests = new TestClass("AllMyTests");
 
 #ifndef _TIMEDEBUG
 //******************************************************************************************************************************************
-TestClass* ARTdataContainerTests = new TestClass("ARTdataContainerTests", AllMyTests);
+TestClass* DataContainerTests = new TestClass("DataContainerTests", AllMyTests);
 
-TEST_DEF_START(initDataContainers, ARTdataContainerTests)
+TEST_DEF_START(initDataContainers, DataContainerTests)
         virtual bool run()
         {
                 try
@@ -231,7 +231,7 @@ TEST_DEF_START(initDataContainers, ARTdataContainerTests)
         };
 TEST_DEF_END(initDataContainers)
 
-TEST_DEF_START(copyDataContainers, ARTdataContainerTests)
+TEST_DEF_START(copyDataContainers, DataContainerTests)
         virtual bool run()
         {
                 try
@@ -294,7 +294,7 @@ TEST_DEF_START(copyDataContainers, ARTdataContainerTests)
         };
 TEST_DEF_END(copyDataContainers)
 
-TEST_DEF_START(compareDataContainers, ARTdataContainerTests)
+TEST_DEF_START(compareDataContainers, DataContainerTests)
         virtual bool run()
         {
                 try
@@ -364,12 +364,12 @@ TEST_DEF_START(compareDataContainers, ARTdataContainerTests)
 TEST_DEF_END(compareDataContainers)
 
 
-TEST_DEF_START(createDataContainerParserVars, ARTdataContainerTests)
+TEST_DEF_START(createDataContainerParserVars, DataContainerTests)
         virtual bool run()
         {
                 try
                 {
-                        ARTdataContainer* testDC = new ARTdataContainer(C_ART_dbl, -1, "meineTestVar");
+                        DataContainer* testDC = new DataContainer(C_ART_dbl, -1, "meineTestVar");
                         ParserX* parser = new ParserX(mup::pckCOMPLEX_NO_STRING);
                         testDC->SetParser(parser);
                         testDC->SetParserVar("meineTestVar");
@@ -1846,7 +1846,7 @@ TEST_DEF_START(testEvaluationCost, ARTdependencyTree)
                         ARTAppendReference(meinIns, Cyl);
 
                         meinIns->PrepareCalculation();
-                        ARTdataContainer* impCurveProp = (ARTdataProp*)(meinIns->FindProperty("InputImpedanceCurve"));
+                        DataContainer* impCurveProp = (ARTdataProp*)(meinIns->FindProperty("InputImpedanceCurve"));
 
                         if (impCurveProp == NULL) throw ARTerror("ARTInputImpedance", "Invalid impedance curve");
 
@@ -3780,8 +3780,8 @@ TEST_DEF_START(setHElementParam, ARTmodelTests)
                 {
                         ARTSetParameter(mySim, "SZ.length = 1000; ");
                         ARTSetParameter(mySim, "SZ.r = SZ.length * 0.25;");
-                        ARTdataContainer* p1 = dynamic_cast<ARTdataContainer*>(((ARTelement*)El1)->model->FindProperty("length"));
-                        ARTdataContainer* p2 = dynamic_cast<ARTdataContainer*>(((ARTelement*)El1)->model->FindProperty("r"));
+                        DataContainer* p1 = dynamic_cast<DataContainer*>(((ARTelement*)El1)->model->FindProperty("length"));
+                        DataContainer* p2 = dynamic_cast<DataContainer*>(((ARTelement*)El1)->model->FindProperty("r"));
                         //std::cout << p1->GetValue()->d << "\n";
                         //std::cout << p2->GetValue()->d << "\n";
                         if (p1->GetFloat() != 1000) return false;
@@ -3843,7 +3843,7 @@ TEST_DEF_START(getHElementImpedance, ARTmodelTests)
                         ((ARTelement*)El1)->InputImpedance(Z_R, Z_EL1);
                         ((ARTelement*)El2)->InputImpedance(Z_EL1, Z_I);
 
-                        ARTdataContainer* z = NULL;
+                        DataContainer* z = NULL;
                         Z_I->ImpedanceMatrix(z);
 
                         T_ART_Var* var = z->GetValue();
@@ -3941,8 +3941,8 @@ TEST_DEF_START(testToneHoleParam, customModelTests)
                 {
                         ARTSetParameter(mySim, "myToneHole.length = 100; ");
                         ARTSetParameter(mySim, "myToneHole.r = myToneHole.length * 0.25;");
-                        ARTdataContainer* p1 = dynamic_cast<ARTdataContainer*>(((ARTelement*)Th)->model->FindProperty("length"));
-                        ARTdataContainer* p2 = dynamic_cast<ARTdataContainer*>(((ARTelement*)Th)->model->FindProperty("r"));
+                        DataContainer* p1 = dynamic_cast<DataContainer*>(((ARTelement*)Th)->model->FindProperty("length"));
+                        DataContainer* p2 = dynamic_cast<DataContainer*>(((ARTelement*)Th)->model->FindProperty("r"));
                         if (p1->GetFloat() != 100) return false;
                         if (p2->GetFloat() != 25) return false;
                 }
