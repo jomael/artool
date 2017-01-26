@@ -54,7 +54,6 @@ using namespace mup;
 
 // forward declaration
 class ARTItimeModule;
-
 /**
  * @brief Implementation of a simulator for the frequency domain.
  */
@@ -65,9 +64,9 @@ protected:
    * Defines the wave type of the simulation - plain, spherical or multimodal.
    */
   ARTproperty wavetype_;
-  ARTdataContainer* frqGrid;
-  ARTdataContainer* wfrqGrid;
-  ARTdataContainer* modes;
+  ART::ARTdataContainer* frqGrid;
+  ART::ARTdataContainer* wfrqGrid;
+  ART::ARTdataContainer* modes;
 public:
 
   ARTFreqSimulator(const string name, const string wavetype="MultiModal",
@@ -75,9 +74,9 @@ public:
 
   //void SetMultimodeParameters(ARTdataProp* fmin, ARTdataProp* fmax, ARTdataProp* fstep, ARTdataProp* modes);
 
-  virtual ARTdataContainer* GetFrequencyGrid() {return frqGrid;}
-  virtual ARTdataContainer* GetAngularFrequencyGrid() {return wfrqGrid;}
-  virtual ARTdataContainer* GetNumberOfModes() {return modes;}
+  virtual ART::ARTdataContainer* GetFrequencyGrid() {return frqGrid;}
+  virtual ART::ARTdataContainer* GetAngularFrequencyGrid() {return wfrqGrid;}
+  virtual ART::ARTdataContainer* GetNumberOfModes() {return modes;}
 
   virtual ARTproperty* GetWavetype() {return &wavetype_;}
 

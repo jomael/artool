@@ -77,7 +77,7 @@ public:
 
         void ReplaceProgressFunction(TprogressFunction f)
         {
-                ARTdataContainer::progressIndicator.SetProgressFunction(f);
+	  ART::ARTdataContainer::progressIndicator.SetProgressFunction(f);
         }
 
         list<HornElement*>::iterator iter;

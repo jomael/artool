@@ -82,7 +82,7 @@ private:
 		   * @param hasBends true if the circuit this model is used in has bent elements. The HornElement-s will 
 		   * then use a different layout in the multimode impedance matrix.                      		   
 		   */       		  
-			RadiationImpedanceFunc(HornElementPrototype_FD<HE>* host, ARTdataContainer* frequencies, ARTdataContainer* modes, bool hasBends)
+	RadiationImpedanceFunc(HornElementPrototype_FD<HE>* host, ART::ARTdataContainer* frequencies, ART::ARTdataContainer* modes, bool hasBends)
 				: host_(host), hasBends_(hasBends), frequencies_(frequencies), modes_(modes)
 				{
 					if (!host) throw ARTerror("RadiationImpedanceFunc(Constructor)", "Argument '%s1' is NULL.","host");
@@ -129,7 +129,7 @@ private:
 					int i;
 					for (i = 0; i < frequencies_->len; i++)
 					{
-						ARTdataContainer::progressIndicator.Continue(out_->GetComplexity(),out_->GetVarName());
+					  ART::ARTdataContainer::progressIndicator.Continue(out_->GetComplexity(),out_->GetVarName());
 						delete out_->val->nmx[i]; //Actually the datacontainer object should do work like this...
 						out_->val->nmx[i] = new Matrix(modes, modes);
 						hostElement->multimodeRadiationImpedance(frequencies_->val->nd[i], hasBends_, i , out_->val->nmx[i]);
@@ -143,8 +143,8 @@ private:
 		private:
 			HornElementPrototype_FD<HE>* host_;
 			bool hasBends_;
-			ARTdataContainer* frequencies_;
-			ARTdataContainer* modes_;
+			ART::ARTdataContainer* frequencies_;
+			ART::ARTdataContainer* modes_;
 	};
 
 	//functionoid as wrapper for multimodeInputImpedance
@@ -163,7 +163,7 @@ private:
 		   * @param hasBends true if the circuit this model is used in has bent elements. The HornElement-s will 
 		   * then use a different layout in the multimode impedance matrix.                      		   
 		   */       		  
-			InputImpedanceFunc(HornElementPrototype_FD<HE>* host, ARTdataContainer* wfrequencies, ARTdataContainer* modes, ARTdataContainer* prop_z, bool hasBends)
+	InputImpedanceFunc(HornElementPrototype_FD<HE>* host, ART::ARTdataContainer* wfrequencies, ART::ARTdataContainer* modes, ART::ARTdataContainer* prop_z, bool hasBends)
 				: host_(host), hasBends_(hasBends), wfrequencies_(wfrequencies), prop_z_(prop_z), modes_(modes)
 				{
 					if (!host) throw ARTerror("InputImpedanceFunc(Constructor)", "Argument '%s1' is NULL.","host");
@@ -211,7 +211,7 @@ private:
 					int i;
 					for (i = 0; i < wfrequencies_->len; i++)
 					{
-						ARTdataContainer::progressIndicator.Continue(out_->GetComplexity(),out_->GetVarName());
+					  ART::ARTdataContainer::progressIndicator.Continue(out_->GetComplexity(),out_->GetVarName());
 						z_t = *prop_z_->val->nmx[i];
 						hostElement->multimodeInputImpedance(wfrequencies_->val->nd[i], hasBends_, &z_t);
 						delete out_->val->nmx[i];
@@ -230,9 +230,9 @@ private:
 		private:
 			HornElementPrototype_FD<HE>* host_;
 			bool hasBends_;
-			ARTdataContainer* wfrequencies_;
-			ARTdataContainer* prop_z_;
-			ARTdataContainer* modes_;
+			ART::ARTdataContainer* wfrequencies_;
+			ART::ARTdataContainer* prop_z_;
+			ART::ARTdataContainer* modes_;
 	};
 
 
@@ -301,7 +301,7 @@ private:
 		if (!simulator) throw ARTerror("HornElementPrototype_FD::InputImpedance", "simulator is NULL. Did you set it using SetSimulator()?");
 
 		//Dieses Modell braucht die Impedanzmatrix im Frequenzbereich / this model needs the imp. in the frq domain
-		ARTdataContainer* Impedanz = NULL;
+		ART::ARTdataContainer* Impedanz = NULL;
 		waveFront->MultiModeImpedanceMatrix(Impedanz);
 		
 		//Funktor vorbereiten / prepare functionoid
@@ -397,7 +397,7 @@ private:
 		   * @param hasBends true if the circuit this model is used in has bent elements. The HornElement-s will 
 		   * then use a different layout in the multimode impedance matrix.                      		   
 		   */    
-       	InputImpedanceFunc(ToneHole* host, ARTdataContainer* wfrequencies, ARTdataContainer* modes, ARTdataContainer* prop_z, bool hasBends)
+       	InputImpedanceFunc(ToneHole* host, ART::ARTdataContainer* wfrequencies, ART::ARTdataContainer* modes, ART::ARTdataContainer* prop_z, bool hasBends)
 				: host_(host), hasBends_(hasBends), wfrequencies_(wfrequencies), prop_z_(prop_z), modes_(modes)
 				{
 					if (!host) throw ARTerror("InputImpedanceFunc(Constructor)", "Argument '%s1' is NULL.","host");
@@ -461,7 +461,7 @@ private:
 						delete out_->val->nmx[i];
 						out_->val->nmx[i] = new Matrix(modes,modes);
 						//inform about progress and check if user wants to coninue
-						ARTdataContainer::progressIndicator.Continue(out_->GetComplexity(),out_->GetVarName());
+						ART::ARTdataContainer::progressIndicator.Continue(out_->GetComplexity(),out_->GetVarName());
 						//get the radiation impedance of the tone hole from the termination element
 						te->multimodeRadiationImpedance(wfrequencies_->val->nd[i], hasBends_, i , &z_hole);
 						//get the impedance at the entrance of the tone hole
@@ -488,9 +488,9 @@ private:
 		private:
 			ToneHole* host_;
 			bool hasBends_;
-			ARTdataContainer* wfrequencies_;
-			ARTdataContainer* prop_z_;
-			ARTdataContainer* modes_;
+			ART::ARTdataContainer* wfrequencies_;
+			ART::ARTdataContainer* prop_z_;
+			ART::ARTdataContainer* modes_;
 	};
 
 
@@ -567,7 +567,7 @@ private:
 		if (!circuit) throw ARTerror("ToneHole::InputImpedance", "circuit is NULL. Did you set it using SetCircuit()?");
 		if (!simulator) throw ARTerror("ToneHole::InputImpedance", "simulator is NULL. Did you set it using SetSimulator()?");
 		//This model needs the multimode impedance matrix in the frequency domain: get it from the wave object
-		ARTdataContainer* impedance = NULL;
+		ART::ARTdataContainer* impedance = NULL;
 		waveFront->MultiModeImpedanceMatrix(impedance);
 		
 		//now prepare the functionoid which will calculate the impedance at the output of this element
@@ -735,7 +735,7 @@ private:
 		   * @param hasBends true if the circuit this model is used in has bent elements. The HornElement-s will 
 		   * then use a different layout in the multimode impedance matrix.                      		   
 		   */    
-       	CombineParallelImpedanceFunc(ARTdataContainer* wfrequencies, ARTdataContainer* modes, ARTdataContainer* prop_z1, ARTdataContainer* prop_z2)
+       	CombineParallelImpedanceFunc(ART::ARTdataContainer* wfrequencies, ART::ARTdataContainer* modes, ART::ARTdataContainer* prop_z1, ART::ARTdataContainer* prop_z2)
 				: wfrequencies_(wfrequencies), prop_z1_(prop_z1), prop_z2_(prop_z2), modes_(modes)
 				{
 					if (!prop_z1) throw ARTerror("CombineParallelImpedanceFunc(Constructor)", "Argument '%s1' is NULL.","prop_z1");
@@ -783,7 +783,7 @@ private:
 					for (int i = 0; i < wfrequencies_->len; i++)
 					{
 						//inform about progress and check if user wants to coninue
-						ARTdataContainer::progressIndicator.Continue(out_->GetComplexity(),out_->GetVarName());
+					  ART::ARTdataContainer::progressIndicator.Continue(out_->GetComplexity(),out_->GetVarName());
 						delete out_->val->nmx[i]; //get rid of old matrix in data container
 						out_->val->nmx[i] = new Matrix(modes,modes); //create new one
 						//The input impedance Z of a branch with the two parallel impedances Z1 and Z2 is defined as:
@@ -809,10 +809,10 @@ private:
 			virtual int GetIterationNumber()	{	return wfrequencies_->GetIterationNumber();	}
 
 		private:
-			ARTdataContainer* wfrequencies_;
-			ARTdataContainer* prop_z1_;
-			ARTdataContainer* prop_z2_;
-			ARTdataContainer* modes_;
+			ART::ARTdataContainer* wfrequencies_;
+			ART::ARTdataContainer* prop_z1_;
+			ART::ARTdataContainer* prop_z2_;
+			ART::ARTdataContainer* modes_;
 	};
 
 
@@ -879,8 +879,8 @@ private:
 		if (in.size() != 2) throw ARTerror("BranchModel::InputImpedance", "The input vector does not contain exatly two waveobjects as expected.");
 
 		//This model needs the multimode impedance matrices in the frequency domain: get them from the wave object
-		ARTdataContainer* impedance1 = NULL;
-		ARTdataContainer* impedance2 = NULL;
+		ART::ARTdataContainer* impedance1 = NULL;
+		ART::ARTdataContainer* impedance2 = NULL;
 		in[0]->MultiModeImpedanceMatrix(impedance1);
 		in[1]->MultiModeImpedanceMatrix(impedance2);
 		
@@ -934,7 +934,7 @@ private:
 		   * @param hasBends true if the circuit this model is used in has bent elements. The HornElement-s will 
 		   * then use a different layout in the multimode impedance matrix.                      		   
 		   */    
-       	RadiationImpedanceFunc(TerminationModel* host, ARTdataContainer* wfrequencies, ARTdataContainer* modes, bool hasBends)
+       	RadiationImpedanceFunc(TerminationModel* host, ART::ARTdataContainer* wfrequencies, ART::ARTdataContainer* modes, bool hasBends)
 				: host_(host), hasBends_(hasBends), wfrequencies_(wfrequencies), modes_(modes)
 				{
 					if (!host) throw ARTerror("RadiationImpedanceFunc(Constructor)", "Argument '%s1' is NULL.","host");
@@ -981,7 +981,7 @@ private:
 						delete out_->val->nmx[i];
 						out_->val->nmx[i] = new Matrix(modes,modes);
 						//inform about progress and check if user wants to coninue
-						ARTdataContainer::progressIndicator.Continue(out_->GetComplexity(),out_->GetVarName());
+						ART::ARTdataContainer::progressIndicator.Continue(out_->GetComplexity(),out_->GetVarName());
 						//get the radiation impedance of the termination hornelement
 						te->multimodeRadiationImpedance(wfrequencies_->val->nd[i], hasBends_, i , out_->val->nmx[i]);
 
@@ -994,8 +994,8 @@ private:
 		private:
 			TerminationModel* host_;
 			bool hasBends_;
-			ARTdataContainer* wfrequencies_;
-			ARTdataContainer* modes_;
+			ART::ARTdataContainer* wfrequencies_;
+			ART::ARTdataContainer* modes_;
 	};
 
 

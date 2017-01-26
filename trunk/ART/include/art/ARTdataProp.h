@@ -53,14 +53,14 @@ using std::string;
  * ARTdataProperty. Just like an ARTdataContainer it can specify some way of recalculating
  * itself. (see ARTdataContainer for details)
  */
-class ARTdataProp : public ARTproperty, public ARTdataContainer {
+class ARTdataProp : public ARTproperty, public ART::ARTdataContainer {
 public:
         ARTdataProp(const T_ART_Type dtyp, const int dlen, const string name, const string sds="", const string lds="", const string htm="") :
-                                        ARTproperty(name,sds,lds,htm,false), ARTdataContainer(dtyp, dlen, name), range(NULL) {}
+  ARTproperty(name,sds,lds,htm,false), ART::ARTdataContainer(dtyp, dlen, name), range(NULL) {}
 
         /** copy constructor */
         ARTdataProp(const ARTdataProp& orig)
-         : ARTproperty(orig), ARTdataContainer(orig)
+	  : ARTproperty(orig), ART::ARTdataContainer(orig)
         {
                 if (orig.range)
                         range = orig.range->clone();

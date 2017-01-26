@@ -7,7 +7,7 @@
 
 #include "ARTlink.h"
 
-
+using namespace ART;
 void ARTfunctionoid::SetDependencies()
 {
 	//add all registered input parameters as dependency to output

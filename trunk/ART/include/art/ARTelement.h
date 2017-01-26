@@ -56,8 +56,8 @@ using std::string;
  */
 class ARTelement : public ARTmodelInterface {
 public:
-        ARTdataContainer* z_rad; //Radiaton impedance
-        ARTdataContainer* z_inp; //multimode input impedance
+  ART::ARTdataContainer* z_rad; //Radiaton impedance
+  ART::ARTdataContainer* z_inp; //multimode input impedance
 
         ARTmodelInterface* model; //a clone of the prototype model
 

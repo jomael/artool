@@ -129,7 +129,7 @@ private:
 	bool active_;
 
 };
-
+namespace ART{
 /**
  * In addition to a value (ARTvariant) of some kind, this class can also contain 
  * the formula to (re)calculate its value. The formula can be a parser expression or a 
@@ -406,7 +406,7 @@ public:
 //	void BindToCache(ValueCache *pCache);
 
 };
-
+}
 /** 
  * @}
  */

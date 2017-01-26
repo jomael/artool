@@ -51,9 +51,10 @@
  */
 
 //forward declarations of classes defined in interface.h, because this file is inserted there before the declarations come.
-class ARTdataContainer;
+namespace ART{
+  class ARTdataContainer;
+}
 class ARTelement;		
-
 //Basisklasse eines Funktionoides / base class of a functionoid
 
 /*
@@ -141,11 +142,11 @@ public:
 
 	//Der Ausgabedatenkontainer, dem der Funktionoid im Konstruktor nbergeben wird, setzt den zeiger out_ auf sich.
 	///The dataContainer, to which this functionoid is passed as an argument in the constructor, automatically sets the pointer out_ on itself.
-	void SetOutput(ARTdataContainer* out) {out_ = out;}
+	void SetOutput(ART::ARTdataContainer* out) {out_ = out;}
 
 protected:
-	ARTdataContainer* out_; ///set by SetOutput() in constructor of data container	
-	vector<ARTdataContainer*> in_; ///pointers to input arguments, this vector is used to register dependencies.
+	ART::ARTdataContainer* out_; ///set by SetOutput() in constructor of data container	
+	vector<ART::ARTdataContainer*> in_; ///pointers to input arguments, this vector is used to register dependencies.
 	//a second vector for input arguments that are objects like hosts ??
 };
 
@@ -154,7 +155,7 @@ protected:
 class ARTmmRadImpFunc : public ARTfunctionoid
 {
 public:
-	ARTmmRadImpFunc(ARTelement* host, ARTdataContainer* frequencies, ARTdataContainer* modes, bool hasBends)
+ ARTmmRadImpFunc(ARTelement* host, ART::ARTdataContainer* frequencies, ART::ARTdataContainer* modes, bool hasBends)
 	: host_(host), hasBends_(hasBends), frequencies_(frequencies), modes_(modes)
 	{
 		if (!host) throw ARTerror("ARTmmRadImpFunc(Constructor)", "Argument '%s1' is NULL.","host");
@@ -172,15 +173,15 @@ public:
 private:
 	ARTelement* host_;
 	bool hasBends_;
-	ARTdataContainer* frequencies_;
-	ARTdataContainer* modes_;
+	ART::ARTdataContainer* frequencies_;
+	ART::ARTdataContainer* modes_;
 };
 
 //functionoid as wrapper for frq-Grid
 class ARTfrqGridFunc : public ARTfunctionoid
 {
 public:
-	ARTfrqGridFunc(ARTdataContainer* lowfrq, ARTdataContainer* highfrq, ARTdataContainer* frqStep)
+ ARTfrqGridFunc(ART::ARTdataContainer* lowfrq, ART::ARTdataContainer* highfrq, ART::ARTdataContainer* frqStep)
 		: lowfrq_(lowfrq), highfrq_(highfrq), frqStep_(frqStep)
 	{
 		if (!lowfrq_) throw ARTerror("ARTfrqGridFunc(constructor)", "The argument 'lowfrq' is NULL.");
@@ -197,16 +198,16 @@ public:
 	virtual int GetIterationNumber();
 
 private:
-	ARTdataContainer* lowfrq_;
-	ARTdataContainer* highfrq_;
-	ARTdataContainer* frqStep_;
+	ART::ARTdataContainer* lowfrq_;
+	ART::ARTdataContainer* highfrq_;
+	ART::ARTdataContainer* frqStep_;
 };
 
 //functionoid as wrapper for wfrq-Grid
 class ARTwfrqGridFunc : public ARTfunctionoid
 {
 public:
-	ARTwfrqGridFunc(ARTdataContainer* frqGrid)
+ ARTwfrqGridFunc(ART::ARTdataContainer* frqGrid)
 	: frequencies_(frqGrid)
 	{
 		if (!frqGrid) throw ARTerror("ARTwfrqGridFunc(Constructor)", "Argument '%s1' is NULL.","frqGrid");
@@ -219,7 +220,7 @@ public:
 	virtual int GetIterationNumber();
 
 private:
-	ARTdataContainer* frequencies_;
+	ART::ARTdataContainer* frequencies_;
 };
 
 

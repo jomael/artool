@@ -831,10 +831,10 @@ When calculation the impedance of a cylindrical tube, you would first create an 
 namespace ART{
   typedef struct ARTcell ARTcell;
   typedef struct ARTcircuit ARTcircuit;
+  typedef struct ARTdataContainer ARTdataContainer;
 }
 typedef struct ARTobject ARTobject;
 typedef struct ARTproperty ARTproperty;
-typedef struct ARTdataContainer ARTdataContainer;
 typedef struct ARTdataProp ARTdataProp;
 typedef struct ARTlistProp ARTlistProp;
 typedef struct ARTmethod ARTmethod;
@@ -849,10 +849,10 @@ typedef int bool;
 namespace ART{
   class ARTcell;
   class ARTcircuit;
+  class ARTdataContainer;
 }
 class ARTobject;
 class ARTproperty;
-class ARTdataContainer;
 class ARTdataProp;
 class ARTlistProp;
 class ARTmethod;
@@ -871,10 +871,10 @@ typedef const char*	pChar;
 namespace ART{
   typedef ARTcell*	P_ART_Cell;
   typedef ARTcircuit*	P_ART_Circuit;
+  typedef ARTdataContainer*	P_ART_DataContainer;
 }
 typedef ARTobject*	P_ART_Object;
 typedef ARTproperty*	P_ART_Property;
-typedef ARTdataContainer*	P_ART_DataContainer;
 typedef ARTdataProp*	P_ART_DataProp;
 typedef ARTlistProp*	P_ART_ListProp;
 typedef ARTmethod*	P_ART_Method;

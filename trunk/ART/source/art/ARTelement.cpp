@@ -39,6 +39,8 @@
 
 #include "ARTelement.h"
 
+using namespace ART;
+
 ARTelement::ARTelement(const string name, const string sds, const string lds, const string htm, ARTmodelInterface* prototype, ARTSimulator* sim)
 : ARTmodelInterface(name,sds,lds,htm),
   //propMatrix(NULL),

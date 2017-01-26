@@ -58,8 +58,10 @@
 using std::string;
 using namespace mup;
 
-// forward declaration
+namespace ART{
+  // forward declaration
 class ARTdataContainer;
+}
 
 
 /**
