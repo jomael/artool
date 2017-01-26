@@ -3,7 +3,7 @@
 #define ARTFUNCTIONOID_CPP
 
 #include "ARTfunctionoid.h"
-#include "ARTdataContainer.h"
+#include "DataContainer.h"
 
 #include "ARTlink.h"
 
@@ -11,7 +11,7 @@ using namespace ART;
 void ARTfunctionoid::SetDependencies()
 {
 	//add all registered input parameters as dependency to output
-	vector<ARTdataContainer*>::iterator it;
+	vector<DataContainer*>::iterator it;
 	for ( it=in_.begin() ; it < in_.end(); it++ )
 		out_->AddDependency(*it);
 }
@@ -31,7 +31,7 @@ bool ARTfrqGridFunc::IsSameFunctionoid(ARTfunctionoid* f)
 
 void ARTfrqGridFunc::ApplyFunction()
 {
-//	if (ARTdataContainer* cd = dynamic_cast<ARTdataContainer*>(out_))
+//	if (DataContainer* cd = dynamic_cast<DataContainer*>(out_))
 //		cout << "\n" << out_->GetVarName();// << ":\n";
 
 	double fmax = highfrq_->GetFloat();
@@ -54,7 +54,7 @@ void ARTfrqGridFunc::ApplyFunction()
 	{
 
     
-		ARTdataContainer::progressIndicator.Continue(out_->GetComplexity(),out_->GetVarName());
+		DataContainer::progressIndicator.Continue(out_->GetComplexity(),out_->GetVarName());
 		out_->val->nd[j] = f;  
 
 	}
@@ -94,7 +94,7 @@ void ARTwfrqGridFunc::ApplyFunction()
 	//convert Hz in angular frequency (Kreisfrequenz)
 	for (int j=0; j<frequencies_->len; j++) 
 	{
-		ARTdataContainer::progressIndicator.Continue(out_->GetComplexity(),out_->GetVarName());
+		DataContainer::progressIndicator.Continue(out_->GetComplexity(),out_->GetVarName());
 		out_->val->nd[j] = 2.0*M_PI*frequencies_->val->nd[j];
 	}
 }

@@ -64,9 +64,9 @@ protected:
    * Defines the wave type of the simulation - plain, spherical or multimodal.
    */
   ARTproperty wavetype_;
-  ART::ARTdataContainer* frqGrid;
-  ART::ARTdataContainer* wfrqGrid;
-  ART::ARTdataContainer* modes;
+  ART::DataContainer* frqGrid;
+  ART::DataContainer* wfrqGrid;
+  ART::DataContainer* modes;
 public:
 
   ARTFreqSimulator(const string name, const string wavetype="MultiModal",
@@ -74,9 +74,9 @@ public:
 
   //void SetMultimodeParameters(ARTdataProp* fmin, ARTdataProp* fmax, ARTdataProp* fstep, ARTdataProp* modes);
 
-  virtual ART::ARTdataContainer* GetFrequencyGrid() {return frqGrid;}
-  virtual ART::ARTdataContainer* GetAngularFrequencyGrid() {return wfrqGrid;}
-  virtual ART::ARTdataContainer* GetNumberOfModes() {return modes;}
+  virtual ART::DataContainer* GetFrequencyGrid() {return frqGrid;}
+  virtual ART::DataContainer* GetAngularFrequencyGrid() {return wfrqGrid;}
+  virtual ART::DataContainer* GetNumberOfModes() {return modes;}
 
   virtual ARTproperty* GetWavetype() {return &wavetype_;}
 

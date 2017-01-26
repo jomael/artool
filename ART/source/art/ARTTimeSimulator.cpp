@@ -93,7 +93,7 @@ void ARTTimeSimulator::AddSimulationParameter(const string& name, const string& 
   //	{
   //		simulParameterType* newParam = new simulParameterType();
   //		newParam->_parser = new ParserX(mup::pckCOMPLEX_NO_STRING);
-  //		newParam->_val = new ARTdataContainer(C_ART_cpx, 0, name);
+  //		newParam->_val = new DataContainer(C_ART_cpx, 0, name);
   //		newParam->_val->SetParser(newParam->_parser);
   //		newParam->_val->SetDefinition(expr);
   //		_simulParams[name] = newParam;
@@ -125,7 +125,7 @@ void ARTTimeSimulator::AddSimulationParameter(const string& name, const std::com
   //	{
   //		simulParameterType* newParam = new simulParameterType();
   //		newParam->_parser = new ParserX(mup::pckCOMPLEX_NO_STRING);
-  //		newParam->_val = new ARTdataContainer(C_ART_cpx, 0, name);
+  //		newParam->_val = new DataContainer(C_ART_cpx, 0, name);
   //		newParam->_val->SetParser(newParam->_parser);
   //		newParam->_val->SetVal(val);
   //		_simulParams[name] = newParam;
@@ -175,7 +175,7 @@ void ARTTimeSimulator::AddSimulationParameter(const string& name, double val)
   //	{
   //		simulParameterType* newParam = new simulParameterType();
   //		newParam->_parser = new ParserX(mup::pckCOMPLEX_NO_STRING);
-  //		newParam->_val = new ARTdataContainer(C_ART_cpx, 0, name);
+  //		newParam->_val = new DataContainer(C_ART_cpx, 0, name);
   //		newParam->_val->SetParser(newParam->_parser);
   //		newParam->_val->SetVal(val);
   //		_simulParams[name] = newParam;
@@ -191,7 +191,7 @@ void ARTTimeSimulator::SimulateTimeStep(int idx)
   ARTdataProp* prop = FindDataPropInSimulator("t");
   //	if (_simulParams.find("t") != _simulParams.end())
   //	{
-  //		ARTdataContainer& tmpContainer = *(_simulParams["t"]->_val);
+  //		DataContainer& tmpContainer = *(_simulParams["t"]->_val);
   //		tmpContainer.SetVal(idx);
   //	}
   if (prop != NULL)
@@ -241,7 +241,7 @@ void ARTTimeSimulator::SetSimulationParameter(const string& name, const string& 
   ARTdataProp* prop = FindDataPropInSimulator(name);
   //	if (_simulParams.find(name) != _simulParams.end())
   //	{
-  //		ARTdataContainer* tmpContainer = (_simulParams[name])->_val;
+  //		DataContainer* tmpContainer = (_simulParams[name])->_val;
   //		tmpContainer->SetDefinition(expr);
   //	}
   if (prop != NULL)
@@ -262,7 +262,7 @@ void ARTTimeSimulator::SetSimulationParameter(const string& name, const std::com
   ARTdataProp* prop = FindDataPropInSimulator(name);
   //	if (_simulParams.find(name) != _simulParams.end())
   //	{
-  //		ARTdataContainer* tmpContainer = (_simulParams[name])->_val;
+  //		DataContainer* tmpContainer = (_simulParams[name])->_val;
   //		tmpContainer->SetVal(val);
   //	}
   if (prop != NULL)
@@ -285,7 +285,7 @@ void ARTTimeSimulator::SetSimulationParameter(const string& name, double val)
   ARTdataProp* prop = FindDataPropInSimulator(name);
   //	if (_simulParams.find(name) != _simulParams.end())
   //	{
-  //		ARTdataContainer* tmpContainer = (_simulParams[name])->_val;
+  //		DataContainer* tmpContainer = (_simulParams[name])->_val;
   //		tmpContainer->SetVal(val);
   //	}
   if (prop != NULL)
@@ -365,7 +365,7 @@ ARTTimeSimulator::~ARTTimeSimulator()
 
 void ARTTimeSimulator::initStandardSimulParams()
 {
-  //	ARTdataContainer* tmpContainer;
+  //	DataContainer* tmpContainer;
   //	ParserX* tmpParser;
   //	simulParameterType* tmpParam;
 

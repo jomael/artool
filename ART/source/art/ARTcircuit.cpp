@@ -188,9 +188,9 @@ bool ARTcircuit::HasBends()
 void ARTcircuit::PrepareCalculation()
 {
         //cout << " **************** ARTcircuit::prepareCalculation() " << GetName() << " *********\n" ;
-        //ARTdataContainer* frqGrid = simulator_->GetAngularFrequencyGrid();
-        //ARTdataContainer* wfrqGrid = simulator_->GetFrequencyGrid();
-        //ARTdataContainer* modes = simulator_->GetNumberOfModes();
+        //DataContainer* frqGrid = simulator_->GetAngularFrequencyGrid();
+        //DataContainer* wfrqGrid = simulator_->GetFrequencyGrid();
+        //DataContainer* modes = simulator_->GetNumberOfModes();
 
         ::size_t i;
         int j;

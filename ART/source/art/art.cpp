@@ -58,7 +58,7 @@
 #include "ART.h"
 //#include "strparsing.h"
 //#include "ARTmodel.h"
-#include "ARTdataContainer.h"
+#include "DataContainer.h"
 #include "ARTSimulator.h"
 #include "ARTFreqSimulator.h"
 #include "ARTTimeSimulator.h"
@@ -425,7 +425,7 @@ P_ART_Element    __CALLCONV ARTChangeElementModel     (P_ART_Simulator simulator
 		}
 
 		//save list of all datacontainers dependent on properties of this one
-		list<ARTdataContainer*> allclients;
+		list<DataContainer*> allclients;
 		ARTproperty* prop = NULL;
 		while ((prop = element->model->GetProperties(prop)))
 		{
@@ -433,7 +433,7 @@ P_ART_Element    __CALLCONV ARTChangeElementModel     (P_ART_Simulator simulator
 			ARTdataProp* dprop = dynamic_cast<ARTdataProp*>(prop);
 			if (dprop)
 			{
-				list<ARTdataContainer*> tmplist = dprop->GetClientList();
+				list<DataContainer*> tmplist = dprop->GetClientList();
 				//get copy of clients, append to allclients list
 				allclients.splice(allclients.end(),tmplist);
 			}
@@ -479,7 +479,7 @@ P_ART_Element    __CALLCONV ARTChangeElementModel     (P_ART_Simulator simulator
 		//a data property R1 (eg. if a Cone is changed into a Bessel horn), the Parser will still know a variable Elementname.R1
 		//and the data property dependent on R1 will be evaluated *but* R1 won't be in its dependency list any more. So it has to
 		//be reinserted!
-		list<ARTdataContainer*>::iterator it;
+		list<DataContainer*>::iterator it;
 		for (it=allclients.begin(); it!=allclients.end(); it++)
 		{
 			(*it)->RedoDefinitionDependencies();
@@ -968,15 +968,15 @@ P_ART_DataProp    __CALLCONV ARTInputImpedance     (P_ART_Circuit circuit)
 	int ec = impCurveProp->GetEvaluationCost();
 
 	//the evaluate functions call a static progress indicator which calls the progressFunction and lets it know how much percent of the calculation are done
-	ARTdataContainer::progressIndicator.Reset(ec);
-	ARTdataContainer::progressIndicator.CallProgressfunction(true);
+	DataContainer::progressIndicator.Reset(ec);
+	DataContainer::progressIndicator.CallProgressfunction(true);
 	try
 	{
 		impCurveProp->GetValue();
 	}
 	catch (ARTabort a)
 	{ 
-		ARTdataContainer::progressIndicator.CallProgressfunction(false);
+		DataContainer::progressIndicator.CallProgressfunction(false);
 		lastError = "User aborted";
 		//Reset evaluation flags so no data container continues to think we are evaluating its value
 		impCurveProp->ResetEvaluation();
@@ -985,13 +985,13 @@ P_ART_DataProp    __CALLCONV ARTInputImpedance     (P_ART_Circuit circuit)
 	}
 	catch (ARTerror e)
 	{ 
-		ARTdataContainer::progressIndicator.CallProgressfunction(false);
+		DataContainer::progressIndicator.CallProgressfunction(false);
 		//Reset evaluation flags so no data container continues to think we are evaluating its value
 		impCurveProp->ResetEvaluation();
 		//...and rethrow the error
 		throw e;
 	}
-	ARTdataContainer::progressIndicator.CallProgressfunction(false);
+	DataContainer::progressIndicator.CallProgressfunction(false);
 	//cout << "Evaluation Cost was: " << ec <<  " function calls / evaluated parser expressions\n";
 
 	return  impCurveProp;

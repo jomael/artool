@@ -43,7 +43,7 @@
 #include <list>
 
 #include "ARTobject.h"
-#include "ARTdataContainer.h"
+#include "DataContainer.h"
 #include "ARTlistProp.h"
 #include "HornElement.h"
 #include "ImpedanceCurve.h"
@@ -77,7 +77,7 @@ public:
 
         void ReplaceProgressFunction(TprogressFunction f)
         {
-	  ART::ARTdataContainer::progressIndicator.SetProgressFunction(f);
+	  ART::DataContainer::progressIndicator.SetProgressFunction(f);
         }
 
         list<HornElement*>::iterator iter;

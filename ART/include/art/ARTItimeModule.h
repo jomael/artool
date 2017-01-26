@@ -52,7 +52,7 @@ using namespace mup;
 
 // forward declaration
 namespace ART{
-  class ARTdataContainer;
+  class DataContainer;
 }
 
 /**
@@ -78,7 +78,7 @@ public:
     /**
      * @brief Constructor of the timeProperty class.
      * @param[in] dtyp Defines the type of the property and will be used by the
-     *            ARTdataContainer class in order to allocate the right amount
+     *            DataContainer class in order to allocate the right amount
      *            of memory.
      * @param[in] dlen Defines the size/array length of the time property.
      * @param[in] name Represents the locally unique identifier of the property.
@@ -155,7 +155,7 @@ public:
     /**
      * @brief Constructor of the PortType class.
      * @param[in] dtyp Defines the type of the property and will be used by the
-     *            ARTdataContainer class in order to allocate the right amount
+     *            DataContainer class in order to allocate the right amount
      *            of memory.
      * @param[in] dlen Defines the size/array length of the port.
      * @param[in] name Represents the locally unique identifier of the port.
@@ -181,7 +181,7 @@ public:
     /**
      * @brief Constructor of the OPortType class.
      * @param[in] dtyp Defines the type of the port and will be used by the
-     *            ARTdataContainer class in order to allocate the right amount
+     *            DataContainer class in order to allocate the right amount
      *            of memory.
      * @param[in] dlen Defines the size/array length of the port.
      * @param[in] name Represents the locally unique identifier of the port.
@@ -245,7 +245,7 @@ public:
 
     /**
      * @brief Returns the value saved at the given index.
-     * @details Overrides the same method of the ARTdataContainer class as it
+     * @details Overrides the same method of the DataContainer class as it
      *          internally uses an array instead of a ring buffer to save all
      *          elements.
      * @param[in] idx The index of the element which shall be returned.
@@ -253,7 +253,7 @@ public:
     virtual IValue& operator[](std::size_t idx);
     /**
      * @brief Returns the value saved at the given index.
-     * @details Overrides the same method of the ARTdataContainer class as it
+     * @details Overrides the same method of the DataContainer class as it
      *          internally uses an array instead of a ring buffer to save all
      *          elements.
      * @param[in] idx The index of the element which shall be returned.

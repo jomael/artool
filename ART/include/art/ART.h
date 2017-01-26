@@ -454,7 +454,7 @@ When calculation the impedance of a cylindrical tube, you would first create an 
  * To calculate a circuit's impedance we simply use the function ARTInputImpedance. The 
  * impedance curve returned won't change if the arrangement is changed after the function
  * is called. A new call ensures the impedance curve is up-to-date. The function returns
- * a pointer to an object of class ARTdataContainer, which holds the data.
+ * a pointer to an object of class DataContainer, which holds the data.
  *
  * We will have the impedance of our instrument calculated and print it as numbers to the
  * screen.
@@ -831,7 +831,7 @@ When calculation the impedance of a cylindrical tube, you would first create an 
 namespace ART{
   typedef struct ARTcell ARTcell;
   typedef struct ARTcircuit ARTcircuit;
-  typedef struct ARTdataContainer ARTdataContainer;
+  typedef struct DataContainer DataContainer;
 }
 typedef struct ARTobject ARTobject;
 typedef struct ARTproperty ARTproperty;
@@ -849,7 +849,7 @@ typedef int bool;
 namespace ART{
   class ARTcell;
   class ARTcircuit;
-  class ARTdataContainer;
+  class DataContainer;
 }
 class ARTobject;
 class ARTproperty;
@@ -871,7 +871,7 @@ typedef const char*	pChar;
 namespace ART{
   typedef ARTcell*	P_ART_Cell;
   typedef ARTcircuit*	P_ART_Circuit;
-  typedef ARTdataContainer*	P_ART_DataContainer;
+  typedef DataContainer*	P_ART_DataContainer;
 }
 typedef ARTobject*	P_ART_Object;
 typedef ARTproperty*	P_ART_Property;

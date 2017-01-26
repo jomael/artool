@@ -81,7 +81,7 @@ class ARTfunctionoid;
 typedef bool (*TprogressFunction) (double, const char*);
 
 /**
- * The static instance of this class in ARTdataContainer calls the 
+ * The static instance of this class in DataContainer calls the 
  * TprogressFunction, if the user has specified one. See TprogressFunction for more details. 
  * @see TprogressFunction
  */
@@ -133,20 +133,20 @@ namespace ART{
 /**
  * In addition to a value (ARTvariant) of some kind, this class can also contain 
  * the formula to (re)calculate its value. The formula can be a parser expression or a 
- * functionoid. The ARTdataContainer also implements the client observer pattern, ensuring 
+ * functionoid. The DataContainer also implements the client observer pattern, ensuring 
  * that if a value is changed, all values that depend on the changed one are invalidated 
  * and subject to recalculation, when their value is queried. Users must be carful to 
  * avoid circular references. 
  * 
- * Use ARTdataContainer for values which have a small scope and when the name of the value 
+ * Use DataContainer for values which have a small scope and when the name of the value 
  * you are processing is unimportant, because you can keep track of it. Use ARTdataProp 
  * when you want to add values to an ARTobject, they can then be added to the list of 
  * properties of the object. ARTdataProp is also useful when you have several values, and 
  * you can not keep track of their names easily without storing them as strings within the
  * object.
  */ 
-class ARTdataContainer : public ARTvariant, public IValue {
-//class ARTdataContainer : public ARTvariant {
+class DataContainer : public ARTvariant, public IValue {
+//class DataContainer : public ARTvariant {
 protected:
 	mutable bool valid_;		///< true if value is consistent with definition
 	bool counted_;		
@@ -154,12 +154,12 @@ protected:
 	ARTfunctionoid* func_;
 	// double complexity_; ///< after a calculation the amount of needed CPU ticks divided by the number of iterations is saved to estimate future evaluation cost more accurately
 
-	list<ARTdataContainer*>	clientList_;			///< other dataContainers depending on this one (need invalidation when value changes)
-	list<ARTdataContainer*>::iterator citer_;
-	mutable list<ARTdataContainer*>	dependencyList_;		///< other dataContainers this one depends on (variables in expression): need lookup whenever value is evaluated
-	mutable list<ARTdataContainer*>::iterator diter_;
+	list<DataContainer*>	clientList_;			///< other dataContainers depending on this one (need invalidation when value changes)
+	list<DataContainer*>::iterator citer_;
+	mutable list<DataContainer*>	dependencyList_;		///< other dataContainers this one depends on (variables in expression): need lookup whenever value is evaluated
+	mutable list<DataContainer*>::iterator diter_;
 
-	ARTdataContainer* parentContainer_;
+	DataContainer* parentContainer_;
 
 	void SetCountedFlag(bool b);
 
@@ -181,7 +181,7 @@ protected:
 	 * already there. If the dependency relation is mutual (as in most cases) consider using 
 	 * AddDependency.
 	 */	 
-	void AddNotify(ARTdataContainer* client);
+	void AddNotify(DataContainer* client);
 	/**
 	 * @brief Resizes the used array in case the current data container is
 	 *        of type C_ART_na.
@@ -215,25 +215,25 @@ public:
 
 	static ARTprogressIndicator progressIndicator;
 
-	ARTdataContainer(); /**< default constructor */
+	DataContainer(); /**< default constructor */
 
-	ARTdataContainer(const T_ART_Type dtyp, const int dlen, const string varname = "");
-	ARTdataContainer(std::string name, ARTfunctionoid* func = NULL);
+	DataContainer(const T_ART_Type dtyp, const int dlen, const string varname = "");
+	DataContainer(std::string name, ARTfunctionoid* func = NULL);
 
-	ARTdataContainer(const int i);
-	ARTdataContainer(const double d);
-	ARTdataContainer(const float f);
-	ARTdataContainer(const char* s);
-	ARTdataContainer(const char* s1, const char* s2);
-	ARTdataContainer(const char* s1, const char* s2, const char* s3);
-	ARTdataContainer(const char* s1, const char* s2, const char* s3, const char* s4);
+	DataContainer(const int i);
+	DataContainer(const double d);
+	DataContainer(const float f);
+	DataContainer(const char* s);
+	DataContainer(const char* s1, const char* s2);
+	DataContainer(const char* s1, const char* s2, const char* s3);
+	DataContainer(const char* s1, const char* s2, const char* s3, const char* s4);
 
 	///copy constructor
-	ARTdataContainer(const ARTdataContainer& orig);
+	DataContainer(const DataContainer& orig);
 
-	virtual ~ARTdataContainer();
+	virtual ~DataContainer();
 
-	ARTdataContainer* clone() {return new ARTdataContainer(*this);}
+	DataContainer* clone() {return new DataContainer(*this);}
 
 	/// @returns variant data type
 	T_ART_Type GetDatatype() {return typ;}
@@ -301,7 +301,7 @@ public:
 	 * and adds itself as a client to the dataContainer specified by dependency, so it will
 	 * be notified wenn the value of the latter changes.    
 	 */   	 
-	void AddDependency(ARTdataContainer* dependency);
+	void AddDependency(DataContainer* dependency);
 
 	void RemoveAllDependencies();
 
@@ -312,15 +312,15 @@ public:
 
 	// notification about loss of client
 	// remove calling object from clientList if it is there
-	void DoNotNotify(ARTdataContainer* client);
+	void DoNotNotify(DataContainer* client);
 
-	void RemoveDependency(ARTdataContainer* dependency);
+	void RemoveDependency(DataContainer* dependency);
 
-	void RemoveFromDefinition(ARTdataContainer* dependency);
+	void RemoveFromDefinition(DataContainer* dependency);
 
 	void SetParser(ParserX* p);
 	virtual ParserX* GetParser() {return parser_;}
-	virtual ARTdataContainer* GetParent() {return parentContainer_;}
+	virtual DataContainer* GetParent() {return parentContainer_;}
 
 	void Rename(const string& newname);
 
@@ -351,10 +351,10 @@ public:
 
 	string DebugInfo();
 
-	list<ARTdataContainer*>	GetClientList(){return clientList_;}
+	list<DataContainer*>	GetClientList(){return clientList_;}
 	bool CheckValidity() ;
 
-	ARTdataContainer& GetArrayElement(int idx);
+	DataContainer& GetArrayElement(int idx);
 	void SetCurrentIndex(int idx);
 
 	void SetParentModuleName(const string& name)
@@ -374,7 +374,7 @@ public:
 
 	/** Matrix constructor */
 	//ARTValue(int_type m, int_type n, float_type v);
-	//ARTdataContainer& operator=(const ARTdataContainer &a_Val);
+	//DataContainer& operator=(const DataContainer &a_Val);
 
 	void deleteVar();
 
@@ -400,7 +400,7 @@ public:
 	virtual Value* AsValue();
 	virtual IValue* AsIValue();
 
-	//virtual ARTdataContainer* GetContainer() const;
+	//virtual DataContainer* GetContainer() const;
 
 //	virtual string_type AsciiDump() const;
 //	void BindToCache(ValueCache *pCache);
