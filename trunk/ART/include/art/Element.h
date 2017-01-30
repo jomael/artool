@@ -42,7 +42,7 @@
 
 #include <string>
 
-#include "ARTmodelInterface.h"
+#include "ModelInterface.h"
 #include "DataContainer.h"
 
 using std::string;
@@ -54,20 +54,20 @@ namespace ART{
  * Elements are derived from an ARTprototype. In fact they are copies with added
  * properties like impedance and propagation matrix.
  */
-class Element : public ARTmodelInterface {
+class Element : public ModelInterface {
 public:
   ART::DataContainer* z_rad; //Radiaton impedance
   ART::DataContainer* z_inp; //multimode input impedance
 
-        ARTmodelInterface* model; //a clone of the prototype model
+        ModelInterface* model; //a clone of the prototype model
 
 
         WaveObjectInterface* wavefrontOut; //wave after passing this element
         WaveObjectInterface* wavefrontIn;
 
 
-        Element(const string name, const string sds="", const string lds="", const string htm="", ARTmodelInterface* prototype=NULL, ARTSimulator* sim=NULL);
-//      : ARTmodelInterface(name,sds,lds,htm),
+        Element(const string name, const string sds="", const string lds="", const string htm="", ModelInterface* prototype=NULL, ARTSimulator* sim=NULL);
+//      : ModelInterface(name,sds,lds,htm),
 //        //propMatrix(NULL),
 //        model(NULL),
 //        wavefrontOut(NULL),
@@ -167,7 +167,7 @@ public:
 //              }
 //      }
 
-        virtual ARTmodelInterface* CloneModel() {return NULL;}
+        virtual ModelInterface* CloneModel() {return NULL;}
 
         bool IsPrototypeProperty(ARTproperty* p)
         {

@@ -41,8 +41,8 @@
 
 using namespace ART;
 
-Element::Element(const string name, const string sds, const string lds, const string htm, ARTmodelInterface* prototype, ARTSimulator* sim)
-: ARTmodelInterface(name,sds,lds,htm),
+Element::Element(const string name, const string sds, const string lds, const string htm, ModelInterface* prototype, ARTSimulator* sim)
+: ModelInterface(name,sds,lds,htm),
   //propMatrix(NULL),
   model(NULL),
   wavefrontOut(NULL),

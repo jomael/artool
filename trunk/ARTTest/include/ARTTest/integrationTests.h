@@ -32,7 +32,7 @@
 #include "ART.h"
 #include "ARTmethod.h"
 #include "WaveObject.h"
-#include "ARTmodel.h"
+#include "Model.h"
 
 #include "ARTtimeModule.h"
 #include "timePrototypes.h"

@@ -47,13 +47,11 @@
 #include "ARTerror.h"
 #include "ARTFreqSimulator.h"
 #include "WaveObject.h"
-
+using std::string;
 // forward declarations
 namespace ART{
   class Circuit;
 }
-using std::string;
-
 //prototype: a blueprint of a model (same class), but without simulator (NULL).
 //model: a copy of a prototype used by an element
 //element: a part of an instrument, simulated using a model
@@ -65,28 +63,28 @@ using std::string;
 //gar nicht darum knmmern mnssen, wie der prototyp eingesetzt wird. Elemente setzten dann ihre kopie vom
 //prototyp ein.
 
-/** \addtogroup ARTmodelInterfaceGroup ARTmodelInterface
+/** \addtogroup ModelInterfaceGroup ModelInterface
  * @{
  */
-
+namespace ART{
 /**
  * This is the common interface for acoustic models. Models are used by elements of a 
  * circuit to calculate acoustic properties like impedance. You can create custom models 
  * by implementing this interface.
  */ 
-class ARTmodelInterface : public ARTobject
+class ModelInterface : public ARTobject
 {
 	public:
 	  /**
 	   * Use this constructor to fill the fields of super classes and initialize other fields.
 	   */     	  
-		ARTmodelInterface(const string name, const string sds, const string lds, const string htm)
+		ModelInterface(const string name, const string sds, const string lds, const string htm)
 		 : ARTobject(name,sds,lds,htm), circuit(NULL), simulator(NULL) {}; 
 
 		/**
 		 * The copy constructor.
 		 */		 
-		ARTmodelInterface(const ARTmodelInterface& orig)
+		ModelInterface(const ModelInterface& orig)
 		 : ARTobject(orig) 
 		{
 			this->simulator = orig.simulator;
@@ -125,18 +123,18 @@ class ARTmodelInterface : public ARTobject
 		//more than one wave object is passed to branches: These functions are implemented in the branch
   virtual void InputImpedance(vector<ART::WaveObjectInterface*>& in, ART::WaveObjectInterface*& oSignal) 
 		{
-			throw ARTerror("ARTmodelInterface::getRadiationImpedance(vector<ART::WaveObjectInterface*>&)","This method is not implemented in the object '%s1'.", GetName()); 
+			throw ARTerror("ModelInterface::getRadiationImpedance(vector<ART::WaveObjectInterface*>&)","This method is not implemented in the object '%s1'.", GetName()); 
 		};
 
   virtual void Pressure(vector<ART::WaveObjectInterface*>& in, ART::WaveObjectInterface*& oSignal)
 		{
-			throw ARTerror("ARTmodelInterface::getPressure(vector<ART::WaveObjectInterface*>&)","This method is not implemented in the object '%s1'.", GetName()); 
+			throw ARTerror("ModelInterface::getPressure(vector<ART::WaveObjectInterface*>&)","This method is not implemented in the object '%s1'.", GetName()); 
 		};
 
 		/**
 		 *  A function creating exact copies must be provied.		
 		 */
-		virtual ARTmodelInterface* CloneModel() = 0;
+		virtual ModelInterface* CloneModel() = 0;
 
 		//... (add methods for other calculations) ...
 
@@ -169,8 +167,9 @@ class ARTmodelInterface : public ARTobject
 		 */     
 		ARTFreqSimulator* simulator;
 };
+}
 /** @}
- * End of documentation group ARTmodelInterface
+ * End of documentation group ModelInterface
  */
 
 #endif /* ARTMODELINTERFACE_H */

@@ -369,7 +369,7 @@ stim -?
  *
  * It is important to grasp the difference between a model, a prototype and an element.
 
-<B>Models</B> provide functions to prepare the calculation of their own acoustic properties. The data properties of a model are its physical features, like length, width or temperature. Other properties concern implementation details, like for which simulation domain and which wavetypes the model provides calculation functions. A model has to implement the ARTmodelInterface.  
+<B>Models</B> provide functions to prepare the calculation of their own acoustic properties. The data properties of a model are its physical features, like length, width or temperature. Other properties concern implementation details, like for which simulation domain and which wavetypes the model provides calculation functions. A model has to implement the ModelInterface.  
 
 <B>Prototypes</B> (or "prototype models") are models, that are instantiated during the initialization of the ART root object. Each of these prototype models contains meaningful default values. Prototypes serve as templates to create other models of the same class during runtime. Theses clones are attached to elements (see below), which you can insert into circuits and use for calculation. 
 
@@ -581,7 +581,7 @@ When calculation the impedance of a cylindrical tube, you would first create an 
      - The @ref ARTimpl "ART objects" are the objects the programmer's interface is built on. You can
        also build your own applications by using these objects.   
    
-     - The @ref ARTmodelInterfaceGroup "ART model interface" is being developped to provide an easy way of adding custom
+     - The @ref ModelInterfaceGroup "ART model interface" is being developped to provide an easy way of adding custom
        models to ART.
    
      - The @ref waveObjectInterfaceGroup "wave interface" standardizes a way of converting different types of waves as
@@ -597,7 +597,7 @@ When calculation the impedance of a cylindrical tube, you would first create an 
  * 
  * Do you remember the difference between elements, models and prototypes? Then 
  * you might also remember that every element has its own model attached to it 
- * and that every model implements the ARTmodelInterface. Now what happens when 
+ * and that every model implements the ModelInterface. Now what happens when 
  * we call ARTinputImpedance?
  * 
  * ARTInputImpedance calls the method PrepareCalculation of the specified 
@@ -662,7 +662,7 @@ When calculation the impedance of a cylindrical tube, you would first create an 
  * 
  * @subsection ownModel How to implement your own model
  * 
- * To implement your own model, derive a class from ARTmodelInterface and 
+ * To implement your own model, derive a class from ModelInterface and 
  * implement the declared functions. If a model is not supposed to support a 
  * certain functionality, throw an exception (of type ARTerror) in the function 
  * to inform users and programmers, that the requested functionality is not 
@@ -671,7 +671,7 @@ When calculation the impedance of a cylindrical tube, you would first create an 
  * Methods like InputImpedance or RadiationImpedance are supposed to *prepare* 
  * waveobjects for calculation. Therefore, a model must implement the calculation 
  * itself in functionoids. Only the constructors of these custom functionoids 
- * should be called in the methods derived from ARTmodelInterface.
+ * should be called in the methods derived from ModelInterface.
  * 
  * Look at the models implemented so far (HornElementPrototype_FD and ToneHole) 
  * for examples. Both classes are wrappers for other objects of class HornElement 

@@ -45,7 +45,7 @@
 #include "ARTlink.h"
 #include "ARTFreqSimulator.h"
 #include "strparsing.h"
-#include "ARTmodelInterface.h"
+#include "ModelInterface.h"
 #include "Circuit.h"
 
 #include "CylinderSection.h"
@@ -57,14 +57,14 @@
 #include "ConeBendSection.h"
 #include "BesselSection.h"
 
-/** \addtogroup ARTmodelInterfaceGroup ARTmodelInterface
+/** \addtogroup ModelInterfaceGroup ModelInterface
  * @{
  */
 
 /**
  * A template model class using HornElements to calculate impedance. 
  */ 
-template <class HE> class HornElementPrototype_FD : public ARTmodelInterface
+template <class HE> class HornElementPrototype_FD : public ART::ModelInterface
 {
 private:
 	//functionoid as wrapper for multimodeRadiationImpedance
@@ -244,7 +244,7 @@ private:
    * the models's construction as prototype in the root objects constructor (AcousticResearchTool::AcousticResearchTool).      
    */     
 	HornElementPrototype_FD(const string name, const string sds="", const string lds="", const string htm="")
-	: ARTmodelInterface(name,sds,lds,htm)
+	  : ART::ModelInterface(name,sds,lds,htm)
 	{
 		implementation = new HE();
 	}
@@ -252,7 +252,7 @@ private:
 	/**
 	 * A copy constructor. Used to copy the model when elements are created that use this model. 
 	 */   	
-	HornElementPrototype_FD(const HornElementPrototype_FD& orig) : ARTmodelInterface(orig)
+ HornElementPrototype_FD(const HornElementPrototype_FD& orig) : ART::ModelInterface(orig)
 	{
 		//std::cout << "implementation = " << implementation << "\n";
 		//std::cout << "this = " << &orig << "\n";
@@ -263,7 +263,7 @@ private:
   /**
    * Returns a copy of the object by calling the copy constructor. Used to copy the model when elements are created that use this model.
    */     
-	virtual ARTmodelInterface* CloneModel() {return new HornElementPrototype_FD<HE>(*this);}
+	virtual ART::ModelInterface* CloneModel() {return new HornElementPrototype_FD<HE>(*this);}
 
   /**
    * Prepares the calculation of the radiation impedance in the waveobject passed as argument. Uses the 
@@ -319,7 +319,7 @@ private:
 	} 
 
   /**
-   * This function must be implemented because it is declared as pure virtual in the ARTmodelInterface. So 
+   * This function must be implemented because it is declared as pure virtual in the ModelInterface. So 
    * far it is not implemented nor used and will just throw an exception of type ARTerror.          
    */
 	virtual void Pressure(ART::WaveObjectInterface*, ART::WaveObjectInterface*&) {throw ARTerror("HornElementPrototype_FD::Pressure","The function is not implemented.");};
@@ -381,7 +381,7 @@ private:
  * Represents a tone hole in a circuit. This class uses the HornElement classes CylinderSection and Branch to
  * model the ton hole. 
  */
-class ToneHole : public ARTmodelInterface
+class ToneHole : public ART::ModelInterface
 {
 private:
 	//functionoid as wrapper for multimodeInputImpedance
@@ -501,7 +501,7 @@ private:
 	 * this constructor.	 
 	 */   	
 	ToneHole(const string name = "ToneHole", const string sds="a tone hole at the side of the instrument", const string lds="", const string htm="")
-	: ARTmodelInterface(name,sds,lds,htm)
+	  : ART::ModelInterface(name,sds,lds,htm)
 	{
 		//Add all properties, data properties and methods to the model
 		AppendDataProp("length", 50.0,"axial length [cm]");
@@ -529,7 +529,7 @@ private:
 	/**
 	 * A copy constructor. Used to copy the model when elements are created that use this model. 
 	 */   	
-	ToneHole(const ToneHole& orig) : ARTmodelInterface(orig)
+ ToneHole(const ToneHole& orig) : ART::ModelInterface(orig)
 	{
 		//Assume the element lies in the same simulator ...
 		this->simulator = orig.simulator;
@@ -543,10 +543,10 @@ private:
   /**
    * Returns a copy of the object by calling the copy constructor. Used to copy the model when elements are created that use this model.
    */     
-	virtual ARTmodelInterface* CloneModel() {return new ToneHole(*this);}
+ virtual ART::ModelInterface* CloneModel() {return new ToneHole(*this);}
 
   /**
-   * This function must be implemented because it is declared as pure virtual in the ARTmodelInterface. 
+   * This function must be implemented because it is declared as pure virtual in the ModelInterface. 
    * Tone holes can not be the last (outermost) element in a circuit, so this method will throw an exception 
    * of type ARTerror.          
    */
@@ -585,7 +585,7 @@ private:
 	} 
 
   /**
-   * This function must be implemented because it is declared as pure virtual in the ARTmodelInterface. So 
+   * This function must be implemented because it is declared as pure virtual in the ModelInterface. So 
    * far it is not implemented nor used and will just throw an exception of type ARTerror.          
    */
 	virtual void Pressure(ART::WaveObjectInterface*, ART::WaveObjectInterface*&) {throw ARTerror("ToneHole::Pressure","The function is not implemented.");};
@@ -719,7 +719,7 @@ private:
 /**
  * Represents a branch in a circuit. This class combines to parallel impedances. 
  */
-class BranchModel : public ARTmodelInterface
+class BranchModel : public ART::ModelInterface
 {
 private:
 	//functionoid as wrapper for multimodeInputImpedance
@@ -823,7 +823,7 @@ private:
 	 * this constructor.	 
 	 */   	
 	BranchModel(const string name = "Branch", const string sds="a branch combining two parallel impedances", const string lds="", const string htm="")
-	: ARTmodelInterface(name,sds,lds,htm)
+	  : ART::ModelInterface(name,sds,lds,htm)
 	{
 		//There are no data properties.
 		//Add properties
@@ -839,7 +839,7 @@ private:
 	/**
 	 * A copy constructor. Used to copy the model when elements are created that use this model. 
 	 */   	
-	BranchModel(const BranchModel& orig) : ARTmodelInterface(orig)
+	BranchModel(const BranchModel& orig) : ModelInterface(orig)
 	{
 		//Assume the element lies in the same simulator ...
 		this->simulator = orig.simulator;
@@ -849,10 +849,10 @@ private:
   /**
    * Returns a copy of the object by calling the copy constructor. Used to copy the model when elements are created that use this model.
    */     
-	virtual ARTmodelInterface* CloneModel() {return new BranchModel(*this);}
+ virtual ART::ModelInterface* CloneModel() {return new BranchModel(*this);}
 
   /**
-   * This function must be implemented because it is declared as pure virtual in the ARTmodelInterface. 
+   * This function must be implemented because it is declared as pure virtual in the ModelInterface. 
    * Branches can not be the last (outermost) element in a circuit, so this method will throw an exception 
    * of type ARTerror.          
    */
@@ -862,7 +862,7 @@ private:
 	}
 
   /**
-   * This function must be implemented because it is declared as pure virtual in the ARTmodelInterface. 
+   * This function must be implemented because it is declared as pure virtual in the ModelInterface. 
    * Branches propagate more than one impedance object, so this method will throw an exception 
    * of type ARTerror.          
    */
@@ -902,7 +902,7 @@ private:
 	};
 
   /**
-   * This function must be implemented because it is declared as pure virtual in the ARTmodelInterface. So 
+   * This function must be implemented because it is declared as pure virtual in the ModelInterface. So 
    * far it is not implemented nor used and will just throw an exception of type ARTerror.          
    */
 	virtual void Pressure(ART::WaveObjectInterface*, ART::WaveObjectInterface*&) {throw ARTerror("ToneHole::Pressure","The function is not implemented.");};
@@ -918,7 +918,7 @@ private:
 /** 
  * Represents a termination element. Use this prototype for terminations that can be open or closed. 
  */
-class TerminationModel : public ARTmodelInterface
+class TerminationModel : public ART::ModelInterface
 {
 private:
 	//functionoid as wrapper for multimodeInputImpedance
@@ -1006,7 +1006,7 @@ private:
 	 * this constructor.	 
 	 */   	
 	TerminationModel(const string name = "TerminationModel", const string sds="a tone hole at the side of the instrument", const string lds="", const string htm="")
-	: ARTmodelInterface(name,sds,lds,htm)
+	  : ART::ModelInterface(name,sds,lds,htm)
 	{
 		//Add all properties, data properties and methods to the model
 		AppendDataProp("radiationradius", 1.0,"The radius of the radiating surface. [cm]");
@@ -1031,7 +1031,7 @@ private:
 	/**
 	 * A copy constructor. Used to copy the model when elements are created that use this model. 
 	 */   	
-	TerminationModel(const TerminationModel& orig) : ARTmodelInterface(orig)
+	TerminationModel(const TerminationModel& orig) : ModelInterface(orig)
 	{
 		//Assume the element lies in the same simulator ...
 		this->simulator = orig.simulator;
@@ -1041,7 +1041,7 @@ private:
   /**
    * Returns a copy of the object by calling the copy constructor. Used to copy the model when elements are created that use this model.
    */     
-	virtual ARTmodelInterface* CloneModel() {return new TerminationModel(*this);}
+ virtual ART::ModelInterface* CloneModel() {return new TerminationModel(*this);}
 
   /**
    * Prepares the calculation of the radiation impedance in the waveobject passed as argument. Uses the 
@@ -1069,7 +1069,7 @@ private:
 	}
 
   /**
-   * This function must be implemented because it is declared as pure virtual in the ARTmodelInterface. 
+   * This function must be implemented because it is declared as pure virtual in the ModelInterface. 
    * A termination can not be in the middle of a circuit, so this method will throw an exception 
    * of type ARTerror.          
    */
@@ -1079,7 +1079,7 @@ private:
 	} 
 
   /**
-   * This function must be implemented because it is declared as pure virtual in the ARTmodelInterface. So 
+   * This function must be implemented because it is declared as pure virtual in the ModelInterface. So 
    * far it is not implemented nor used and will just throw an exception of type ARTerror.          
    */
 	virtual void Pressure(ART::WaveObjectInterface*, ART::WaveObjectInterface*&) {throw ARTerror("TerminationModel::Pressure","The function is not implemented.");};
