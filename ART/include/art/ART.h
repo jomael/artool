@@ -829,7 +829,7 @@ When calculation the impedance of a cylindrical tube, you would first create an 
 #ifndef __cplusplus
 /* C struct declarations */
 namespace ART{
-  typedef struct ARTcell ARTcell;
+  typedef struct Cell Cell;
   typedef struct Circuit Circuit;
   typedef struct DataContainer DataContainer;
 }
@@ -847,7 +847,7 @@ typedef int bool;
 #else
 /* CPP class declarations */
 namespace ART{
-  class ARTcell;
+  class Cell;
   class Circuit;
   class DataContainer;
 }
@@ -869,7 +869,7 @@ class ARTItimeModule;
 
 typedef const char*	pChar;
 namespace ART{
-  typedef ARTcell*	P_ART_Cell;
+  typedef Cell*	P_ART_Cell;
   typedef Circuit*	P_ART_Circuit;
   typedef DataContainer*	P_ART_DataContainer;
 }

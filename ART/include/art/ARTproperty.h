@@ -46,20 +46,20 @@
 #include "Cell.h"
 
 /**
- * Objects of this class are sets of strings (see ARTcell for details), that represent the
+ * Objects of this class are sets of strings (see Cell for details), that represent the
  * property of an ARTobject. Typically each ARTobject contains several properties that are
  * saved in a list. This list can be queried* by the programme, to check if a given object
  * has a certain property.
  */
-class ARTproperty : public ART::ARTcell {
+class ARTproperty : public ART::Cell {
 private:
         bool listable_;
 public:
         ARTproperty(const string name, const string sds="", const string lds="", const string htm="", const bool listable=false) :
-                                ARTcell(name,sds,lds,htm), listable_(listable) {}
+                                Cell(name,sds,lds,htm), listable_(listable) {}
 
         ARTproperty(const ARTproperty& orig) /**<copy constructor*/
-        : ARTcell(orig)
+        : Cell(orig)
         {
                 listable_ = orig.listable_;
         }
@@ -67,7 +67,7 @@ public:
         virtual ~ARTproperty() {}
 
 
-        virtual ARTcell* clone() {return new ARTproperty(*this);}
+        virtual Cell* clone() {return new ARTproperty(*this);}
 
         bool IsListable() { return listable_;}
 };

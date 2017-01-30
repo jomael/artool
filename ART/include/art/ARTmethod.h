@@ -69,7 +69,7 @@ public:
         virtual ~ARTmethod()
         {}
 
-        virtual ARTcell* clone() {return new ARTmethod(*this);}
+        virtual Cell* clone() {return new ARTmethod(*this);}
 
         void ApplyMethod()
         {}

@@ -26,7 +26,7 @@ TEST(ARTVariantChecks, SetVal1)
 
 TEST(ARTCellChecks, CellChecks1)
 {
-  ARTcell cell("OldName", "Short Description", "Long Description",
+  Cell cell("OldName", "Short Description", "Long Description",
                    "Helpfile Name");
 
   EXPECT_EQ("OldName", cell.GetName());

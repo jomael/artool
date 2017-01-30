@@ -49,7 +49,7 @@ namespace ART{
    * The base class for all classes containing name, short and long description of an object
    * and HTML explanation.
    */
-  class ARTcell {
+  class Cell {
   private:
   protected:
     string name_;           /**< Identifier of ARTObject */
@@ -57,8 +57,8 @@ namespace ART{
     string longDesc_;       /**< Long Description of ARTObject (multi line text) */
     string helpFile_;       /**< File name of HTML help file for ARTObject */
   public:
-  ARTcell(const string name="", const string sds="", const string lds="", const string htm="") : name_(name), shortDesc_(sds), longDesc_(lds), helpFile_(htm) {}
-    ARTcell(const ARTcell& orig) /**< copy constructor */
+  Cell(const string name="", const string sds="", const string lds="", const string htm="") : name_(name), shortDesc_(sds), longDesc_(lds), helpFile_(htm) {}
+    Cell(const Cell& orig) /**< copy constructor */
       {
 	name_ = orig.name_;
 	shortDesc_ = orig.shortDesc_;
@@ -66,8 +66,8 @@ namespace ART{
 	helpFile_ = orig.helpFile_;
       }
 
-    virtual ~ARTcell() {}
-    virtual ARTcell* clone() {return new ARTcell(*this);}
+    virtual ~Cell() {}
+    virtual Cell* clone() {return new Cell(*this);}
 
     virtual const string& GetName() const {return name_;}
     virtual const string& GetShortDescription() const {return shortDesc_;}
