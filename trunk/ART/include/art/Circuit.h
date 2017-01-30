@@ -44,7 +44,7 @@
 
 #include "Element.h"
 #include "ARTSimulator.h"
-#include "ARTwaveObject.h"
+#include "WaveObject.h"
 namespace ART{
   /**
    * This class represents a wind instrument, that is built from several Element:s

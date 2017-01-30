@@ -47,7 +47,7 @@
 /** \addtogroup waveObjectInterfaceGroup waveObject
  * @{
  */
-
+namespace ART{
 /**
  * This is the common interface for all waveobjects passed between elements. 
  * It was introduced to allow models to calculate their acoustic 
@@ -296,9 +296,8 @@ class WaveObjectMMImpedance : public WaveObjectInterface
 	ART::DataContainer* frequencies;
 
 };
-
+}
 /** @}
  * End of documentation group waveobject
  */
-
 #endif

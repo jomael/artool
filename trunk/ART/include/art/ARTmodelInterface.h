@@ -46,7 +46,7 @@
 #include "ARTobject.h"
 #include "ARTerror.h"
 #include "ARTFreqSimulator.h"
-#include "ARTwaveObject.h"
+#include "WaveObject.h"
 
 // forward declarations
 namespace ART{
@@ -100,7 +100,7 @@ class ARTmodelInterface : public ARTobject
      *    use as output. If the value of the pointer is NULL, the function must allocate
      *    a waveobject to use as output and update the pointer.
      */         
-		virtual void RadiationImpedance(WaveObjectInterface*& out) = 0;
+  virtual void RadiationImpedance(ART::WaveObjectInterface*& out) = 0;
 
     /**
      * This function should prepare the calculation of the input impedance of the 
@@ -110,7 +110,7 @@ class ARTmodelInterface : public ARTobject
      *    use as output. If the value of the pointer is NULL, the function must allocate
      *    a waveobject to use as output and update the pointer.
      */         
-		virtual void InputImpedance(WaveObjectInterface* in, WaveObjectInterface*& out) = 0;
+  virtual void InputImpedance(ART::WaveObjectInterface* in, ART::WaveObjectInterface*& out) = 0;
 
     /**
      * This function should prepare the calculation of the pressure matrix of the 
@@ -120,17 +120,17 @@ class ARTmodelInterface : public ARTobject
      *    use as output. If the value of the pointer is NULL, the function must allocate
      *    a waveobject to use as output and update the pointer.
      */         
-		virtual void Pressure(WaveObjectInterface* in, WaveObjectInterface*& out) = 0;
+  virtual void Pressure(ART::WaveObjectInterface* in, ART::WaveObjectInterface*& out) = 0;
 
 		//more than one wave object is passed to branches: These functions are implemented in the branch
-		virtual void InputImpedance(vector<WaveObjectInterface*>& in, WaveObjectInterface*& oSignal) 
+  virtual void InputImpedance(vector<ART::WaveObjectInterface*>& in, ART::WaveObjectInterface*& oSignal) 
 		{
-			throw ARTerror("ARTmodelInterface::getRadiationImpedance(vector<WaveObjectInterface*>&)","This method is not implemented in the object '%s1'.", GetName()); 
+			throw ARTerror("ARTmodelInterface::getRadiationImpedance(vector<ART::WaveObjectInterface*>&)","This method is not implemented in the object '%s1'.", GetName()); 
 		};
 
-		virtual void Pressure(vector<WaveObjectInterface*>& in, WaveObjectInterface*& oSignal)
+  virtual void Pressure(vector<ART::WaveObjectInterface*>& in, ART::WaveObjectInterface*& oSignal)
 		{
-			throw ARTerror("ARTmodelInterface::getPressure(vector<WaveObjectInterface*>&)","This method is not implemented in the object '%s1'.", GetName()); 
+			throw ARTerror("ARTmodelInterface::getPressure(vector<ART::WaveObjectInterface*>&)","This method is not implemented in the object '%s1'.", GetName()); 
 		};
 
 		/**
