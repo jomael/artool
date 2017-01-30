@@ -83,7 +83,7 @@ typedef std::complex<double> type;
 #if !defined(__GNUG__)
 _CRTIMP char * __cdecl itoa( int value, char* result, int base );
 #endif
-
+namespace ART{
 class WindInstrument : public GAGenome, public HornElement {
 private:
 	list<HornElement*> elementList_;
@@ -281,6 +281,6 @@ public:
 	static ImpedanceCurve* getTarget() {return &targetImpedanceCurve;}
 	static void loadBase (const char filename[]) ;
 };
-
+}
 
 #endif

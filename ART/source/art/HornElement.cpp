@@ -47,6 +47,7 @@
 #include <float.h>
 #include <math.h>
 
+using namespace ART;
 //max+min macro def. from VC98/include/windef.h
 #ifndef max
 #define max(a,b)            (((a) > (b)) ? (a) : (b))
