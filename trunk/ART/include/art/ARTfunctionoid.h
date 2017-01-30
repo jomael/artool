@@ -44,7 +44,7 @@
 
 #include "ARTerror.h"
 #include "ARTlink.h"
-//#include "ARTelement.h"
+
 
 /** \addtogroup ARTimpl ART implementation
  * @{
@@ -53,8 +53,8 @@
 //forward declarations of classes defined in interface.h, because this file is inserted there before the declarations come.
 namespace ART{
   class DataContainer;
+  class Element;		
 }
-class ARTelement;		
 //Basisklasse eines Funktionoides / base class of a functionoid
 
 /*
@@ -155,7 +155,7 @@ protected:
 class ARTmmRadImpFunc : public ARTfunctionoid
 {
 public:
- ARTmmRadImpFunc(ARTelement* host, ART::DataContainer* frequencies, ART::DataContainer* modes, bool hasBends)
+ ARTmmRadImpFunc(ART::Element* host, ART::DataContainer* frequencies, ART::DataContainer* modes, bool hasBends)
 	: host_(host), hasBends_(hasBends), frequencies_(frequencies), modes_(modes)
 	{
 		if (!host) throw ARTerror("ARTmmRadImpFunc(Constructor)", "Argument '%s1' is NULL.","host");
@@ -171,7 +171,7 @@ public:
 	virtual int GetIterationNumber();
 
 private:
-	ARTelement* host_;
+	ART::Element* host_;
 	bool hasBends_;
 	ART::DataContainer* frequencies_;
 	ART::DataContainer* modes_;

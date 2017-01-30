@@ -43,7 +43,7 @@ using namespace ART;
 //**************************************************************************************************************
 // Circuit
 Circuit::Circuit(ARTSimulator* simulator, const string name, const string sds, const string lds, const string htm)
-        : ARTelement(name,sds,lds,htm), references(), impedanceCurve_(NULL), simulator_(simulator), wavefrontRadiation(NULL) // , wavefrontOut(NULL), wavefrontIn(NULL)
+        : Element(name,sds,lds,htm), references(), impedanceCurve_(NULL), simulator_(simulator), wavefrontRadiation(NULL) // , wavefrontOut(NULL), wavefrontIn(NULL)
 
 {
         //Every circuit has its impedance as data property. impedanceCurve is a shortcut pointer:
@@ -54,7 +54,7 @@ Circuit::Circuit(ARTSimulator* simulator, const string name, const string sds, c
         model->SetSimulator(simulator);
 }
 
-void Circuit::AppendElement(ARTelement* element)
+void Circuit::AppendElement(Element* element)
 {
         //try to find the element in the circuit. it is not legal to append an element twice!
         if (GetElementPosition(element) != -1) throw ARTerror("Circuit::appendElement", "The element is already appended to the circuit!");
@@ -62,7 +62,7 @@ void Circuit::AppendElement(ARTelement* element)
         references.push_back(element);
 }
 
-int Circuit::GetElementPosition(ARTelement* el)
+int Circuit::GetElementPosition(Element* el)
 {
         int pos;
         pos = -1;
@@ -78,15 +78,15 @@ int Circuit::GetElementPosition(ARTelement* el)
         return pos;
 }
 
-void Circuit::AppendElementBefore(ARTelement* before, ARTelement* element)
+void Circuit::AppendElementBefore(Element* before, Element* element)
 {
         //try to find the element in the circuit. it is not legal to append an element twice!
         if (GetElementPosition(element) != -1) throw ARTerror("Circuit::appendElement", "The element is already appended to the circuit!");
 
-        vector<ARTelement*>::iterator pos;
+        vector<Element*>::iterator pos;
         pos = references.end();
         //find element before
-        vector<ARTelement*>::iterator it;
+        vector<Element*>::iterator it;
         for (it = references.begin(); it < references.end(); ++it) {
                 if (*it == before)
                 {
@@ -99,15 +99,15 @@ void Circuit::AppendElementBefore(ARTelement* before, ARTelement* element)
         references.insert(pos, element);
 }
 
-void Circuit::AppendElementAfter(ARTelement* after, ARTelement* element)
+void Circuit::AppendElementAfter(Element* after, Element* element)
 {
         //try to find the element in the circuit. it is not legal to append an element twice!
         if (GetElementPosition(element) != -1) throw ARTerror("Circuit::appendElement", "The element is already appended to the circuit!");
 
-        vector<ARTelement*>::iterator pos;
+        vector<Element*>::iterator pos;
         pos = references.begin();
         //find element after
-        vector<ARTelement*>::iterator it;
+        vector<Element*>::iterator it;
         for (it = references.begin(); it < references.end(); ++it ) {
                 if (*it == after)
                 {
@@ -120,11 +120,11 @@ void Circuit::AppendElementAfter(ARTelement* after, ARTelement* element)
         references.insert(pos, element);
 }
 
-int Circuit::DeleteElement(ARTelement* element)
+int Circuit::DeleteElement(Element* element)
 {
         int found = 0;
         //find element
-        vector<ARTelement*>::iterator it;
+        vector<Element*>::iterator it;
         for (it = references.begin(); it < references.end(); ++it )
                 if (*it == element)
                 {
@@ -134,11 +134,11 @@ int Circuit::DeleteElement(ARTelement* element)
         return found;
 }
 
-int Circuit::RemoveElement(ARTelement* element)
+int Circuit::RemoveElement(Element* element)
 {
         int found = 0;
         //find element
-        vector<ARTelement*>::iterator it = references.begin();
+        vector<Element*>::iterator it = references.begin();
         while (it < references.end()) {
                 if (*it == element)
                 {
@@ -152,11 +152,11 @@ int Circuit::RemoveElement(ARTelement* element)
         return found;
 }
 
-int Circuit::ReplaceElement(ARTelement* search, ARTelement* replace)
+int Circuit::ReplaceElement(Element* search, Element* replace)
 {
         int found = 0;
         //find element
-        vector<ARTelement*>::iterator it;
+        vector<Element*>::iterator it;
         for (it = references.begin(); it < references.end(); it++ )
                 if (*it == search)
                 {
@@ -226,7 +226,7 @@ void Circuit::PrepareCalculation()
         for (i = 0; i < references.size(); i++)
         {
                 //if the reference is an element, set the circuit.
-                if (dynamic_cast<ARTelement*>(references.at(i)))
+                if (dynamic_cast<Element*>(references.at(i)))
                         references.at(i)->model->SetCircuit(this);
         }
 

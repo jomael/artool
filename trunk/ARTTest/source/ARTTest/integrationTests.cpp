@@ -3780,8 +3780,8 @@ TEST_DEF_START(setHElementParam, ARTmodelTests)
                 {
                         ARTSetParameter(mySim, "SZ.length = 1000; ");
                         ARTSetParameter(mySim, "SZ.r = SZ.length * 0.25;");
-                        DataContainer* p1 = dynamic_cast<DataContainer*>(((ARTelement*)El1)->model->FindProperty("length"));
-                        DataContainer* p2 = dynamic_cast<DataContainer*>(((ARTelement*)El1)->model->FindProperty("r"));
+                        DataContainer* p1 = dynamic_cast<DataContainer*>(((Element*)El1)->model->FindProperty("length"));
+                        DataContainer* p2 = dynamic_cast<DataContainer*>(((Element*)El1)->model->FindProperty("r"));
                         //std::cout << p1->GetValue()->d << "\n";
                         //std::cout << p2->GetValue()->d << "\n";
                         if (p1->GetFloat() != 1000) return false;
@@ -3831,17 +3831,17 @@ TEST_DEF_START(getHElementImpedance, ARTmodelTests)
                         //Elements must be in circuit, which will check for bends!
                         ARTAppendReference(Cir,El1);
                         ARTAppendReference(Cir,El2);
-                        ((ARTelement*)El1)->model->SetCircuit(Cir);
-                        ((ARTelement*)El2)->model->SetCircuit(Cir);
+                        ((Element*)El1)->model->SetCircuit(Cir);
+                        ((Element*)El2)->model->SetCircuit(Cir);
 
                         ARTSetParameter(mySim, "Zyl.length = 100; ");
                         WaveObjectInterface* Z_R = NULL;
                         WaveObjectInterface* Z_EL1 = NULL;
                         WaveObjectInterface* Z_I = NULL;
 
-                        ((ARTelement*)El1)->RadiationImpedance(Z_R);
-                        ((ARTelement*)El1)->InputImpedance(Z_R, Z_EL1);
-                        ((ARTelement*)El2)->InputImpedance(Z_EL1, Z_I);
+                        ((Element*)El1)->RadiationImpedance(Z_R);
+                        ((Element*)El1)->InputImpedance(Z_R, Z_EL1);
+                        ((Element*)El2)->InputImpedance(Z_EL1, Z_I);
 
                         DataContainer* z = NULL;
                         Z_I->ImpedanceMatrix(z);
@@ -3941,8 +3941,8 @@ TEST_DEF_START(testToneHoleParam, customModelTests)
                 {
                         ARTSetParameter(mySim, "myToneHole.length = 100; ");
                         ARTSetParameter(mySim, "myToneHole.r = myToneHole.length * 0.25;");
-                        DataContainer* p1 = dynamic_cast<DataContainer*>(((ARTelement*)Th)->model->FindProperty("length"));
-                        DataContainer* p2 = dynamic_cast<DataContainer*>(((ARTelement*)Th)->model->FindProperty("r"));
+                        DataContainer* p1 = dynamic_cast<DataContainer*>(((Element*)Th)->model->FindProperty("length"));
+                        DataContainer* p2 = dynamic_cast<DataContainer*>(((Element*)Th)->model->FindProperty("r"));
                         if (p1->GetFloat() != 100) return false;
                         if (p2->GetFloat() != 25) return false;
                 }

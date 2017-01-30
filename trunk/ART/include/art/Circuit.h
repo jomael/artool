@@ -42,18 +42,18 @@
 
 #include <vector>
 
-#include "ARTelement.h"
+#include "Element.h"
 #include "ARTSimulator.h"
 #include "ARTwaveObject.h"
 namespace ART{
   /**
-   * This class represents a wind instrument, that is built from several ARTelement:s
+   * This class represents a wind instrument, that is built from several Element:s
    * which are put together in a certain order. Circuit does not have a direct connection
    * to a hornelement, so prototype_ is NULL, its default value.
    */
-  class Circuit : public ARTelement {
+  class Circuit : public Element {
   private:
-    vector<ARTelement*> references;
+    vector<Element*> references;
     DataContainer* impedanceCurve_; //Input impedance as triple vector (f, re, im)
     ARTSimulator* simulator_;
     WaveObjectInterface* wavefrontRadiation; //Wave object representing the radiation impedance of the circuit. This object is constructed in prepareCalculation
@@ -67,17 +67,17 @@ namespace ART{
       SetName(newname);
     }
 
-    int GetElementPosition(ARTelement* el);
-    void AppendElement(ARTelement* element);
-    void AppendElementBefore(ARTelement* before, ARTelement* element);
-    void AppendElementAfter(ARTelement* after, ARTelement* element);
+    int GetElementPosition(Element* el);
+    void AppendElement(Element* element);
+    void AppendElementBefore(Element* before, Element* element);
+    void AppendElementAfter(Element* after, Element* element);
 
     ///deletes element from circuits element list, when the element itself is destroyed. This will leave a NULL-pointer in the vector, so the user knows something is missing. Always remove elements before destroying them!
-    int DeleteElement(ARTelement* element);
+    int DeleteElement(Element* element);
 
     ///removes element from circuits element list
-    int RemoveElement(ARTelement* element);
-    int ReplaceElement(ARTelement* search, ARTelement* replace);
+    int RemoveElement(Element* element);
+    int ReplaceElement(Element* search, Element* replace);
     int RemoveAllElements();
 
     /// propagated impedance using functionoids

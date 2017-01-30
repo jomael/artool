@@ -832,6 +832,7 @@ namespace ART{
   typedef struct Cell Cell;
   typedef struct Circuit Circuit;
   typedef struct DataContainer DataContainer;
+  typedef struct Element Element;
 }
 typedef struct ARTobject ARTobject;
 typedef struct ARTproperty ARTproperty;
@@ -840,7 +841,6 @@ typedef struct ARTlistProp ARTlistProp;
 typedef struct ARTmethod ARTmethod;
 typedef struct ARTvariant ARTvariant;
 typedef struct ARTSimulator ARTSimulator;
-typedef struct ARTelement ARTelement;
 typedef struct ARTItimeModule ARTItimeModule;
 typedef int bool;
 
@@ -850,6 +850,7 @@ namespace ART{
   class Cell;
   class Circuit;
   class DataContainer;
+  class Element;
 }
 class ARTobject;
 class ARTproperty;
@@ -858,11 +859,10 @@ class ARTlistProp;
 class ARTmethod;
 class ARTvariant;
 class ARTSimulator;
-class ARTelement;
 class ARTItimeModule;
 
 /*
-#include "Interface.h"
+#include "Interface.h"1
 #include "strparsing.h"
 */
 #endif /* __cplusplus*/
@@ -872,6 +872,7 @@ namespace ART{
   typedef Cell*	P_ART_Cell;
   typedef Circuit*	P_ART_Circuit;
   typedef DataContainer*	P_ART_DataContainer;
+  typedef Element*	P_ART_Element;
 }
 typedef ARTobject*	P_ART_Object;
 typedef ARTproperty*	P_ART_Property;
@@ -880,7 +881,6 @@ typedef ARTlistProp*	P_ART_ListProp;
 typedef ARTmethod*	P_ART_Method;
 typedef ARTvariant*	P_ART_Variant;
 typedef ARTSimulator*   P_ART_Simulator;
-typedef ARTelement*	P_ART_Element;
 typedef ARTItimeModule* P_ART_TModule;
 
 typedef bool (* TprogressFunction)(double, const char*);
@@ -1003,7 +1003,7 @@ __DECLSPEC bool	__CALLCONV	ARTSetNModes	(ARTSimulator* sim, int Nmodes);
 /**
  * Finds an element with a certain name in the simulator specified.
  */ 
-__DECLSPEC P_ART_Element    __CALLCONV ARTFindElement     (P_ART_Simulator simulator, const char* name);
+  __DECLSPEC ART::P_ART_Element    __CALLCONV ARTFindElement     (P_ART_Simulator simulator, const char* name);
 
 /**
  * Finds an circuit with a certain name in the simulator specified.
@@ -1019,8 +1019,8 @@ __DECLSPEC P_ART_Element    __CALLCONV ARTFindElement     (P_ART_Simulator simul
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror if not using the DLL interface.
  */
-__DECLSPEC P_ART_Element	__CALLCONV	ARTCreateElement	(P_ART_Simulator simulator, const char* name, const char* type);
-//P_ART_Element	__CALLCONV	ARTCreateElement2	(P_ART_Simulator simulator, char* name, char* type);
+  __DECLSPEC ART::P_ART_Element	__CALLCONV	ARTCreateElement	(P_ART_Simulator simulator, const char* name, const char* type);
+//ART::P_ART_Element	__CALLCONV	ARTCreateElement2	(P_ART_Simulator simulator, char* name, char* type);
 
 /**
  * Changes the model of an element.
@@ -1031,15 +1031,15 @@ __DECLSPEC P_ART_Element	__CALLCONV	ARTCreateElement	(P_ART_Simulator simulator,
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror if not using the DLL interface.
   */ 
-__DECLSPEC P_ART_Element	__CALLCONV	ARTChangeElementModel	(P_ART_Simulator simulator, P_ART_Element element, const char* type);
-//P_ART_Element	__CALLCONV	ARTChangeElementModel	(P_ART_Simulator simulator, char* name, char* type);
+  __DECLSPEC ART::P_ART_Element	__CALLCONV	ARTChangeElementModel	(P_ART_Simulator simulator, ART::P_ART_Element element, const char* type);
+//ART::P_ART_Element	__CALLCONV	ARTChangeElementModel	(P_ART_Simulator simulator, char* name, char* type);
 
 /**
  * Returns the model of an element. Use this function when you want to get information about an element's model to
  * get a pointer to the model which you can pass on to other functions like ARTGetDataProperties.
  * @param element A pointer to the element whose model should be retrieved.
  */
-__DECLSPEC P_ART_Object	__CALLCONV	ARTGetModel	(P_ART_Element  element);
+  __DECLSPEC P_ART_Object	__CALLCONV	ARTGetModel	(ART::P_ART_Element  element);
 
 /**
 * Changes the name of an element or circuit.
@@ -1050,7 +1050,7 @@ __DECLSPEC P_ART_Object	__CALLCONV	ARTGetModel	(P_ART_Element  element);
 * @returns The element renamed. When using the DLL this function will return NULL if an error occurs.
 *    Use ARTGetLastErrorMessage to get the error message.
 */
-__DECLSPEC P_ART_Element    __CALLCONV ARTChangeName     (P_ART_Element element, const char* newName);
+  __DECLSPEC ART::P_ART_Element    __CALLCONV ARTChangeName     (ART::P_ART_Element element, const char* newName);
 
 /**
  * Destroys an element.
@@ -1060,7 +1060,7 @@ __DECLSPEC P_ART_Element    __CALLCONV ARTChangeName     (P_ART_Element element,
  *   use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror if not using the DLL interface.
  */   
-__DECLSPEC bool	__CALLCONV	ARTDestroyElement	(P_ART_Simulator simulator, P_ART_Element element);
+  __DECLSPEC bool	__CALLCONV	ARTDestroyElement	(P_ART_Simulator simulator, ART::P_ART_Element element);
 //DLL needs unique match, so only one function with this name
 //void	__CALLCONV	ARTDestroyElement	(P_ART_Simulator simulator,char* name);
 
@@ -1212,7 +1212,7 @@ __DECLSPEC T_ART_Cmplx __CALLCONV ARTGetComplexFromPort(P_ART_DataProp port, int
  * @returns the position of the element or -1 if the element was not found. (DLL-interface: returns -1 also if another error occured)	
  * @throws ARTerror if not using the DLL interface
  */
-  __DECLSPEC int	__CALLCONV	ARTGetReferencePosition	( ART::P_ART_Circuit circuit, P_ART_Element element);
+  __DECLSPEC int	__CALLCONV	ARTGetReferencePosition	( ART::P_ART_Circuit circuit, ART::P_ART_Element element);
 //int	__CALLCONV	ARTGetReferencePosition	(P_ART_Simulator simulator, P_ART_Circuit circuit, char* name);
 
 
@@ -1224,7 +1224,7 @@ __DECLSPEC T_ART_Cmplx __CALLCONV ARTGetComplexFromPort(P_ART_DataProp port, int
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror if not using the DLL interface.
  */
-  __DECLSPEC P_ART_Object	__CALLCONV	ARTAppendReference	(ART::P_ART_Circuit circuit, P_ART_Element element);
+  __DECLSPEC P_ART_Object	__CALLCONV	ARTAppendReference	(ART::P_ART_Circuit circuit, ART::P_ART_Element element);
 //P_ART_Object	__CALLCONV	ARTAppendReference	(P_ART_Simulator simulator, P_ART_Circuit circuit, char* name);
 
 /**
@@ -1236,7 +1236,7 @@ __DECLSPEC T_ART_Cmplx __CALLCONV ARTGetComplexFromPort(P_ART_DataProp port, int
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror if not using the DLL interface.
  */
-  __DECLSPEC P_ART_Object	__CALLCONV	ARTAppendReferenceBefore	(ART::P_ART_Circuit circuit, P_ART_Element referenceAfter, P_ART_Element reference);
+  __DECLSPEC P_ART_Object	__CALLCONV	ARTAppendReferenceBefore	(ART::P_ART_Circuit circuit, ART::P_ART_Element referenceAfter, ART::P_ART_Element reference);
 //P_ART_Object	__CALLCONV	ARTAppendReferenceBefore	(P_ART_Simulator simulator, P_ART_Circuit circuit, char*elementAfter, char* name);
 
 /**
@@ -1248,7 +1248,7 @@ __DECLSPEC T_ART_Cmplx __CALLCONV ARTGetComplexFromPort(P_ART_DataProp port, int
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror if not using the DLL interface.
  */
-  __DECLSPEC P_ART_Object	__CALLCONV	ARTAppendReferenceAfter	(ART::P_ART_Circuit circuit, P_ART_Element referenceBefore, P_ART_Element reference);
+  __DECLSPEC P_ART_Object	__CALLCONV	ARTAppendReferenceAfter	(ART::P_ART_Circuit circuit, ART::P_ART_Element referenceBefore, ART::P_ART_Element reference);
 //P_ART_Object	__CALLCONV	ARTAppendReferenceAfter	(P_ART_Simulator simulator, P_ART_Circuit circuit, char*elementBefore, char* name);
 
 /**
@@ -1260,7 +1260,7 @@ __DECLSPEC T_ART_Cmplx __CALLCONV ARTGetComplexFromPort(P_ART_DataProp port, int
  *   to get the error message.)
  * @throws ARTerror if not using the DLL interface.
  */
-  __DECLSPEC int	__CALLCONV	ARTRemoveReference	(ART::P_ART_Circuit circuit, P_ART_Element reference);
+  __DECLSPEC int	__CALLCONV	ARTRemoveReference	(ART::P_ART_Circuit circuit, ART::P_ART_Element reference);
 //int	__CALLCONV	ARTRemoveReference	(P_ART_Simulator simulator, P_ART_Circuit circuit, char* element);
 
 /**
@@ -1273,7 +1273,7 @@ __DECLSPEC T_ART_Cmplx __CALLCONV ARTGetComplexFromPort(P_ART_DataProp port, int
  *   to get the error message.)	
  * @throws ARTerror if not using the DLL interface.
  */
-  __DECLSPEC int	__CALLCONV	ARTReplaceReference	(ART::P_ART_Circuit circuit, P_ART_Element search, P_ART_Element replace);
+  __DECLSPEC int	__CALLCONV	ARTReplaceReference	(ART::P_ART_Circuit circuit, ART::P_ART_Element search, ART::P_ART_Element replace);
 //int	__CALLCONV	ARTReplaceReference	(P_ART_Simulator simulator, P_ART_Circuit circuit, char*search, char* replace);
 
 /**

@@ -48,13 +48,13 @@
 using std::string;
 
 /**
- * An object of this class is like the blueprint of an ARTelement. It contains all properties and
+ * An object of this class is like the blueprint of an Element. It contains all properties and
  * data properties with default values the elements created from it will have. If an
  * ARTprototype is changed, its former descendents are not changed. Although ARTprototypes
  * are not restricted to one simulator, calculation domain or wavetype, their properties
  * might not allow all simulation types. An ARTprototype contains an object of a certain
  * subclass of HornElement. That object is the implementation of the element and copies of
- * it will be invoked when derivated ARTelements are used in calculation.
+ * it will be invoked when derivated Elements are used in calculation.
  */
 
 class ARTprototype : public ARTobject {

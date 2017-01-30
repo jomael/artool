@@ -37,11 +37,11 @@
 *                                                                         *
 ***************************************************************************/
 
-#include "ARTelement.h"
+#include "Element.h"
 
 using namespace ART;
 
-ARTelement::ARTelement(const string name, const string sds, const string lds, const string htm, ARTmodelInterface* prototype, ARTSimulator* sim)
+Element::Element(const string name, const string sds, const string lds, const string htm, ARTmodelInterface* prototype, ARTSimulator* sim)
 : ARTmodelInterface(name,sds,lds,htm),
   //propMatrix(NULL),
   model(NULL),
@@ -89,7 +89,7 @@ ARTelement::ARTelement(const string name, const string sds, const string lds, co
 }
 
 //removes all dependencies
-void ARTelement::PrepareCalculation()
+void Element::PrepareCalculation()
 {
         ARTdataProp* dprop;
         ARTproperty* prop = NULL;
@@ -107,10 +107,10 @@ void ARTelement::PrepareCalculation()
         while(prop); //until no prop. is found, it's NULL then...
 }
 
-void ARTelement::SetScope(ARTSimulator* sim)
+void Element::SetScope(ARTSimulator* sim)
 {
         if (sim == NULL)
-                throw ARTerror("ARTelement::SetScope", "The specified simulator is invalid.");
+                throw ARTerror("Element::SetScope", "The specified simulator is invalid.");
 
         piter_ = propertyList_.begin();
         ARTdataProp* p;
@@ -123,7 +123,7 @@ void ARTelement::SetScope(ARTSimulator* sim)
         }
 }
 
-bool ARTelement::HasBends()
+bool Element::HasBends()
 {
         if (model->FindProperty("bent")) return true;
         else return false;

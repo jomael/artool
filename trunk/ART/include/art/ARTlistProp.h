@@ -49,7 +49,7 @@
 using std::string;
 
 /**
- * A list of objects (like all ARTelement:s as userElements) that is added as property to
+ * A list of objects (like all Element:s as userElements) that is added as property to
  * another ARTobject. prototypeModels for ex. is such a list, belonging to the root
  * object, and to this list all ARTprototype:s are added. (List is then part of ARTobject's
  * property list)

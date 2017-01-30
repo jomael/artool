@@ -53,7 +53,7 @@
 #include <complex>
 #include <list>
 #include <vector>
-#include "ARTlink.h" //used to link hornelements to ARTelements
+#include "ARTlink.h" //used to link hornelements to Elements
 #include "SimpleMatrix.h"
 #include "matrix.h"
 //#include <ga/garandom.h> //used for Bessel-functions
