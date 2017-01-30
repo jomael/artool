@@ -71,7 +71,7 @@ private:
 	/**
 	 * This class has its own functionoid to calculate radiation impedance.
 	 */   	
-	class RadiationImpedanceFunc : public ARTfunctionoid
+	class RadiationImpedanceFunc : public ART::Functionoid
 	{
 		public:
 		  /**
@@ -95,7 +95,7 @@ private:
 			/**
 			 * Returns true if functionoid f is the same as this functionoid.
 			 */       			
-			virtual bool IsSameFunctionoid(ARTfunctionoid* f)
+			virtual bool IsSameFunctionoid(ART::Functionoid* f)
 				{
 					RadiationImpedanceFunc* mf = dynamic_cast<RadiationImpedanceFunc*>(f);
 					if (!mf) return false;
@@ -114,7 +114,7 @@ private:
 					out_->AddPropertiesAsDependency(host_);
 				}
 				
-			/// This is the function where the calculation takes place. see ARTfunctionoid::ApplyFunction() for details	
+			/// This is the function where the calculation takes place. see ART::Functionoid::ApplyFunction() for details	
 			virtual void ApplyFunction()
 				{
 					int modes = modes_->GetInt();
@@ -137,7 +137,7 @@ private:
 					}
 					//std::cout << "geschrieben in DC " << out_ << "\n";
 				}
-			/// see ARTfunctionoid::GetIterationNumber() for details	
+			/// see ART::Functionoid::GetIterationNumber() for details	
 			virtual int GetIterationNumber() {	return frequencies_->GetIterationNumber();	}
 
 		private:
@@ -151,7 +151,7 @@ private:
 	/**
 	 * This class has its own functionoid to calculate input impedance.
 	 */   	
-	class InputImpedanceFunc : public ARTfunctionoid
+	class InputImpedanceFunc : public ART::Functionoid
 	{
 		public:
 		  /**
@@ -177,7 +177,7 @@ private:
 			/**
 			 * Returns true if functionoid f is the same as this functionoid.
 			 */       			
-			virtual bool IsSameFunctionoid(ARTfunctionoid* f)
+			virtual bool IsSameFunctionoid(ART::Functionoid* f)
 				{
 					InputImpedanceFunc* mf = dynamic_cast<InputImpedanceFunc*>(f);
 					if (!mf) return false;
@@ -197,7 +197,7 @@ private:
 					out_->AddPropertiesAsDependency(host_);
 					out_->AddDependency(modes_);
 				}
-			/// This is the function where the calculation takes place. see ARTfunctionoid::ApplyFunction() for details	
+			/// This is the function where the calculation takes place. see ART::Functionoid::ApplyFunction() for details	
 			virtual void ApplyFunction()
 				{
 					int modes = modes_->GetInt();
@@ -224,7 +224,7 @@ private:
 					std::cout << "\n";
 					*/
 				}
-			/// see ARTfunctionoid::GetIterationNumber() for details	
+			/// see ART::Functionoid::GetIterationNumber() for details	
 			virtual int GetIterationNumber()	{	return wfrequencies_->GetIterationNumber();	}
 
 		private:
@@ -385,7 +385,7 @@ class ToneHole : public ART::ModelInterface
 {
 private:
 	//functionoid as wrapper for multimodeInputImpedance
-	class InputImpedanceFunc : public ARTfunctionoid
+	class InputImpedanceFunc : public ART::Functionoid
 	{
 		public:
 		  /**
@@ -411,7 +411,7 @@ private:
 			/**
 			 * Returns true if functionoid f is the same as this functionoid.
 			 */       			
-      virtual bool IsSameFunctionoid(ARTfunctionoid* f)
+      virtual bool IsSameFunctionoid(ART::Functionoid* f)
 				{
 					InputImpedanceFunc* mf = dynamic_cast<InputImpedanceFunc*>(f);
 					if (!mf) return false;
@@ -433,7 +433,7 @@ private:
 					out_->AddDependency(modes_);
 				}
 
-			/// This is the function where the calculation takes place. see ARTfunctionoid::ApplyFunction() for details	
+			/// This is the function where the calculation takes place. see ART::Functionoid::ApplyFunction() for details	
 			virtual void ApplyFunction()
 				{
 					int modes = modes_->GetInt();
@@ -482,7 +482,7 @@ private:
 
 
 				}
-			/// see ARTfunctionoid::GetIterationNumber() for details	
+			/// see ART::Functionoid::GetIterationNumber() for details	
 			virtual int GetIterationNumber()	{	return wfrequencies_->GetIterationNumber();	}
 
 		private:
@@ -723,7 +723,7 @@ class BranchModel : public ART::ModelInterface
 {
 private:
 	//functionoid as wrapper for multimodeInputImpedance
-	class CombineParallelImpedanceFunc : public ARTfunctionoid
+	class CombineParallelImpedanceFunc : public ART::Functionoid
 	{
 		public:
 		  /**
@@ -750,7 +750,7 @@ private:
 			/**
 			 * Returns true if functionoid f is the same as this functionoid.
 			 */       			
-      virtual bool IsSameFunctionoid(ARTfunctionoid* f)
+      virtual bool IsSameFunctionoid(ART::Functionoid* f)
 				{
 					CombineParallelImpedanceFunc* mf = dynamic_cast<CombineParallelImpedanceFunc*>(f);
 					if (!mf) return false;
@@ -772,7 +772,7 @@ private:
 					out_->AddDependency(modes_);
 				}
 
-			/// This is the function where the calculation takes place. see ARTfunctionoid::ApplyFunction() for details	
+			/// This is the function where the calculation takes place. see ART::Functionoid::ApplyFunction() for details	
 			virtual void ApplyFunction()
 				{
 					int modes = modes_->GetInt();
@@ -805,7 +805,7 @@ private:
 					}
 				
 				}
-			/// see ARTfunctionoid::GetIterationNumber() for details	
+			/// see ART::Functionoid::GetIterationNumber() for details	
 			virtual int GetIterationNumber()	{	return wfrequencies_->GetIterationNumber();	}
 
 		private:
@@ -922,7 +922,7 @@ class TerminationModel : public ART::ModelInterface
 {
 private:
 	//functionoid as wrapper for multimodeInputImpedance
-	class RadiationImpedanceFunc : public ARTfunctionoid
+	class RadiationImpedanceFunc : public ART::Functionoid
 	{
 		public:
 		  /**
@@ -946,7 +946,7 @@ private:
 			/**
 			 * Returns true if functionoid f is the same as this functionoid.
 			 */       			
-      virtual bool IsSameFunctionoid(ARTfunctionoid* f)
+      virtual bool IsSameFunctionoid(ART::Functionoid* f)
 				{
 					RadiationImpedanceFunc* mf = dynamic_cast<RadiationImpedanceFunc*>(f);
 					if (!mf) return false;
@@ -966,7 +966,7 @@ private:
 					out_->AddDependency(modes_);
 				}
 
-			/// This is the function where the calculation takes place. see ARTfunctionoid::ApplyFunction() for details	
+			/// This is the function where the calculation takes place. see ART::Functionoid::ApplyFunction() for details	
 			virtual void ApplyFunction()
 				{
 					int modes = modes_->GetInt();
@@ -988,7 +988,7 @@ private:
 					}
 				
 				}
-			/// see ARTfunctionoid::GetIterationNumber() for details	
+			/// see ART::Functionoid::GetIterationNumber() for details	
 			virtual int GetIterationNumber()	{	return wfrequencies_->GetIterationNumber();	}
 
 		private:

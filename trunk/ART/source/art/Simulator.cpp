@@ -49,7 +49,7 @@
 #include "Simulator.h"
 #include "ARTlistProp.h"
 #include "ARTtimeModule.h"
-#include "ARTfunctionoid.h"
+#include "Functionoid.h"
 
 using namespace mup;
 

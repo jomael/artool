@@ -2,13 +2,13 @@
 #ifndef ARTFUNCTIONOID_CPP
 #define ARTFUNCTIONOID_CPP
 
-#include "ARTfunctionoid.h"
+#include "Functionoid.h"
 #include "DataContainer.h"
 
 #include "ARTlink.h"
 
 using namespace ART;
-void ARTfunctionoid::SetDependencies()
+void Functionoid::SetDependencies()
 {
 	//add all registered input parameters as dependency to output
 	vector<DataContainer*>::iterator it;
@@ -16,10 +16,10 @@ void ARTfunctionoid::SetDependencies()
 		out_->AddDependency(*it);
 }
 
-ARTfunctionoid::~ARTfunctionoid() {}
+Functionoid::~Functionoid() {}
 
 
-bool ARTfrqGridFunc::IsSameFunctionoid(ARTfunctionoid* f)
+bool ARTfrqGridFunc::IsSameFunctionoid(Functionoid* f)
 {
 	ARTfrqGridFunc* mf = dynamic_cast<ARTfrqGridFunc*>(f);
 	if (!mf) return false;
@@ -78,7 +78,7 @@ int ARTfrqGridFunc::GetIterationNumber()
 	out_->AddDependency(frequencies_);
 }*/
 
-bool ARTwfrqGridFunc::IsSameFunctionoid(ARTfunctionoid* f)
+bool ARTwfrqGridFunc::IsSameFunctionoid(Functionoid* f)
 {
 	ARTwfrqGridFunc* mf = dynamic_cast<ARTwfrqGridFunc*>(f);
 	if (!mf) return false;

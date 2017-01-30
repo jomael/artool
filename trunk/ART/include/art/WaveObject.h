@@ -42,7 +42,7 @@
 
 #include "DataContainer.h"
 #include "ARTlink.h"
-#include "ARTfunctionoid.h"
+#include "Functionoid.h"
 
 /** \addtogroup waveObjectInterfaceGroup waveObject
  * @{
@@ -140,7 +140,7 @@ class WaveObjectMMImpedance : public WaveObjectInterface
 	 * matrix by dropping all modes except the first mode and to write the modes it into a 
 	 * C_ART_ntri data container.
 	 */	 
-	class ConvertMMImpToImp : public ARTfunctionoid //similar to ARTmmInpImpComplexFunc, but so far w/o frequencies in Hz
+	class ConvertMMImpToImp : public Functionoid //similar to ARTmmInpImpComplexFunc, but so far w/o frequencies in Hz
 	{
 		public:
 		  /**
@@ -172,7 +172,7 @@ class WaveObjectMMImpedance : public WaveObjectInterface
 				}
 			}
 
-			virtual bool IsSameFunctionoid(ARTfunctionoid* f)
+			virtual bool IsSameFunctionoid(Functionoid* f)
 			{
 				ConvertMMImpToImp* mf = dynamic_cast<ConvertMMImpToImp*>(f);
 				if (!mf) return false;
@@ -195,7 +195,7 @@ class WaveObjectMMImpedance : public WaveObjectInterface
 	 *    waveobject.     
 	 * @param frq The frequency grid giving the frequency for every index.     	
 	 */	
- WaveObjectMMImpedance( string name , ARTfunctionoid* MMimpedanceFunc = NULL, ART::DataContainer* frq = NULL)
+ WaveObjectMMImpedance( string name , Functionoid* MMimpedanceFunc = NULL, ART::DataContainer* frq = NULL)
 	: name_(name), frequencies(frq)
 	{
 	  MMimpedance = new ART::DataContainer(name_,MMimpedanceFunc);
@@ -209,7 +209,7 @@ class WaveObjectMMImpedance : public WaveObjectInterface
 	 *        waveobject.
 	 * @param frq The frequency grid giving the frequency for every index.
 	 */	
- WaveObjectMMImpedance( ART::DataContainer* out, ARTfunctionoid* MMimpedanceFunc = NULL, ART::DataContainer* frq = NULL )
+ WaveObjectMMImpedance( ART::DataContainer* out, Functionoid* MMimpedanceFunc = NULL, ART::DataContainer* frq = NULL )
 	: frequencies(frq)
 	{
 		if (!out) throw ARTerror("WaveObjectMMImpedance(Constructor)", "Argument '%s1' is NULL.","out");
@@ -224,7 +224,7 @@ class WaveObjectMMImpedance : public WaveObjectInterface
 	 *    waveobject.
    * @param frq The frequency grid giving the frequency for every index.
 	 */
-	virtual void SetCalculation(ARTfunctionoid* MMimpedanceFunc, ART::DataContainer* frq)
+	virtual void SetCalculation(Functionoid* MMimpedanceFunc, ART::DataContainer* frq)
 	{
 		if (!frq) throw ARTerror("SetCalculation", "Argument '%s1' is NULL.","frq");
 		frequencies = frq;

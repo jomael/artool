@@ -6,7 +6,7 @@
 #include "DataContainer.h"
 #include "Simulator.h"
 #include "ARTlink.h"
-#include "ARTfunctionoid.h"
+#include "Functionoid.h"
 #include "ARTobject.h"
 #include "Element.h"
 
@@ -112,7 +112,7 @@ DataContainer::DataContainer(const T_ART_Type dtyp, const int dlen, const string
 	}
 }
 
-DataContainer::DataContainer(std::string name, ARTfunctionoid* func) :
+DataContainer::DataContainer(std::string name, Functionoid* func) :
 		ARTvariant(),
 		IValue(cmVAL),
 		valid_(false),
@@ -135,7 +135,7 @@ DataContainer::DataContainer(std::string name, ARTfunctionoid* func) :
 		//arrayVals_(NULL),
 		m_pCache_(NULL)
 {
-	_DBG_MSG("string, ARTfunctionoid*");
+	_DBG_MSG("string, Functionoid*");
 	if (func_)
 	{
 		func_->SetOutput(this);
@@ -918,9 +918,9 @@ bool DataContainer::CheckValidity()
 	return true;
 }
 
-void DataContainer::SetFunction(ARTfunctionoid* func)
+void DataContainer::SetFunction(Functionoid* func)
 {
-	_DBG_MSG("ARTfunctionoid*");
+	_DBG_MSG("Functionoid*");
 	//std::cout << "\n\nSTART (varname: " << varname_ << endl; DebugDepTree(""); std::cout << "END\n\n";
 
 	if (!func) throw ARTerror("DataContainer::SetFunction", "Argument '%s1' is NULL.","func");
