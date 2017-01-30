@@ -391,7 +391,7 @@ P_ART_Element    __CALLCONV ARTFindElement     (P_ART_Simulator simulator, const
 P_ART_Circuit    __CALLCONV ARTFindCircuit     (P_ART_Simulator simulator, const char* name)
 {
 	//Find the circuit
-	ARTcircuit* circuit = static_cast<ARTcircuit*>(simulator->circuits->FindObject(name));
+	Circuit* circuit = static_cast<Circuit*>(simulator->circuits->FindObject(name));
 	return circuit;
 }
 
@@ -531,12 +531,12 @@ bool    __CALLCONV ARTDestroyElement     (P_ART_Simulator simulator,P_ART_Elemen
 
 	//check for references to this element (in circuits) and set them to NULL
 	int c = 0;
-	ARTcircuit* circuit = (ARTcircuit*)simulator->circuits->GetObjects(NULL);
+	Circuit* circuit = (Circuit*)simulator->circuits->GetObjects(NULL);
 	while (circuit)
 	{
 		c += circuit->DeleteElement( (ARTelement*) element);
 		//get next circuit
-		circuit = (ARTcircuit*)simulator->circuits->GetObjects(circuit);
+		circuit = (Circuit*)simulator->circuits->GetObjects(circuit);
 	}
 
 	//if (c > 0) Warning: Elements that are parts of circuits were deleted!
@@ -646,10 +646,10 @@ P_ART_Circuit    __CALLCONV ARTCreateCircuit     (P_ART_Simulator simulator, con
 	if (simulator == NULL) throw ARTerror("ARTCreateCircuit", "Invalid simulator"); 
 
 	//Circuits with the same name will cause problems later on, so check that the name is free
-	ARTcircuit* newCircuit = static_cast<ARTcircuit*>(simulator->circuits->FindObject(name));
+	Circuit* newCircuit = static_cast<Circuit*>(simulator->circuits->FindObject(name));
 	if (newCircuit) throw ARTerror("ARTCreateCircuit", "A circuit with the name '%s1' already exists.", name);
 	
-	newCircuit = new ARTcircuit(simulator,name,"","","");
+	newCircuit = new Circuit(simulator,name,"","","");
 
 	simulator->circuits->AppendObject(newCircuit);
 

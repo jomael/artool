@@ -239,7 +239,7 @@ AcousticResearchTool::AcousticResearchTool() : ARTobject("ART","Acoustic Researc
         obj = prototypeModels->AppendObject(new ToneHole());
         obj = prototypeModels->AppendObject(new TerminationModel());
 
-        // The branch is not a model, it is used by ARTcircuit objects, when other ARTcircuits are inserted into the instrument.
+        // The branch is not a model, it is used by Circuit objects, when other Circuits are inserted into the instrument.
         //obj = prototypeModels->AppendObject(new BranchModel());
 
         // register prototypes of time modules

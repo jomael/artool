@@ -50,7 +50,7 @@
 
 // forward declarations
 namespace ART{
-  class ARTcircuit;
+  class Circuit;
 }
 using std::string;
 
@@ -152,7 +152,7 @@ class ARTmodelInterface : public ARTobject
 		 *  Prototypes need to write formulas for impedance calculation and must therefore have access to some 
 		 *  properties of the simulator and circuit (which will in turn give access to some properties of the simulator)
 		 */     		
-		void SetCircuit(ART::ARTcircuit* cir) {circuit = cir;};
+		void SetCircuit(ART::Circuit* cir) {circuit = cir;};
 
 	protected:
 		/**
@@ -160,7 +160,7 @@ class ARTmodelInterface : public ARTobject
 		 * Prototypes need to write formulas for impedance calculation and must therefore have access to some 
 		 * properties of the simulator and circuit (which will in turn give access to some properties of the simulator)
 		 */     
-		ART::ARTcircuit* circuit; 
+		ART::Circuit* circuit; 
 
 		/**
 		 * This field must contain a pointer to the simulator the element was created in.		
