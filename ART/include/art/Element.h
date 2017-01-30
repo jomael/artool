@@ -66,7 +66,7 @@ public:
         WaveObjectInterface* wavefrontIn;
 
 
-        Element(const string name, const string sds="", const string lds="", const string htm="", ModelInterface* prototype=NULL, ARTSimulator* sim=NULL);
+        Element(const string name, const string sds="", const string lds="", const string htm="", ModelInterface* prototype=NULL, Simulator* sim=NULL);
 //      : ModelInterface(name,sds,lds,htm),
 //        //propMatrix(NULL),
 //        model(NULL),
@@ -151,7 +151,7 @@ public:
 
         virtual void Pressure(WaveObjectInterface*, WaveObjectInterface*&) {throw ARTerror("Element::Pressure","The function is not implemented.");};
 
-    void SetScope(ARTSimulator* sim);
+    void SetScope(Simulator* sim);
 //      {
 //              if (sim == NULL)
 //                      throw ARTerror("Element::SetScope", "The specified simulator is invalid.");

@@ -38,7 +38,7 @@
 ***************************************************************************/
 
 /*
- * ARTSimulator.h
+ * Simulator.h
  *
  *  Created on: Jul 11, 2012
  *      Author: cbg
@@ -59,13 +59,13 @@ using namespace mup;
 
 // forward declaration
 class ARTItimeModule;
-
+namespace ART{
 /**
  * Simulators belong to a simulation domain (frequency, time) and simulate waves
  * of a certain type (plain, spherical, multimodal). This is the parent class
  * for all implementations of a simulator in ART.
  */
-class ARTSimulator : public ARTobject {
+class Simulator : public ARTobject {
 protected:
 
   /** Defines the domain type (frequency or time) of the current simulator. */
@@ -102,7 +102,7 @@ public:
    * @param[in] lds Long description of the created simulator.
    * @param[in] htm Path to help file in HTML format.
    */
-  ARTSimulator(const string name, const string domain="invalidDomain",
+  Simulator(const string name, const string domain="invalidDomain",
       const string sds="", const string lds="", const string htm="");
 
   /**
@@ -128,7 +128,7 @@ public:
    *        properties will be deallocated by the destructor of the ARTObject
    *        class.
    */
-  virtual ~ARTSimulator();
+  virtual ~Simulator();
 
   //these lists point into list of AcousticResearchTool Object
   /**
@@ -153,5 +153,5 @@ public:
   virtual void UnregisterDataProp(ARTdataProp* dataProp);
 
 };
-
+}
 #endif /* ARTSIMULATOR_H_ */

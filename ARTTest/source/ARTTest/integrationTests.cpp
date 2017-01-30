@@ -4866,7 +4866,7 @@ TEST_DEF_END(FibonacciNumbers2)
 
 TEST_DEF_START(FibonacciNumbers3, ARTtimeSimulatorTests)
 
-        ARTSimulator* myTimeSimulator;
+        Simulator* myTimeSimulator;
         ARTItimeModule* timeModule;
         ARTItimeModule* timeModule2;
 

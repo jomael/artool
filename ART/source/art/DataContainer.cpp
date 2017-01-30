@@ -4,7 +4,7 @@
 
 #include <iostream>
 #include "DataContainer.h"
-#include "ARTSimulator.h"
+#include "Simulator.h"
 #include "ARTlink.h"
 #include "ARTfunctionoid.h"
 #include "ARTobject.h"
@@ -562,7 +562,7 @@ ARTprogressIndicator DataContainer::progressIndicator = ARTprogressIndicator(NUL
 //**************************************************************************************************************
 // DataContainer
 
-void DataContainer::SetDefinition(const string& s, ARTSimulator* scope)
+void DataContainer::SetDefinition(const string& s, Simulator* scope)
 {
 	_DBG_MSG("const string&, ARTsimulator");
 	scope_ = scope;					

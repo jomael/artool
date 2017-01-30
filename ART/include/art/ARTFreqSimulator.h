@@ -47,7 +47,7 @@
 #include "ARTobject.h"
 #include "ARTproperty.h"
 #include "ARTdataProp.h"
-#include "ARTSimulator.h"
+#include "Simulator.h"
 
 using namespace mup;
 //using std::list;
@@ -57,7 +57,7 @@ class ARTItimeModule;
 /**
  * @brief Implementation of a simulator for the frequency domain.
  */
-class ARTFreqSimulator : public ARTSimulator
+class ARTFreqSimulator : public ART::Simulator
 {
 protected:
   /**

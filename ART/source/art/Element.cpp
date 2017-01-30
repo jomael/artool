@@ -41,7 +41,7 @@
 
 using namespace ART;
 
-Element::Element(const string name, const string sds, const string lds, const string htm, ModelInterface* prototype, ARTSimulator* sim)
+Element::Element(const string name, const string sds, const string lds, const string htm, ModelInterface* prototype, Simulator* sim)
 : ModelInterface(name,sds,lds,htm),
   //propMatrix(NULL),
   model(NULL),
@@ -107,7 +107,7 @@ void Element::PrepareCalculation()
         while(prop); //until no prop. is found, it's NULL then...
 }
 
-void Element::SetScope(ARTSimulator* sim)
+void Element::SetScope(Simulator* sim)
 {
         if (sim == NULL)
                 throw ARTerror("Element::SetScope", "The specified simulator is invalid.");

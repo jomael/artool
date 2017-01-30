@@ -39,9 +39,9 @@
 #include "ARTobject.h"
 #include "ARTmethod.h"
 #include "ARTlistProp.h"
-#include "ARTSimulator.h"
+#include "Simulator.h"
 
-
+using namespace ART;
 //**************************************************************************************************************
 // ARTobject
 ARTobject::ARTobject(const ARTobject& orig) //copy constructor

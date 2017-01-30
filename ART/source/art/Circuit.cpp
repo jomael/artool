@@ -42,7 +42,7 @@
 using namespace ART;
 //**************************************************************************************************************
 // Circuit
-Circuit::Circuit(ARTSimulator* simulator, const string name, const string sds, const string lds, const string htm)
+Circuit::Circuit(Simulator* simulator, const string name, const string sds, const string lds, const string htm)
         : Element(name,sds,lds,htm), references(), impedanceCurve_(NULL), simulator_(simulator), wavefrontRadiation(NULL) // , wavefrontOut(NULL), wavefrontIn(NULL)
 
 {
