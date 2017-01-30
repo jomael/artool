@@ -76,7 +76,7 @@ public:
         ARTvariant* GetRange() {return range;}
         void SetRange(ARTvariant* r) {range = r;}
 
-        virtual ARTcell* clone() {return new ARTdataProp(*this);}
+        virtual Cell* clone() {return new ARTdataProp(*this);}
 private:
         ARTvariant* range;
 };

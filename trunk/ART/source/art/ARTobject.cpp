@@ -45,7 +45,7 @@
 //**************************************************************************************************************
 // ARTobject
 ARTobject::ARTobject(const ARTobject& orig) //copy constructor
-        : ARTcell(orig) //copy inherited stuff from ARTcell with its own copy constructor
+        : Cell(orig) //copy inherited stuff from Cell with its own copy constructor
         {
                 //std::cout << "ARTobject::ARTobject("<<GetName()<<"):copyconstr\n";
                 propertyList_ = orig.propertyList_;

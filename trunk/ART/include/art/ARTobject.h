@@ -57,7 +57,7 @@ class ARTmethod;
  * This is the base class for all acoustic objects. It contains fields for name,
  * descriptions and properties.
  */
-class ARTobject : public ART::ARTcell {
+class ARTobject : public ART::Cell {
 private:
 protected:
         list<ARTproperty*>      propertyList_;
@@ -66,7 +66,7 @@ protected:
         list<ARTmethod*>::iterator miter_;
 public:
         /// objects must have a name, the rest is optional
-        ARTobject(const string name, const string sds="", const string lds="", const string htm="") : ARTcell(name,sds,lds,htm),
+        ARTobject(const string name, const string sds="", const string lds="", const string htm="") : Cell(name,sds,lds,htm),
                 propertyList_(list<ARTproperty*>()),    piter_(propertyList_.begin()),
                 methodList_(list<ARTmethod*>()),                miter_(methodList_.begin()) {}
 
@@ -75,7 +75,7 @@ public:
 
         virtual ~ARTobject();
 
-        virtual ARTcell* clone() {return new ARTobject(*this);}
+        virtual Cell* clone() {return new ARTobject(*this);}
 
   /// iterate through property list (pass NULL to restart iteration, receive NULL after last element)
         virtual ARTproperty* GetProperties(ARTproperty* pos);
