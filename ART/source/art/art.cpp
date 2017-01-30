@@ -336,7 +336,7 @@ P_ART_Element    __CALLCONV ARTCreateElement     (P_ART_Simulator simulator, con
 			if (method == NULL) throw ARTerror("ARTCreateElement", "The prototype model does not support the wavetype of the simulator.");
 		}
 
-		Element* newElement = new Element(name,"","","",(ARTmodelInterface*)prototype, simulator);
+		Element* newElement = new Element(name,"","","",(ModelInterface*)prototype, simulator);
 		
 		// now register all data properties of the new Element
 		// to the current simulator
@@ -408,7 +408,7 @@ P_ART_Element    __CALLCONV ARTChangeElementModel     (P_ART_Simulator simulator
 	if (element == NULL) throw ARTerror("ARTChangeElementType", "Element is NULL");
 
 	//Find the prototype
-	ARTmodelInterface* prototype = (ARTmodelInterface*)(art->prototypeModels->FindObject(type));
+	ModelInterface* prototype = (ModelInterface*)(art->prototypeModels->FindObject(type));
 
 	//if the prototype was found and if it is not the same as the prototype of the element, then continue
 	if ((prototype != NULL) && (strcmp(prototype->GetName().c_str(),element->model->GetName().c_str()) != 0))

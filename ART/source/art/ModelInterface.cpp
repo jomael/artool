@@ -37,9 +37,9 @@
 *                                                                         *
 ***************************************************************************/
 
-#include "ARTmodelInterface.h"
-
-void ARTmodelInterface::SetSimulator(ARTSimulator* sim)
+#include "ModelInterface.h"
+using namespace ART;
+void ModelInterface::SetSimulator(ARTSimulator* sim)
 {
   simulator = dynamic_cast<ARTFreqSimulator*>(sim);
 }
