@@ -102,7 +102,8 @@ ApplyFunction or by evaluation of parser strings. Then the queried value itself 
 The dataContainers are a network of dependencies. If one dataContainer is invalidated, all dataContainers
 depending on it are invalidated as well. A dataContainer stores its value until it has to be recalculated.
 */
-class ARTfunctionoid
+namespace ART{
+class Functionoid
 {   
 public:
 	//Jeder Funktionoid muss eine Funktion zur Berechnung seines Ausgabe-Datenkontainers zur Verfngung stellen
@@ -131,11 +132,11 @@ public:
 	///Every functionoid must register with data containers, on which its output value depends. override only if special dependencies have to be established.
 	virtual void SetDependencies(); 
 
-	virtual ~ARTfunctionoid() = 0;
+	virtual ~Functionoid() = 0;
 
-	//fnr einen gegebenen 2eiger vom Typ ARTfunctionoid (oder subtyp), muss der Funktionoid entscheiden, ob der 2eiger die gleiche Funktion reprSsentiert
-	///Given a pointer of type ARTfunctionoid (or subtypes), the functionoid needs to decide if the pointer represents the same function.
-	virtual bool IsSameFunctionoid(ARTfunctionoid* f) = 0; //{return false;}
+	//fnr einen gegebenen 2eiger vom Typ Functionoid (oder subtyp), muss der Funktionoid entscheiden, ob der 2eiger die gleiche Funktion reprSsentiert
+	///Given a pointer of type Functionoid (or subtypes), the functionoid needs to decide if the pointer represents the same function.
+	virtual bool IsSameFunctionoid(Functionoid* f) = 0; //{return false;}
 
   ///This function should determine the number of iterations as exactly as possible according to the current state of all dependencies so that the evaluation cost of this data container can be estimated. (The user should take care to keep data containers like frequency grids or other determining the number of iterations valid before estimating the evaluation cost!) This number should be exactly the same as the number of times the function DataContainer::progressIndicator.Continue is called in the functionoid's applyFunction. 
 	virtual int GetIterationNumber()= 0; //{return false;}
@@ -152,7 +153,7 @@ protected:
 
 
 //functionoid as wrapper for multimodeRadiationImpedance
-class ARTmmRadImpFunc : public ARTfunctionoid
+class ARTmmRadImpFunc : public Functionoid
 {
 public:
  ARTmmRadImpFunc(ART::Element* host, ART::DataContainer* frequencies, ART::DataContainer* modes, bool hasBends)
@@ -165,7 +166,7 @@ public:
 		in_.push_back(modes);
 	}
 
-	virtual bool IsSameFunctionoid(ARTfunctionoid* f);
+	virtual bool IsSameFunctionoid(Functionoid* f);
 	virtual void SetDependencies(); 
 	virtual void ApplyFunction();
 	virtual int GetIterationNumber();
@@ -178,7 +179,7 @@ private:
 };
 
 //functionoid as wrapper for frq-Grid
-class ARTfrqGridFunc : public ARTfunctionoid
+class ARTfrqGridFunc : public Functionoid
 {
 public:
  ARTfrqGridFunc(ART::DataContainer* lowfrq, ART::DataContainer* highfrq, ART::DataContainer* frqStep)
@@ -192,7 +193,7 @@ public:
 		in_.push_back(frqStep);
 	}
 
-	virtual bool IsSameFunctionoid(ARTfunctionoid* f);
+	virtual bool IsSameFunctionoid(Functionoid* f);
 	//virtual void SetDependencies();
 	virtual void ApplyFunction();
 	virtual int GetIterationNumber();
@@ -204,7 +205,7 @@ private:
 };
 
 //functionoid as wrapper for wfrq-Grid
-class ARTwfrqGridFunc : public ARTfunctionoid
+class ARTwfrqGridFunc : public Functionoid
 {
 public:
  ARTwfrqGridFunc(ART::DataContainer* frqGrid)
@@ -214,7 +215,7 @@ public:
 		in_.push_back(frqGrid);
 	}
 
-	virtual bool IsSameFunctionoid(ARTfunctionoid* f);
+	virtual bool IsSameFunctionoid(Functionoid* f);
 	//virtual void SetDependencies();
 	virtual void ApplyFunction();
 	virtual int GetIterationNumber();
@@ -222,7 +223,7 @@ public:
 private:
 	ART::DataContainer* frequencies_;
 };
-
+}
 
 /**
  * @}

@@ -58,9 +58,9 @@ using namespace mup;
 
 class ARTobject;
 // cbg: forward declaration
-class ARTfunctionoid;
 namespace ART{
-class Simulator;
+  class Functionoid;
+  class Simulator;
 }
 /** \addtogroup ARTimpl
  * @{
@@ -152,7 +152,7 @@ protected:
 	mutable bool valid_;		///< true if value is consistent with definition
 	bool counted_;		
 	mutable bool eval_started;
-	ARTfunctionoid* func_;
+	Functionoid* func_;
 	// double complexity_; ///< after a calculation the amount of needed CPU ticks divided by the number of iterations is saved to estimate future evaluation cost more accurately
 
 	list<DataContainer*>	clientList_;			///< other dataContainers depending on this one (need invalidation when value changes)
@@ -219,7 +219,7 @@ public:
 	DataContainer(); /**< default constructor */
 
 	DataContainer(const T_ART_Type dtyp, const int dlen, const string varname = "");
-	DataContainer(std::string name, ARTfunctionoid* func = NULL);
+	DataContainer(std::string name, Functionoid* func = NULL);
 
 	DataContainer(const int i);
 	DataContainer(const double d);
@@ -348,7 +348,7 @@ public:
 	void SetScope(ART::Simulator* sim) {scope_ = sim;}
 	ART::Simulator* GetScope() {return scope_;}
 
-	void SetFunction(ARTfunctionoid* func);
+	void SetFunction(Functionoid* func);
 
 	string DebugInfo();
 
