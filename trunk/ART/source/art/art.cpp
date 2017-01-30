@@ -57,7 +57,7 @@
 
 #include "ART.h"
 //#include "strparsing.h"
-//#include "ARTmodel.h"
+//#include "Model.h"
 #include "DataContainer.h"
 #include "ARTSimulator.h"
 #include "ARTFreqSimulator.h"

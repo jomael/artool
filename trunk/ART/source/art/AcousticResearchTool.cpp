@@ -40,7 +40,7 @@
 #include "AcousticResearchTool.h"
 #include "ARTdataProp.h"
 #include "ARTmethod.h"
-#include "ARTmodel.h"
+#include "Model.h"
 #include "ARTtimeModule.h"
 #include "timePrototypes.h"
 #include "ART.h"
