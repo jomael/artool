@@ -41,8 +41,8 @@
 #include "ARTmodel.h"
 using namespace ART;
 //**************************************************************************************************************
-// ARTcircuit
-ARTcircuit::ARTcircuit(ARTSimulator* simulator, const string name, const string sds, const string lds, const string htm)
+// Circuit
+Circuit::Circuit(ARTSimulator* simulator, const string name, const string sds, const string lds, const string htm)
         : ARTelement(name,sds,lds,htm), references(), impedanceCurve_(NULL), simulator_(simulator), wavefrontRadiation(NULL) // , wavefrontOut(NULL), wavefrontIn(NULL)
 
 {
@@ -54,15 +54,15 @@ ARTcircuit::ARTcircuit(ARTSimulator* simulator, const string name, const string 
         model->SetSimulator(simulator);
 }
 
-void ARTcircuit::AppendElement(ARTelement* element)
+void Circuit::AppendElement(ARTelement* element)
 {
         //try to find the element in the circuit. it is not legal to append an element twice!
-        if (GetElementPosition(element) != -1) throw ARTerror("ARTcircuit::appendElement", "The element is already appended to the circuit!");
+        if (GetElementPosition(element) != -1) throw ARTerror("Circuit::appendElement", "The element is already appended to the circuit!");
         //append element pointed to by element to vector
         references.push_back(element);
 }
 
-int ARTcircuit::GetElementPosition(ARTelement* el)
+int Circuit::GetElementPosition(ARTelement* el)
 {
         int pos;
         pos = -1;
@@ -78,10 +78,10 @@ int ARTcircuit::GetElementPosition(ARTelement* el)
         return pos;
 }
 
-void ARTcircuit::AppendElementBefore(ARTelement* before, ARTelement* element)
+void Circuit::AppendElementBefore(ARTelement* before, ARTelement* element)
 {
         //try to find the element in the circuit. it is not legal to append an element twice!
-        if (GetElementPosition(element) != -1) throw ARTerror("ARTcircuit::appendElement", "The element is already appended to the circuit!");
+        if (GetElementPosition(element) != -1) throw ARTerror("Circuit::appendElement", "The element is already appended to the circuit!");
 
         vector<ARTelement*>::iterator pos;
         pos = references.end();
@@ -94,15 +94,15 @@ void ARTcircuit::AppendElementBefore(ARTelement* before, ARTelement* element)
                         break;
                 }
         }
-        if (pos == references.end()) throw ARTerror("ARTcircuit::appendElementBefore", "The element specified as parameter 'before' was not found.");
+        if (pos == references.end()) throw ARTerror("Circuit::appendElementBefore", "The element specified as parameter 'before' was not found.");
 
         references.insert(pos, element);
 }
 
-void ARTcircuit::AppendElementAfter(ARTelement* after, ARTelement* element)
+void Circuit::AppendElementAfter(ARTelement* after, ARTelement* element)
 {
         //try to find the element in the circuit. it is not legal to append an element twice!
-        if (GetElementPosition(element) != -1) throw ARTerror("ARTcircuit::appendElement", "The element is already appended to the circuit!");
+        if (GetElementPosition(element) != -1) throw ARTerror("Circuit::appendElement", "The element is already appended to the circuit!");
 
         vector<ARTelement*>::iterator pos;
         pos = references.begin();
@@ -115,12 +115,12 @@ void ARTcircuit::AppendElementAfter(ARTelement* after, ARTelement* element)
                         break;
                 }
         }
-        if (pos == references.begin()) throw ARTerror("ARTcircuit::appendElementafter", "The element specified as parameter 'after' was not found.");
+        if (pos == references.begin()) throw ARTerror("Circuit::appendElementafter", "The element specified as parameter 'after' was not found.");
         //insert element *before* pos (that's why we've moved it...)
         references.insert(pos, element);
 }
 
-int ARTcircuit::DeleteElement(ARTelement* element)
+int Circuit::DeleteElement(ARTelement* element)
 {
         int found = 0;
         //find element
@@ -134,7 +134,7 @@ int ARTcircuit::DeleteElement(ARTelement* element)
         return found;
 }
 
-int ARTcircuit::RemoveElement(ARTelement* element)
+int Circuit::RemoveElement(ARTelement* element)
 {
         int found = 0;
         //find element
@@ -148,11 +148,11 @@ int ARTcircuit::RemoveElement(ARTelement* element)
                 }
                 ++it;
         }
-//      if (!found) throw ARTerror("ARTcircuit::removeElement", "The element specified as parameter 'element' was not found.");
+//      if (!found) throw ARTerror("Circuit::removeElement", "The element specified as parameter 'element' was not found.");
         return found;
 }
 
-int ARTcircuit::ReplaceElement(ARTelement* search, ARTelement* replace)
+int Circuit::ReplaceElement(ARTelement* search, ARTelement* replace)
 {
         int found = 0;
         //find element
@@ -163,18 +163,18 @@ int ARTcircuit::ReplaceElement(ARTelement* search, ARTelement* replace)
                         *it = replace; //replace the pointer
                         found++;
                 }
-//      if (!found) throw ARTerror("ARTcircuit::replaceElement", "The element specified as parameter 'search' was not found.");
+//      if (!found) throw ARTerror("Circuit::replaceElement", "The element specified as parameter 'search' was not found.");
         return found;
 }
 
-int ARTcircuit::RemoveAllElements()
+int Circuit::RemoveAllElements()
 {
         int s = references.size();
         references.clear();
         return s;
 }
 
-bool ARTcircuit::HasBends()
+bool Circuit::HasBends()
 {
         bool hasBends = false;
         //cycle through all references, check if they have bends
@@ -185,9 +185,9 @@ bool ARTcircuit::HasBends()
         return hasBends;
 }
 
-void ARTcircuit::PrepareCalculation()
+void Circuit::PrepareCalculation()
 {
-        //cout << " **************** ARTcircuit::prepareCalculation() " << GetName() << " *********\n" ;
+        //cout << " **************** Circuit::prepareCalculation() " << GetName() << " *********\n" ;
         //DataContainer* frqGrid = simulator_->GetAngularFrequencyGrid();
         //DataContainer* wfrqGrid = simulator_->GetFrequencyGrid();
         //DataContainer* modes = simulator_->GetNumberOfModes();
@@ -206,7 +206,7 @@ void ARTcircuit::PrepareCalculation()
         // if the reference is indeed a circuit, the circuits prepareCalculation will be called, of course...
         for (i = 0; i < references.size(); i++)
         {
-                if (references.at(i) == NULL) throw ARTerror("ARTcircuit::prepareCalculation", "An element belonging to the circuit is NULL. Was it destroyed but not removed from circuit?");
+                if (references.at(i) == NULL) throw ARTerror("Circuit::prepareCalculation", "An element belonging to the circuit is NULL. Was it destroyed but not removed from circuit?");
                 references.at(i)->PrepareCalculation();
         }
 
@@ -279,12 +279,12 @@ void ARTcircuit::PrepareCalculation()
 }
 
 
-void ARTcircuit::RadiationImpedance(WaveObjectInterface*& out)
+void Circuit::RadiationImpedance(WaveObjectInterface*& out)
 {
-        throw ARTerror("ARTcircuit::RadiationImpedance", "This function is not implemented. Do not use circuits as outermost elements in an instrument. Use them to simulate branches, which implies: not as outermost element!");
+        throw ARTerror("Circuit::RadiationImpedance", "This function is not implemented. Do not use circuits as outermost elements in an instrument. Use them to simulate branches, which implies: not as outermost element!");
 }
 
-void ARTcircuit::InputImpedance(WaveObjectInterface* in, WaveObjectInterface*& out)
+void Circuit::InputImpedance(WaveObjectInterface* in, WaveObjectInterface*& out)
 {
         //it is guaranteed for circuits that prepare calculation is called first, so references.at(0) contains the inputimpedance of the circuit.
         //we will take this input impedance, use the the branch model (every circuit has), plug it in - along with the other input impedance

@@ -48,10 +48,10 @@
 namespace ART{
   /**
    * This class represents a wind instrument, that is built from several ARTelement:s
-   * which are put together in a certain order. ARTcircuit does not have a direct connection
+   * which are put together in a certain order. Circuit does not have a direct connection
    * to a hornelement, so prototype_ is NULL, its default value.
    */
-  class ARTcircuit : public ARTelement {
+  class Circuit : public ARTelement {
   private:
     vector<ARTelement*> references;
     DataContainer* impedanceCurve_; //Input impedance as triple vector (f, re, im)
@@ -59,7 +59,7 @@ namespace ART{
     WaveObjectInterface* wavefrontRadiation; //Wave object representing the radiation impedance of the circuit. This object is constructed in prepareCalculation
 
   public:
-    ARTcircuit(ARTSimulator* simulator, const string name, const string sds="", const string lds="", const string htm="");
+    Circuit(ARTSimulator* simulator, const string name, const string sds="", const string lds="", const string htm="");
 
     virtual void Rename(const string newname)
     {
@@ -86,7 +86,7 @@ namespace ART{
     virtual void RadiationImpedance(WaveObjectInterface*& out);
     virtual void InputImpedance(WaveObjectInterface* in, WaveObjectInterface*& out);
     virtual bool HasBends();
-    virtual ~ARTcircuit ()
+    virtual ~Circuit ()
       {
 	//destroy branchmodel
 	delete model;
