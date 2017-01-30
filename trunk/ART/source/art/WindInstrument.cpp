@@ -51,7 +51,7 @@
 
 #ifdef _CONSOLE
 #endif
-
+using namespace ART;
 //require some corrections. isn't working with several holes on the same branch section...
 vector<int> NbHole_;
 vector<WindInstrument*> HoleVector;

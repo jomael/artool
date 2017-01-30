@@ -62,7 +62,7 @@ using namespace std;
 
 #include "WindInstrument.h"
 #include "rosenbrock.h"
-
+using namespace ART;
 #ifndef OBJ_PARAMS
 #define OBJ_PARAMS
 

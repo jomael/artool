@@ -77,6 +77,7 @@ using namespace std;
 
 
 #include "WindInstrument.h"
+using namespace ART;
 
 void runGA (char filename[]);
 float objective(GAGenome &);
