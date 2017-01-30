@@ -31,7 +31,7 @@
 #include "ARTSimulator.h"
 #include "ART.h"
 #include "ARTmethod.h"
-#include "ARTwaveObject.h"
+#include "WaveObject.h"
 #include "ARTmodel.h"
 
 #include "ARTtimeModule.h"

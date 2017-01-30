@@ -41,7 +41,7 @@
 #define ARTMODEL_H
 
 #include "ART.h"
-#include "ARTwaveObject.h"
+#include "WaveObject.h"
 #include "ARTlink.h"
 #include "ARTFreqSimulator.h"
 #include "strparsing.h"
@@ -271,7 +271,7 @@ private:
    * @param oSignal The waveobject the radiation impedance should be written to. If the pointer is null, a
    * new waveobject will be created and the address written to oSignal.     
    */
-	virtual void RadiationImpedance(WaveObjectInterface*& oSignal) 
+	virtual void RadiationImpedance(ART::WaveObjectInterface*& oSignal) 
 	{
 		if (!circuit) throw ARTerror("HornElementPrototype_FD::RadiationImpedance", "circuit is NULL. Did you set it using SetCircuit()?");
 		if (!simulator) throw ARTerror("HornElementPrototype_FD::RadiationImpedance", "simulator is NULL. Did you set it using SetSimulator()?");
@@ -280,11 +280,11 @@ private:
 			  new RadiationImpedanceFunc(this, simulator->GetAngularFrequencyGrid(), simulator->GetNumberOfModes(),circuit->HasBends()); //hasbends
 		//Ausgangssignal  / output signal
 		if (!oSignal)
-			oSignal = new WaveObjectMMImpedance( "ZR_" + name_, formel, simulator->GetFrequencyGrid() );
+		  oSignal = new ART::WaveObjectMMImpedance( "ZR_" + name_, formel, simulator->GetFrequencyGrid() );
 		else
 		{
-			((WaveObjectMMImpedance*)oSignal)->SetCalculation( formel, simulator->GetFrequencyGrid() );
-			((WaveObjectMMImpedance*)oSignal)->name_ = "ZR_" + name_;
+		  ((ART::WaveObjectMMImpedance*)oSignal)->SetCalculation( formel, simulator->GetFrequencyGrid() );
+		  ((ART::WaveObjectMMImpedance*)oSignal)->name_ = "ZR_" + name_;
 		}
 	}
 
@@ -295,7 +295,7 @@ private:
    * new waveobject will be created and the address written to oSignal.
    * @param waveFront A waveobject of the impedance to be propagated through this model.       
    */
-	virtual void InputImpedance(WaveObjectInterface* waveFront, WaveObjectInterface*& oSignal)
+	virtual void InputImpedance(ART::WaveObjectInterface* waveFront, ART::WaveObjectInterface*& oSignal)
 	{
 		if (!circuit) throw ARTerror("HornElementPrototype_FD::InputImpedance", "circuit is NULL. Did you set it using SetCircuit()?");
 		if (!simulator) throw ARTerror("HornElementPrototype_FD::InputImpedance", "simulator is NULL. Did you set it using SetSimulator()?");
@@ -310,11 +310,11 @@ private:
 
 		//Ausgangssignal / output signal
 		if (!oSignal)
-			oSignal = new WaveObjectMMImpedance( "Z_" + name_, formel, simulator->GetFrequencyGrid() );
+		  oSignal = new ART::WaveObjectMMImpedance( "Z_" + name_, formel, simulator->GetFrequencyGrid() );
 		else
 		{
-			((WaveObjectMMImpedance*)oSignal)->SetCalculation( formel, simulator->GetFrequencyGrid() );
-			//((WaveObjectMMImpedance*)oSignal)->name_ = "Z_" + name_;
+		  ((ART::WaveObjectMMImpedance*)oSignal)->SetCalculation( formel, simulator->GetFrequencyGrid() );
+			//((ART::WaveObjectMMImpedance*)oSignal)->name_ = "Z_" + name_;
 		}
 	} 
 
@@ -322,8 +322,8 @@ private:
    * This function must be implemented because it is declared as pure virtual in the ARTmodelInterface. So 
    * far it is not implemented nor used and will just throw an exception of type ARTerror.          
    */
-	virtual void Pressure(WaveObjectInterface*, WaveObjectInterface*&) {throw ARTerror("HornElementPrototype_FD::Pressure","The function is not implemented.");};
-	virtual void MultimodePressure(WaveObjectInterface*, WaveObjectInterface*&) {throw ARTerror("HornElementPrototype_FD::Pressure","The function is not implemented.");};
+	virtual void Pressure(ART::WaveObjectInterface*, ART::WaveObjectInterface*&) {throw ARTerror("HornElementPrototype_FD::Pressure","The function is not implemented.");};
+	virtual void MultimodePressure(ART::WaveObjectInterface*, ART::WaveObjectInterface*&) {throw ARTerror("HornElementPrototype_FD::Pressure","The function is not implemented.");};
 
   /**
    * This prepares the calculation in the attached HornElement-object, by setting all parameters. The function
@@ -550,7 +550,7 @@ private:
    * Tone holes can not be the last (outermost) element in a circuit, so this method will throw an exception 
    * of type ARTerror.          
    */
-	virtual void RadiationImpedance(WaveObjectInterface*& out)
+	virtual void RadiationImpedance(ART::WaveObjectInterface*& out)
 	{
 		throw ARTerror("ToneHole::RadiationImpedance","Can not compute radiation impedance of a tone hole. Tone holes can not be at the outer end of the instrument.");
 	}
@@ -562,7 +562,7 @@ private:
    * new waveobject will be created and the address written to oSignal.
    * @param waveFront A waveobject of the impedance to be propagated through this model.       
    */
-	virtual void InputImpedance(WaveObjectInterface* waveFront, WaveObjectInterface*& oSignal )
+	virtual void InputImpedance(ART::WaveObjectInterface* waveFront, ART::WaveObjectInterface*& oSignal )
 	{
 		if (!circuit) throw ARTerror("ToneHole::InputImpedance", "circuit is NULL. Did you set it using SetCircuit()?");
 		if (!simulator) throw ARTerror("ToneHole::InputImpedance", "simulator is NULL. Did you set it using SetSimulator()?");
@@ -576,11 +576,11 @@ private:
 
 		//Create a multimode frequency domain wave object which will use the functionoid when its value is queried
 		if (!oSignal)
-			oSignal = new WaveObjectMMImpedance("Z_" + name_,func, simulator->GetFrequencyGrid() );
+		  oSignal = new ART::WaveObjectMMImpedance("Z_" + name_,func, simulator->GetFrequencyGrid() );
 		else 
 		{
-			((WaveObjectMMImpedance*)oSignal)->SetCalculation( func, simulator->GetFrequencyGrid() );
-			//((WaveObjectMMImpedance*)oSignal)->name_ = "Z_" + name_;
+		  ((ART::WaveObjectMMImpedance*)oSignal)->SetCalculation( func, simulator->GetFrequencyGrid() );
+			//((ART::WaveObjectMMImpedance*)oSignal)->name_ = "Z_" + name_;
 		}
 	} 
 
@@ -588,7 +588,7 @@ private:
    * This function must be implemented because it is declared as pure virtual in the ARTmodelInterface. So 
    * far it is not implemented nor used and will just throw an exception of type ARTerror.          
    */
-	virtual void Pressure(WaveObjectInterface*, WaveObjectInterface*&) {throw ARTerror("ToneHole::Pressure","The function is not implemented.");};
+	virtual void Pressure(ART::WaveObjectInterface*, ART::WaveObjectInterface*&) {throw ARTerror("ToneHole::Pressure","The function is not implemented.");};
 
   /**
    * This prepares the calculation in the attached CylinderSection and Branch objects, by setting all parameters. The function
@@ -856,7 +856,7 @@ private:
    * Branches can not be the last (outermost) element in a circuit, so this method will throw an exception 
    * of type ARTerror.          
    */
-	virtual void RadiationImpedance(WaveObjectInterface*& out)
+	virtual void RadiationImpedance(ART::WaveObjectInterface*& out)
 	{
 		throw ARTerror("BranchModel::RadiationImpedance","Can not compute radiation impedance of a branch model. Branches can not be at the outer end of the instrument.");
 	}
@@ -866,12 +866,12 @@ private:
    * Branches propagate more than one impedance object, so this method will throw an exception 
    * of type ARTerror.          
    */
-	virtual void InputImpedance(WaveObjectInterface* waveFront, WaveObjectInterface*& oSignal )
+	virtual void InputImpedance(ART::WaveObjectInterface* waveFront, ART::WaveObjectInterface*& oSignal )
 	{
-		throw ARTerror("BranchModel::InputImpedance","Branches combine two impedances, please pass a vector containing two impedances to the alternate method InputImpedance(vector<WaveObjectInterface*>& in, WaveObjectInterface*& out).");
+		throw ARTerror("BranchModel::InputImpedance","Branches combine two impedances, please pass a vector containing two impedances to the alternate method InputImpedance(vector<ART::WaveObjectInterface*>& in, ART::WaveObjectInterface*& out).");
 	} 
 
-	virtual void InputImpedance(vector<WaveObjectInterface*>& in, WaveObjectInterface*& oSignal) 
+	virtual void InputImpedance(vector<ART::WaveObjectInterface*>& in, ART::WaveObjectInterface*& oSignal) 
 	{
 		if (!circuit) throw ARTerror("BranchModel::InputImpedance", "circuit is NULL. Did you set it using SetCircuit()?");
 		if (!simulator) throw ARTerror("BranchModel::InputImpedance", "simulator is NULL. Did you set it using SetSimulator()?");
@@ -892,12 +892,12 @@ private:
 		if (!oSignal) //create a new waveobject
 			//this is like writing down a formula for the output signal. The formula is the functionoid created above. The result is converted to a
 			//multimode impedance wave object.
-			oSignal = new WaveObjectMMImpedance("Z_" + name_,func, simulator->GetFrequencyGrid() );
+		  oSignal = new ART::WaveObjectMMImpedance("Z_" + name_,func, simulator->GetFrequencyGrid() );
 		else 
 		{	//or use the waveobject passed as output argument
 			// we set the formula to the functionoid created above.
-			((WaveObjectMMImpedance*)oSignal)->SetCalculation( func, simulator->GetFrequencyGrid() );
-			//((WaveObjectMMImpedance*)oSignal)->name_ = "Z_" + name_;
+		  ((ART::WaveObjectMMImpedance*)oSignal)->SetCalculation( func, simulator->GetFrequencyGrid() );
+			//((ART::WaveObjectMMImpedance*)oSignal)->name_ = "Z_" + name_;
 		}
 	};
 
@@ -905,7 +905,7 @@ private:
    * This function must be implemented because it is declared as pure virtual in the ARTmodelInterface. So 
    * far it is not implemented nor used and will just throw an exception of type ARTerror.          
    */
-	virtual void Pressure(WaveObjectInterface*, WaveObjectInterface*&) {throw ARTerror("ToneHole::Pressure","The function is not implemented.");};
+	virtual void Pressure(ART::WaveObjectInterface*, ART::WaveObjectInterface*&) {throw ARTerror("ToneHole::Pressure","The function is not implemented.");};
 
 };     
 
@@ -1049,7 +1049,7 @@ private:
    * @param out The waveobject the radiation impedance should be written to. If the pointer is null, a
    * new waveobject will be created and the address written to out.     
    */
-	virtual void RadiationImpedance(WaveObjectInterface*& out)
+	virtual void RadiationImpedance(ART::WaveObjectInterface*& out)
 	{
 		if (!circuit) throw ARTerror("TerminationModel::InputImpedance", "circuit is NULL. Did you set it using SetCircuit()?");
 		if (!simulator) throw ARTerror("TerminationModel::InputImpedance", "simulator is NULL. Did you set it using SetSimulator()?");
@@ -1060,11 +1060,11 @@ private:
 
 		//Create a multimode frequency domain wave object which will use the functionoid when its value is queried
 		if (!out)
-			out = new WaveObjectMMImpedance("Z_" + name_,func, simulator->GetFrequencyGrid() );
+		  out = new ART::WaveObjectMMImpedance("Z_" + name_,func, simulator->GetFrequencyGrid() );
 		else 
 		{
-			((WaveObjectMMImpedance*)out)->SetCalculation( func, simulator->GetFrequencyGrid() );
-			//((WaveObjectMMImpedance*)out)->name_ = "Z_" + name_;
+		  ((ART::WaveObjectMMImpedance*)out)->SetCalculation( func, simulator->GetFrequencyGrid() );
+			//((ART::WaveObjectMMImpedance*)out)->name_ = "Z_" + name_;
 		}
 	}
 
@@ -1073,7 +1073,7 @@ private:
    * A termination can not be in the middle of a circuit, so this method will throw an exception 
    * of type ARTerror.          
    */
-	virtual void InputImpedance(WaveObjectInterface* waveFront, WaveObjectInterface*& oSignal )
+	virtual void InputImpedance(ART::WaveObjectInterface* waveFront, ART::WaveObjectInterface*& oSignal )
 	{
 		throw ARTerror("TerminationModel::InputImpedance","Can not propagate impedance through termination element. Termination elements can only lie on outer edges of branches or instruments.");
 	} 
@@ -1082,7 +1082,7 @@ private:
    * This function must be implemented because it is declared as pure virtual in the ARTmodelInterface. So 
    * far it is not implemented nor used and will just throw an exception of type ARTerror.          
    */
-	virtual void Pressure(WaveObjectInterface*, WaveObjectInterface*&) {throw ARTerror("TerminationModel::Pressure","The function is not implemented.");};
+	virtual void Pressure(ART::WaveObjectInterface*, ART::WaveObjectInterface*&) {throw ARTerror("TerminationModel::Pressure","The function is not implemented.");};
 
   /**
    * This prepares the calculation in the attached TerminationElement object, by setting all parameters. The function
