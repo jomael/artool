@@ -43,7 +43,7 @@
 #include <vector>
 
 #include "Element.h"
-#include "ARTSimulator.h"
+#include "Simulator.h"
 #include "WaveObject.h"
 namespace ART{
   /**
@@ -55,11 +55,11 @@ namespace ART{
   private:
     vector<Element*> references;
     DataContainer* impedanceCurve_; //Input impedance as triple vector (f, re, im)
-    ARTSimulator* simulator_;
+    ART::Simulator* simulator_;
     WaveObjectInterface* wavefrontRadiation; //Wave object representing the radiation impedance of the circuit. This object is constructed in prepareCalculation
 
   public:
-    Circuit(ARTSimulator* simulator, const string name, const string sds="", const string lds="", const string htm="");
+    Circuit(ART::Simulator* simulator, const string name, const string sds="", const string lds="", const string htm="");
 
     virtual void Rename(const string newname)
     {

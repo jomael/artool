@@ -40,7 +40,7 @@
 
 //#include "mpVariable.h"
 #include "ARTItimeModule.h"
-
+using namespace ART;
 ARTItimeModule::localParameterType::localParameterType(const string& name, const string sds, const string lds, const string htm) :
     //    CBG_DBL
     //		timeProperty(C_ART_cpx, 0, name, sds, lds, htm)
@@ -465,7 +465,7 @@ void ARTItimeModule::removeGlobalParameter(const string& name)
 }
 
 
-void ARTItimeModule::setSimulator(ARTSimulator* sim)
+void ARTItimeModule::setSimulator(Simulator* sim)
 {
   _simulator = dynamic_cast<ARTTimeSimulator*>(sim);
   ARTproperty* iter = GetProperties(NULL);

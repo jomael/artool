@@ -47,14 +47,14 @@
 using namespace mup;
 
 using std::stringstream;
-
+using namespace ART;
 
 //**************************************************************************************************************
 // ARTtimeSimulator
 
 ARTTimeSimulator::ARTTimeSimulator(const string name, const string sds,
     const string lds, const string htm) :
-    ARTSimulator(name, "TimeDomain", sds, lds, htm)
+    Simulator(name, "TimeDomain", sds, lds, htm)
 //	_simulParams()
 {
   initStandardSimulParams();

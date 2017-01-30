@@ -55,7 +55,7 @@ using namespace ART;
 
 ARTFreqSimulator::ARTFreqSimulator(const string name, const string wavetype,
     const string sds, const string lds, const string htm) :
-    ARTSimulator(name, "FrequencyDomain", sds, lds, htm), wavetype_(wavetype)
+    Simulator(name, "FrequencyDomain", sds, lds, htm), wavetype_(wavetype)
 {
 
   /*
