@@ -54,7 +54,7 @@
 using namespace mup;
 
 using std::stringstream;
-
+using namespace ART;
 //**************************************************************************************************************
 // ARTsimulator
 
@@ -82,7 +82,7 @@ ARTdataProp* ARTSimulator::FindDataPropInSimulator(string exp)
   if (!prop)
   {
     vector<string> nameparts = strsplit(exp,'.');
-    ARTelement* element = dynamic_cast<ARTelement*>(userElements->FindObject( strcrop(nameparts[0]).c_str() ));
+    Element* element = dynamic_cast<Element*>(userElements->FindObject( strcrop(nameparts[0]).c_str() ));
     if (element == NULL) throw ARTerror("ARTsimulator::FindDataPropInSimulator", "An element of the specified name '%s1' does not exist and '%s1' is not recognized as a data property of the simulator.", strcrop(nameparts[0]).c_str() );
     prop = dynamic_cast<ARTdataProp*>(element->model->FindProperty( strcrop(nameparts[1]).c_str() ));
     if (prop == NULL) throw ARTerror("ARTsimulator::FindDataPropInSimulator", "The element '%s1' does not have the specified data property '%s2'.",  strcrop(nameparts[0]).c_str() ,  strcrop(nameparts[1]).c_str() );

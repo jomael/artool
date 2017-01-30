@@ -62,7 +62,7 @@
 #include "ARTSimulator.h"
 #include "ARTFreqSimulator.h"
 #include "ARTTimeSimulator.h"
-#include "ARTelement.h"
+#include "Element.h"
 #include "ARTprototype.h"
 #include "Circuit.h"
 #include "ARTmethod.h"
@@ -318,7 +318,7 @@ P_ART_Element    __CALLCONV ARTCreateElement     (P_ART_Simulator simulator, con
 	if (simulator == NULL) throw ARTerror("ARTCreateElement", "Invalid simulator"); 
 
 	//Elements with the same name will cause problems later on, so check that the name is free
-	ARTelement* newElement_a = static_cast<ARTelement*>(simulator->userElements->FindObject(name));
+	Element* newElement_a = static_cast<Element*>(simulator->userElements->FindObject(name));
 	if (newElement_a) throw ARTerror("ARTCreateElement", "An element with the name '%s1' already exists.", name);
 
 	ARTprototype* prototype = (ARTprototype*)(art->prototypeModels->FindObject(type));
@@ -336,9 +336,9 @@ P_ART_Element    __CALLCONV ARTCreateElement     (P_ART_Simulator simulator, con
 			if (method == NULL) throw ARTerror("ARTCreateElement", "The prototype model does not support the wavetype of the simulator.");
 		}
 
-		ARTelement* newElement = new ARTelement(name,"","","",(ARTmodelInterface*)prototype, simulator);
+		Element* newElement = new Element(name,"","","",(ARTmodelInterface*)prototype, simulator);
 		
-		// now register all data properties of the new ARTelement
+		// now register all data properties of the new Element
 		// to the current simulator
 		ARTproperty* prop = newElement->GetProperties(NULL);
 
@@ -384,7 +384,7 @@ P_ART_Element    __CALLCONV ARTCreateElement     (P_ART_Simulator simulator, con
 P_ART_Element    __CALLCONV ARTFindElement     (P_ART_Simulator simulator, const char* name)
 {
 	//Find the element
-	ARTelement* element = static_cast<ARTelement*>(simulator->userElements->FindObject(name));
+	Element* element = static_cast<Element*>(simulator->userElements->FindObject(name));
 	return element;
 }
 
@@ -534,7 +534,7 @@ bool    __CALLCONV ARTDestroyElement     (P_ART_Simulator simulator,P_ART_Elemen
 	Circuit* circuit = (Circuit*)simulator->circuits->GetObjects(NULL);
 	while (circuit)
 	{
-		c += circuit->DeleteElement( (ARTelement*) element);
+		c += circuit->DeleteElement( (Element*) element);
 		//get next circuit
 		circuit = (Circuit*)simulator->circuits->GetObjects(circuit);
 	}

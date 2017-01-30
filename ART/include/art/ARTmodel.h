@@ -338,7 +338,7 @@ private:
 		implementation->setlossy(true);
 		implementation->setsimplified(false);
 		implementation->setboreresolution(0.5); //was ist das?
-		//set hornelement's parameters: get pointers to the parameters and write values of ARTelement's properties there.
+		//set hornelement's parameters: get pointers to the parameters and write values of Element's properties there.
 		ARTproperty* prop = GetProperties(NULL);
 		while (prop)
 		{
@@ -347,7 +347,7 @@ private:
 			{
 				//...get corresponding pointer to variable in implementation
 				ARTvariant* p = (implementation)->getPropertyPointer(dprop->GetName().c_str() );
-				if (p->typ == C_ART_undef) throw ARTerror("ARTelement::PrepareCalculation", "The hornelement attached to element '%s1' does not have the property '%s2', which is specified in the ARTelement.", name_ , dprop->GetName().c_str());
+				if (p->typ == C_ART_undef) throw ARTerror("Element::PrepareCalculation", "The hornelement attached to element '%s1' does not have the property '%s2', which is specified in the Element.", name_ , dprop->GetName().c_str());
 				switch (p->typ)
 				{
 					case C_ART_ndbl:
@@ -357,7 +357,7 @@ private:
 						*p->val->nf = dprop->GetFloat();
 						break;
 					default:
-						throw ARTerror("ARTelement::PrepareCalculation", "The hornelement attached to element '%s1' returned the data property '%s2' with an unknown type.", name_ , dprop->GetName().c_str());
+						throw ARTerror("Element::PrepareCalculation", "The hornelement attached to element '%s1' returned the data property '%s2' with an unknown type.", name_ , dprop->GetName().c_str());
 						break;
 				}
 			}
@@ -595,7 +595,7 @@ private:
    * is called by the functionoid of this object.
    * @param modes The number of modes.      
    */     
-	void PrepareCalculation(int modes) //Kopie von ARTelement::PrepareCalculation
+	void PrepareCalculation(int modes) //Kopie von Element::PrepareCalculation
 	{
 		if (tunnel == NULL) throw ARTerror("ToneHole::PrepareCalculation", "The object 'tunnel' is NULL");
 		if (term == NULL) throw ARTerror("ToneHole::PrepareCalculation", "The object 'term' is NULL");

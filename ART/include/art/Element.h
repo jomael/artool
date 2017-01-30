@@ -46,15 +46,15 @@
 #include "DataContainer.h"
 
 using std::string;
-
+namespace ART{
 /**
  * Objects of this class represent acoustic elements. They are created in a simulator and
  * must match the calculation domain and wavetype of the simulator. (They are saved in the
  * simulator->userElements list) \par
- * ARTelements are derived from an ARTprototype. In fact they are copies with added
+ * Elements are derived from an ARTprototype. In fact they are copies with added
  * properties like impedance and propagation matrix.
  */
-class ARTelement : public ARTmodelInterface {
+class Element : public ARTmodelInterface {
 public:
   ART::DataContainer* z_rad; //Radiaton impedance
   ART::DataContainer* z_inp; //multimode input impedance
@@ -66,7 +66,7 @@ public:
         WaveObjectInterface* wavefrontIn;
 
 
-        ARTelement(const string name, const string sds="", const string lds="", const string htm="", ARTmodelInterface* prototype=NULL, ARTSimulator* sim=NULL);
+        Element(const string name, const string sds="", const string lds="", const string htm="", ARTmodelInterface* prototype=NULL, ARTSimulator* sim=NULL);
 //      : ARTmodelInterface(name,sds,lds,htm),
 //        //propMatrix(NULL),
 //        model(NULL),
@@ -149,12 +149,12 @@ public:
                 model->InputImpedance(in, out);
         }
 
-        virtual void Pressure(WaveObjectInterface*, WaveObjectInterface*&) {throw ARTerror("ARTelement::Pressure","The function is not implemented.");};
+        virtual void Pressure(WaveObjectInterface*, WaveObjectInterface*&) {throw ARTerror("Element::Pressure","The function is not implemented.");};
 
     void SetScope(ARTSimulator* sim);
 //      {
 //              if (sim == NULL)
-//                      throw ARTerror("ARTelement::SetScope", "The specified simulator is invalid.");
+//                      throw ARTerror("Element::SetScope", "The specified simulator is invalid.");
 //
 //              piter_ = propertyList_.begin();
 //              ARTdataProp* p;
@@ -178,15 +178,15 @@ public:
         }
 
         virtual bool HasBends();
-        //HornElement* GetImplementation() {std::cout << "Function GetImplementation in ARTelement no longer supported. It's now in the model!!\n"; return NULL;}
+        //HornElement* GetImplementation() {std::cout << "Function GetImplementation in Element no longer supported. It's now in the model!!\n"; return NULL;}
 
-        virtual ~ARTelement ()
+        virtual ~Element ()
         {
                 delete model;
                 //delete propMatrix;    is part of properties and will be deleted in ~ARTobject
         }
 
 };
-
+}
 
 #endif /* ARTELEMENT_H */

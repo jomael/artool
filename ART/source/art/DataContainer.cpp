@@ -8,7 +8,7 @@
 #include "ARTlink.h"
 #include "ARTfunctionoid.h"
 #include "ARTobject.h"
-#include "ARTelement.h"
+#include "Element.h"
 
 
 //#define _DBG_MSG(a) {cout << __FILE__ << "::" <<__func__ << "("<< a << ")" << endl;}
@@ -546,10 +546,10 @@ void DataContainer::AddPropertiesAsDependency(ARTobject* obj)
 		//only if it is a dataProperty ...
 		if (dprop)
 		{	
-			//...and (if obj is an ARTelement) only if it is also found in the elements prototype (impedance matrices are
+			//...and (if obj is an Element) only if it is also found in the elements prototype (impedance matrices are
 			//not found there and if we added them here the calculation of one impedance matrix would depend on itself)
 			bool b = true;
-			ARTelement* e = dynamic_cast<ARTelement*>(obj);
+			Element* e = dynamic_cast<Element*>(obj);
 			if (e) b = e->IsPrototypeProperty(prop);
 			if (b) AddDependency(dprop);
 		}
