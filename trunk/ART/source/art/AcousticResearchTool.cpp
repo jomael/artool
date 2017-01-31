@@ -41,7 +41,7 @@
 #include "ARTdataProp.h"
 #include "ARTmethod.h"
 #include "Model.h"
-#include "ARTtimeModule.h"
+#include "TimeModule.h"
 #include "timePrototypes.h"
 #include "ART.h"
 using namespace ART;
@@ -243,7 +243,7 @@ AcousticResearchTool::AcousticResearchTool() : ARTobject("ART","Acoustic Researc
         //obj = prototypeModels->AppendObject(new BranchModel());
 
         // register prototypes of time modules
-        obj = prototypeModels->AppendObject(new ARTtimeModule());
+        obj = prototypeModels->AppendObject(new TimeModule());
         obj = prototypeModels->AppendObject(new impulseModule());
         obj = prototypeModels->AppendObject(new heavisideModule());
         obj = prototypeModels->AppendObject(new rectangularModule());

@@ -38,7 +38,7 @@
  ***************************************************************************/
 
 /*
- * ARTtimeModule.cpp
+ * TimeModule.cpp
  *
  *  Created on: Jul 5, 2012
  *      Author: cbg
@@ -46,12 +46,12 @@
 
 
 //#include "mpVariable.h"
-#include "ARTtimeModule.h"
+#include "TimeModule.h"
 
 using namespace mup;
 using namespace ART;
 /* create a new implementation for convolution function which will be registered
- * to all parsers of each ARTtimeModule */
+ * to all parsers of each TimeModule */
 class convCallback : public ICallback {
 public:
   convCallback() : ICallback(cmFUNC, "conv", "c:aac") {}
@@ -122,21 +122,21 @@ public:
 };
 
 /*************************************************************
- * ARTtimeModule
+ * TimeModule
  *************************************************************/
 
-ARTtimeModule::ARTtimeModule(const string& name, const string& sds, const string& lds, const string& htm) :
+TimeModule::TimeModule(const string& name, const string& sds, const string& lds, const string& htm) :
 	    ARTItimeModule(name, sds, lds, htm)
 {
 
 }
 
-ARTItimeModule* ARTtimeModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
+ARTItimeModule* TimeModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
 {
-  return new ARTtimeModule(name, sds, lds, htm);
+  return new TimeModule(name, sds, lds, htm);
 }
 
-void ARTtimeModule::addIPort(const string& name, const ARTdataProp* refPort)
+void TimeModule::addIPort(const string& name, const ARTdataProp* refPort)
 {
   // the given name of the input port has to be unique
   if (!FindProperty(name))
@@ -158,19 +158,19 @@ void ARTtimeModule::addIPort(const string& name, const ARTdataProp* refPort)
     }
     else
     {
-      throw ARTerror("ARTtimeModule::addIPort", "Port '%s1' is no valid output port.",
+      throw ARTerror("TimeModule::addIPort", "Port '%s1' is no valid output port.",
           refPort->GetName());
     }
 
   }
   else
   {
-    throw ARTerror("ARTtimeModule::addIPort", "Port name '%s1' is already in use in current time module '%s2'.",
+    throw ARTerror("TimeModule::addIPort", "Port name '%s1' is already in use in current time module '%s2'.",
         name, name_);
   }
 }
 
-void ARTtimeModule::addOPort(const string& name, const string& expr, unsigned int size)
+void TimeModule::addOPort(const string& name, const string& expr, unsigned int size)
 {
   // the name of the given output port has to be unique
   if (!FindProperty(name))
@@ -196,20 +196,20 @@ void ARTtimeModule::addOPort(const string& name, const string& expr, unsigned in
   }
   else
   {
-    throw ARTerror("ARTtimeModule::addOPort", "Port name '%s1' is already in use in current time module '%s2'.",
+    throw ARTerror("TimeModule::addOPort", "Port name '%s1' is already in use in current time module '%s2'.",
         name, name_);
   }
 }
 
 
 
-void ARTtimeModule::addLocalParameter(const string& name, const string& expr)
+void TimeModule::addLocalParameter(const string& name, const string& expr)
 {
   if (!FindProperty(name))
   {
     if (!_simulator)
     {
-      throw ARTerror("ARTtimeModule::setLocalParameter", "Could not create local parameter '%s1' for current time module '%s2' because no simulator is set!",
+      throw ARTerror("TimeModule::setLocalParameter", "Could not create local parameter '%s1' for current time module '%s2' because no simulator is set!",
           name, name_);
     }
     localParameterType* newParam = new localParameterType(name);
@@ -231,19 +231,19 @@ void ARTtimeModule::addLocalParameter(const string& name, const string& expr)
   }
   else
   {
-    throw ARTerror("ARTtimeModule::addLocalParameter", "Name '%s1' of local parameter is already in use in current time module '%s2'.",
+    throw ARTerror("TimeModule::addLocalParameter", "Name '%s1' of local parameter is already in use in current time module '%s2'.",
         name, name_);
   }
 
 }
 
-void ARTtimeModule::addLocalParameter(const string& name, const double val)
+void TimeModule::addLocalParameter(const string& name, const double val)
 {
   if (!FindProperty(name))
   {
     if (!_simulator)
     {
-      throw ARTerror("ARTtimeModule::setLocalParameter", "Could not create local parameter '%s1' for current time module '%s2' because no simulator is set!",
+      throw ARTerror("TimeModule::setLocalParameter", "Could not create local parameter '%s1' for current time module '%s2' because no simulator is set!",
           name, name_);
     }
     localParameterType* newParam = new localParameterType(name);
@@ -258,18 +258,18 @@ void ARTtimeModule::addLocalParameter(const string& name, const double val)
   }
   else
   {
-    throw ARTerror("ARTtimeModule::setLocalParameter", "Name '%s1' of local parameter is already in use in current time module '%s2'.",
+    throw ARTerror("TimeModule::setLocalParameter", "Name '%s1' of local parameter is already in use in current time module '%s2'.",
         name, name_);
   }
 }
 
-void ARTtimeModule::addLocalParameter(const string& name, const std::complex<double>& val)
+void TimeModule::addLocalParameter(const string& name, const std::complex<double>& val)
 {
   if (!FindProperty(name))
   {
     if (!_simulator)
     {
-      throw ARTerror("ARTtimeModule::setLocalParameter", "Could not create local parameter '%s1' for current time module '%s2' because no simulator is set!",
+      throw ARTerror("TimeModule::setLocalParameter", "Could not create local parameter '%s1' for current time module '%s2' because no simulator is set!",
           name, name_);
     }
     localParameterType* newParam = new localParameterType(name);
@@ -283,16 +283,16 @@ void ARTtimeModule::addLocalParameter(const string& name, const std::complex<dou
   }
   else
   {
-    throw ARTerror("ARTtimeModule::setLocalParameter", "Name '%s1' of local parameter is already in use in current time module '%s2'.",
+    throw ARTerror("TimeModule::setLocalParameter", "Name '%s1' of local parameter is already in use in current time module '%s2'.",
         name, name_);
   }
 }
 
-void ARTtimeModule::addGlobalParameter(const ARTdataProp* parameter)
+void TimeModule::addGlobalParameter(const ARTdataProp* parameter)
 {
   if (!parameter)
   {
-    throw ARTerror("ARTtimeModule::addGlobalParameter", "Could not add global parameter to current time module '%s1': No valid parameter.",
+    throw ARTerror("TimeModule::addGlobalParameter", "Could not add global parameter to current time module '%s1': No valid parameter.",
         name_);
   }
   if (!FindProperty(parameter->GetName()))
@@ -303,12 +303,12 @@ void ARTtimeModule::addGlobalParameter(const ARTdataProp* parameter)
   }
   else
   {
-    throw ARTerror("ARTtimeModule::addGlobalParameter", "Name '%s1' of global parameter is already in use in current time module '%s2'.",
+    throw ARTerror("TimeModule::addGlobalParameter", "Name '%s1' of global parameter is already in use in current time module '%s2'.",
         parameter->GetName(), name_);
   }
 }
 
-void ARTtimeModule::removeGlobalParameter(const string& name)
+void TimeModule::removeGlobalParameter(const string& name)
 {
   globalParameterType* parameter = dynamic_cast<globalParameterType*>(FindProperty(name));
   if (parameter)
@@ -319,12 +319,12 @@ void ARTtimeModule::removeGlobalParameter(const string& name)
   }
   else
   {
-    throw ARTerror("ARTtimeModule::removeGlobalParameter", "Name '%s1' of global parameter could not be found in current time module '%s2'.",
+    throw ARTerror("TimeModule::removeGlobalParameter", "Name '%s1' of global parameter could not be found in current time module '%s2'.",
         name, name_);
   }
 }
 
-void ARTtimeModule::setCurrentIndex(int idx)
+void TimeModule::setCurrentIndex(int idx)
 {
   Property* propIter = GetProperties(NULL);
   OPortType* oPort;
@@ -341,7 +341,7 @@ void ARTtimeModule::setCurrentIndex(int idx)
   }
 }
 
-void ARTtimeModule::simulateCurrentIndex(int idx)
+void TimeModule::simulateCurrentIndex(int idx)
 {
   Property* propIter = GetProperties(NULL);
   OPortType* oPort;
@@ -357,12 +357,12 @@ void ARTtimeModule::simulateCurrentIndex(int idx)
   }
 }
 
-ARTtimeModule::~ARTtimeModule()
+TimeModule::~TimeModule()
 {
   clean();
 }
 
-void ARTtimeModule::addVariableToParsers(const string& name, const Variable& var)
+void TimeModule::addVariableToParsers(const string& name, const Variable& var)
 {
 
   // add the given variable to all currently registered parsers of output ports
@@ -388,7 +388,7 @@ void ARTtimeModule::addVariableToParsers(const string& name, const Variable& var
 
 }
 
-void ARTtimeModule::removeVariableFromParsers(const string& name)
+void TimeModule::removeVariableFromParsers(const string& name)
 {
   // go through all parsers of output ports and remove name declaration
   Property* propIter = GetProperties(NULL);
@@ -412,7 +412,7 @@ void ARTtimeModule::removeVariableFromParsers(const string& name)
   }
 }
 
-void ARTtimeModule::registerAllVariablesToParser(ParserX* parser)
+void TimeModule::registerAllVariablesToParser(ParserX* parser)
 {
   Property* propIter;
   timeProperty* paramIter;
@@ -433,12 +433,12 @@ void ARTtimeModule::registerAllVariablesToParser(ParserX* parser)
 
 }
 
-void ARTtimeModule::clean()
+void TimeModule::clean()
 {
   // currently nothing to do...
 }
 
-//void ARTtimeModule::copy(const ARTtimeModule& orig)
+//void TimeModule::copy(const TimeModule& orig)
 //{
 //	/* TODO: implement copy function */
 //}

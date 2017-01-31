@@ -66,7 +66,7 @@
 #include "Prototype.h"
 #include "Circuit.h"
 #include "ARTmethod.h"
-#include "ARTtimeModule.h"
+#include "TimeModule.h"
 #include "timePrototypes.h"
 #include "AcousticResearchTool.h"
 #include "WindInstrument.h"
@@ -717,7 +717,7 @@ bool __CALLCONV ARTDestroyTModule	(P_ART_Simulator simulator, P_ART_TModule modu
 bool __CALLCONV ARTAddOPortToTModule	(P_ART_TModule module, const char* name, const char* expr)
 {
 	DLL_ERRORHANDLING_BEGIN
-	ARTtimeModule* mod = dynamic_cast<ARTtimeModule*>(module);
+	TimeModule* mod = dynamic_cast<TimeModule*>(module);
 	if (mod == NULL)
 	{
 		throw ARTerror("ARTAddOPortToTModule", "The specified time module does not support adding output ports.");
@@ -743,7 +743,7 @@ bool __CALLCONV ARTSetOPortOfFModule	(P_ART_TModule module, int len, const char*
 __DECLSPEC bool __CALLCONV ARTAddLocalParamToTModule	(P_ART_TModule module, const char* name, const char* expr)
 {
 	DLL_ERRORHANDLING_BEGIN
-	ARTtimeModule* mod = dynamic_cast<ARTtimeModule*>(module);
+	TimeModule* mod = dynamic_cast<TimeModule*>(module);
 	if (mod == NULL)
 	{
 		throw ARTerror("ARTAddLocalParamToTModule", "The specified time module does not support adding local parameters.");
