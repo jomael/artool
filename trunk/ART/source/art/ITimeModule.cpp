@@ -39,9 +39,9 @@
 
 
 //#include "mpVariable.h"
-#include "ARTItimeModule.h"
+#include "ITimeModule.h"
 using namespace ART;
-ARTItimeModule::localParameterType::localParameterType(const string& name, const string sds, const string lds, const string htm) :
+ITimeModule::localParameterType::localParameterType(const string& name, const string sds, const string lds, const string htm) :
     //    CBG_DBL
     //		timeProperty(C_ART_cpx, 0, name, sds, lds, htm)
           timeProperty(C_ART_dbl, 0, name, sds, lds, htm)
@@ -53,34 +53,34 @@ ARTItimeModule::localParameterType::localParameterType(const string& name, const
   SetParserVar(name);
 }
 
-ARTItimeModule::localParameterType::~localParameterType()
+ITimeModule::localParameterType::~localParameterType()
 {
   // delete parser of local parameters
   delete parser_;
   parser_ = NULL;
 }
 
-ARTItimeModule::globalParameterType::globalParameterType(const string& name, const ARTdataProp* param)
+ITimeModule::globalParameterType::globalParameterType(const string& name, const ARTdataProp* param)
 : timeProperty(C_ART_str, 0, name), param_(param)
 {
 
 }
 
-const Variable& ARTItimeModule::globalParameterType::GetParserVar()
+const Variable& ITimeModule::globalParameterType::GetParserVar()
 {
   return param_->GetParserVar();
 }
 
-const Variable& ARTItimeModule::globalParameterType::GetParserVar() const
+const Variable& ITimeModule::globalParameterType::GetParserVar() const
 {
   return param_->GetParserVar();
 }
 
 /*************************************************************
- * ARTItimeModule::OPortType
+ * ITimeModule::OPortType
  *************************************************************/
 
-ARTItimeModule::OPortType::OPortType(const T_ART_Type dtyp,
+ITimeModule::OPortType::OPortType(const T_ART_Type dtyp,
     const int dlen,
     const string& name,
     const string sds,
@@ -96,11 +96,11 @@ ARTItimeModule::OPortType::OPortType(const T_ART_Type dtyp,
   //	}
   //	else
   //	{
-  //		throw ARTerror("ARTItimeModule::OPortType::OPortType", "No valid parser has been created. Please check source code of DataContainer!");
+  //		throw ARTerror("ITimeModule::OPortType::OPortType", "No valid parser has been created. Please check source code of DataContainer!");
   //	}
 }
 
-void ARTItimeModule::OPortType::initPortValue(const string& expr) const
+void ITimeModule::OPortType::initPortValue(const string& expr) const
 {
   //  CBG_DBL
   //	ParserX* tmpParser = new ParserX(mup::pckCOMPLEX_NO_STRING);
@@ -120,23 +120,23 @@ void ARTItimeModule::OPortType::initPortValue(const string& expr) const
   }
 }
 
-void ARTItimeModule::OPortType::initPortValue(double value, int idx) const
+void ITimeModule::OPortType::initPortValue(double value, int idx) const
 {
   const DataContainer* tmpContainer = dynamic_cast<const DataContainer*>(this);
   DataContainer& port = const_cast<DataContainer&>(*tmpContainer);
   port[idx] = value;
 }
 
-void ARTItimeModule::OPortType::initPortValue(std::complex<double>& value, int idx) const
+void ITimeModule::OPortType::initPortValue(std::complex<double>& value, int idx) const
 {
   const DataContainer* tmpContainer = dynamic_cast<const DataContainer*>(this);
   DataContainer& port = const_cast<DataContainer&>(*tmpContainer);
   port[idx] = value;
 }
 
-//IValue& ARTItimeModule::OPortType::operator[](::size_t idx)
+//IValue& ITimeModule::OPortType::operator[](::size_t idx)
 //{
-////	cout << "ARTItimeModule::OPortType::operator[size_t " << idx << "]" << endl;
+////	cout << "ITimeModule::OPortType::operator[size_t " << idx << "]" << endl;
 //	DataContainer& tmpContainer = GetArrayElement(idx);
 //	if (!tmpContainer.IsValid())
 //	{
@@ -151,9 +151,9 @@ void ARTItimeModule::OPortType::initPortValue(std::complex<double>& value, int i
 //	return DataContainer::operator[](idx);
 //}
 //
-//IValue& ARTItimeModule::OPortType::operator[](int idx)
+//IValue& ITimeModule::OPortType::operator[](int idx)
 //{
-////	cout << "ARTItimeModule::OPortType::operator[int " << idx << "]" << endl;
+////	cout << "ITimeModule::OPortType::operator[int " << idx << "]" << endl;
 //	DataContainer& tmpContainer = GetArrayElement(idx);
 //	if (!tmpContainer.IsValid())
 //	{
@@ -168,7 +168,7 @@ void ARTItimeModule::OPortType::initPortValue(std::complex<double>& value, int i
 //	return DataContainer::operator[](idx);
 //}
 
-//IValue& ARTItimeModule::OPortType::GetPortValue(::size_t idx)
+//IValue& ITimeModule::OPortType::GetPortValue(::size_t idx)
 //{
 //	ARTtimeSimulator* simulator = dynamic_cast<ARTtimeSimulator*>(scope_);
 //	if (simulator)
@@ -192,7 +192,7 @@ void ARTItimeModule::OPortType::initPortValue(std::complex<double>& value, int i
 //	return tmpContainer;
 //}
 //
-//IValue& ARTItimeModule::OPortType::GetPortValue(int idx)
+//IValue& ITimeModule::OPortType::GetPortValue(int idx)
 //{
 //	ARTtimeSimulator* simulator = dynamic_cast<ARTtimeSimulator*>(scope_);
 //	if (simulator)
@@ -204,7 +204,7 @@ void ARTItimeModule::OPortType::initPortValue(std::complex<double>& value, int i
 //		throw ARTerror("ARTPortType::initPortValue", "No valid time simulator set for current port '%s1'.", name_);
 //	}
 //
-////	cout << "ARTItimeModule::OPortType::GetPortValue(" << idx << ")" << endl;
+////	cout << "ITimeModule::OPortType::GetPortValue(" << idx << ")" << endl;
 //	DataContainer& tmpContainer = GetArrayElement(idx);
 //
 //	if (tVal_.GetFloat() != (float_type) idx)
@@ -217,16 +217,16 @@ void ARTItimeModule::OPortType::initPortValue(std::complex<double>& value, int i
 //	return tmpContainer;
 //}
 
-ARTItimeModule::OPortType::~OPortType()
+ITimeModule::OPortType::~OPortType()
 {
   //	delete tVar_;
 }
 
 /*************************************************************
- * ARTItimeModule::FPortType
+ * ITimeModule::FPortType
  *************************************************************/
 
-ARTItimeModule::FPortType::FPortType(const int dlen,
+ITimeModule::FPortType::FPortType(const int dlen,
     const string& name,
     const string sds,
     const string lds,
@@ -241,7 +241,7 @@ ARTItimeModule::FPortType::FPortType(const int dlen,
   parserVarDefined_ = true;
 }
 
-IValue& ARTItimeModule::FPortType::operator[](std::size_t idx)
+IValue& ITimeModule::FPortType::operator[](std::size_t idx)
 {
   array_type* tmpArray = (array_type *) (val->na);
   DataContainer* tmp;
@@ -249,7 +249,7 @@ IValue& ARTItimeModule::FPortType::operator[](std::size_t idx)
   return *tmp;
 }
 
-IValue& ARTItimeModule::FPortType::operator[](int idx)
+IValue& ITimeModule::FPortType::operator[](int idx)
 {
   array_type* tmpArray = (array_type *) (val->na);
   DataContainer* tmp;
@@ -257,7 +257,7 @@ IValue& ARTItimeModule::FPortType::operator[](int idx)
   return *tmp;
 }
 
-//void ARTItimeModule::FPortType::initPortValue(const string& expr) const
+//void ITimeModule::FPortType::initPortValue(const string& expr) const
 //{
 //	ParserX* tmpParser = new ParserX(mup::pckCOMPLEX_NO_STRING);
 //	try
@@ -275,14 +275,14 @@ IValue& ARTItimeModule::FPortType::operator[](int idx)
 //	}
 //}
 //
-//void ARTItimeModule::FPortType::initPortValue(double value, int idx) const
+//void ITimeModule::FPortType::initPortValue(double value, int idx) const
 //{
 //	array_type* tmpArray = (array_type*) (val->na);
 //	DataContainer* tmp = dynamic_cast<DataContainer*>((*tmpArray)[idx]);
 //	tmp->SetVal(value);
 //}
 //
-//void ARTItimeModule::FPortType::initPortValue(std::complex<double>& value, int idx) const
+//void ITimeModule::FPortType::initPortValue(std::complex<double>& value, int idx) const
 //{
 //	array_type* tmpArray = (array_type*) (val->na);
 //	DataContainer* tmp = dynamic_cast<DataContainer*>((*tmpArray)[idx]);
@@ -290,41 +290,41 @@ IValue& ARTItimeModule::FPortType::operator[](int idx)
 //}
 
 /*************************************************************
- * ARTItimeModule::IPortType
+ * ITimeModule::IPortType
  *************************************************************/
 
-ARTItimeModule::IPortType::IPortType(const string& name, const OPortType* param)
+ITimeModule::IPortType::IPortType(const string& name, const OPortType* param)
 : PortType(C_ART_str, 0, name), refPort_(param)
 {
 
 }
 
-//ARTItimeModule::IPortType::IPortType(const string& name, const FPortType* param)
+//ITimeModule::IPortType::IPortType(const string& name, const FPortType* param)
 //	: PortType(C_ART_str, 0, name), refPort_(param)
 //{
 //
 //}
 
-const Variable& ARTItimeModule::IPortType::GetParserVar()
+const Variable& ITimeModule::IPortType::GetParserVar()
 {
   return refPort_->GetParserVar();
 }
 
-const Variable& ARTItimeModule::IPortType::GetParserVar() const
+const Variable& ITimeModule::IPortType::GetParserVar() const
 {
   return refPort_->GetParserVar();
 }
 
 /*************************************************************
- * ARTItimeModule
+ * ITimeModule
  *************************************************************/
 
-ARTdataProp* ARTItimeModule::getPort(const string& name)
+ARTdataProp* ITimeModule::getPort(const string& name)
 {
   PortType* port = dynamic_cast<PortType*>(FindProperty(name));
   if (!port)
   {
-    throw ARTerror("ARTItimeModule::getPort", "No port with name '%s1' has been found in current time module '%s2'.",
+    throw ARTerror("ITimeModule::getPort", "No port with name '%s1' has been found in current time module '%s2'.",
         name, name_);
   }
   else
@@ -334,7 +334,7 @@ ARTdataProp* ARTItimeModule::getPort(const string& name)
 
 }
 
-void ARTItimeModule::setLocalParameter(const string& name, const string& expr)
+void ITimeModule::setLocalParameter(const string& name, const string& expr)
 {
   localParameterType* lParam = dynamic_cast<localParameterType*>(FindProperty(name));
   if (lParam)
@@ -353,14 +353,14 @@ void ARTItimeModule::setLocalParameter(const string& name, const string& expr)
   }
   else
   {
-    throw ARTerror("ARTItimeModule::setLocalParameter", "Local parameter '%s1' could not be found in current time module '%s2'.",
+    throw ARTerror("ITimeModule::setLocalParameter", "Local parameter '%s1' could not be found in current time module '%s2'.",
         name, name_);
   }
 
 
 }
 
-void ARTItimeModule::setLocalParameter(const string& name, const double val)
+void ITimeModule::setLocalParameter(const string& name, const double val)
 {
   localParameterType* lParam = dynamic_cast<localParameterType*>(FindProperty(name));
   if (lParam)
@@ -369,12 +369,12 @@ void ARTItimeModule::setLocalParameter(const string& name, const double val)
   }
   else
   {
-    throw ARTerror("ARTItimeModule::setLocalParameter", "Local parameter '%s1' could not be found in current time module '%s2'.",
+    throw ARTerror("ITimeModule::setLocalParameter", "Local parameter '%s1' could not be found in current time module '%s2'.",
         name, name_);
   }
 }
 
-void ARTItimeModule::setLocalParameter(const string& name, const std::complex<double>& val)
+void ITimeModule::setLocalParameter(const string& name, const std::complex<double>& val)
 {
   localParameterType* lParam = dynamic_cast<localParameterType*>(FindProperty(name));
   if (lParam)
@@ -383,19 +383,19 @@ void ARTItimeModule::setLocalParameter(const string& name, const std::complex<do
   }
   else
   {
-    throw ARTerror("ARTItimeModule::setLocalParameter", "Local parameter '%s1' could not be found in current time module '%s2'.",
+    throw ARTerror("ITimeModule::setLocalParameter", "Local parameter '%s1' could not be found in current time module '%s2'.",
         name, name_);
   }
 }
 
-void ARTItimeModule::addGlobalParameter(const ARTdataProp* parameter)
+void ITimeModule::addGlobalParameter(const ARTdataProp* parameter)
 {
   Property* iter;
   OPortType* oPort;
   localParameterType* lParam;
   if (!parameter)
   {
-    throw ARTerror("ARTItimeModule::addGlobalParameter", "Could not add global parameter to current time module '%s1': No valid parameter.",
+    throw ARTerror("ITimeModule::addGlobalParameter", "Could not add global parameter to current time module '%s1': No valid parameter.",
         name_);
   }
   if (!FindProperty(parameter->GetName()))
@@ -422,12 +422,12 @@ void ARTItimeModule::addGlobalParameter(const ARTdataProp* parameter)
   }
   else
   {
-    throw ARTerror("ARTItimeModule::addGlobalParameter", "Name '%s1' of global parameter is already in use in current time module '%s2'.",
+    throw ARTerror("ITimeModule::addGlobalParameter", "Name '%s1' of global parameter is already in use in current time module '%s2'.",
         parameter->GetName(), name_);
   }
 }
 
-void ARTItimeModule::removeGlobalParameter(const string& name)
+void ITimeModule::removeGlobalParameter(const string& name)
 {
 
   Property* iter = GetProperties(NULL);
@@ -465,7 +465,7 @@ void ARTItimeModule::removeGlobalParameter(const string& name)
 }
 
 
-void ARTItimeModule::setSimulator(Simulator* sim)
+void ITimeModule::setSimulator(Simulator* sim)
 {
   _simulator = dynamic_cast<TimeSimulator*>(sim);
   Property* iter = GetProperties(NULL);

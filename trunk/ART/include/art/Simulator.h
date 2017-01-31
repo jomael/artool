@@ -57,9 +57,10 @@
 using namespace mup;
 //using std::list;
 
-// forward declaration
-class ARTItimeModule;
 namespace ART{
+// forward declaration
+class ITimeModule;
+
 /**
  * Simulators belong to a simulation domain (frequency, time) and simulate waves
  * of a certain type (plain, spherical, multimodal). This is the parent class

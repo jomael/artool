@@ -835,13 +835,13 @@ namespace ART{
   typedef struct Element Element;
   typedef struct Simulator Simulator;
   typedef struct Property Property;
+  typedef struct ITimeModule ITimeModule;
 }
 typedef struct ARTobject ARTobject;
 typedef struct ARTdataProp ARTdataProp;
 typedef struct ListProp ListProp;
 typedef struct ARTmethod ARTmethod;
 typedef struct ARTvariant ARTvariant;
-typedef struct ARTItimeModule ARTItimeModule;
 typedef int bool;
 
 #else
@@ -854,12 +854,13 @@ namespace ART{
   class Simulator;
   class Property;
   class ListProp;
+  class ITimeModule;
 }
 class ARTobject;
 class ARTdataProp;
 class ARTmethod;
 class ARTvariant;
-class ARTItimeModule;
+
 
 /*
 #include "Interface.h"1
@@ -876,12 +877,13 @@ namespace ART{
   typedef Simulator*   P_ART_Simulator;
   typedef Property*	P_ART_Property;
   typedef ListProp*	P_ART_ListProp;
+  typedef ITimeModule* P_ART_TModule;
 }
 typedef ARTobject*	P_ART_Object;
 typedef ARTdataProp*	P_ART_DataProp;
 typedef ARTmethod*	P_ART_Method;
 typedef ARTvariant*	P_ART_Variant;
-typedef ARTItimeModule* P_ART_TModule;
+
 
 typedef bool (* TprogressFunction)(double, const char*);
 
@@ -1117,7 +1119,7 @@ __DECLSPEC bool	__CALLCONV	ARTCheckPropertyCapability	(const char* property, con
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror if not using the DLL interface.
  */
-  __DECLSPEC P_ART_TModule __CALLCONV ARTCreateTModule	(ART::P_ART_Simulator simulator, const char* name, const char* type);
+  __DECLSPEC ART::P_ART_TModule __CALLCONV ARTCreateTModule	(ART::P_ART_Simulator simulator, const char* name, const char* type);
 
 /**
  * Destroys a time simulation module.
@@ -1127,7 +1129,7 @@ __DECLSPEC bool	__CALLCONV	ARTCheckPropertyCapability	(const char* property, con
  *   use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror if not using the DLL interface.
  */
-  __DECLSPEC bool __CALLCONV ARTDestroyTModule	(ART::P_ART_Simulator simulator, P_ART_TModule module);
+  __DECLSPEC bool __CALLCONV ARTDestroyTModule	(ART::P_ART_Simulator simulator, ART::P_ART_TModule module);
 
 
 /**
@@ -1139,7 +1141,7 @@ __DECLSPEC bool	__CALLCONV	ARTCheckPropertyCapability	(const char* property, con
  *   use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror if not using the DLL interface.
  */
-__DECLSPEC bool __CALLCONV ARTAddOPortToTModule	(P_ART_TModule module, const char* name, const char* expr);
+__DECLSPEC bool __CALLCONV ARTAddOPortToTModule	(ART::P_ART_TModule module, const char* name, const char* expr);
 
 /**
  * Sets the function output port of the given function module.
@@ -1151,7 +1153,7 @@ __DECLSPEC bool __CALLCONV ARTAddOPortToTModule	(P_ART_TModule module, const cha
  *   use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror if not using the DLL interface.
  */
-__DECLSPEC bool __CALLCONV ARTSetOPortOfFModule	(P_ART_TModule module, int len, const char* expr);
+__DECLSPEC bool __CALLCONV ARTSetOPortOfFModule	(ART::P_ART_TModule module, int len, const char* expr);
 
 /**
  * Adds a new local parameter to the given time module.
@@ -1162,7 +1164,7 @@ __DECLSPEC bool __CALLCONV ARTSetOPortOfFModule	(P_ART_TModule module, int len, 
  *   use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror if not using the DLL interface.
  */
-__DECLSPEC bool __CALLCONV ARTAddLocalParamToTModule	(P_ART_TModule module, const char* name, const char* expr);
+__DECLSPEC bool __CALLCONV ARTAddLocalParamToTModule	(ART::P_ART_TModule module, const char* name, const char* expr);
 
 /**
  * Adds a new global parameter to the given time simulator.
@@ -1193,7 +1195,7 @@ __DECLSPEC bool __CALLCONV ARTAddLocalParamToTModule	(P_ART_TModule module, cons
  *   the error message.
  * @throws ARTerror if not using the DLL interface.
  */
-__DECLSPEC P_ART_DataProp __CALLCONV ARTGetPortFromTModule	(P_ART_TModule module, const char* name);
+__DECLSPEC P_ART_DataProp __CALLCONV ARTGetPortFromTModule	(ART::P_ART_TModule module, const char* name);
 
 /**
  * Calculates the output value of the given port at the specified time index.s

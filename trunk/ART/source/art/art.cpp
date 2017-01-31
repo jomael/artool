@@ -598,7 +598,7 @@ P_ART_DataProp    __CALLCONV ARTSetParameter     (P_ART_Simulator simulator, con
 				// do we have an initialization of a port?
 				if (s.find('[') != s.npos)
 				{
-					ARTItimeModule::OPortType* oPort = dynamic_cast<ARTItimeModule::OPortType*>(prop);
+					ITimeModule::OPortType* oPort = dynamic_cast<ITimeModule::OPortType*>(prop);
 					if (oPort)
 					{
 						oPort->initPortValue(strcrop(expression));
@@ -675,15 +675,15 @@ bool    __CALLCONV ARTDestroyCircuit     (P_ART_Simulator simulator,P_ART_Circui
 P_ART_TModule __CALLCONV ARTCreateTModule	(P_ART_Simulator simulator, const char* name, const char* type)
 {
 	DLL_ERRORHANDLING_BEGIN
-	ARTItimeModule* newModule;
+	ITimeModule* newModule;
 	TimeSimulator* sim = dynamic_cast<TimeSimulator*>(simulator);
 	//check if the simulator is a valid object
 	if (sim == NULL) throw ARTerror("ARTCreateTModule", "Invalid time domain simulator");
 
-	ARTItimeModule* prototype = dynamic_cast<ARTItimeModule*>(art->prototypeModels->FindObject(type));
+	ITimeModule* prototype = dynamic_cast<ITimeModule*>(art->prototypeModels->FindObject(type));
 
 	//Circuits with the same name will cause problems later on, so check that the name is free
-	newModule = dynamic_cast<ARTItimeModule*>(sim->userElements->FindObject(name));
+	newModule = dynamic_cast<ITimeModule*>(sim->userElements->FindObject(name));
 	if (newModule) throw ARTerror("ARTCreateTModule", "A time module with the name '%s1' already exists.", name);
 
 	if (prototype != NULL)
@@ -771,7 +771,7 @@ bool __CALLCONV ARTConnectPorts	(P_ART_Simulator simulator, const char* expr)
 	DLL_ERRORHANDLING_BEGIN
 	vector<string> commands = strsplit(expr, ';');
 	::size_t commandIter;
-	ARTItimeModule *inModule, *outModule;
+	ITimeModule *inModule, *outModule;
 	TimeSimulator* sim = dynamic_cast<TimeSimulator*>(simulator);
 	//check if the simulator is a valid object
 	if (sim == NULL) throw ARTerror("ARTCreateTModule", "Invalid time domain simulator");
@@ -820,7 +820,7 @@ T_ART_Cmplx __CALLCONV ARTGetComplexFromPort(P_ART_DataProp port, int idx)
 	DLL_ERRORHANDLING_BEGIN
 	std::complex<double> tempResult;
 	TimeSimulator* sim;
-	ARTItimeModule::OPortType* oPort = dynamic_cast<ARTItimeModule::OPortType*>(port);
+	ITimeModule::OPortType* oPort = dynamic_cast<ITimeModule::OPortType*>(port);
 	if (oPort == NULL)
 	{
 		throw ARTerror("ARTGetComplexFromPort", "The specified port is no valid output port!");

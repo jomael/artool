@@ -53,7 +53,6 @@ using namespace mup;
 // forward declaration
 namespace ART{
   class DataContainer;
-}
 
 /**
  * @brief This class provides a generic interface for all time-domain simulations
@@ -63,7 +62,7 @@ namespace ART{
  *          implement the addIPort(), setCurrentIndex() and
  *          simulateCurrentIndex() methods.
  */
-class ARTItimeModule : public ARTobject
+class ITimeModule : public ARTobject
 {
 
 public:
@@ -303,13 +302,13 @@ public:
   public:
 
   /**
-   * @brief Constructor of the ARTItimeModule class.
+   * @brief Constructor of the ITimeModule class.
    * @param[in] name Represents the unique identifier of the time module.
    * @param[in] sds Short description (single line) of the time module.
    * @param[in] lds Long description of the time module.
    * @param[in] htm Path to help file in HTML format.
    */
-  explicit ARTItimeModule(const string& name, const string& sds="", const string& lds="", const string& htm="") :
+  explicit ITimeModule(const string& name, const string& sds="", const string& lds="", const string& htm="") :
   ARTobject(name, sds, lds, htm), _simulator(NULL)
   {
     // all time modules exist in the time domain
@@ -321,7 +320,7 @@ public:
    *        time module.
    * @param[in] orig The original time module to copy.
    */
-  ARTItimeModule(const ARTItimeModule& orig) :
+  ITimeModule(const ITimeModule& orig) :
     ARTobject(orig), _simulator(orig._simulator)
   {}
 
@@ -333,7 +332,7 @@ public:
    * @param[in] lds Long description of the time module.
    * @param[in] htm Path to help file in HTML format.
    */
-  virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="") = 0;
+  virtual ITimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="") = 0;
 
   /**
    * @brief Adds a new input port to the current time module.
@@ -413,14 +412,14 @@ public:
   virtual void simulateCurrentIndex(int idx) = 0;
 
   /**
-   * @brief Destructor of the ARTItimeModule class.
+   * @brief Destructor of the ITimeModule class.
    */
-  virtual ~ARTItimeModule() {}
+  virtual ~ITimeModule() {}
 
   protected:
 
   /** Simulator object to which the current time module belongs. */
   ART::TimeSimulator* _simulator;
 };
-
+}
 #endif /* ARTITIMEMODULE_H_ */

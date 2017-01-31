@@ -4529,7 +4529,7 @@ TEST_DEF_START(CreateAndChangeLocalParameter, ARTtimeSimulatorTests)
                         timeModule->addOPort("test", "test[t] = x * y");
                         timeModule->addLocalParameter("y", "y = 3.0");
 
-                        ARTItimeModule::OPortType& outputPort = dynamic_cast<ARTItimeModule::OPortType&>(*(timeModule->getPort("test")));
+                        ITimeModule::OPortType& outputPort = dynamic_cast<ITimeModule::OPortType&>(*(timeModule->getPort("test")));
 
                         timeSimulator->SimulateTimeStep(0);
                         if (outputPort[0].GetFloat() != 6.0)
@@ -4587,7 +4587,7 @@ TEST_DEF_START(ChangeGlobalParameter, ARTtimeSimulatorTests)
                         timeModule->addOPort("test", "test[t] = T");
                         myTimeSimulator->AddTimeModule(timeModule);
 
-                        ARTItimeModule::OPortType& testPort = dynamic_cast<ARTItimeModule::OPortType&>(*(timeModule->getPort("test")));
+                        ITimeModule::OPortType& testPort = dynamic_cast<ITimeModule::OPortType&>(*(timeModule->getPort("test")));
 
                         myTimeSimulator->SetSimulationParameter("T", 0.1);
 
@@ -4647,7 +4647,7 @@ TEST_DEF_START(CreateGlobalParameter, ARTtimeSimulatorTests)
                         timeModule->addOPort("test", "test[t] = TEMP");
                         myTimeSimulator->AddTimeModule(timeModule);
 
-                        ARTItimeModule::OPortType& testPort = dynamic_cast<ARTItimeModule::OPortType&>(*(timeModule->getPort("test")));
+                        ITimeModule::OPortType& testPort = dynamic_cast<ITimeModule::OPortType&>(*(timeModule->getPort("test")));
 
                         myTimeSimulator->AddSimulationParameter("TEMP", 40.0);
 
@@ -4755,8 +4755,8 @@ TEST_DEF_START(FibonacciNumbers1, ARTtimeSimulatorTests)
 
                         myTimeSimulator->AddTimeModule(timeModule);
 
-                        ARTItimeModule::OPortType& fibPort = dynamic_cast<ARTItimeModule::OPortType&>(*(timeModule->getPort("fib")));
-                        ARTItimeModule::OPortType& outputPort = dynamic_cast<ARTItimeModule::OPortType&>(*(timeModule->getPort("test")));
+                        ITimeModule::OPortType& fibPort = dynamic_cast<ITimeModule::OPortType&>(*(timeModule->getPort("fib")));
+                        ITimeModule::OPortType& outputPort = dynamic_cast<ITimeModule::OPortType&>(*(timeModule->getPort("test")));
 
                         fibPort.initPortValue("fib[-1] = 1, fib[-2] = 0");
 
@@ -4822,10 +4822,10 @@ TEST_DEF_START(FibonacciNumbers2, ARTtimeSimulatorTests)
                         myTimeSimulator->AddTimeModule(timeModule);
                         myTimeSimulator->AddTimeModule(timeModule2);
 
-                        ARTItimeModule::OPortType& testPort = dynamic_cast<ARTItimeModule::OPortType&>(*(timeModule->getPort("fib")));
+                        ITimeModule::OPortType& testPort = dynamic_cast<ITimeModule::OPortType&>(*(timeModule->getPort("fib")));
                         timeModule2->addIPort("fib",&testPort);
 
-                        ARTItimeModule::OPortType& outputPort = dynamic_cast<ARTItimeModule::OPortType&>(*(timeModule2->getPort("test")));
+                        ITimeModule::OPortType& outputPort = dynamic_cast<ITimeModule::OPortType&>(*(timeModule2->getPort("test")));
 
 
                         testPort.initPortValue("fib[-1] = 1, fib[-2] = 0");
@@ -4867,8 +4867,8 @@ TEST_DEF_END(FibonacciNumbers2)
 TEST_DEF_START(FibonacciNumbers3, ARTtimeSimulatorTests)
 
         Simulator* myTimeSimulator;
-        ARTItimeModule* timeModule;
-        ARTItimeModule* timeModule2;
+        ITimeModule* timeModule;
+        ITimeModule* timeModule2;
 
         virtual void prepare()
         {
@@ -4956,9 +4956,9 @@ TEST_DEF_START(ConvolutionTest1, ARTtimeSimulatorTests)
                         timeModule->addOPort("p", "p[t] = conv(U,G,t)");
                         timeModule->addOPort("U", "U[t] = sin(2*pi*30*t*T)");
                         timeModule->addOPort("G", "G[t] = (t == 0) ? 1 : 0");
-                        ARTItimeModule::OPortType& pPort = dynamic_cast<ARTItimeModule::OPortType&>(*(timeModule->getPort("p")));
-//                      ARTItimeModule::OPortType* gPort = dynamic_cast<ARTItimeModule::OPortType*>(timeModule->getPort("G"));
-//                      ARTItimeModule::OPortType* uPort = dynamic_cast<ARTItimeModule::OPortType*>(timeModule->getPort("U"));
+                        ITimeModule::OPortType& pPort = dynamic_cast<ITimeModule::OPortType&>(*(timeModule->getPort("p")));
+//                      ITimeModule::OPortType* gPort = dynamic_cast<ITimeModule::OPortType*>(timeModule->getPort("G"));
+//                      ITimeModule::OPortType* uPort = dynamic_cast<ITimeModule::OPortType*>(timeModule->getPort("U"));
 
                         myTimeSimulator->AddTimeModule(timeModule);
 
@@ -5036,10 +5036,10 @@ TEST_DEF_END(ConvolutionTest1)
 //                      timeModule->addOPort("p", "p[t] = conv(U, G, t)", 5);
 //                      timeModule->addOPort("G", "G[t] = 0.005", 20);
 ////
-//                      ARTItimeModule::OPortType* pPort = dynamic_cast<ARTItimeModule::OPortType*>(timeModule->getPort("p"));
-//                      ARTItimeModule::OPortType* xPort = dynamic_cast<ARTItimeModule::OPortType*>(timeModule->getPort("x"));
-////                    ARTItimeModule::OPortType* gPort = dynamic_cast<ARTItimeModule::OPortType*>(timeModule->getPort("G"));
-//                      ARTItimeModule::OPortType* uPort = dynamic_cast<ARTItimeModule::OPortType*>(timeModule->getPort("U"));
+//                      ITimeModule::OPortType* pPort = dynamic_cast<ITimeModule::OPortType*>(timeModule->getPort("p"));
+//                      ITimeModule::OPortType* xPort = dynamic_cast<ITimeModule::OPortType*>(timeModule->getPort("x"));
+////                    ITimeModule::OPortType* gPort = dynamic_cast<ITimeModule::OPortType*>(timeModule->getPort("G"));
+//                      ITimeModule::OPortType* uPort = dynamic_cast<ITimeModule::OPortType*>(timeModule->getPort("U"));
 //                      xPort->initPortValue("x[-1] = 0.00002, x[-2] = 0.00001");
 //                      uPort->initPortValue(0, 0);
 ////                    uPort->SetVal(0.0, 0);
@@ -5047,7 +5047,7 @@ TEST_DEF_END(ConvolutionTest1)
 //                      pPort->SetVal(0.0, 0);
 ////                    std::cerr << "got it!" << std::endl;
 //
-////                    ARTItimeModule::OPortType* xPort = dynamic_cast<ARTItimeModule::OPortType*>(timeModule->getPort("x"));
+////                    ITimeModule::OPortType* xPort = dynamic_cast<ITimeModule::OPortType*>(timeModule->getPort("x"));
 //                      xPort->initPortValue("x[-1] = 0.00002, x[-2] = 0.00001");
 //
 //
@@ -5125,12 +5125,12 @@ TEST_DEF_END(ConvolutionTest1)
 //              {
 //                      int i;
 //
-//                      ARTItimeModule* timeModule = new inputFunctionModule("myModule");
+//                      ITimeModule* timeModule = new inputFunctionModule("myModule");
 //                      TimeModule* timeModule2 = new TimeModule("ConvolutionModule");
 //
 //                      dynamic_cast<inputFunctionModule*>(timeModule)->defineOPort(30, "");
 //
-//                      ARTItimeModule::FPortType* functionOutPort = dynamic_cast<ARTItimeModule::FPortType*>(timeModule->getPort("out"));
+//                      ITimeModule::FPortType* functionOutPort = dynamic_cast<ITimeModule::FPortType*>(timeModule->getPort("out"));
 //
 //                      for (i = 0; i < 30; ++i)
 //                      {
@@ -5141,7 +5141,7 @@ TEST_DEF_END(ConvolutionTest1)
 //                      timeModule2->addOPort("testout", "testout[t] = conv(local, function, t)");
 //                      timeModule2->addIPort("function", functionOutPort);
 //
-//                      ARTItimeModule::OPortType& simulationOutPort = dynamic_cast<ARTItimeModule::OPortType&>(*(timeModule2->getPort("testout")));
+//                      ITimeModule::OPortType& simulationOutPort = dynamic_cast<ITimeModule::OPortType&>(*(timeModule2->getPort("testout")));
 //
 //                      myTimeSimulator->AddTimeModule(timeModule);
 //                      myTimeSimulator->AddTimeModule(timeModule2);
@@ -5202,8 +5202,8 @@ TEST_DEF_START(HiddenTimeDelay, ARTtimeSimulatorTests)
 //                      timeModule->addOPort("x", "x[t] = (t == 0) ? 9 : 0");
 //                      timeModule2->addOPort("y", "y[t] = x[t - ((round) (d/T))]");
 
-                        ARTItimeModule::OPortType& xPort = dynamic_cast<ARTItimeModule::OPortType&>(*(timeModule->getPort("x")));
-                        ARTItimeModule::OPortType& yPort = dynamic_cast<ARTItimeModule::OPortType&>(*(timeModule2->getPort("y")));
+                        ITimeModule::OPortType& xPort = dynamic_cast<ITimeModule::OPortType&>(*(timeModule->getPort("x")));
+                        ITimeModule::OPortType& yPort = dynamic_cast<ITimeModule::OPortType&>(*(timeModule2->getPort("y")));
 
                         timeModule->addIPort("y", &yPort);
                         timeModule2->addIPort("x", &xPort);
@@ -5270,7 +5270,7 @@ TEST_DEF_START(RectangularFunction, ARTtimeSimulatorTests)
 
                         timeModule->addOPort("x", "x[t] = (((t*T) >= S)  and ((t*T) <= E)) ? 1 : 0");
 
-                        ARTItimeModule::OPortType& xPort = dynamic_cast<ARTItimeModule::OPortType&>(*(timeModule->getPort("x")));
+                        ITimeModule::OPortType& xPort = dynamic_cast<ITimeModule::OPortType&>(*(timeModule->getPort("x")));
 
                         myTimeSimulator->AddTimeModule(timeModule);
 
@@ -5340,7 +5340,7 @@ TEST_DEF_START(SineFunction, ARTtimeSimulatorTests)
                         timeModule->addOPort("x", "x[t] = A*sin(2*pi*(t*T*f - Delta))");
 //                      timeModule->addOPort("x", "x[t] = A*sin(t)");
 
-                        ARTItimeModule::OPortType& xPort = dynamic_cast<ARTItimeModule::OPortType&>(*(timeModule->getPort("x")));
+                        ITimeModule::OPortType& xPort = dynamic_cast<ITimeModule::OPortType&>(*(timeModule->getPort("x")));
 
                         myTimeSimulator->AddTimeModule(timeModule);
 
@@ -5399,15 +5399,15 @@ TEST_DEF_START(FractionalDelay, ARTtimeSimulatorTests)
                 {
 
                         TimeModule* pulseModule = new TimeModule("pulseModule");
-                        ARTItimeModule* delayModule1 = new fractionalDelayModule("testDelay1");
-                        ARTItimeModule* delayModule2 = new fractionalDelayModule("testDelay2");
+                        ITimeModule* delayModule1 = new fractionalDelayModule("testDelay1");
+                        ITimeModule* delayModule2 = new fractionalDelayModule("testDelay2");
 
                         pulseModule->addOPort("x", "x[t] = (t == 0) ? 1 : 0");
 //                      pulseModule->addOPort("x", "x[t] = A*sin(t)");
 
-                        ARTItimeModule::OPortType& xPort = dynamic_cast<ARTItimeModule::OPortType&>(*(pulseModule->getPort("x")));
-                        ARTItimeModule::OPortType& simulationPort1 = dynamic_cast<ARTItimeModule::OPortType&>(*(delayModule1->getPort("out")));
-                        ARTItimeModule::OPortType& simulationPort2 = dynamic_cast<ARTItimeModule::OPortType&>(*(delayModule2->getPort("out")));
+                        ITimeModule::OPortType& xPort = dynamic_cast<ITimeModule::OPortType&>(*(pulseModule->getPort("x")));
+                        ITimeModule::OPortType& simulationPort1 = dynamic_cast<ITimeModule::OPortType&>(*(delayModule1->getPort("out")));
+                        ITimeModule::OPortType& simulationPort2 = dynamic_cast<ITimeModule::OPortType&>(*(delayModule2->getPort("out")));
 
                         delayModule1->addIPort("in", &xPort);
                         delayModule2->addIPort("in", &xPort);
@@ -5549,14 +5549,14 @@ TEST_DEF_END(FindNames)
 //              {
 //
 //                      TimeModule* pulseModule = new TimeModule("pulseModule");
-//                      ARTItimeModule* cylModule1 = new DWGcylinderModule("cyl1");
-////                    ARTItimeModule* cylModule1 = new DWGconeJunctionModule("cyl1");
+//                      ITimeModule* cylModule1 = new DWGcylinderModule("cyl1");
+////                    ITimeModule* cylModule1 = new DWGconeJunctionModule("cyl1");
 //
 //                      pulseModule->addOPort("x", "x[t] = (t == 0) ? 1 : 0", 50);
 //
-//                      ARTItimeModule::OPortType& xPort = dynamic_cast<ARTItimeModule::OPortType&>(*(pulseModule->getPort("x")));
-//                      ARTItimeModule::OPortType& simulationPort1 = dynamic_cast<ARTItimeModule::OPortType&>(*(cylModule1->getPort("p2p")));
-//                      ARTItimeModule::OPortType& simulationPort2 = dynamic_cast<ARTItimeModule::OPortType&>(*(cylModule1->getPort("p1m")));
+//                      ITimeModule::OPortType& xPort = dynamic_cast<ITimeModule::OPortType&>(*(pulseModule->getPort("x")));
+//                      ITimeModule::OPortType& simulationPort1 = dynamic_cast<ITimeModule::OPortType&>(*(cylModule1->getPort("p2p")));
+//                      ITimeModule::OPortType& simulationPort2 = dynamic_cast<ITimeModule::OPortType&>(*(cylModule1->getPort("p1m")));
 //
 //                      cylModule1->addIPort("p1p", &xPort);
 //                      cylModule1->addIPort("p2m", &xPort);
@@ -5628,9 +5628,9 @@ TEST_DEF_END(FindNames)
 //              {
 //                      int i;
 //
-//                      ARTItimeModule* impulseModule = ARTCreateTModule(myTimeSimulator, "Impulse", "ImpulseModule");
-//                      ARTItimeModule* rightCylinder = ARTCreateTModule(myTimeSimulator, "RightCylinder", "DWGCylinderModule");
-//                      ARTItimeModule* gain2 = ARTCreateTModule(myTimeSimulator, "Gain2", "AmplificationModule");
+//                      ITimeModule* impulseModule = ARTCreateTModule(myTimeSimulator, "Impulse", "ImpulseModule");
+//                      ITimeModule* rightCylinder = ARTCreateTModule(myTimeSimulator, "RightCylinder", "DWGCylinderModule");
+//                      ITimeModule* gain2 = ARTCreateTModule(myTimeSimulator, "Gain2", "AmplificationModule");
 //                      std::stringstream tmp;
 //
 ////                    ARTAddOPortToTModule(resizeModule, "x", "x[t] = t + x[t-35]");
@@ -5644,7 +5644,7 @@ TEST_DEF_END(FindNames)
 //
 //                      P_ART_DataProp outPort = ARTGetPortFromTModule(rightCylinder, "p1m");
 //
-////                    ARTItimeModule::OPortType& xPort = dynamic_cast<ARTItimeModule::OPortType&>(*(resizeModule->getPort("x")));
+////                    ITimeModule::OPortType& xPort = dynamic_cast<ITimeModule::OPortType&>(*(resizeModule->getPort("x")));
 //
 //
 //

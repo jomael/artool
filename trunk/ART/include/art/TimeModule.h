@@ -52,7 +52,7 @@
 
 #include "ARTobject.h"
 #include "TimeSimulator.h"
-#include "ARTItimeModule.h"
+#include "ITimeModule.h"
 #include "mpParser.h"
 
 using std::string;
@@ -66,9 +66,9 @@ class DataContainer;
 /**
  * @brief This class is a generic time module and allows the user to create
  *        individual ports which can be connected to any other class
- *        implementing the ARTItimeModule interface.
+ *        implementing the ITimeModule interface.
  *
- * @details It implements all abstract methods of the ARTItimeModule class and
+ * @details It implements all abstract methods of the ITimeModule class and
  *          additionally provides methods to add output ports and local
  *          parameters to the current time module. Output ports of a module can
  *          access local and global paremters as well as other output and input
@@ -76,7 +76,7 @@ class DataContainer;
  *          can be accessed by creating an input port and referencing the output
  *          port of the other time module.
  */
-class TimeModule : public ARTItimeModule
+class TimeModule : public ITimeModule
 {
 public:
 
@@ -98,11 +98,11 @@ public:
    * @param[in] lds Long description of the time module.
    * @param[in] htm Path to help file in HTML format.
    */
-  virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
+  virtual ITimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
 
 
   /**
-   * @copydoc ARTItimeModule::addIPort()
+   * @copydoc ITimeModule::addIPort()
    */
   virtual void addIPort(const string& name, const ARTdataProp* refPort);
   /**
@@ -147,20 +147,20 @@ public:
   virtual void addLocalParameter(const string& name, const std::complex<double>& val);
 
   /**
-   * @copydoc ARTItimeModule::addGlobalParameter()
+   * @copydoc ITimeModule::addGlobalParameter()
    */
   virtual void addGlobalParameter(const ARTdataProp* parameter);
   /**
-   * @copydoc ARTItimeModule::removeGlobalParameter()
+   * @copydoc ITimeModule::removeGlobalParameter()
    */
   virtual void removeGlobalParameter(const string& name);
 
   /**
-   * @copydoc ARTItimeModule::setCurrentIndex()
+   * @copydoc ITimeModule::setCurrentIndex()
    */
   virtual void setCurrentIndex(int idx);
   /**
-   * @copydoc ARTItimeModule::simulateCurrentIndex()
+   * @copydoc ITimeModule::simulateCurrentIndex()
    */
   virtual void simulateCurrentIndex(int idx);
 

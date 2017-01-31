@@ -47,7 +47,7 @@
 #ifndef TIMEPROTOTYPES_H_
 #define TIMEPROTOTYPES_H_
 
-#include "ARTItimeModule.h"
+#include "ITimeModule.h"
 
 /**
  * @brief Represents a time module with a single function output port which is
@@ -56,9 +56,9 @@
  * output ports are predefined and not simulated. This module is perfectly
  * feasible to save transfer functions of instruments which will later be input
  * for a convolution function.
- * @see ARTItimeModule::FPortType
+ * @see ART::ITimeModule::FPortType
  */
-class inputFunctionModule : public ARTItimeModule
+class inputFunctionModule : public ART::ITimeModule
 {
 protected:
   /** Pointer to the output function port.*/
@@ -86,11 +86,11 @@ public:
    * @param[in] lds Long description of the input function module.
    * @param[in] htm Path to help file in HTML format.
    */
-  virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
+  virtual ART::ITimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
 
 
   /**
-   * @copydoc ARTItimeModule::addIPort()
+   * @copydoc ART::ITimeModule::addIPort()
    */
   virtual void addIPort(const string& name, const ARTdataProp* refPort);
   /**
@@ -134,7 +134,7 @@ public:
  * @details The default amplitude value of the impulse is "1", but can be
  *          manually set via the local parameter "A".
  */
-class impulseModule : public ARTItimeModule
+class impulseModule : public ART::ITimeModule
 {
 protected:
   /** Pointer to the single output port of the module. */
@@ -156,7 +156,7 @@ public:
    * @param[in] lds Long description of the impulse module.
    * @param[in] htm Path to help file in HTML format.
    */
-  virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
+  virtual ART::ITimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
 
   /**
    * @brief Always throws an ARTerror exception as this module does not allow
@@ -178,11 +178,11 @@ public:
   virtual ARTdataProp* getPort(const string& name);
 
   /**
-   * @copydoc ARTItimeModule::setCurrentIndex()
+   * @copydoc ART::ITimeModule::setCurrentIndex()
    */
   virtual void setCurrentIndex(int idx);
   /**
-   * @copydoc ARTItimeModule::simulateCurrentIndex()
+   * @copydoc ART::ITimeModule::simulateCurrentIndex()
    */
   virtual void simulateCurrentIndex(int idx);
 
@@ -204,7 +204,7 @@ protected:
  * @details Like the impulseModule, the amplitude of the step function can be
  *          set via the local parameter "A".
  */
-class heavisideModule : public ARTItimeModule
+class heavisideModule : public ART::ITimeModule
 {
 protected:
   /** Pointer to the single output port of the module. */
@@ -226,7 +226,7 @@ public:
    * @param[in] lds Long description of the Heaviside module.
    * @param[in] htm Path to help file in HTML format.
    */
-  virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
+  virtual ART::ITimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
 
   /**
    * @brief Always throws an ARTerror exception as this module does not allow
@@ -248,11 +248,11 @@ public:
   virtual ARTdataProp* getPort(const string& name);
 
   /**
-   * @copydoc ARTItimeModule::setCurrentIndex()
+   * @copydoc ART::ITimeModule::setCurrentIndex()
    */
   virtual void setCurrentIndex(int idx);
   /**
-   * @copydoc ARTItimeModule::simulateCurrentIndex()
+   * @copydoc ART::ITimeModule::simulateCurrentIndex()
    */
   virtual void simulateCurrentIndex(int idx);
 
@@ -279,7 +279,7 @@ protected:
  *   - <b> \c A </b> defines the amplitude of the rectangular function. Defaults
  *     to "1".
  */
-class rectangularModule : public ARTItimeModule
+class rectangularModule : public ART::ITimeModule
 {
 protected:
   /** Pointer to the single output port of the module. */
@@ -301,7 +301,7 @@ public:
    * @param[in] lds Long description of the rectangular module.
    * @param[in] htm Path to help file in HTML format.
    */
-  virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
+  virtual ART::ITimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
 
   /**
    * @brief Always throws an ARTerror exception as this module does not allow
@@ -323,11 +323,11 @@ public:
   virtual ARTdataProp* getPort(const string& name);
 
   /**
-   * @copydoc ARTItimeModule::setCurrentIndex()
+   * @copydoc ART::ITimeModule::setCurrentIndex()
    */
   virtual void setCurrentIndex(int idx);
   /**
-   * @copydoc ARTItimeModule::simulateCurrentIndex()
+   * @copydoc ART::ITimeModule::simulateCurrentIndex()
    */
   virtual void simulateCurrentIndex(int idx);
 
@@ -350,7 +350,7 @@ protected:
  *          port called "out". The local parameter "A" defines the amplification
  *          factor and can be set via the setLocalParameter() methods.
  */
-class amplificationModule : public ARTItimeModule
+class amplificationModule : public ART::ITimeModule
 {
 protected:
   /** Pointer to the single output port of the module. */
@@ -376,7 +376,7 @@ public:
    * @param[in] lds Long description of the amplification module.
    * @param[in] htm Path to help file in HTML format.
    */
-  virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
+  virtual ART::ITimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
 
   /**
    * @brief Adds a new input port to the current time module.
@@ -399,11 +399,11 @@ public:
   virtual ARTdataProp* getPort(const string& name);
 
   /**
-   * @copydoc ARTItimeModule::setCurrentIndex()
+   * @copydoc ART::ITimeModule::setCurrentIndex()
    */
   virtual void setCurrentIndex(int idx);
   /**
-   * @copydoc ARTItimeModule::simulateCurrentIndex()
+   * @copydoc ART::ITimeModule::simulateCurrentIndex()
    */
   virtual void simulateCurrentIndex(int idx);
 
@@ -430,7 +430,7 @@ protected:
  *          Otherwise, it is highly recommended to use the
  *          fractionalDelayModule.
  */
-class simpleDelayModule : public ARTItimeModule
+class simpleDelayModule : public ART::ITimeModule
 {
 protected:
   /** Pointer to the single output port of the module. */
@@ -455,7 +455,7 @@ public:
    * @param[in] lds Long description of the simple delay module.
    * @param[in] htm Path to help file in HTML format.
    */
-  virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
+  virtual ART::ITimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
 
   /**
    * @brief Adds a new input port to the current time module.
@@ -478,11 +478,11 @@ public:
   virtual ARTdataProp* getPort(const string& name);
 
   /**
-   * @copydoc ARTItimeModule::setCurrentIndex()
+   * @copydoc ART::ITimeModule::setCurrentIndex()
    */
   virtual void setCurrentIndex(int idx);
   /**
-   * @copydoc ARTItimeModule::simulateCurrentIndex()
+   * @copydoc ART::ITimeModule::simulateCurrentIndex()
    */
   virtual void simulateCurrentIndex(int idx);
 
@@ -505,7 +505,7 @@ protected:
  *          before simulating is to connect the input signals to either input
  *          port "in1" or "in2".
  */
-class addModule : public ARTItimeModule
+class addModule : public ART::ITimeModule
 {
 protected:
   /** Pointer to the single output port of the module. */
@@ -527,7 +527,7 @@ public:
    * @param[in] lds Long description of the add module.
    * @param[in] htm Path to help file in HTML format.
    */
-  virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
+  virtual ART::ITimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
 
   /**
    * @brief Adds a new input port to the current time module.
@@ -550,11 +550,11 @@ public:
   virtual ARTdataProp* getPort(const string& name);
 
   /**
-   * @copydoc ARTItimeModule::setCurrentIndex()
+   * @copydoc ART::ITimeModule::setCurrentIndex()
    */
   virtual void setCurrentIndex(int idx);
   /**
-   * @copydoc ARTItimeModule::simulateCurrentIndex()
+   * @copydoc ART::ITimeModule::simulateCurrentIndex()
    */
   virtual void simulateCurrentIndex(int idx);
 
@@ -571,7 +571,7 @@ public:
  *          before simulating is to connect the input signals to either input
  *          port "in1" or "in2".
  */
-class multiplicationModule : public ARTItimeModule
+class multiplicationModule : public ART::ITimeModule
 {
 protected:
   /** Pointer to the single output port of the module. */
@@ -597,7 +597,7 @@ public:
    * @param[in] lds Long description of the multiplication module.
    * @param[in] htm Path to help file in HTML format.
    */
-  virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
+  virtual ART::ITimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
 
   /**
    * @brief Adds a new input port to the current time module.
@@ -620,11 +620,11 @@ public:
   virtual ARTdataProp* getPort(const string& name);
 
   /**
-   * @copydoc ARTItimeModule::setCurrentIndex()
+   * @copydoc ART::ITimeModule::setCurrentIndex()
    */
   virtual void setCurrentIndex(int idx);
   /**
-   * @copydoc ARTItimeModule::simulateCurrentIndex()
+   * @copydoc ART::ITimeModule::simulateCurrentIndex()
    */
   virtual void simulateCurrentIndex(int idx);
 
@@ -644,7 +644,7 @@ public:
  *   - <b> \c Delta </b> defines the phase (delay) of the sine wave in seconds.
  *     Defaults to "0".
  */
-class sinewaveModule : public ARTItimeModule
+class sinewaveModule : public ART::ITimeModule
 {
 protected:
   /** Pointer to the single output port of the module. */
@@ -666,7 +666,7 @@ public:
    * @param[in] lds Long description of the sine wave module.
    * @param[in] htm Path to help file in HTML format.
    */
-  virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
+  virtual ART::ITimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
 
   /**
    * @brief Always throws an ARTerror exception as this module does not allow
@@ -688,11 +688,11 @@ public:
   virtual ARTdataProp* getPort(const string& name);
 
   /**
-   * @copydoc ARTItimeModule::setCurrentIndex()
+   * @copydoc ART::ITimeModule::setCurrentIndex()
    */
   virtual void setCurrentIndex(int idx);
   /**
-   * @copydoc ARTItimeModule::simulateCurrentIndex()
+   * @copydoc ART::ITimeModule::simulateCurrentIndex()
    */
   virtual void simulateCurrentIndex(int idx);
 
@@ -715,7 +715,7 @@ protected:
  *          destructor and internal functions to calculate parameters for
  *          Lagrange FIR and Thiran IIR filters.
  */
-class genericDelayModule : public ARTItimeModule
+class genericDelayModule : public ART::ITimeModule
 {
 public:
   /**
@@ -727,7 +727,7 @@ public:
    * @param[in] htm Path to help file in HTML format.
    */
   explicit genericDelayModule(const string& name, const string& sds="", const string& lds="", const string& htm="") :
-  ARTItimeModule(name, sds, lds, htm) {}
+  ART::ITimeModule(name, sds, lds, htm) {}
   /**
    * @brief Destructor of the genericDelayModule class.
    */
@@ -814,7 +814,7 @@ public:
    * @param[in] lds Long description of the fractional delay module.
    * @param[in] htm Path to help file in HTML format.
    */
-  virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
+  virtual ART::ITimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
 
   /**
    * @brief Adds a new input port to the current time module.
@@ -837,11 +837,11 @@ public:
   virtual ARTdataProp* getPort(const string& name);
 
   /**
-   * @copydoc ARTItimeModule::setCurrentIndex()
+   * @copydoc ART::ITimeModule::setCurrentIndex()
    */
   virtual void setCurrentIndex(int idx);
   /**
-   * @copydoc ARTItimeModule::simulateCurrentIndex()
+   * @copydoc ART::ITimeModule::simulateCurrentIndex()
    */
   virtual void simulateCurrentIndex(int idx);
 
@@ -922,7 +922,7 @@ public:
    * @param[in] lds Long description of the DWG cylinder module.
    * @param[in] htm Path to help file in HTML format.
    */
-  virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
+  virtual ART::ITimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
 
   /**
    * @brief Adds a new input port to the current time module.
@@ -945,11 +945,11 @@ public:
   virtual ARTdataProp* getPort(const string& name);
 
   /**
-   * @copydoc ARTItimeModule::setCurrentIndex
+   * @copydoc ART::ITimeModule::setCurrentIndex
    */
   virtual void setCurrentIndex(int idx);
   /**
-   * @copydoc ARTItimeModule::simulateCurrentIndex
+   * @copydoc ART::ITimeModule::simulateCurrentIndex
    */
   virtual void simulateCurrentIndex(int idx);
 
@@ -994,7 +994,7 @@ protected:
  *   - <b> \c r2 </b> Radius of the cylinder on the right side of the junction
  *     in m. Defaults to 0.015, i.e., 15 mm.
  */
-class DWGcylinderJunctionModule : public ARTItimeModule
+class DWGcylinderJunctionModule : public ART::ITimeModule
 {
 protected:
   /** Forwards traveling wave left input port. */
@@ -1032,7 +1032,7 @@ public:
    * @param[in] lds Long description of the DWG cylinder junction module.
    * @param[in] htm Path to help file in HTML format.
    */
-  virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
+  virtual ART::ITimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
 
   /**
    * @brief Adds a new input port to the current time module.
@@ -1055,11 +1055,11 @@ public:
   virtual ARTdataProp* getPort(const string& name);
 
   /**
-   * @copydoc ARTItimeModule::setCurrentIndex
+   * @copydoc ART::ITimeModule::setCurrentIndex
    */
   virtual void setCurrentIndex(int idx);
   /**
-   * @copydoc ARTItimeModule::simulateCurrentIndex
+   * @copydoc ART::ITimeModule::simulateCurrentIndex
    */
   virtual void simulateCurrentIndex(int idx);
 
@@ -1120,7 +1120,7 @@ public:
    * @param[in] lds Long description of the DWG cone module.
    * @param[in] htm Path to help file in HTML format.
    */
-  virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
+  virtual ART::ITimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
 
   /**
    * @brief Destructor of the DWGconeModule class.
@@ -1183,7 +1183,7 @@ protected:
  *     boreprofile mode).
  *
  */
-class DWGconeJunctionModule : public ARTItimeModule
+class DWGconeJunctionModule : public ART::ITimeModule
 {
 protected:
   /** Forwards traveling wave left input port. */
@@ -1228,7 +1228,7 @@ public:
    * @param[in] lds Long description of the DWG cone junction module.
    * @param[in] htm Path to help file in HTML format.
    */
-  virtual ARTItimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
+  virtual ART::ITimeModule* Create(const string& name, const string& sds="", const string& lds="", const string& htm="");
 
   /**
    * @brief Adds a new input port to the current time module.
@@ -1251,11 +1251,11 @@ public:
   virtual ARTdataProp* getPort(const string& name);
 
   /**
-   * @copydoc ARTItimeModule::setCurrentIndex
+   * @copydoc ART::ITimeModule::setCurrentIndex
    */
   virtual void setCurrentIndex(int idx);
   /**
-   * @copydoc ARTItimeModule::simulateCurrentIndex
+   * @copydoc ART::ITimeModule::simulateCurrentIndex
    */
   virtual void simulateCurrentIndex(int idx);
 
