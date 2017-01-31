@@ -50,24 +50,24 @@ using std::string;
 /**
  * An object of this class is like the blueprint of an Element. It contains all properties and
  * data properties with default values the elements created from it will have. If an
- * ARTprototype is changed, its former descendents are not changed. Although ARTprototypes
+ * Prototype is changed, its former descendents are not changed. Although Prototypes
  * are not restricted to one simulator, calculation domain or wavetype, their properties
- * might not allow all simulation types. An ARTprototype contains an object of a certain
+ * might not allow all simulation types. An Prototype contains an object of a certain
  * subclass of HornElement. That object is the implementation of the element and copies of
  * it will be invoked when derivated Elements are used in calculation.
  */
-
-class ARTprototype : public ARTobject {
+namespace ART{
+class Prototype : public ARTobject {
 protected:
         HornElement* implementation; //eine Instanz des Objekts als Schablone
 public:
-        ARTprototype(const string name, const string sds="", const string lds="", const string htm="")
+        Prototype(const string name, const string sds="", const string lds="", const string htm="")
         : ARTobject(name,sds,lds,htm), implementation(NULL) {}
 
-        ARTprototype(HornElement* impl, const string name, const string sds="", const string lds="", const string htm="")
+        Prototype(HornElement* impl, const string name, const string sds="", const string lds="", const string htm="")
         : ARTobject(name,sds,lds,htm), implementation(impl) {}
 
-        virtual ~ARTprototype()
+        virtual ~Prototype()
         {
                 delete implementation;
         }
@@ -75,5 +75,5 @@ public:
         void SetImplementation(HornElement* modImp) {implementation = modImp;}
         HornElement* GetImplementation() {return implementation;}
 };
-
+}
 #endif /* ARTPROTOTYPE_H */

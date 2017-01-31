@@ -51,11 +51,11 @@ using std::string;
 /**
  * A list of objects (like all Element:s as userElements) that is added as property to
  * another ARTobject. prototypeModels for ex. is such a list, belonging to the root
- * object, and to this list all ARTprototype:s are added. (List is then part of ARTobject's
+ * object, and to this list all Prototype:s are added. (List is then part of ARTobject's
  * property list)
  */
 namespace ART{
-  class ListProp : public ART::Property {
+  class ListProp : public Property {
   private:
     list<ARTobject*> objectList_;
     list<ARTobject*>::iterator oiter_;

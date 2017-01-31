@@ -51,7 +51,7 @@ namespace ART{
  * Objects of this class represent acoustic elements. They are created in a simulator and
  * must match the calculation domain and wavetype of the simulator. (They are saved in the
  * simulator->userElements list) \par
- * Elements are derived from an ARTprototype. In fact they are copies with added
+ * Elements are derived from an Prototype. In fact they are copies with added
  * properties like impedance and propagation matrix.
  */
 class Element : public ModelInterface {
