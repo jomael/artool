@@ -63,7 +63,7 @@
 #include "ARTFreqSimulator.h"
 #include "ARTTimeSimulator.h"
 #include "Element.h"
-#include "ARTprototype.h"
+#include "Prototype.h"
 #include "Circuit.h"
 #include "ARTmethod.h"
 #include "ARTtimeModule.h"
@@ -321,7 +321,7 @@ P_ART_Element    __CALLCONV ARTCreateElement     (P_ART_Simulator simulator, con
 	Element* newElement_a = static_cast<Element*>(simulator->userElements->FindObject(name));
 	if (newElement_a) throw ARTerror("ARTCreateElement", "An element with the name '%s1' already exists.", name);
 
-	ARTprototype* prototype = (ARTprototype*)(art->prototypeModels->FindObject(type));
+	Prototype* prototype = (Prototype*)(art->prototypeModels->FindObject(type));
 
 	if (prototype != NULL)
 	{
