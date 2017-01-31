@@ -38,7 +38,7 @@
 
 #include "ARTobject.h"
 #include "ARTmethod.h"
-#include "ARTlistProp.h"
+#include "ListProp.h"
 #include "Simulator.h"
 
 using namespace ART;
@@ -173,12 +173,12 @@ ARTdataProp* ARTobject::AppendDataProp(const string name, const string val, cons
 
 
 // append new listableProperty with given name
-ARTlistProp* ARTobject::AppendListProp(const string name, const string sds, const string lds, const string htm) {
+ListProp* ARTobject::AppendListProp(const string name, const string sds, const string lds, const string htm) {
         if (FindProperty(name)) throw ARTerror("ARTobject::AppendListProperty","A property with the name '%s1' has already been appended to object '%s2'.",name,name_);
-        propertyList_.push_back(new ARTlistProp(name,sds,lds,htm));
+        propertyList_.push_back(new ListProp(name,sds,lds,htm));
         piter_ = propertyList_.end();
         --piter_;
-        return (ARTlistProp*)(*piter_);
+        return (ListProp*)(*piter_);
 }
 
 // append new method with given name

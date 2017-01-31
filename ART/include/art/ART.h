@@ -838,7 +838,7 @@ namespace ART{
 }
 typedef struct ARTobject ARTobject;
 typedef struct ARTdataProp ARTdataProp;
-typedef struct ARTlistProp ARTlistProp;
+typedef struct ListProp ListProp;
 typedef struct ARTmethod ARTmethod;
 typedef struct ARTvariant ARTvariant;
 typedef struct ARTItimeModule ARTItimeModule;
@@ -853,10 +853,10 @@ namespace ART{
   class Element;
   class Simulator;
   class Property;
+  class ListProp;
 }
 class ARTobject;
 class ARTdataProp;
-class ARTlistProp;
 class ARTmethod;
 class ARTvariant;
 class ARTItimeModule;
@@ -875,10 +875,10 @@ namespace ART{
   typedef Element*	P_ART_Element;
   typedef Simulator*   P_ART_Simulator;
   typedef Property*	P_ART_Property;
+  typedef ListProp*	P_ART_ListProp;
 }
 typedef ARTobject*	P_ART_Object;
 typedef ARTdataProp*	P_ART_DataProp;
-typedef ARTlistProp*	P_ART_ListProp;
 typedef ARTmethod*	P_ART_Method;
 typedef ARTvariant*	P_ART_Variant;
 typedef ARTItimeModule* P_ART_TModule;
@@ -1640,7 +1640,7 @@ __DECLSPEC P_ART_Method	__CALLCONV	ARTFindMethod	(P_ART_Object  host, const char
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror if not using the DLL interface.
  */  
-__DECLSPEC P_ART_Object	__CALLCONV	ARTFindObject	(P_ART_ListProp host, const char* nam);
+__DECLSPEC P_ART_Object	__CALLCONV	ARTFindObject	(ART::P_ART_ListProp host, const char* nam);
 
 /**
  * Iterates through all properties of the object host (including data properties). To find out if a property is a data property
@@ -1709,7 +1709,7 @@ __DECLSPEC P_ART_Method	__CALLCONV	ARTGetMethods	(P_ART_Object  host, P_ART_Meth
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror if not using the DLL interface.
  */   
-__DECLSPEC P_ART_Object	__CALLCONV	ARTGetObjects	(P_ART_ListProp host, P_ART_Object  pos);
+__DECLSPEC P_ART_Object	__CALLCONV	ARTGetObjects	(ART::P_ART_ListProp host, P_ART_Object  pos);
 
 
 /**
@@ -1739,7 +1739,7 @@ __DECLSPEC P_ART_DataProp	__CALLCONV	ARTAppendDataProp	(P_ART_Object host, P_ART
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror if not using the DLL interface.
  */	
-__DECLSPEC P_ART_ListProp	__CALLCONV	ARTAppendListProp	(P_ART_Object host, const char* nam, const char* sds, const char* lds, const char* htm);
+__DECLSPEC ART::P_ART_ListProp	__CALLCONV	ARTAppendListProp	(P_ART_Object host, const char* nam, const char* sds, const char* lds, const char* htm);
 
 /**
  * Appends a method to an ARTobject.
@@ -1767,7 +1767,7 @@ __DECLSPEC P_ART_Method	__CALLCONV	ARTAppendMethod	(P_ART_Object host, const cha
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror if not using the DLL interface.
  */ 
-__DECLSPEC P_ART_Object	__CALLCONV	ARTAppendObject	(P_ART_ListProp host, const char* nam, const char* sds, const char* lds, const char* htm);
+__DECLSPEC P_ART_Object	__CALLCONV	ARTAppendObject	(ART::P_ART_ListProp host, const char* nam, const char* sds, const char* lds, const char* htm);
 
 /**
  * Deletes the property prp of object host.  
@@ -1803,7 +1803,7 @@ __DECLSPEC bool	__CALLCONV	ARTDeleteMethod	(P_ART_Object  host, P_ART_Method mtd
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror if not using the DLL interface.
  */   
-__DECLSPEC bool	__CALLCONV	ARTDeleteObject	(P_ART_ListProp host, P_ART_Object pobj);
+__DECLSPEC bool	__CALLCONV	ARTDeleteObject	(ART::P_ART_ListProp host, P_ART_Object pobj);
 
 /**
  * Returns the last error message. Use this function only when you are using the
@@ -1832,7 +1832,7 @@ char*	__CALLCONV	ARTGetDependencyTree	(P_ART_DataProp pprp, const char* linebrea
 
 __DECLSPEC void __CALLCONV listprops(ARTobject* obj, string ind);
 __DECLSPEC void __CALLCONV listmets(ARTobject* obj, string ind);
-__DECLSPEC void __CALLCONV listobjs(ARTlistProp* lstprp, string ind);
+__DECLSPEC void __CALLCONV listobjs(ART::ListProp* lstprp, string ind);
 
 
 }

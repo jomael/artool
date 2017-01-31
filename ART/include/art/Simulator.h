@@ -135,11 +135,11 @@ public:
    * Pointer to the user elements of the simulator, mainly used by the
    * frequency Simulator.
    */
-  ARTlistProp* userElements;
+  ListProp* userElements;
   /**
    * Pointer to all internal circuits, mainly used by the frequency Simulator.
    */
-  ARTlistProp* circuits;
+  ListProp* circuits;
 
   virtual ARTdataProp* AppendDataProp(const string name, ARTvariant* val, const string sds="", const string lds="", const string htm="");
   virtual ARTdataProp* AppendDataProp(const string name, const double val, const string sds="", const string lds="", const string htm="");
