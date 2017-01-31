@@ -51,7 +51,7 @@
 #include <complex>
 
 #include "ARTobject.h"
-#include "ARTTimeSimulator.h"
+#include "TimeSimulator.h"
 #include "ARTItimeModule.h"
 #include "mpParser.h"
 
