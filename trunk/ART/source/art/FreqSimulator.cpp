@@ -37,51 +37,55 @@
 *                                                                         *
 ***************************************************************************/
 
-
-#ifndef ARTFREQSIMULATOR_H_
-#define ARTFREQSIMULATOR_H_
-
-//#include <list>
-#include <map>
-#include "mpParser.h"
-#include "ARTobject.h"
-#include "Property.h"
-#include "ARTdataProp.h"
-#include "Simulator.h"
+#include <sstream>
+#include "strparsing.h"
+#include "FreqSimulator.h"
+#include "ListProp.h"
+#include "ARTtimeModule.h"
+#include "Functionoid.h"
 
 using namespace mup;
-//using std::list;
 
-// forward declaration
-class ARTItimeModule;
-/**
- * @brief Implementation of a simulator for the frequency domain.
- */
-class ARTFreqSimulator : public ART::Simulator
+using std::stringstream;
+using namespace ART;
+
+
+//**************************************************************************************************************
+// ARTfreqSimulator
+
+FreqSimulator::FreqSimulator(const string name, const string wavetype,
+    const string sds, const string lds, const string htm) :
+    Simulator(name, "FrequencyDomain", sds, lds, htm), wavetype_(wavetype)
 {
-protected:
-  /**
-   * Defines the wave type of the simulation - plain, spherical or multimodal.
+
+  /*
+	The frequency grids are not supposed to be edited by the user and therefore no properties!
+	frqGrid = AppendDataProp("frqGrid", new ARTvariant(C_ART_ndbl), "The list of frequencies (in Hz) for which this simulator will calculate the impedance.");
+	wfrqGrid = AppendDataProp("wfrqGrid", new ARTvariant(C_ART_ndbl), "The list of frequencies (angular frequency) for which this simulator will calcualte the impedance.");
    */
-  ART::Property wavetype_;
-  ART::DataContainer* frqGrid;
-  ART::DataContainer* wfrqGrid;
-  ART::DataContainer* modes;
-public:
+  modes = AppendDataProp("NumberOfModes", 1, "The number of modes for which this simulator will calculate the impedance.");
 
-  ARTFreqSimulator(const string name, const string wavetype="MultiModal",
-      const string sds="", const string lds="", const string htm="");
+  ARTdataProp* fmin = AppendDataProp("LowerFrequencyLimit", 50.0, "The lower frequency (in Hz) of the range for which this simulator will calculate the impedance.");
+  ARTdataProp* fmax = AppendDataProp("HigherFrequencyLimit", 1800.0, "The higher frequency (in Hz) of the range for which this simulator will calculate the impedance.");
+  ARTdataProp* fstep = AppendDataProp("FrequencyStep", 5.0, "The frequency step (in Hz) used to go through the range for which this simulator will calculate the impedance.");
 
-  //void SetMultimodeParameters(ARTdataProp* fmin, ARTdataProp* fmax, ARTdataProp* fstep, ARTdataProp* modes);
+  //add properties to parser
+  Property* prop = GetProperties(NULL);
+  while (prop)
+  {
+    //if it is a data property
+    ARTdataProp* dprop = dynamic_cast<ARTdataProp*>(prop);
+    if (dprop)
+    {
+      string varname = dprop->GetName();
+      dprop->SetParser(parser_);
+      dprop->SetParserVar(varname);
+      //std::cout << "Created Parser Var: " << varname << "\n";
+    }
+    prop = GetProperties(prop);
+  }
 
-  virtual ART::DataContainer* GetFrequencyGrid() {return frqGrid;}
-  virtual ART::DataContainer* GetAngularFrequencyGrid() {return wfrqGrid;}
-  virtual ART::DataContainer* GetNumberOfModes() {return modes;}
+  frqGrid = new DataContainer("frqGrid", new ARTfrqGridFunc(fmin, fmax, fstep));
+  wfrqGrid = new DataContainer("wfrqGrid", new ARTwfrqGridFunc(frqGrid));
 
-  virtual ART::Property* GetWavetype() {return &wavetype_;}
-
-  virtual ~ARTFreqSimulator() {}
-};
-
-
-#endif /* ARTFREQSIMULATOR_H_ */
+}

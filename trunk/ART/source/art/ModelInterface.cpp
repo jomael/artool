@@ -41,5 +41,5 @@
 using namespace ART;
 void ModelInterface::SetSimulator(Simulator* sim)
 {
-  simulator = dynamic_cast<ARTFreqSimulator*>(sim);
+  simulator = dynamic_cast<FreqSimulator*>(sim);
 }

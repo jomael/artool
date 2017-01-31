@@ -60,7 +60,7 @@
 //#include "Model.h"
 #include "DataContainer.h"
 #include "Simulator.h"
-#include "ARTFreqSimulator.h"
+#include "FreqSimulator.h"
 #include "TimeSimulator.h"
 #include "Element.h"
 #include "Prototype.h"
@@ -230,7 +230,7 @@ P_ART_Simulator __CALLCONV ARTCreateSimulator    (const char* name, const char* 
 		//check if wavetype is valid
 		if (! ARTCheckPropertyCapability("WaveType", wavetype))
 			throw ARTerror("ARTCreateSimulator", "The specified wave type is invalid.");
-		simulator = new ARTFreqSimulator(name, wavetype);
+		simulator = new FreqSimulator(name, wavetype);
 		simulator->userElements = simulator->AppendListProp("UserElements");
 		simulator->circuits = simulator->AppendListProp("Circuits");
 	}
@@ -331,7 +331,7 @@ P_ART_Element    __CALLCONV ARTCreateElement     (P_ART_Simulator simulator, con
 
 		if (simulator->GetDomain()->GetName() == "FrequencyDomain")
 		{
-			ARTFreqSimulator* freqSimulator = dynamic_cast<ARTFreqSimulator*>(simulator);
+			FreqSimulator* freqSimulator = dynamic_cast<FreqSimulator*>(simulator);
 			method = prototype->FindMethod(freqSimulator->GetWavetype()->GetName().c_str());
 			if (method == NULL) throw ARTerror("ARTCreateElement", "The prototype model does not support the wavetype of the simulator.");
 		}
@@ -419,7 +419,7 @@ P_ART_Element    __CALLCONV ARTChangeElementModel     (P_ART_Simulator simulator
 
 		if (simulator->GetDomain()->GetName() == "FrequencyDomain")
 		{
-			ARTFreqSimulator* freqSimulator = dynamic_cast<ARTFreqSimulator*>(simulator);
+			FreqSimulator* freqSimulator = dynamic_cast<FreqSimulator*>(simulator);
 			method = prototype->FindMethod(freqSimulator->GetWavetype()->GetName().c_str());
 			if (method == NULL) throw ARTerror("ARTChangeElementType", "The prototype model does not support the wavetype of the simulator.");
 		}
