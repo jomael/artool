@@ -4464,14 +4464,14 @@ TEST_DEF_END(DoublePortInitialization)
 
 TEST_DEF_START(DoubleModuleCreation, ARTtimeSimulatorTests)
 
-        ARTTimeSimulator* myTimeSimulator;
+        TimeSimulator* myTimeSimulator;
         ARTtimeModule* timeModule1;
         ARTtimeModule* timeModule2;
 
 
         virtual void prepare()
         {
-                myTimeSimulator = new ARTTimeSimulator("TestSim");
+                myTimeSimulator = new TimeSimulator("TestSim");
                 myTimeSimulator->userElements = new ListProp("testList");
                 timeModule1 = new ARTtimeModule("myModule");
                 timeModule2 = new ARTtimeModule("myModule");
@@ -4506,12 +4506,12 @@ TEST_DEF_END(DoubleModuleCreation)
 
 TEST_DEF_START(CreateAndChangeLocalParameter, ARTtimeSimulatorTests)
 
-        ARTTimeSimulator* timeSimulator;
+        TimeSimulator* timeSimulator;
         ARTtimeModule* timeModule;
 
         virtual void prepare()
         {
-                timeSimulator = new ARTTimeSimulator("mySimulator");
+                timeSimulator = new TimeSimulator("mySimulator");
                 timeSimulator->userElements = new ListProp("testList");
                 timeModule = new ARTtimeModule("myTimeModule");
         }
@@ -4568,12 +4568,12 @@ TEST_DEF_END(CreateAndChangeLocalParameter)
 
 TEST_DEF_START(ChangeGlobalParameter, ARTtimeSimulatorTests)
 
-        ARTTimeSimulator* myTimeSimulator;
+        TimeSimulator* myTimeSimulator;
         ARTtimeModule* timeModule;
 
         virtual void prepare()
         {
-                myTimeSimulator = new ARTTimeSimulator("TestSim");
+                myTimeSimulator = new TimeSimulator("TestSim");
                 myTimeSimulator->userElements = new ListProp("testList");
                 timeModule = new ARTtimeModule("myModule");
         }
@@ -4628,12 +4628,12 @@ TEST_DEF_END(ChangeGlobalParameter)
 
 TEST_DEF_START(CreateGlobalParameter, ARTtimeSimulatorTests)
 
-        ARTTimeSimulator* myTimeSimulator;
+        TimeSimulator* myTimeSimulator;
         ARTtimeModule* timeModule;
 
         virtual void prepare()
         {
-                myTimeSimulator = new ARTTimeSimulator("TestSim");
+                myTimeSimulator = new TimeSimulator("TestSim");
                 myTimeSimulator->userElements = new ListProp("testList");
                 timeModule = new ARTtimeModule("myModule");
         }
@@ -4696,11 +4696,11 @@ TEST_DEF_END(CreateGlobalParameter)
 
 TEST_DEF_START(SetNonExistingGlobalParameter, ARTtimeSimulatorTests)
 
-        ARTTimeSimulator* myTimeSimulator;
+        TimeSimulator* myTimeSimulator;
 
         virtual void prepare()
         {
-                myTimeSimulator = new ARTTimeSimulator("TestSim");
+                myTimeSimulator = new TimeSimulator("TestSim");
         }
 
         virtual bool run()
@@ -4733,11 +4733,11 @@ TEST_DEF_END(SetNonExistingGlobalParameter)
 
 TEST_DEF_START(FibonacciNumbers1, ARTtimeSimulatorTests)
 
-        ARTTimeSimulator* myTimeSimulator;
+        TimeSimulator* myTimeSimulator;
 
         virtual void prepare()
         {
-                myTimeSimulator = new ARTTimeSimulator("TestSim");
+                myTimeSimulator = new TimeSimulator("TestSim");
                 myTimeSimulator->userElements = new ListProp("testList");
 
         }
@@ -4797,11 +4797,11 @@ TEST_DEF_END(FibonacciNumbers1)
 
 TEST_DEF_START(FibonacciNumbers2, ARTtimeSimulatorTests)
 
-        ARTTimeSimulator* myTimeSimulator;
+        TimeSimulator* myTimeSimulator;
 
         virtual void prepare()
         {
-                myTimeSimulator = new ARTTimeSimulator("TestSim");
+                myTimeSimulator = new TimeSimulator("TestSim");
                 myTimeSimulator->userElements = new ListProp("testList");
 
         }
@@ -4936,11 +4936,11 @@ TEST_DEF_END(FibonacciNumbers3)
 
 TEST_DEF_START(ConvolutionTest1, ARTtimeSimulatorTests)
 
-        ARTTimeSimulator* myTimeSimulator;
+        TimeSimulator* myTimeSimulator;
 
         virtual void prepare()
         {
-                myTimeSimulator = new ARTTimeSimulator("TestSim");
+                myTimeSimulator = new TimeSimulator("TestSim");
                 myTimeSimulator->userElements = new ListProp("testList");
 
         }
@@ -5179,11 +5179,11 @@ TEST_DEF_END(ConvolutionTest1)
 
 TEST_DEF_START(HiddenTimeDelay, ARTtimeSimulatorTests)
 
-        ARTTimeSimulator* myTimeSimulator;
+        TimeSimulator* myTimeSimulator;
 
         virtual void prepare()
         {
-                myTimeSimulator = new ARTTimeSimulator("TestSim");
+                myTimeSimulator = new TimeSimulator("TestSim");
                 myTimeSimulator->userElements = new ListProp("testList");
 
         }
@@ -5251,11 +5251,11 @@ TEST_DEF_END(HiddenTimeDelay)
 
 TEST_DEF_START(RectangularFunction, ARTtimeSimulatorTests)
 
-        ARTTimeSimulator* myTimeSimulator;
+        TimeSimulator* myTimeSimulator;
 
         virtual void prepare()
         {
-                myTimeSimulator = new ARTTimeSimulator("TestSim");
+                myTimeSimulator = new TimeSimulator("TestSim");
                 myTimeSimulator->userElements = new ListProp("testList");
 
         }
@@ -5320,11 +5320,11 @@ TEST_DEF_END(RectangularFunction)
 
 TEST_DEF_START(SineFunction, ARTtimeSimulatorTests)
 
-        ARTTimeSimulator* myTimeSimulator;
+        TimeSimulator* myTimeSimulator;
 
         virtual void prepare()
         {
-                myTimeSimulator = new ARTTimeSimulator("TestSim");
+                myTimeSimulator = new TimeSimulator("TestSim");
                 myTimeSimulator->userElements = new ListProp("testList");
 
         }
@@ -5383,11 +5383,11 @@ TEST_DEF_END(SineFunction)
 
 TEST_DEF_START(FractionalDelay, ARTtimeSimulatorTests)
 
-        ARTTimeSimulator* myTimeSimulator;
+        TimeSimulator* myTimeSimulator;
 
         virtual void prepare()
         {
-                myTimeSimulator = new ARTTimeSimulator("TestSim");
+                myTimeSimulator = new TimeSimulator("TestSim");
                 myTimeSimulator->userElements = new ListProp("testList");
 
         }
@@ -5474,8 +5474,8 @@ TEST_DEF_END(FractionalDelay)
 TEST_DEF_START(FindNames, ARTtimeSimulatorTests)
 
         AcousticResearchTool* ART;
-        ARTTimeSimulator* myTimeSimulator1;
-        ARTTimeSimulator* myTimeSimulator2;
+        TimeSimulator* myTimeSimulator1;
+        TimeSimulator* myTimeSimulator2;
         ARTtimeModule* timeModule1;
 //        ARTtimeModule* timeModule2;
 

@@ -55,10 +55,11 @@ using namespace mup;
 // forward declaration
 class ARTItimeModule;
 
+namespace ART{
 /**
  * @brief Implementation of a simulator in the time domain
  */
-class ARTTimeSimulator : public ART::Simulator
+class TimeSimulator : public ART::Simulator
 {
 public:
 
@@ -69,7 +70,7 @@ public:
    * @param[in] lds Long description of the created simulator.
    * @param[in] htm Path to help file in HTML format.
    */
-  ARTTimeSimulator(const string name, const string sds="",
+  TimeSimulator(const string name, const string sds="",
       const string lds="", const string htm="");
 
   /**
@@ -153,7 +154,7 @@ public:
   /**
    * @brief Destructor of the ARTtimeSimulator class.
    */
-  virtual ~ARTTimeSimulator();
+  virtual ~TimeSimulator();
 protected:
 
   /**
@@ -183,5 +184,5 @@ protected:
   virtual void addParamToCurrentModules(ARTdataProp* newParam);
 
 };
-
+}
 #endif /* ARTTIMESIMULATOR_H_ */

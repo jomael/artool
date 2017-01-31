@@ -39,7 +39,7 @@
 
 #include <sstream>
 #include "strparsing.h"
-#include "ARTTimeSimulator.h"
+#include "TimeSimulator.h"
 #include "ListProp.h"
 #include "ARTtimeModule.h"
 #include "Functionoid.h"
@@ -52,7 +52,7 @@ using namespace ART;
 //**************************************************************************************************************
 // ARTtimeSimulator
 
-ARTTimeSimulator::ARTTimeSimulator(const string name, const string sds,
+TimeSimulator::TimeSimulator(const string name, const string sds,
     const string lds, const string htm) :
     Simulator(name, "TimeDomain", sds, lds, htm)
 //	_simulParams()
@@ -60,7 +60,7 @@ ARTTimeSimulator::ARTTimeSimulator(const string name, const string sds,
   initStandardSimulParams();
 }
 
-void ARTTimeSimulator::AddTimeModule(ARTItimeModule* timeModule)
+void TimeSimulator::AddTimeModule(ARTItimeModule* timeModule)
 {
   if (!timeModule)
   {
@@ -87,7 +87,7 @@ void ARTTimeSimulator::AddTimeModule(ARTItimeModule* timeModule)
   timeModule->setSimulator(this);
 }
 
-void ARTTimeSimulator::AddSimulationParameter(const string& name, const string& expr)
+void TimeSimulator::AddSimulationParameter(const string& name, const string& expr)
 {
   //	if (_simulParams.find(name) == _simulParams.end())
   //	{
@@ -119,7 +119,7 @@ void ARTTimeSimulator::AddSimulationParameter(const string& name, const string& 
       name);
 }
 
-void ARTTimeSimulator::AddSimulationParameter(const string& name, const std::complex<double>& val)
+void TimeSimulator::AddSimulationParameter(const string& name, const std::complex<double>& val)
 {
   //	if (_simulParams.find(name) == _simulParams.end())
   //	{
@@ -151,7 +151,7 @@ void ARTTimeSimulator::AddSimulationParameter(const string& name, const std::com
 
 }
 
-void ARTTimeSimulator::AddSimulationParameter(const string& name, double val)
+void TimeSimulator::AddSimulationParameter(const string& name, double val)
 {
   ARTdataProp* prop = NULL;
   try
@@ -184,7 +184,7 @@ void ARTTimeSimulator::AddSimulationParameter(const string& name, double val)
 
 }
 
-void ARTTimeSimulator::SimulateTimeStep(int idx)
+void TimeSimulator::SimulateTimeStep(int idx)
 {
 
   // set current time index parameter if it exists
@@ -236,7 +236,7 @@ void ARTTimeSimulator::SimulateTimeStep(int idx)
   }
 }
 
-void ARTTimeSimulator::SetSimulationParameter(const string& name, const string& expr)
+void TimeSimulator::SetSimulationParameter(const string& name, const string& expr)
 {
   ARTdataProp* prop = FindDataPropInSimulator(name);
   //	if (_simulParams.find(name) != _simulParams.end())
@@ -257,7 +257,7 @@ void ARTTimeSimulator::SetSimulationParameter(const string& name, const string& 
   }
 }
 
-void ARTTimeSimulator::SetSimulationParameter(const string& name, const std::complex<double>& val)
+void TimeSimulator::SetSimulationParameter(const string& name, const std::complex<double>& val)
 {
   ARTdataProp* prop = FindDataPropInSimulator(name);
   //	if (_simulParams.find(name) != _simulParams.end())
@@ -280,7 +280,7 @@ void ARTTimeSimulator::SetSimulationParameter(const string& name, const std::com
   }
 }
 
-void ARTTimeSimulator::SetSimulationParameter(const string& name, double val)
+void TimeSimulator::SetSimulationParameter(const string& name, double val)
 {
   ARTdataProp* prop = FindDataPropInSimulator(name);
   //	if (_simulParams.find(name) != _simulParams.end())
@@ -303,7 +303,7 @@ void ARTTimeSimulator::SetSimulationParameter(const string& name, double val)
   }
 }
 
-ARTdataProp* ARTTimeSimulator::FindDataPropInSimulator(string exp)
+ARTdataProp* TimeSimulator::FindDataPropInSimulator(string exp)
 {
   ARTdataProp* prop;
   //try to find a property of the simulator with name *exp*
@@ -342,7 +342,7 @@ ARTdataProp* ARTTimeSimulator::FindDataPropInSimulator(string exp)
   return prop;
 }
 
-ARTItimeModule* ARTTimeSimulator::FindTimeModuleInSimulator(string exp)
+ARTItimeModule* TimeSimulator::FindTimeModuleInSimulator(string exp)
 {
   if (!userElements)
   {
@@ -358,12 +358,12 @@ ARTItimeModule* ARTTimeSimulator::FindTimeModuleInSimulator(string exp)
   return tmpModule;
 }
 
-ARTTimeSimulator::~ARTTimeSimulator()
+TimeSimulator::~TimeSimulator()
 {
   clean();
 }
 
-void ARTTimeSimulator::initStandardSimulParams()
+void TimeSimulator::initStandardSimulParams()
 {
   //	DataContainer* tmpContainer;
   //	ParserX* tmpParser;
@@ -405,7 +405,7 @@ void ARTTimeSimulator::initStandardSimulParams()
   AppendDataProp(tmpProp);
 }
 
-void ARTTimeSimulator::clean()
+void TimeSimulator::clean()
 {
   //	simulParameterMapIterator iter;
 
@@ -421,7 +421,7 @@ void ARTTimeSimulator::clean()
 }
 
 
-void ARTTimeSimulator::addParamsToModule(ARTItimeModule* timeModule)
+void TimeSimulator::addParamsToModule(ARTItimeModule* timeModule)
 {
   Property* iter = GetProperties(NULL);
   ARTdataProp* prop;
@@ -437,7 +437,7 @@ void ARTTimeSimulator::addParamsToModule(ARTItimeModule* timeModule)
 }
 
 //void ARTtimeSimulator::addParamToCurrentModules(const string& name, simulParameterType* newParam)
-void ARTTimeSimulator::addParamToCurrentModules(ARTdataProp* newParam)
+void TimeSimulator::addParamToCurrentModules(ARTdataProp* newParam)
 {
   if (userElements)
   {

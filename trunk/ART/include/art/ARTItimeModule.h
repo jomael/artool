@@ -44,7 +44,7 @@
 #include <complex>
 
 #include "ARTobject.h"
-#include "ARTTimeSimulator.h"
+#include "TimeSimulator.h"
 #include "mpParser.h"
 
 using std::string;
@@ -420,7 +420,7 @@ public:
   protected:
 
   /** Simulator object to which the current time module belongs. */
-  ARTTimeSimulator* _simulator;
+  ART::TimeSimulator* _simulator;
 };
 
 #endif /* ARTITIMEMODULE_H_ */
