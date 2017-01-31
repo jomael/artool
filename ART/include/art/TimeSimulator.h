@@ -52,11 +52,11 @@
 using namespace mup;
 //using std::list;
 
-// forward declaration
-class ARTItimeModule;
-
 namespace ART{
-/**
+// forward declaration
+class ITimeModule;
+
+ /**
  * @brief Implementation of a simulator in the time domain
  */
 class TimeSimulator : public ART::Simulator
@@ -78,7 +78,7 @@ public:
    * @exception ARTerror If a module with the same name is already part of the
    *            current simulator.
    */
-  virtual void AddTimeModule(ARTItimeModule* timeModule);
+  virtual void AddTimeModule(ITimeModule* timeModule);
   /**
    * @brief Adds a global parameter to the current simulator.
    * @param[in] name A unique identifier for the simulation parameter.
@@ -149,7 +149,7 @@ public:
    * @exception ARTerror If no time valid module with the given name could be
    *            found.
    */
-  virtual ARTItimeModule* FindTimeModuleInSimulator(string exp);
+  virtual ITimeModule* FindTimeModuleInSimulator(string exp);
 
   /**
    * @brief Destructor of the ARTtimeSimulator class.
@@ -173,7 +173,7 @@ protected:
    * @brief Adds all global parameters to the given time module.
    * @param[in] timeModule Time module to which the parameters will be added.
    */
-  virtual void addParamsToModule(ARTItimeModule* timeModule);
+  virtual void addParamsToModule(ITimeModule* timeModule);
 
   /**
    * @brief Adds a new global parameter to all currently registered time

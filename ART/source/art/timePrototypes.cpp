@@ -55,12 +55,12 @@ using namespace ART;
  *******************************************************************************************/
 
 inputFunctionModule::inputFunctionModule(const string& name, const string& sds, const string& lds, const string& htm) :
-ARTItimeModule(name, sds, lds, htm),
+ITimeModule(name, sds, lds, htm),
 out_(NULL)
 {
 }
 
-ARTItimeModule* inputFunctionModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
+ITimeModule* inputFunctionModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
 {
   return new inputFunctionModule(name, sds, lds, htm);
 }
@@ -128,7 +128,7 @@ inputFunctionModule::~inputFunctionModule()
  *******************************************************************************************/
 
 impulseModule::impulseModule(const string& name, const string& sds, const string& lds, const string& htm) :
-		    ARTItimeModule(name, sds, lds, htm),
+		    ITimeModule(name, sds, lds, htm),
 		    out_(NULL)
 {
   out_ = new OPortType(C_ART_na, 5, "out");
@@ -138,7 +138,7 @@ impulseModule::impulseModule(const string& name, const string& sds, const string
   initLocalParams();
 }
 
-ARTItimeModule* impulseModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
+ITimeModule* impulseModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
 {
   return new impulseModule(name, sds, lds, htm);
 }
@@ -187,7 +187,7 @@ void impulseModule::initLocalParams()
  *******************************************************************************************/
 
 heavisideModule::heavisideModule(const string& name, const string& sds, const string& lds, const string& htm) :
-		    ARTItimeModule(name, sds, lds, htm),
+		    ITimeModule(name, sds, lds, htm),
 		    out_(NULL)
 {
   out_ = new OPortType(C_ART_na, 5, "out");
@@ -197,7 +197,7 @@ heavisideModule::heavisideModule(const string& name, const string& sds, const st
   initLocalParams();
 }
 
-ARTItimeModule* heavisideModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
+ITimeModule* heavisideModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
 {
   return new heavisideModule(name, sds, lds, htm);
 }
@@ -247,7 +247,7 @@ void heavisideModule::initLocalParams()
  *******************************************************************************************/
 
 rectangularModule::rectangularModule(const string& name, const string& sds, const string& lds, const string& htm) :
-		    ARTItimeModule(name, sds, lds, htm),
+		    ITimeModule(name, sds, lds, htm),
 		    out_(NULL)
 {
   out_ = new OPortType(C_ART_na, 5, "out");
@@ -257,7 +257,7 @@ rectangularModule::rectangularModule(const string& name, const string& sds, cons
   initLocalParams();
 }
 
-ARTItimeModule* rectangularModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
+ITimeModule* rectangularModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
 {
   return new rectangularModule(name, sds, lds, htm);
 }
@@ -320,7 +320,7 @@ void rectangularModule::initLocalParams()
  *******************************************************************************************/
 
 amplificationModule::amplificationModule(const string& name, const string& sds, const string& lds, const string& htm) :
-		    ARTItimeModule(name, sds, lds, htm),
+		    ITimeModule(name, sds, lds, htm),
 		    out_(NULL)
 {
   out_ = new OPortType(C_ART_na, 5, "out");
@@ -330,7 +330,7 @@ amplificationModule::amplificationModule(const string& name, const string& sds, 
   initLocalParams();
 }
 
-ARTItimeModule* amplificationModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
+ITimeModule* amplificationModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
 {
   return new amplificationModule(name, sds, lds, htm);
 }
@@ -391,7 +391,7 @@ void amplificationModule::initLocalParams()
  *******************************************************************************************/
 
 simpleDelayModule::simpleDelayModule(const string& name, const string& sds, const string& lds, const string& htm) :
-		    ARTItimeModule(name, sds, lds, htm),
+		    ITimeModule(name, sds, lds, htm),
 		    out_(NULL)
 {
   out_ = new OPortType(C_ART_na, 5, "out");
@@ -401,7 +401,7 @@ simpleDelayModule::simpleDelayModule(const string& name, const string& sds, cons
   initLocalParams();
 }
 
-ARTItimeModule* simpleDelayModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
+ITimeModule* simpleDelayModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
 {
   return new simpleDelayModule(name, sds, lds, htm);
 }
@@ -462,7 +462,7 @@ void simpleDelayModule::initLocalParams()
  *******************************************************************************************/
 
 addModule::addModule(const string& name, const string& sds, const string& lds, const string& htm) :
-		    ARTItimeModule(name, sds, lds, htm),
+		    ITimeModule(name, sds, lds, htm),
 		    out_(NULL)
 {
   out_ = new OPortType(C_ART_na, 5, "out");
@@ -471,7 +471,7 @@ addModule::addModule(const string& name, const string& sds, const string& lds, c
   AppendDataProp(out_);
 }
 
-ARTItimeModule* addModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
+ITimeModule* addModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
 {
   return new addModule(name, sds, lds, htm);
 }
@@ -521,7 +521,7 @@ void addModule::simulateCurrentIndex(int idx)
  *******************************************************************************************/
 
 multiplicationModule::multiplicationModule(const string& name, const string& sds, const string& lds, const string& htm) :
-		    ARTItimeModule(name, sds, lds, htm),
+		    ITimeModule(name, sds, lds, htm),
 		    out_(NULL)
 {
   out_ = new OPortType(C_ART_na, 5, "out");
@@ -530,7 +530,7 @@ multiplicationModule::multiplicationModule(const string& name, const string& sds
   AppendDataProp(out_);
 }
 
-ARTItimeModule* multiplicationModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
+ITimeModule* multiplicationModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
 {
   return new multiplicationModule(name, sds, lds, htm);
 }
@@ -581,7 +581,7 @@ void multiplicationModule::simulateCurrentIndex(int idx)
  *******************************************************************************************/
 
 sinewaveModule::sinewaveModule(const string& name, const string& sds, const string& lds, const string& htm) :
-		    ARTItimeModule(name, sds, lds, htm),
+		    ITimeModule(name, sds, lds, htm),
 		    out_(NULL)
 {
   out_ = new OPortType(C_ART_na, 5, "out");
@@ -591,7 +591,7 @@ sinewaveModule::sinewaveModule(const string& name, const string& sds, const stri
   initLocalParams();
 }
 
-ARTItimeModule* sinewaveModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
+ITimeModule* sinewaveModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
 {
   return new sinewaveModule(name, sds, lds, htm);
 }
@@ -718,7 +718,7 @@ fractionalDelayModule::fractionalDelayModule(const string& name, const string& s
   AppendDataProp(out_);
 }
 
-ARTItimeModule* fractionalDelayModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
+ITimeModule* fractionalDelayModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
 {
   return new fractionalDelayModule(name, sds, lds, htm);
 }
@@ -924,7 +924,7 @@ DWGcylinderModule::DWGcylinderModule(const string& name, const string& sds, cons
   p1m_->GetParser()->DefineVar("p2m", p2mbuf_->GetParserVar());
 }
 
-ARTItimeModule* DWGcylinderModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
+ITimeModule* DWGcylinderModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
 {
   return new DWGcylinderModule(name, sds, lds, htm);
 }
@@ -1131,7 +1131,7 @@ void DWGcylinderModule::initSimulation()
  *******************************************************************************************/
 
 DWGcylinderJunctionModule::DWGcylinderJunctionModule(const string& name, const string& sds, const string& lds, const string& htm) :
-		    ARTItimeModule(name, sds, lds, htm),
+		    ITimeModule(name, sds, lds, htm),
 		    p1p_(NULL),
 		    p2p_(NULL),
 		    p1m_(NULL),
@@ -1155,7 +1155,7 @@ DWGcylinderJunctionModule::DWGcylinderJunctionModule(const string& name, const s
   AppendDataProp(p1m_);
 }
 
-ARTItimeModule* DWGcylinderJunctionModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
+ITimeModule* DWGcylinderJunctionModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
 {
   return new DWGcylinderJunctionModule(name, sds, lds, htm);
 }
@@ -1249,7 +1249,7 @@ DWGconeModule::DWGconeModule(const string& name, const string& sds, const string
   initLocalParams();
 }
 
-ARTItimeModule* DWGconeModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
+ITimeModule* DWGconeModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
 {
   return new DWGconeModule(name, sds, lds, htm);
 }
@@ -1444,7 +1444,7 @@ void DWGconeModule::calculateConeApex()
  *******************************************************************************************/
 
 DWGconeJunctionModule::DWGconeJunctionModule(const string& name, const string& sds, const string& lds, const string& htm) :
-		    ARTItimeModule(name, sds, lds, htm),
+		    ITimeModule(name, sds, lds, htm),
 		    p1p_(NULL),
 		    p2p_(NULL),
 		    p1m_(NULL),
@@ -1472,7 +1472,7 @@ DWGconeJunctionModule::DWGconeJunctionModule(const string& name, const string& s
 
 }
 
-ARTItimeModule* DWGconeJunctionModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
+ITimeModule* DWGconeJunctionModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
 {
   return new DWGconeJunctionModule(name, sds, lds, htm);
 }

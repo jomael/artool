@@ -60,7 +60,7 @@ TimeSimulator::TimeSimulator(const string name, const string sds,
   initStandardSimulParams();
 }
 
-void TimeSimulator::AddTimeModule(ARTItimeModule* timeModule)
+void TimeSimulator::AddTimeModule(ITimeModule* timeModule)
 {
   if (!timeModule)
   {
@@ -210,10 +210,10 @@ void TimeSimulator::SimulateTimeStep(int idx)
   if (userElements != NULL)
   {
     ARTobject* iter = userElements->GetObjects(NULL);
-    ARTItimeModule* tModule;
+    ITimeModule* tModule;
     while (iter != NULL)
     {
-      tModule = dynamic_cast<ARTItimeModule*>(iter);
+      tModule = dynamic_cast<ITimeModule*>(iter);
       if (tModule)
       {
         //				std::cout << "Setting time module '" << tModule->GetName() << "' to time index " << idx << "." << std::endl;
@@ -225,7 +225,7 @@ void TimeSimulator::SimulateTimeStep(int idx)
     iter = userElements->GetObjects(NULL);
     while (iter != NULL)
     {
-      tModule = dynamic_cast<ARTItimeModule*>(iter);
+      tModule = dynamic_cast<ITimeModule*>(iter);
       if (tModule)
       {
         //				std::cout << "Setting time module '" << tModule->GetName() << "' to time index " << idx << "." << std::endl;
@@ -316,7 +316,7 @@ ARTdataProp* TimeSimulator::FindDataPropInSimulator(string exp)
     {
       vector<string> names = strsplit(exp, '.');
       ::size_t pos;
-      ARTItimeModule* timeModule = FindTimeModuleInSimulator(strcrop(names[0]));
+      ITimeModule* timeModule = FindTimeModuleInSimulator(strcrop(names[0]));
       if (!timeModule)
       {
         throw ARTerror("ARTtimeSimulator::FindDataPropInSimulator", "The specified time module '%s1' does not exist in current simulator.",  strcrop(names[0]));
@@ -342,14 +342,14 @@ ARTdataProp* TimeSimulator::FindDataPropInSimulator(string exp)
   return prop;
 }
 
-ARTItimeModule* TimeSimulator::FindTimeModuleInSimulator(string exp)
+ITimeModule* TimeSimulator::FindTimeModuleInSimulator(string exp)
 {
   if (!userElements)
   {
     throw ARTerror("ARTtimeSimulator::FindTimeModuleInSimulator", "No memory has been allocated for userElements of time simulator '%s1'.",
         name_);
   }
-  ARTItimeModule* tmpModule = dynamic_cast<ARTItimeModule*>(userElements->FindObject(exp));
+  ITimeModule* tmpModule = dynamic_cast<ITimeModule*>(userElements->FindObject(exp));
   if (tmpModule == NULL)
   {
     throw ARTerror("ARTtimeSimulator::FindTimeModuleInSimulator", "No time module with name '%s1' exists in simulator '%s2'.",
@@ -421,7 +421,7 @@ void TimeSimulator::clean()
 }
 
 
-void TimeSimulator::addParamsToModule(ARTItimeModule* timeModule)
+void TimeSimulator::addParamsToModule(ITimeModule* timeModule)
 {
   Property* iter = GetProperties(NULL);
   ARTdataProp* prop;
@@ -441,13 +441,13 @@ void TimeSimulator::addParamToCurrentModules(ARTdataProp* newParam)
 {
   if (userElements)
   {
-    ARTItimeModule* iter = dynamic_cast<ARTItimeModule*>(userElements->GetObjects(NULL));
+    ITimeModule* iter = dynamic_cast<ITimeModule*>(userElements->GetObjects(NULL));
     while (iter != NULL)
     {
       //			std::cout << "Adding parameter '" << newParam->GetName() << "' to time module '" << iter->GetName() << "'." << std::endl;
       //			iter->addGlobalParameter(newParam->GetName(), newParam->GetParserVar());
       iter->addGlobalParameter(newParam);
-      iter = dynamic_cast<ARTItimeModule*>(userElements->GetObjects(iter));
+      iter = dynamic_cast<ITimeModule*>(userElements->GetObjects(iter));
     }
   }
 }

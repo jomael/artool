@@ -126,12 +126,12 @@ public:
  *************************************************************/
 
 TimeModule::TimeModule(const string& name, const string& sds, const string& lds, const string& htm) :
-	    ARTItimeModule(name, sds, lds, htm)
+	    ITimeModule(name, sds, lds, htm)
 {
 
 }
 
-ARTItimeModule* TimeModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
+ITimeModule* TimeModule::Create(const string& name, const string& sds, const string& lds, const string& htm)
 {
   return new TimeModule(name, sds, lds, htm);
 }

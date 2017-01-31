@@ -52,12 +52,12 @@
 using namespace mup;
 //using std::list;
 
-// forward declaration
-class ARTItimeModule;
 /**
  * @brief Implementation of a simulator for the frequency domain.
  */
 namespace ART{
+  // forward declaration
+  class ITimeModule;
   class FreqSimulator : public Simulator
 {
 protected:
