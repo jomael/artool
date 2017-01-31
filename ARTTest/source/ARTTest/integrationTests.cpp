@@ -4428,11 +4428,11 @@ TestClass* ARTtimeSimulatorTests = new TestClass("ARTtimeSimulatorTests", AllMyT
 //#ifdef _TIMEDEBUG
 TEST_DEF_START(DoublePortInitialization, ARTtimeSimulatorTests)
 
-        ARTtimeModule* timeModule;
+        TimeModule* timeModule;
 
         virtual void prepare()
         {
-                timeModule = new ARTtimeModule("myModule");
+                timeModule = new TimeModule("myModule");
         }
 
         virtual bool run()
@@ -4465,16 +4465,16 @@ TEST_DEF_END(DoublePortInitialization)
 TEST_DEF_START(DoubleModuleCreation, ARTtimeSimulatorTests)
 
         TimeSimulator* myTimeSimulator;
-        ARTtimeModule* timeModule1;
-        ARTtimeModule* timeModule2;
+        TimeModule* timeModule1;
+        TimeModule* timeModule2;
 
 
         virtual void prepare()
         {
                 myTimeSimulator = new TimeSimulator("TestSim");
                 myTimeSimulator->userElements = new ListProp("testList");
-                timeModule1 = new ARTtimeModule("myModule");
-                timeModule2 = new ARTtimeModule("myModule");
+                timeModule1 = new TimeModule("myModule");
+                timeModule2 = new TimeModule("myModule");
         }
 
         virtual bool run()
@@ -4507,13 +4507,13 @@ TEST_DEF_END(DoubleModuleCreation)
 TEST_DEF_START(CreateAndChangeLocalParameter, ARTtimeSimulatorTests)
 
         TimeSimulator* timeSimulator;
-        ARTtimeModule* timeModule;
+        TimeModule* timeModule;
 
         virtual void prepare()
         {
                 timeSimulator = new TimeSimulator("mySimulator");
                 timeSimulator->userElements = new ListProp("testList");
-                timeModule = new ARTtimeModule("myTimeModule");
+                timeModule = new TimeModule("myTimeModule");
         }
 
         virtual bool run()
@@ -4569,13 +4569,13 @@ TEST_DEF_END(CreateAndChangeLocalParameter)
 TEST_DEF_START(ChangeGlobalParameter, ARTtimeSimulatorTests)
 
         TimeSimulator* myTimeSimulator;
-        ARTtimeModule* timeModule;
+        TimeModule* timeModule;
 
         virtual void prepare()
         {
                 myTimeSimulator = new TimeSimulator("TestSim");
                 myTimeSimulator->userElements = new ListProp("testList");
-                timeModule = new ARTtimeModule("myModule");
+                timeModule = new TimeModule("myModule");
         }
 
         virtual bool run()
@@ -4629,13 +4629,13 @@ TEST_DEF_END(ChangeGlobalParameter)
 TEST_DEF_START(CreateGlobalParameter, ARTtimeSimulatorTests)
 
         TimeSimulator* myTimeSimulator;
-        ARTtimeModule* timeModule;
+        TimeModule* timeModule;
 
         virtual void prepare()
         {
                 myTimeSimulator = new TimeSimulator("TestSim");
                 myTimeSimulator->userElements = new ListProp("testList");
-                timeModule = new ARTtimeModule("myModule");
+                timeModule = new TimeModule("myModule");
         }
 
         virtual bool run()
@@ -4748,7 +4748,7 @@ TEST_DEF_START(FibonacciNumbers1, ARTtimeSimulatorTests)
                 try
                 {
 
-                        ARTtimeModule* timeModule = new ARTtimeModule("myModule");
+                        TimeModule* timeModule = new TimeModule("myModule");
 
                         timeModule->addOPort("fib", "fib[t] = fib[t-1] + fib[t-2]", 7);
                         timeModule->addOPort("test", "test[t] = fib[t]");
@@ -4812,8 +4812,8 @@ TEST_DEF_START(FibonacciNumbers2, ARTtimeSimulatorTests)
                 try
                 {
 
-                        ARTtimeModule* timeModule = new ARTtimeModule("myModule");
-                        ARTtimeModule* timeModule2 = new ARTtimeModule("myModule2");
+                        TimeModule* timeModule = new TimeModule("myModule");
+                        TimeModule* timeModule2 = new TimeModule("myModule2");
 
                         timeModule->addOPort("fib", "fib[t] = fib[t-1] + fib[t-2]");
 //                      timeModule2->addOPort("test", "test[t] = (fib[t] + fib[t-1]) / fib[t] + 1");
@@ -4951,7 +4951,7 @@ TEST_DEF_START(ConvolutionTest1, ARTtimeSimulatorTests)
                 try
                 {
 
-                        ARTtimeModule* timeModule = new ARTtimeModule("myModule");
+                        TimeModule* timeModule = new TimeModule("myModule");
 
                         timeModule->addOPort("p", "p[t] = conv(U,G,t)");
                         timeModule->addOPort("U", "U[t] = sin(2*pi*30*t*T)");
@@ -5019,7 +5019,7 @@ TEST_DEF_END(ConvolutionTest1)
 //              try
 //              {
 //
-//                      ARTtimeModule* timeModule = new ARTtimeModule("lip_module");
+//                      TimeModule* timeModule = new TimeModule("lip_module");
 //
 ////                    timeModule->addOPort("x", "x[t] = (-sqrt(k/m) * (1/Q) * ((x[t-1] - x[t-2])/T) + ((b*d)/m)* p_lip[t] - (k/m)*x[t-2])*T^2 - x[t-2] + 2*x[t-1] ");
 ////                    timeModule->addOPort("S_lip", "S_lip[t] = max(b*(2*x[t] + x_0), 0.00001)", 1);
@@ -5126,7 +5126,7 @@ TEST_DEF_END(ConvolutionTest1)
 //                      int i;
 //
 //                      ARTItimeModule* timeModule = new inputFunctionModule("myModule");
-//                      ARTtimeModule* timeModule2 = new ARTtimeModule("ConvolutionModule");
+//                      TimeModule* timeModule2 = new TimeModule("ConvolutionModule");
 //
 //                      dynamic_cast<inputFunctionModule*>(timeModule)->defineOPort(30, "");
 //
@@ -5194,8 +5194,8 @@ TEST_DEF_START(HiddenTimeDelay, ARTtimeSimulatorTests)
                 try
                 {
 
-                        ARTtimeModule* timeModule = new ARTtimeModule("myModule");
-                        ARTtimeModule* timeModule2 = new ARTtimeModule("myModule2");
+                        TimeModule* timeModule = new TimeModule("myModule");
+                        TimeModule* timeModule2 = new TimeModule("myModule2");
 
                         timeModule->addOPort("x", "x[t] = y[t-1]");
                         timeModule2->addOPort("y", "y[t] = x[t] + 2");
@@ -5266,7 +5266,7 @@ TEST_DEF_START(RectangularFunction, ARTtimeSimulatorTests)
                 try
                 {
 
-                        ARTtimeModule* timeModule = new ARTtimeModule("myModule");
+                        TimeModule* timeModule = new TimeModule("myModule");
 
                         timeModule->addOPort("x", "x[t] = (((t*T) >= S)  and ((t*T) <= E)) ? 1 : 0");
 
@@ -5335,7 +5335,7 @@ TEST_DEF_START(SineFunction, ARTtimeSimulatorTests)
                 try
                 {
 
-                        ARTtimeModule* timeModule = new ARTtimeModule("myModule");
+                        TimeModule* timeModule = new TimeModule("myModule");
 
                         timeModule->addOPort("x", "x[t] = A*sin(2*pi*(t*T*f - Delta))");
 //                      timeModule->addOPort("x", "x[t] = A*sin(t)");
@@ -5398,7 +5398,7 @@ TEST_DEF_START(FractionalDelay, ARTtimeSimulatorTests)
                 try
                 {
 
-                        ARTtimeModule* pulseModule = new ARTtimeModule("pulseModule");
+                        TimeModule* pulseModule = new TimeModule("pulseModule");
                         ARTItimeModule* delayModule1 = new fractionalDelayModule("testDelay1");
                         ARTItimeModule* delayModule2 = new fractionalDelayModule("testDelay2");
 
@@ -5476,8 +5476,8 @@ TEST_DEF_START(FindNames, ARTtimeSimulatorTests)
         AcousticResearchTool* ART;
         TimeSimulator* myTimeSimulator1;
         TimeSimulator* myTimeSimulator2;
-        ARTtimeModule* timeModule1;
-//        ARTtimeModule* timeModule2;
+        TimeModule* timeModule1;
+//        TimeModule* timeModule2;
 
 
         virtual void prepare()
@@ -5486,7 +5486,7 @@ TEST_DEF_START(FindNames, ARTtimeSimulatorTests)
 //                myTimeSimulator1 = new ARTtimeSimulator("TestSim2");
 //                myTimeSimulator2 = new ARTtimeSimulator("TestSim2");
 //                myTimeSimulator1->userElements = new ListProp("testList");
-//                timeModule1 = new ARTtimeModule("myModule");
+//                timeModule1 = new TimeModule("myModule");
         }
 
         virtual bool run()
@@ -5548,7 +5548,7 @@ TEST_DEF_END(FindNames)
 //              try
 //              {
 //
-//                      ARTtimeModule* pulseModule = new ARTtimeModule("pulseModule");
+//                      TimeModule* pulseModule = new TimeModule("pulseModule");
 //                      ARTItimeModule* cylModule1 = new DWGcylinderModule("cyl1");
 ////                    ARTItimeModule* cylModule1 = new DWGconeJunctionModule("cyl1");
 //

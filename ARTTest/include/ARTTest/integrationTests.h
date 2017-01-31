@@ -34,7 +34,7 @@
 #include "WaveObject.h"
 #include "Model.h"
 
-#include "ARTtimeModule.h"
+#include "TimeModule.h"
 #include "timePrototypes.h"
 #include "AcousticResearchTool.h"
 

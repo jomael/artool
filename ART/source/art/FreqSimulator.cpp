@@ -41,7 +41,7 @@
 #include "strparsing.h"
 #include "FreqSimulator.h"
 #include "ListProp.h"
-#include "ARTtimeModule.h"
+#include "TimeModule.h"
 #include "Functionoid.h"
 
 using namespace mup;

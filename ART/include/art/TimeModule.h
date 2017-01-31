@@ -38,7 +38,7 @@
  ***************************************************************************/
 
 /*
- * ARTtimeModule.h
+ * TimeModule.h
  *
  *  Created on: Jul 4, 2012
  *      Author: cbg
@@ -61,7 +61,6 @@ using namespace mup;
 namespace ART{
   // forward declaration
 class DataContainer;
-}
 
 
 /**
@@ -77,18 +76,18 @@ class DataContainer;
  *          can be accessed by creating an input port and referencing the output
  *          port of the other time module.
  */
-class ARTtimeModule : public ARTItimeModule
+class TimeModule : public ARTItimeModule
 {
 public:
 
   /**
-   * @brief Constructor of the ARTtimeModule class.
+   * @brief Constructor of the TimeModule class.
    * @param[in] name Represents the unique identifier of the time module.
    * @param[in] sds Short description (single line) of the time module.
    * @param[in] lds Long description of the time module.
    * @param[in] htm Path to help file in HTML format.
    */
-  explicit ARTtimeModule(const string& name="TimeModule", const string& sds="", const string& lds="", const string& htm="");
+  explicit TimeModule(const string& name="TimeModule", const string& sds="", const string& lds="", const string& htm="");
 
 
   /**
@@ -166,9 +165,9 @@ public:
   virtual void simulateCurrentIndex(int idx);
 
   /**
-   * @brief Destructor of the ARTtimeModule class.
+   * @brief Destructor of the TimeModule class.
    */
-  virtual ~ARTtimeModule();
+  virtual ~TimeModule();
 
 protected:
 
@@ -199,9 +198,9 @@ protected:
    * @brief Cleans up the class before it is destroyed.
    */
   inline virtual void clean();
-  //	inline virtual void copy(const ARTtimeModule& orig);
+  //	inline virtual void copy(const TimeModule& orig);
 
 };
-
+}
 
 #endif /* ARTTIMEMODULE_H_ */
