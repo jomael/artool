@@ -45,7 +45,7 @@
 #include <map>
 #include "mpParser.h"
 #include "ARTobject.h"
-#include "ARTproperty.h"
+#include "Property.h"
 #include "ARTdataProp.h"
 #include "Simulator.h"
 

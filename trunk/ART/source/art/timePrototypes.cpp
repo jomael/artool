@@ -49,7 +49,7 @@
 #include <cmath>
 #include "timePrototypes.h"
 #include "constants.hpp"
-
+using namespace ART;
 /*******************************************************************************************
  * inputFunctionModule
  *******************************************************************************************/
@@ -74,7 +74,7 @@ void inputFunctionModule::addIPort(const string& name, const ARTdataProp* refPor
 
 void inputFunctionModule::defineOPort(int len, const string& expr)
 {
-  ARTproperty* iter;
+  Property* iter;
   globalParameterType* gParam;
   // TODO check whether out_ already references an object and removes it if that
   // is the case

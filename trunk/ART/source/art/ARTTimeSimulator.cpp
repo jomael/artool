@@ -423,7 +423,7 @@ void ARTTimeSimulator::clean()
 
 void ARTTimeSimulator::addParamsToModule(ARTItimeModule* timeModule)
 {
-  ARTproperty* iter = GetProperties(NULL);
+  Property* iter = GetProperties(NULL);
   ARTdataProp* prop;
   while (iter != NULL)
   {

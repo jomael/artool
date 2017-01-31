@@ -61,7 +61,7 @@ Element::Element(const string name, const string sds, const string lds, const st
                 //Create Parser variables
                 if ( parser )
                 {
-                        ARTproperty* prop = model->GetProperties(NULL);
+                        Property* prop = model->GetProperties(NULL);
                         while (prop)
                         {
                                 //if it is a data property
@@ -92,7 +92,7 @@ Element::Element(const string name, const string sds, const string lds, const st
 void Element::PrepareCalculation()
 {
         ARTdataProp* dprop;
-        ARTproperty* prop = NULL;
+        Property* prop = NULL;
         do
         {
                 //if a property is found...

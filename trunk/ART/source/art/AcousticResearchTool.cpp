@@ -44,7 +44,7 @@
 #include "ARTtimeModule.h"
 #include "timePrototypes.h"
 #include "ART.h"
-
+using namespace ART;
 AcousticResearchTool::AcousticResearchTool() : ARTobject("ART","Acoustic Research Tool","","ART.htm")
 {
 //!### Developers: Update this text to reflect most recent changes !
@@ -268,9 +268,9 @@ AcousticResearchTool::AcousticResearchTool() : ARTobject("ART","Acoustic Researc
 
 AcousticResearchTool::~AcousticResearchTool() {}
 
-//ARTproperty* AcousticResearchTool::FindProperty(const string nam)
+//Property* AcousticResearchTool::FindProperty(const string nam)
 //{
-//      ARTproperty* prop = NULL;
+//      Property* prop = NULL;
 ////    ARTsimulator* sim = dynamic_cast<ARTsimulator*>(simulators->GetObjects(NULL));
 //
 //      std::cout << "BLABLA" << std::endl;

@@ -73,7 +73,7 @@ public:
         AcousticResearchTool();
         virtual ~AcousticResearchTool();
 
-//      virtual ARTproperty* FindProperty(const string nam);
+//      virtual Property* FindProperty(const string nam);
 
         void ReplaceProgressFunction(TprogressFunction f)
         {

@@ -43,7 +43,7 @@
 #include <string>
 #include <list>
 
-#include "ARTproperty.h"
+#include "Property.h"
 #include "ARTobject.h"
 
 using std::string;
@@ -54,7 +54,7 @@ using std::string;
  * object, and to this list all ARTprototype:s are added. (List is then part of ARTobject's
  * property list)
  */
-class ARTlistProp : public ARTproperty {
+class ARTlistProp : public ART::Property {
 private:
         list<ARTobject*> objectList_;
         list<ARTobject*>::iterator oiter_;
@@ -63,7 +63,7 @@ public:
         typedef list<ARTobject*>::size_type size_type;
 
         ARTlistProp(const string name, const string sds="", const string lds="", const string htm="") :
-                                ARTproperty(name,sds,lds,htm,true),
+                                ART::Property(name,sds,lds,htm,true),
                                 objectList_(list<ARTobject*>()),
                                 oiter_(objectList_.begin())
                                 {}

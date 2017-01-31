@@ -70,7 +70,7 @@ ARTFreqSimulator::ARTFreqSimulator(const string name, const string wavetype,
   ARTdataProp* fstep = AppendDataProp("FrequencyStep", 5.0, "The frequency step (in Hz) used to go through the range for which this simulator will calculate the impedance.");
 
   //add properties to parser
-  ARTproperty* prop = GetProperties(NULL);
+  Property* prop = GetProperties(NULL);
   while (prop)
   {
     //if it is a data property

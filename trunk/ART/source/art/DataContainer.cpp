@@ -539,7 +539,7 @@ void DataContainer::AddPropertiesAsDependency(ARTobject* obj)
 {
 	_DBG_MSG("ARTobject*");
 	//go through all DATAproperties of element and add as dependencies
-	ARTproperty* prop = obj->GetProperties(NULL);
+	Property* prop = obj->GetProperties(NULL);
 	while (prop)
 	{	
 		ARTdataProp* dprop = dynamic_cast<ARTdataProp*>(prop);

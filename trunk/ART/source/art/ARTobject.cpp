@@ -52,7 +52,7 @@ ARTobject::ARTobject(const ARTobject& orig) //copy constructor
                 piter_ = propertyList_.begin();
                 while (piter_ != propertyList_.end())
                 {
-                        *piter_ = (ARTproperty*)((*piter_)->clone());
+                        *piter_ = (Property*)((*piter_)->clone());
                         //std::cout << "ARTobject::ARTobject: " << (*piter_)->GetName() << " kopiert\n";
                         ++piter_;
                 }
@@ -88,13 +88,13 @@ ARTobject::~ARTobject()
 }
 
 // append new property with given name (just property without data!!)
-ARTproperty* ARTobject::AppendProperty(const string name, const string sds, const string lds, const string htm)
+Property* ARTobject::AppendProperty(const string name, const string sds, const string lds, const string htm)
 {
         if (FindProperty(name)) throw ARTerror("ARTobject::AppendProperty","A property with the name '%s1' has already been appended to object '%s2'.",name,name_);
-        propertyList_.push_back(new ARTproperty(name,sds,lds,htm));
+        propertyList_.push_back(new Property(name,sds,lds,htm));
         piter_ = propertyList_.end();
         --piter_;
-        return (ARTproperty*)(*piter_);
+        return (Property*)(*piter_);
 }
 
 // append new data property with given name
@@ -191,7 +191,7 @@ ARTmethod* ARTobject::AppendMethod(const string name, const string sds, const st
 }
 
 // find and return named property (or return NULL if no match)
-ARTproperty* ARTobject::FindProperty(const string nam)
+Property* ARTobject::FindProperty(const string nam)
 {
         for (piter_ = propertyList_.begin(); (piter_ != propertyList_.end()); ++piter_) {
                 if ((*piter_)->GetName() == nam) {
@@ -211,7 +211,7 @@ ARTmethod* ARTobject::FindMethod(const string nam) {
         return NULL;
 }
 
-        ARTproperty* ARTobject::GetProperties(ARTproperty* pos)
+        Property* ARTobject::GetProperties(Property* pos)
         {
 
                 if (pos == NULL)
@@ -229,7 +229,7 @@ ARTmethod* ARTobject::FindMethod(const string nam) {
                         };
         }
 
-        bool ARTobject::DeleteProperty(ARTproperty* prp)
+        bool ARTobject::DeleteProperty(Property* prp)
         {
                 ::size_t sizeBefore = propertyList_.size();
                 //remove all obj
@@ -272,7 +272,7 @@ void ARTobject::CopyPropertyListEntries(ARTobject* obj)
         while (piter_ != propertyList_.end())
         {
                 //clone original object, then overwrite its list entry by setting the iterator to a pointer of the created clone
-                *piter_ = (ARTproperty*)((*piter_)->clone());
+                *piter_ = (Property*)((*piter_)->clone());
 
                 //ARTdataProp* dp;
 
