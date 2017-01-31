@@ -63,7 +63,7 @@
  * The acoustic research tool contains all simulators, prototypes and elements, as well as
  * menu commands.
  */
-class AcousticResearchTool : public ARTobject {
+class AcousticResearchTool : public ART::ARTobject {
  protected:
  public:
   ART::ListProp* menuGroups; ///<shortcut pointers inside list

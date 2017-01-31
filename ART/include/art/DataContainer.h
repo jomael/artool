@@ -56,11 +56,11 @@
 
 using namespace mup;
 
-class ARTobject;
 // cbg: forward declaration
 namespace ART{
   class Functionoid;
   class Simulator;
+  class ARTobject;
 }
 /** \addtogroup ARTimpl
  * @{

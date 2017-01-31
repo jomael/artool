@@ -53,17 +53,17 @@ using std::string;
  * \remark One ARTmethod will probably represent one menu command and point to a function
  * executing the command.
  */
-class ARTmethod : public ARTobject {
+class ARTmethod : public ART::ARTobject {
 protected:
         void (*methodptr_)();
 public:
 
         ARTmethod(const string name, const string sds="", const string lds="", const string htm="")
-         : ARTobject(name,sds,lds,htm), methodptr_(NULL)
+         : ART::ARTobject(name,sds,lds,htm), methodptr_(NULL)
         {}
 
         ARTmethod(const ARTmethod& orig) ///< copy constructor
-        : ARTobject(orig)
+        : ART::ARTobject(orig)
         {}
 
         virtual ~ARTmethod()

@@ -55,11 +55,12 @@ class ListProp;
 class ARTdataProp;
 class ARTmethod;
 
+namespace ART{
 /**
  * This is the base class for all acoustic objects. It contains fields for name,
  * descriptions and properties.
  */
-class ARTobject : public ART::Cell {
+class ARTobject : public Cell {
 private:
 protected:
         list<ART::Property*>      propertyList_;
@@ -127,5 +128,5 @@ public:
         virtual list<ARTmethod*> GetMethodList(){return methodList_;}
 
 };
-
+}
 #endif /* ARTOBJECT_H */
