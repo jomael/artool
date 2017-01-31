@@ -834,9 +834,9 @@ namespace ART{
   typedef struct DataContainer DataContainer;
   typedef struct Element Element;
   typedef struct Simulator Simulator;
+  typedef struct Property Property;
 }
 typedef struct ARTobject ARTobject;
-typedef struct ARTproperty ARTproperty;
 typedef struct ARTdataProp ARTdataProp;
 typedef struct ARTlistProp ARTlistProp;
 typedef struct ARTmethod ARTmethod;
@@ -852,9 +852,9 @@ namespace ART{
   class DataContainer;
   class Element;
   class Simulator;
+  class Property;
 }
 class ARTobject;
-class ARTproperty;
 class ARTdataProp;
 class ARTlistProp;
 class ARTmethod;
@@ -874,9 +874,9 @@ namespace ART{
   typedef DataContainer*	P_ART_DataContainer;
   typedef Element*	P_ART_Element;
   typedef Simulator*   P_ART_Simulator;
+  typedef Property*	P_ART_Property;
 }
 typedef ARTobject*	P_ART_Object;
-typedef ARTproperty*	P_ART_Property;
 typedef ARTdataProp*	P_ART_DataProp;
 typedef ARTlistProp*	P_ART_ListProp;
 typedef ARTmethod*	P_ART_Method;
@@ -1349,7 +1349,7 @@ __DECLSPEC T_ART_Cmplx __CALLCONV ARTGetComplexFromPort(P_ART_DataProp port, int
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror if not using the DLL interface.
  */
-__DECLSPEC bool	__CALLCONV	ARTIsListable	(P_ART_Property pprp);
+  __DECLSPEC bool	__CALLCONV	ARTIsListable	(ART::P_ART_Property pprp);
 
 
 /**
@@ -1371,7 +1371,7 @@ __DECLSPEC P_ART_Variant   __CALLCONV ARTGetRange           (P_ART_DataProp pprp
  * @returns true if pprp is a data property; false if it is a property without a value field. The DLL interface also returns false
  * if an error was detected. Use ARTGetLastErrorMessage to get the error message.
  */
-__DECLSPEC bool	__CALLCONV	ARTIsDataProp	(P_ART_Property pprp);
+  __DECLSPEC bool	__CALLCONV	ARTIsDataProp	(ART::P_ART_Property pprp);
 
 /**
  * Returns the definition string of a data property, in the same format as it is used in the parser and in the function ARTSetParameter (see there
@@ -1607,7 +1607,7 @@ __DECLSPEC bool	__CALLCONV	ARTSetMatrix	(P_ART_Variant pprp, int idx, T_ART_Matr
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror if not using the DLL interface.
  */  
-__DECLSPEC P_ART_Property	__CALLCONV	ARTFindProperty	(P_ART_Object  host, const char* nam);
+  __DECLSPEC ART::P_ART_Property	__CALLCONV	ARTFindProperty	(P_ART_Object  host, const char* nam);
 
 /**
  * Find a data property of an object.
@@ -1665,7 +1665,7 @@ __DECLSPEC P_ART_Object	__CALLCONV	ARTFindObject	(P_ART_ListProp host, const cha
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror if not using the DLL interface.
  */   
-__DECLSPEC P_ART_Property	__CALLCONV	ARTGetProperties	(P_ART_Object  host, P_ART_Property pos);
+  __DECLSPEC ART::P_ART_Property	__CALLCONV	ARTGetProperties	(P_ART_Object  host, ART::P_ART_Property pos);
 
 /**
  * Iterates through all the data properties of the object host. If the object is an element, only properties of the element,
@@ -1779,7 +1779,7 @@ __DECLSPEC P_ART_Object	__CALLCONV	ARTAppendObject	(P_ART_ListProp host, const c
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror if not using the DLL interface.
  */   
-__DECLSPEC bool	__CALLCONV	ARTDeleteProperty	(P_ART_Object  host, P_ART_Property prp);
+  __DECLSPEC bool	__CALLCONV	ARTDeleteProperty	(P_ART_Object  host, ART::P_ART_Property prp);
 
 /**
  * Deletes the method mtd of object host.  

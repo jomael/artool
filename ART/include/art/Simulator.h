@@ -51,7 +51,7 @@
 #include <map>
 #include "mpParser.h"
 #include "ARTobject.h"
-#include "ARTproperty.h"
+#include "Property.h"
 #include "ARTdataProp.h"
 
 using namespace mup;
@@ -69,7 +69,7 @@ class Simulator : public ARTobject {
 protected:
 
   /** Defines the domain type (frequency or time) of the current simulator. */
-  ARTproperty domain_;
+  Property domain_;
 
   /**
    * A parser object which can be used for assignment calculations of global
@@ -108,7 +108,7 @@ public:
   /**
    * @brief Returns the current domain of the simulator.
    */
-  virtual ARTproperty* GetDomain() {return &domain_;}
+  virtual Property* GetDomain() {return &domain_;}
   /**
    * @brief Returns the global parser object of the simulator.
    */

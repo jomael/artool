@@ -48,7 +48,9 @@
 #include "Cell.h"
 
 /* forward declarations */
-class ARTproperty;
+namespace ART{
+class Property;
+}
 class ARTdataProp;
 class ARTlistProp;
 class ARTmethod;
@@ -60,14 +62,14 @@ class ARTmethod;
 class ARTobject : public ART::Cell {
 private:
 protected:
-        list<ARTproperty*>      propertyList_;
-        list<ARTproperty*>::iterator piter_;
+        list<ART::Property*>      propertyList_;
+        list<ART::Property*>::iterator piter_;
         list<ARTmethod*>        methodList_;
         list<ARTmethod*>::iterator miter_;
 public:
         /// objects must have a name, the rest is optional
         ARTobject(const string name, const string sds="", const string lds="", const string htm="") : Cell(name,sds,lds,htm),
-                propertyList_(list<ARTproperty*>()),    piter_(propertyList_.begin()),
+                propertyList_(list<ART::Property*>()),    piter_(propertyList_.begin()),
                 methodList_(list<ARTmethod*>()),                miter_(methodList_.begin()) {}
 
         ARTobject(const ARTobject& orig); ///<copy constructor
@@ -78,13 +80,13 @@ public:
         virtual Cell* clone() {return new ARTobject(*this);}
 
   /// iterate through property list (pass NULL to restart iteration, receive NULL after last element)
-        virtual ARTproperty* GetProperties(ARTproperty* pos);
+        virtual ART::Property* GetProperties(ART::Property* pos);
 
   /// find and return named property (or return NULL if no match)
-        virtual ARTproperty* FindProperty(const string nam) ;
+        virtual ART::Property* FindProperty(const string nam) ;
 
         ///Append new property with given name to ARTobject
-        virtual ARTproperty* AppendProperty(const string name, const string sds="", const string lds="", const string htm="") ;
+        virtual ART::Property* AppendProperty(const string name, const string sds="", const string lds="", const string htm="") ;
 
   /// append new data property with given name to ARTobject
         virtual ARTdataProp* AppendDataProp(const string name, ARTvariant* val, const string sds="", const string lds="", const string htm="");
@@ -99,7 +101,7 @@ public:
         virtual ARTlistProp* AppendListProp(const string name, const string sds="", const string lds="", const string htm="");
 
   /// delete current property (which was recently accessed by GetProperties, FindProperty or AppendProperty)
-        virtual bool DeleteProperty(ARTproperty* prp);
+        virtual bool DeleteProperty(ART::Property* prp);
 
   /// iterate through method list (pass NULL to restart iteration, receive NULL after last element)
         virtual ARTmethod* GetMethods   (ARTmethod* pos);
@@ -113,7 +115,7 @@ public:
   /// delete current method (which was recently accessed by GetProperties, FindProperty or AppendProperty)
         virtual bool DeleteMethod(ARTmethod* mtd);
 
-        virtual void SetPropertyList(list<ARTproperty*> &l)
+        virtual void SetPropertyList(list<ART::Property*> &l)
         {
                 propertyList_ = l;
         }
@@ -121,7 +123,7 @@ public:
         virtual void CopyPropertyListEntries(ARTobject* obj);
         virtual void CopyMethodListEntries(ARTobject* obj);
 
-        virtual list<ARTproperty*> GetPropertyList(){return propertyList_;}
+        virtual list<ART::Property*> GetPropertyList(){return propertyList_;}
         virtual list<ARTmethod*> GetMethodList(){return methodList_;}
 
 };

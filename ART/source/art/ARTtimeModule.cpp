@@ -49,7 +49,7 @@
 #include "ARTtimeModule.h"
 
 using namespace mup;
-
+using namespace ART;
 /* create a new implementation for convolution function which will be registered
  * to all parsers of each ARTtimeModule */
 class convCallback : public ICallback {
@@ -326,7 +326,7 @@ void ARTtimeModule::removeGlobalParameter(const string& name)
 
 void ARTtimeModule::setCurrentIndex(int idx)
 {
-  ARTproperty* propIter = GetProperties(NULL);
+  Property* propIter = GetProperties(NULL);
   OPortType* oPort;
   while (propIter)
   {
@@ -343,7 +343,7 @@ void ARTtimeModule::setCurrentIndex(int idx)
 
 void ARTtimeModule::simulateCurrentIndex(int idx)
 {
-  ARTproperty* propIter = GetProperties(NULL);
+  Property* propIter = GetProperties(NULL);
   OPortType* oPort;
   while (propIter)
   {
@@ -366,7 +366,7 @@ void ARTtimeModule::addVariableToParsers(const string& name, const Variable& var
 {
 
   // add the given variable to all currently registered parsers of output ports
-  ARTproperty* propIter = GetProperties(NULL);
+  Property* propIter = GetProperties(NULL);
   OPortType* oPort;
   localParameterType* lParam;
   while (propIter)
@@ -391,7 +391,7 @@ void ARTtimeModule::addVariableToParsers(const string& name, const Variable& var
 void ARTtimeModule::removeVariableFromParsers(const string& name)
 {
   // go through all parsers of output ports and remove name declaration
-  ARTproperty* propIter = GetProperties(NULL);
+  Property* propIter = GetProperties(NULL);
   OPortType* oPort;
   localParameterType* lParam;
   while (propIter)
@@ -414,7 +414,7 @@ void ARTtimeModule::removeVariableFromParsers(const string& name)
 
 void ARTtimeModule::registerAllVariablesToParser(ParserX* parser)
 {
-  ARTproperty* propIter;
+  Property* propIter;
   timeProperty* paramIter;
 
   propIter = GetProperties(NULL);

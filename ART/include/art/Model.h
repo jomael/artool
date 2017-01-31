@@ -339,7 +339,7 @@ private:
 		implementation->setsimplified(false);
 		implementation->setboreresolution(0.5); //was ist das?
 		//set hornelement's parameters: get pointers to the parameters and write values of Element's properties there.
-		ARTproperty* prop = GetProperties(NULL);
+		ART::Property* prop = GetProperties(NULL);
 		while (prop)
 		{
 			ARTdataProp* dprop = dynamic_cast<ARTdataProp*>(prop);

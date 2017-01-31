@@ -45,7 +45,7 @@
 #include <map>
 #include "mpParser.h"
 #include "ARTobject.h"
-#include "ARTproperty.h"
+#include "Property.h"
 #include "ARTdataProp.h"
 #include "Simulator.h"
 
@@ -63,7 +63,7 @@ protected:
   /**
    * Defines the wave type of the simulation - plain, spherical or multimodal.
    */
-  ARTproperty wavetype_;
+  ART::Property wavetype_;
   ART::DataContainer* frqGrid;
   ART::DataContainer* wfrqGrid;
   ART::DataContainer* modes;
@@ -78,7 +78,7 @@ public:
   virtual ART::DataContainer* GetAngularFrequencyGrid() {return wfrqGrid;}
   virtual ART::DataContainer* GetNumberOfModes() {return modes;}
 
-  virtual ARTproperty* GetWavetype() {return &wavetype_;}
+  virtual ART::Property* GetWavetype() {return &wavetype_;}
 
   virtual ~ARTFreqSimulator() {}
 };

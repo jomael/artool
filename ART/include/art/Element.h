@@ -86,7 +86,7 @@ public:
 //                      //Create Parser variables
 //                      if ( parser )
 //                      {
-//                              ARTproperty* prop = model->GetProperties(NULL);
+//                              Property* prop = model->GetProperties(NULL);
 //                              while (prop)
 //                              {
 //                                      //if it is a data property
@@ -117,7 +117,7 @@ public:
                 if (model)
                 {
                         //Rename model properties
-                        ARTproperty* prop = model->GetProperties(NULL);
+                        Property* prop = model->GetProperties(NULL);
                         while (prop)
                         {
                                 //if it is a data property
@@ -169,9 +169,9 @@ public:
 
         virtual ModelInterface* CloneModel() {return NULL;}
 
-        bool IsPrototypeProperty(ARTproperty* p)
+        bool IsPrototypeProperty(Property* p)
         {
-                ARTproperty* found = NULL;
+                Property* found = NULL;
                 found = model->FindProperty(p->GetName());
                 if (found) return true;
                 else return false;

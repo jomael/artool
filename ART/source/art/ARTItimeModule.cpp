@@ -390,7 +390,7 @@ void ARTItimeModule::setLocalParameter(const string& name, const std::complex<do
 
 void ARTItimeModule::addGlobalParameter(const ARTdataProp* parameter)
 {
-  ARTproperty* iter;
+  Property* iter;
   OPortType* oPort;
   localParameterType* lParam;
   if (!parameter)
@@ -430,7 +430,7 @@ void ARTItimeModule::addGlobalParameter(const ARTdataProp* parameter)
 void ARTItimeModule::removeGlobalParameter(const string& name)
 {
 
-  ARTproperty* iter = GetProperties(NULL);
+  Property* iter = GetProperties(NULL);
   localParameterType* lParam;
   OPortType* oPort;
 
@@ -468,7 +468,7 @@ void ARTItimeModule::removeGlobalParameter(const string& name)
 void ARTItimeModule::setSimulator(Simulator* sim)
 {
   _simulator = dynamic_cast<ARTTimeSimulator*>(sim);
-  ARTproperty* iter = GetProperties(NULL);
+  Property* iter = GetProperties(NULL);
   OPortType* oPort;
   while (iter)
   {

@@ -340,7 +340,7 @@ P_ART_Element    __CALLCONV ARTCreateElement     (P_ART_Simulator simulator, con
 		
 		// now register all data properties of the new Element
 		// to the current simulator
-		ARTproperty* prop = newElement->GetProperties(NULL);
+		Property* prop = newElement->GetProperties(NULL);
 
 		while (prop)
 		{
@@ -426,7 +426,7 @@ P_ART_Element    __CALLCONV ARTChangeElementModel     (P_ART_Simulator simulator
 
 		//save list of all datacontainers dependent on properties of this one
 		list<DataContainer*> allclients;
-		ARTproperty* prop = NULL;
+		Property* prop = NULL;
 		while ((prop = element->model->GetProperties(prop)))
 		{
 			//if it is a data property 
@@ -457,7 +457,7 @@ P_ART_Element    __CALLCONV ARTChangeElementModel     (P_ART_Simulator simulator
 
 		if ( parser )
 		{
-			ARTproperty* prop = element->model->GetProperties(NULL);
+			Property* prop = element->model->GetProperties(NULL);
 			while (prop)
 			{
 				//if it is a data property 
@@ -1438,7 +1438,7 @@ P_ART_DataProp  __CALLCONV ARTGetDataProperties      (P_ART_Object  host, P_ART_
   if (host == NULL) throw ARTerror("ARTGetDataProperties", "host is NULL.");
   else 
 	{
-		ARTproperty* p = pos;
+		Property* p = pos;
 		ARTdataProp* dp;
 		//cycle though properties until a data property is found, but only as long as there are properties!
 		do 
@@ -1566,7 +1566,7 @@ void listobjs(ARTlistProp* lstprp, string ind) {
 }
 
 void listprops(ARTobject* obj, string ind) {
-  for (ARTproperty* prp = obj->GetProperties(NULL); prp != NULL; prp = obj->GetProperties(prp)) {
+  for (Property* prp = obj->GetProperties(NULL); prp != NULL; prp = obj->GetProperties(prp)) {
         std::cout << ind << "Property " << prp->GetName() << " ("<< prp->GetShortDescription() << ")" << endl;
         if (!prp->IsListable()) 
 		{

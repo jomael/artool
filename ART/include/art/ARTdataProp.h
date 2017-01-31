@@ -43,7 +43,7 @@
 #include <stdlib.h>
 #include <list>
 
-#include "ARTproperty.h"
+#include "Property.h"
 #include "DataContainer.h"
 
 using std::string;
@@ -53,14 +53,14 @@ using std::string;
  * ARTdataProperty. Just like an DataContainer it can specify some way of recalculating
  * itself. (see DataContainer for details)
  */
-class ARTdataProp : public ARTproperty, public ART::DataContainer {
+class ARTdataProp : public ART::Property, public ART::DataContainer {
 public:
         ARTdataProp(const T_ART_Type dtyp, const int dlen, const string name, const string sds="", const string lds="", const string htm="") :
-  ARTproperty(name,sds,lds,htm,false), ART::DataContainer(dtyp, dlen, name), range(NULL) {}
+  ART::Property(name,sds,lds,htm,false), ART::DataContainer(dtyp, dlen, name), range(NULL) {}
 
         /** copy constructor */
         ARTdataProp(const ARTdataProp& orig)
-	  : ARTproperty(orig), ART::DataContainer(orig)
+	  : ART::Property(orig), ART::DataContainer(orig)
         {
                 if (orig.range)
                         range = orig.range->clone();
