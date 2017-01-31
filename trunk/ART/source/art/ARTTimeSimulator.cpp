@@ -40,7 +40,7 @@
 #include <sstream>
 #include "strparsing.h"
 #include "ARTTimeSimulator.h"
-#include "ARTlistProp.h"
+#include "ListProp.h"
 #include "ARTtimeModule.h"
 #include "Functionoid.h"
 

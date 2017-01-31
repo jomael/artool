@@ -37,56 +37,67 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef ACOUSTICRESEARCHTOOL_H
-#define ACOUSTICRESEARCHTOOL_H
+#ifndef ARTLISTPROPERTY_H
+#define ARTLISTPROPERTY_H
 
+#include <string>
 #include <list>
 
+#include "Property.h"
 #include "ARTobject.h"
-#include "DataContainer.h"
-#include "ListProp.h"
-#include "HornElement.h"
-#include "ImpedanceCurve.h"
+
+using std::string;
 
 /**
- * \defgroup ARTimpl ART implementation
- * \addtogroup ARTimpl ART implementation
- * The ART interface uses the classes in this module to simulate instruments. If you wish
- * to write your own application for the simulation of wind instruments, refer to \ref
- * sp_API. If you wish to extend the functionality of the interface, have a look at
- * the following classes.
- *
- * @{
+ * A list of objects (like all Element:s as userElements) that is added as property to
+ * another ARTobject. prototypeModels for ex. is such a list, belonging to the root
+ * object, and to this list all ARTprototype:s are added. (List is then part of ARTobject's
+ * property list)
  */
+namespace ART{
+  class ListProp : public ART::Property {
+  private:
+    list<ARTobject*> objectList_;
+    list<ARTobject*>::iterator oiter_;
+  public:
 
-/**
- * The acoustic research tool contains all simulators, prototypes and elements, as well as
- * menu commands.
- */
-class AcousticResearchTool : public ARTobject {
- protected:
- public:
-  ART::ListProp* menuGroups; ///<shortcut pointers inside list
-  ART::ListProp* prototypeModels;///<prototype models
-  ART::ListProp* simulators;
+    typedef list<ARTobject*>::size_type size_type;
 
-  AcousticResearchTool();
-  virtual ~AcousticResearchTool();
+  ListProp(const string name, const string sds="", const string lds="", const string htm="") :
+    ART::Property(name,sds,lds,htm,true),
+      objectList_(list<ARTobject*>()),
+      oiter_(objectList_.begin())
+	{}
 
-  //      virtual Property* FindProperty(const string nam);
+    virtual ~ListProp ()
+      {
+	for (oiter_ = objectList_.begin(); (oiter_ != objectList_.end()); oiter_++)
+	  {
+	    delete *oiter_;
+	  }
+      }
 
-  void ReplaceProgressFunction(TprogressFunction f)
-  {
-    ART::DataContainer::progressIndicator.SetProgressFunction(f);
-  }
+    /// iterate through object list (pass NULL to restart iteration, receive NULL after last element)
+    virtual ARTobject* GetObjects(ARTobject* pos);
 
-  list<HornElement*>::iterator iter;
-  ImpedanceCurve impedanceCurve;
-  int *paramRefs_;
-};
+    /// find and return named object (or return NULL if no match)
+    virtual ARTobject* FindObject(const string nam) ;
 
-/** @}
- * End of documentation group ART implementation
- */
+    /// append new object with given name
+    virtual ARTobject* AppendObject(const string name, const string sds="", const string lds="", const string htm="");
 
-#endif /* ACOUSTICRESEARCHTOOL_H */
+    /// append object which is already created
+    virtual ARTobject* AppendObject(ARTobject* object);
+
+    /// delete object pos
+    virtual bool DeleteObject(ARTobject* pos);
+
+    /// replace all occurences of obj with newobj @returns the number of replacements
+    virtual int ReplaceObject(ARTobject* obj,ARTobject* newobj);
+
+    /// return the size of current list
+    virtual size_type Size();
+
+  };
+}
+#endif /* ARTLISTPROPERTY_H */

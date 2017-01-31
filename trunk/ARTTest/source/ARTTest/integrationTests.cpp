@@ -4472,7 +4472,7 @@ TEST_DEF_START(DoubleModuleCreation, ARTtimeSimulatorTests)
         virtual void prepare()
         {
                 myTimeSimulator = new ARTTimeSimulator("TestSim");
-                myTimeSimulator->userElements = new ARTlistProp("testList");
+                myTimeSimulator->userElements = new ListProp("testList");
                 timeModule1 = new ARTtimeModule("myModule");
                 timeModule2 = new ARTtimeModule("myModule");
         }
@@ -4512,7 +4512,7 @@ TEST_DEF_START(CreateAndChangeLocalParameter, ARTtimeSimulatorTests)
         virtual void prepare()
         {
                 timeSimulator = new ARTTimeSimulator("mySimulator");
-                timeSimulator->userElements = new ARTlistProp("testList");
+                timeSimulator->userElements = new ListProp("testList");
                 timeModule = new ARTtimeModule("myTimeModule");
         }
 
@@ -4574,7 +4574,7 @@ TEST_DEF_START(ChangeGlobalParameter, ARTtimeSimulatorTests)
         virtual void prepare()
         {
                 myTimeSimulator = new ARTTimeSimulator("TestSim");
-                myTimeSimulator->userElements = new ARTlistProp("testList");
+                myTimeSimulator->userElements = new ListProp("testList");
                 timeModule = new ARTtimeModule("myModule");
         }
 
@@ -4634,7 +4634,7 @@ TEST_DEF_START(CreateGlobalParameter, ARTtimeSimulatorTests)
         virtual void prepare()
         {
                 myTimeSimulator = new ARTTimeSimulator("TestSim");
-                myTimeSimulator->userElements = new ARTlistProp("testList");
+                myTimeSimulator->userElements = new ListProp("testList");
                 timeModule = new ARTtimeModule("myModule");
         }
 
@@ -4738,7 +4738,7 @@ TEST_DEF_START(FibonacciNumbers1, ARTtimeSimulatorTests)
         virtual void prepare()
         {
                 myTimeSimulator = new ARTTimeSimulator("TestSim");
-                myTimeSimulator->userElements = new ARTlistProp("testList");
+                myTimeSimulator->userElements = new ListProp("testList");
 
         }
 
@@ -4802,7 +4802,7 @@ TEST_DEF_START(FibonacciNumbers2, ARTtimeSimulatorTests)
         virtual void prepare()
         {
                 myTimeSimulator = new ARTTimeSimulator("TestSim");
-                myTimeSimulator->userElements = new ARTlistProp("testList");
+                myTimeSimulator->userElements = new ListProp("testList");
 
         }
 
@@ -4941,7 +4941,7 @@ TEST_DEF_START(ConvolutionTest1, ARTtimeSimulatorTests)
         virtual void prepare()
         {
                 myTimeSimulator = new ARTTimeSimulator("TestSim");
-                myTimeSimulator->userElements = new ARTlistProp("testList");
+                myTimeSimulator->userElements = new ListProp("testList");
 
         }
 
@@ -5009,7 +5009,7 @@ TEST_DEF_END(ConvolutionTest1)
 //      virtual void prepare()
 //      {
 //              myTimeSimulator = new ARTtimeSimulator("TestSim");
-//              myTimeSimulator->userElements = new ARTlistProp("testList");
+//              myTimeSimulator->userElements = new ListProp("testList");
 //
 //      }
 //
@@ -5114,7 +5114,7 @@ TEST_DEF_END(ConvolutionTest1)
 //      virtual void prepare()
 //      {
 //              myTimeSimulator = new ARTtimeSimulator("TestSim");
-//              myTimeSimulator->userElements = new ARTlistProp("testList");
+//              myTimeSimulator->userElements = new ListProp("testList");
 //
 //      }
 //
@@ -5184,7 +5184,7 @@ TEST_DEF_START(HiddenTimeDelay, ARTtimeSimulatorTests)
         virtual void prepare()
         {
                 myTimeSimulator = new ARTTimeSimulator("TestSim");
-                myTimeSimulator->userElements = new ARTlistProp("testList");
+                myTimeSimulator->userElements = new ListProp("testList");
 
         }
 
@@ -5256,7 +5256,7 @@ TEST_DEF_START(RectangularFunction, ARTtimeSimulatorTests)
         virtual void prepare()
         {
                 myTimeSimulator = new ARTTimeSimulator("TestSim");
-                myTimeSimulator->userElements = new ARTlistProp("testList");
+                myTimeSimulator->userElements = new ListProp("testList");
 
         }
 
@@ -5325,7 +5325,7 @@ TEST_DEF_START(SineFunction, ARTtimeSimulatorTests)
         virtual void prepare()
         {
                 myTimeSimulator = new ARTTimeSimulator("TestSim");
-                myTimeSimulator->userElements = new ARTlistProp("testList");
+                myTimeSimulator->userElements = new ListProp("testList");
 
         }
 
@@ -5388,7 +5388,7 @@ TEST_DEF_START(FractionalDelay, ARTtimeSimulatorTests)
         virtual void prepare()
         {
                 myTimeSimulator = new ARTTimeSimulator("TestSim");
-                myTimeSimulator->userElements = new ARTlistProp("testList");
+                myTimeSimulator->userElements = new ListProp("testList");
 
         }
 
@@ -5485,7 +5485,7 @@ TEST_DEF_START(FindNames, ARTtimeSimulatorTests)
 //                ART = new AcousticResearchTool();
 //                myTimeSimulator1 = new ARTtimeSimulator("TestSim2");
 //                myTimeSimulator2 = new ARTtimeSimulator("TestSim2");
-//                myTimeSimulator1->userElements = new ARTlistProp("testList");
+//                myTimeSimulator1->userElements = new ListProp("testList");
 //                timeModule1 = new ARTtimeModule("myModule");
         }
 
@@ -5538,7 +5538,7 @@ TEST_DEF_END(FindNames)
 //      virtual void prepare()
 //      {
 //              myTimeSimulator = new ARTtimeSimulator("TestSim");
-//              myTimeSimulator->userElements = new ARTlistProp("testList");
+//              myTimeSimulator->userElements = new ListProp("testList");
 //
 //      }
 //

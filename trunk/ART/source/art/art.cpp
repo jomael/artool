@@ -1553,7 +1553,7 @@ char*	__CALLCONV	ARTGetDependencyTree	(P_ART_DataProp pprp, const char* linebrea
 
 //**************************************************************************************************************
  
-void listobjs(ARTlistProp* lstprp, string ind) {
+void listobjs(ListProp* lstprp, string ind) {
   for (ARTobject* obj = lstprp->GetObjects(NULL); obj != NULL; obj = lstprp->GetObjects(obj)) {
 
     //cout << ind << "Object   " << obj->GetName() << " ("<< obj->GetShortDescription() << ")" << endl;
@@ -1594,7 +1594,7 @@ void listprops(ARTobject* obj, string ind) {
 				else std::cout << ind << "  Undef" << endl;
 			}
         }
-        else listobjs((ARTlistProp*)prp, ind+"  ");
+        else listobjs((ListProp*)prp, ind+"  ");
     }
 }
 

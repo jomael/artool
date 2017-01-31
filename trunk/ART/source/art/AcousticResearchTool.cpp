@@ -119,7 +119,7 @@ AcousticResearchTool::AcousticResearchTool() : ARTobject("ART","Acoustic Researc
         met =obj->AppendMethod("RunGenetic");
         met->AppendDataProp("Generations", 99);
 
-        ARTlistProp*
+        ListProp*
         sublst =obj->AppendListProp("SettingsSubmenu");
         obj = sublst->AppendObject("Entry1");
         met =obj->AppendMethod("Command1");

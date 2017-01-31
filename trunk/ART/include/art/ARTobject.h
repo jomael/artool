@@ -50,9 +50,9 @@
 /* forward declarations */
 namespace ART{
 class Property;
+class ListProp;
 }
 class ARTdataProp;
-class ARTlistProp;
 class ARTmethod;
 
 /**
@@ -98,7 +98,7 @@ public:
         virtual ARTdataProp* AppendDataProp(ARTdataProp* dataProp) ;
 
   /// append new listableProperty with given name
-        virtual ARTlistProp* AppendListProp(const string name, const string sds="", const string lds="", const string htm="");
+        virtual ART::ListProp* AppendListProp(const string name, const string sds="", const string lds="", const string htm="");
 
   /// delete current property (which was recently accessed by GetProperties, FindProperty or AppendProperty)
         virtual bool DeleteProperty(ART::Property* prp);

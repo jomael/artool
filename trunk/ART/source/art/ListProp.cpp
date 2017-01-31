@@ -37,13 +37,13 @@
 *                                                                         *
 ***************************************************************************/
 
-#include "ARTlistProp.h"
-
+#include "ListProp.h"
+using namespace ART;
 //**************************************************************************************************************
-// ARTlistProp
+// ListProp
 
 // append new object with given name
-ARTobject* ARTlistProp::AppendObject(const string name, const string sds, const string lds, const string htm)
+ARTobject* ListProp::AppendObject(const string name, const string sds, const string lds, const string htm)
 {
         objectList_.push_back(new ARTobject(name,sds,lds,htm));
         oiter_ = objectList_.end();
@@ -52,7 +52,7 @@ ARTobject* ARTlistProp::AppendObject(const string name, const string sds, const 
 }
 
 // append object which is already created
-ARTobject* ARTlistProp::AppendObject(ARTobject* object)
+ARTobject* ListProp::AppendObject(ARTobject* object)
 {
         objectList_.push_back(object);
         oiter_ = objectList_.end();
@@ -61,7 +61,7 @@ ARTobject* ARTlistProp::AppendObject(ARTobject* object)
 }
 
 // find and return named object (or return NULL if no match)
-ARTobject* ARTlistProp::FindObject(const string nam)
+ARTobject* ListProp::FindObject(const string nam)
 {
         for (oiter_ = objectList_.begin(); (oiter_ != objectList_.end()); ++oiter_) {
                 if ((*oiter_)->GetName() == nam) {
@@ -71,7 +71,7 @@ ARTobject* ARTlistProp::FindObject(const string nam)
         return NULL;
 }
 
-ARTobject* ARTlistProp::GetObjects(ARTobject* pos)
+ARTobject* ListProp::GetObjects(ARTobject* pos)
 {
         if (pos == NULL) {
                 oiter_ = objectList_.begin();
@@ -84,7 +84,7 @@ ARTobject* ARTlistProp::GetObjects(ARTobject* pos)
         };
 }
 
-bool ARTlistProp::DeleteObject(ARTobject* obj)
+bool ListProp::DeleteObject(ARTobject* obj)
 {
         ::size_t sizeBefore = objectList_.size();
         //remove all obj
@@ -96,7 +96,7 @@ bool ARTlistProp::DeleteObject(ARTobject* obj)
         return false;
 }
 
-int ARTlistProp::ReplaceObject(ARTobject* obj,ARTobject* newobj)
+int ListProp::ReplaceObject(ARTobject* obj,ARTobject* newobj)
 {
         int i = 0;
         for (oiter_ = objectList_.begin(); (oiter_ != objectList_.end()); ++oiter_)
@@ -110,7 +110,7 @@ int ARTlistProp::ReplaceObject(ARTobject* obj,ARTobject* newobj)
         return i;
 }
 
-ARTlistProp::size_type ARTlistProp::Size()
+ListProp::size_type ListProp::Size()
 {
         return objectList_.size();
 }

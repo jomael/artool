@@ -47,7 +47,7 @@
 #include <sstream>
 #include "strparsing.h"
 #include "Simulator.h"
-#include "ARTlistProp.h"
+#include "ListProp.h"
 #include "ARTtimeModule.h"
 #include "Functionoid.h"
 
