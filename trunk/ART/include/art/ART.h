@@ -837,10 +837,10 @@ namespace ART{
   typedef struct Property Property;
   typedef struct ITimeModule ITimeModule;
   typedef struct ARTobject ARTobject;
+  typedef struct ARTmethod ARTmethod;
 }
 typedef struct ARTdataProp ARTdataProp;
 typedef struct ListProp ListProp;
-typedef struct ARTmethod ARTmethod;
 typedef struct ARTvariant ARTvariant;
 typedef int bool;
 
@@ -856,9 +856,9 @@ namespace ART{
   class ListProp;
   class ITimeModule;
   class ARTobject;
+  class ARTmethod;
 }
 class ARTdataProp;
-class ARTmethod;
 class ARTvariant;
 
 
@@ -879,9 +879,9 @@ namespace ART{
   typedef ListProp*	P_ART_ListProp;
   typedef ITimeModule* P_ART_TModule;
   typedef ARTobject*	P_ART_Object;
+  typedef ARTmethod*	P_ART_Method;
 }
 typedef ARTdataProp*	P_ART_DataProp;
-typedef ARTmethod*	P_ART_Method;
 typedef ARTvariant*	P_ART_Variant;
 
 
@@ -1631,7 +1631,7 @@ __DECLSPEC P_ART_DataProp	__CALLCONV	ARTFindDataProperty	(ART::P_ART_Object  hos
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror if not using the DLL interface.
  */  
-__DECLSPEC P_ART_Method	__CALLCONV	ARTFindMethod	(ART::P_ART_Object  host, const char* nam);
+__DECLSPEC ART::P_ART_Method	__CALLCONV	ARTFindMethod	(ART::P_ART_Object  host, const char* nam);
 
 /**
  * Find an object that is appended to another object.
@@ -1697,7 +1697,7 @@ __DECLSPEC P_ART_DataProp  __CALLCONV ARTGetDataProperties      (ART::P_ART_Obje
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror if not using the DLL interface.
  */   
-__DECLSPEC P_ART_Method	__CALLCONV	ARTGetMethods	(ART::P_ART_Object  host, P_ART_Method pos);
+__DECLSPEC ART::P_ART_Method	__CALLCONV	ARTGetMethods	(ART::P_ART_Object  host, ART::P_ART_Method pos);
 
 /**
  * Iterates through all objects in the list host.
@@ -1755,7 +1755,7 @@ __DECLSPEC ART::P_ART_ListProp	__CALLCONV	ARTAppendListProp	(ART::P_ART_Object h
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror if not using the DLL interface.
  */ 
-__DECLSPEC P_ART_Method	__CALLCONV	ARTAppendMethod	(ART::P_ART_Object host, const char* nam, const char* sds, const char* lds, const char* htm);
+__DECLSPEC ART::P_ART_Method	__CALLCONV	ARTAppendMethod	(ART::P_ART_Object host, const char* nam, const char* sds, const char* lds, const char* htm);
 
 /**
  * Appends an object to a listable property.
@@ -1793,7 +1793,7 @@ __DECLSPEC ART::P_ART_Object	__CALLCONV	ARTAppendObject	(ART::P_ART_ListProp hos
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror if not using the DLL interface.
  */   
-__DECLSPEC bool	__CALLCONV	ARTDeleteMethod	(ART::P_ART_Object  host, P_ART_Method mtd);
+__DECLSPEC bool	__CALLCONV	ARTDeleteMethod	(ART::P_ART_Object  host, ART::P_ART_Method mtd);
 
 /**
  * Deletes the object pobj of object host.  

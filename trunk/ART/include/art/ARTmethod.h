@@ -45,7 +45,7 @@
 #include "ARTobject.h"
 
 using std::string;
-
+namespace ART{
 /**
  * Objects of this class represent user actions.The impedance calculation for example is
  * an ARTmethod object, and it contains minimum and maximum frequency as well as delta
@@ -53,7 +53,7 @@ using std::string;
  * \remark One ARTmethod will probably represent one menu command and point to a function
  * executing the command.
  */
-class ARTmethod : public ART::ARTobject {
+class ARTmethod : public ARTobject {
 protected:
         void (*methodptr_)();
 public:
@@ -74,5 +74,5 @@ public:
         void ApplyMethod()
         {}
 };
-
+}
 #endif /* ARTMETHOD_H */
