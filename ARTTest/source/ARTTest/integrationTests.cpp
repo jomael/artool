@@ -444,15 +444,15 @@ TEST_DEF_START(addTopLevelProps, ARTpreperationFunctions)
                 try
                 {
                         ARTvariant* numbers = new ARTvariant(C_ART_nstr, 6);
-                        ARTSetString((DataProp*)numbers,0,"ek");
-                        ARTSetString((DataProp*)numbers,1,"do");
-                        ARTSetString((DataProp*)numbers,2,"tiin");
-                        ARTSetString((DataProp*)numbers,3,"chaar");
-                        ARTSetString((DataProp*)numbers,4,"paanch");
-                        ARTSetString((DataProp*)numbers,5,"che");
+                        ARTSetString((ARTdataProp*)numbers,0,"ek");
+                        ARTSetString((ARTdataProp*)numbers,1,"do");
+                        ARTSetString((ARTdataProp*)numbers,2,"tiin");
+                        ARTSetString((ARTdataProp*)numbers,3,"chaar");
+                        ARTSetString((ARTdataProp*)numbers,4,"paanch");
+                        ARTSetString((ARTdataProp*)numbers,5,"che");
                         art->AppendDataProp("ginti", numbers);
                         //should also work like this
-                        DataProp* numbers2 = new DataProp(C_ART_nstr, 6, "laskea");
+                        ARTdataProp* numbers2 = new ARTdataProp(C_ART_nstr, 6, "laskea");
                         ARTSetString(numbers2,0,"yksi");
                         ARTSetString(numbers2,1,"kaksi");
                         ARTSetString(numbers2,2,"kolme");
@@ -490,8 +490,8 @@ TEST_DEF_START(addTopLevelPropsTwice, ARTpreperationFunctions)
                 try
                 {
                         ARTvariant* authors = new ARTvariant(C_ART_nstr, 2);
-                        ARTSetString((DataProp*)authors,0,"Dick");
-                        ARTSetString((DataProp*)authors,1,"Doof");
+                        ARTSetString((ARTdataProp*)authors,0,"Dick");
+                        ARTSetString((ARTdataProp*)authors,1,"Doof");
                         art->AppendDataProp("Authors", authors); //should fail, we already have a prop "Authors"
                 }
                 catch(ARTerror e)
@@ -606,7 +606,7 @@ TEST_DEF_START(changeSimulatorParams, ARTpreperationFunctions)
                         ARTSetParameter(mySim, "FrequencyStep = 11; NumberOfModes = 2");
 
                         // check their values
-                        DataProp* p = ARTFindDataProperty(mySim,"LowerFrequencyLimit");
+                        ARTdataProp* p = ARTFindDataProperty(mySim,"LowerFrequencyLimit");
                         if (p->GetFloat() != 1) return false;
                         p = ARTFindDataProperty(mySim,"HigherFrequencyLimit");
                         if (p->GetFloat() != 1000) return false;
@@ -646,7 +646,7 @@ TEST_DEF_START(getSimulatorParamsDef, ARTpreperationFunctions)
                 try
                 {
                         // get all parameters as strings
-                        DataProp* prop = NULL;
+                        ARTdataProp* prop = NULL;
                         string allParams = "";
                         while ( (prop = ARTGetDataProperties(mySim, prop)) )
                         {
@@ -689,7 +689,7 @@ TEST_DEF_START(getSimulatorParamsVal, ARTpreperationFunctions)
         {
                 try
                 {
-                        DataProp* dp = ARTFindDataProperty(mySim,"LowerFrequencyLimit");
+                        ARTdataProp* dp = ARTFindDataProperty(mySim,"LowerFrequencyLimit");
                         ARTvariant* av = ARTGetValue( dp );
                         double f_min = ARTGetDouble( av , 0 );
 
@@ -739,7 +739,7 @@ TEST_DEF_START(getDataPropFromObjectWhereNoDataProp, ARTpreperationFunctions)
                 try
                 {
                         // try to get a data property, this should simply return NULL
-                        DataProp* prop = ARTGetDataProperties(o, NULL);
+                        ARTdataProp* prop = ARTGetDataProperties(o, NULL);
                         if (prop) return false;
                 }
                 catch(ARTerror e)
@@ -1846,7 +1846,7 @@ TEST_DEF_START(testEvaluationCost, ARTdependencyTree)
                         ARTAppendReference(meinIns, Cyl);
 
                         meinIns->PrepareCalculation();
-                        DataContainer* impCurveProp = (DataProp*)(meinIns->FindProperty("InputImpedanceCurve"));
+                        DataContainer* impCurveProp = (ARTdataProp*)(meinIns->FindProperty("InputImpedanceCurve"));
 
                         if (impCurveProp == NULL) throw ARTerror("ARTInputImpedance", "Invalid impedance curve");
 
@@ -2236,11 +2236,11 @@ TEST_DEF_START(testReCreateCircuit, ARTdependencyTree)
         {
                 try
                 {
-                        DataProp* impCurveProp;
+                        ARTdataProp* impCurveProp;
 
                         Cir1 = ARTCreateCircuit(mySim, "MyInstrument");
                         ARTAppendReference(Cir1, Cyl1);
-                        impCurveProp = static_cast<DataProp*>(Cir1->FindProperty("InputImpedanceCurve"));
+                        impCurveProp = static_cast<ARTdataProp*>(Cir1->FindProperty("InputImpedanceCurve"));
                         Cir1->PrepareCalculation();
                         int ec1 =  impCurveProp->GetEvaluationCost();
                         impCurveProp->GetValue();
@@ -2254,7 +2254,7 @@ TEST_DEF_START(testReCreateCircuit, ARTdependencyTree)
                         Cir1 = ARTCreateCircuit(mySim, "Cir1trument");
                         ARTAppendReference(Cir1, Cyl1);
 
-                        impCurveProp = static_cast<DataProp*>(Cir1->FindProperty("InputImpedanceCurve"));
+                        impCurveProp = static_cast<ARTdataProp*>(Cir1->FindProperty("InputImpedanceCurve"));
                         Cir1->PrepareCalculation();
                         int ec2 =  impCurveProp->GetEvaluationCost();
                         if (ec2 >= ec1) return false;
@@ -2267,7 +2267,7 @@ TEST_DEF_START(testReCreateCircuit, ARTdependencyTree)
                         ARTAppendReference(Cir1, Cyl2);
                         ARTAppendReference(Cir1, Cyl1);
 
-                        impCurveProp = static_cast<DataProp*>(Cir1->FindProperty("InputImpedanceCurve"));
+                        impCurveProp = static_cast<ARTdataProp*>(Cir1->FindProperty("InputImpedanceCurve"));
                         Cir1->PrepareCalculation();
                         int ec3 = impCurveProp->GetEvaluationCost();
                         //must be smaller than ec1, because Cyl1 (outer element) does not have to be recalculated...
@@ -2282,7 +2282,7 @@ TEST_DEF_START(testReCreateCircuit, ARTdependencyTree)
                         ARTAppendReference(Cir1, Cyl2);
                         ARTAppendReference(Cir1, Cyl1);
 
-                        impCurveProp = static_cast<DataProp*>(Cir1->FindProperty("InputImpedanceCurve"));
+                        impCurveProp = static_cast<ARTdataProp*>(Cir1->FindProperty("InputImpedanceCurve"));
                         Cir1->PrepareCalculation();
                         int ec4 =  impCurveProp->GetEvaluationCost();
                         // When recalculating the same circuit, only the same conversion as for ec2 has to be carried out, so:
@@ -2295,7 +2295,7 @@ TEST_DEF_START(testReCreateCircuit, ARTdependencyTree)
                         ARTAppendReference(Cir1, Cyl1);
                         ARTAppendReference(Cir1, Cyl2);
 
-                        impCurveProp = static_cast<DataProp*>(Cir1->FindProperty("InputImpedanceCurve"));
+                        impCurveProp = static_cast<ARTdataProp*>(Cir1->FindProperty("InputImpedanceCurve"));
                         Cir1->PrepareCalculation();
                         int ec5 =  impCurveProp->GetEvaluationCost();
                         //When adding the elements in reverse order, they both need to be recalculated, so the cost should be more than ec1 (which was only one element)
@@ -2307,7 +2307,7 @@ TEST_DEF_START(testReCreateCircuit, ARTdependencyTree)
                         Cir1 = ARTCreateCircuit(mySim, "Cir1trument");
                         ARTAppendReference(Cir1, Cyl1);
                         ARTAppendReference(Cir1, Cyl2);
-                        impCurveProp = static_cast<DataProp*>(Cir1->FindProperty("InputImpedanceCurve"));
+                        impCurveProp = static_cast<ARTdataProp*>(Cir1->FindProperty("InputImpedanceCurve"));
                         Cir1->PrepareCalculation();
                         int ec6 = impCurveProp->GetEvaluationCost();
                         if (ec6 != ec2) return false;
@@ -3567,14 +3567,14 @@ TEST_DEF_START(ARTobjectCopyConstr, ARTobjectsTests)
 TEST_DEF_END(ARTobjectCopyConstr)
 
 
-TEST_DEF_START(DataPropRange, ARTobjectsTests)
+TEST_DEF_START(ARTdataPropRange, ARTobjectsTests)
         virtual bool run()
         {
                 try
                 {
                         ARTobject* obj = new ARTobject("ARTobjectCopyConstr-Testobject","This is just a test object.");
 
-                        DataProp* dp = obj->AppendDataProp("radiation", "Zorumski","The radiation impedance. Can be either 'Reflecting' or 'Zorumski'.");
+                        ARTdataProp* dp = obj->AppendDataProp("radiation", "Zorumski","The radiation impedance. Can be either 'Reflecting' or 'Zorumski'.");
                         dp->SetRange(new ARTvariant("Reflecting", "Zorumski", "Levine"));
 
                         dp = obj->AppendDataProp("length", 100.0,"axial length [cm]");
@@ -3609,7 +3609,7 @@ TEST_DEF_START(DataPropRange, ARTobjectsTests)
                         obj->AppendMethod("FrequencyDomain", "simulation in frq domain");
 
                         //Check if all the ranges are set
-                        dp = static_cast<DataProp*>(obj->FindProperty("radiation"));
+                        dp = static_cast<ARTdataProp*>(obj->FindProperty("radiation"));
                         av = dp->GetRange();
                         if (0 != strcmp(av->val->ns[0], "Reflecting")) return false;
                         if (0 != strcmp(av->val->ns[1], "Zorumski")) return false;
@@ -3617,35 +3617,35 @@ TEST_DEF_START(DataPropRange, ARTobjectsTests)
                         if (C_ART_nstr != av->typ) return false;
                         if (3 != av->len) return false;
 
-                        dp = static_cast<DataProp*>(obj->FindProperty("length"));
+                        dp = static_cast<ARTdataProp*>(obj->FindProperty("length"));
                         av = dp->GetRange();
                         if (0 != av->val->nd[0]) return false;
                         if (999 != av->val->nd[1]) return false;
                         if (C_ART_ndbl != av->typ) return false;
                         if (2 != av->len) return false;
 
-                        dp = static_cast<DataProp*>(obj->FindProperty("int"));
+                        dp = static_cast<ARTdataProp*>(obj->FindProperty("int"));
                         av = dp->GetRange();
                         if (0 != av->val->ni[0]) return false;
                         if (999 != av->val->ni[1]) return false;
                         if (C_ART_nint != av->typ) return false;
                         if (2 != av->len) return false;
 
-                        dp = static_cast<DataProp*>(obj->FindProperty("temp"));
+                        dp = static_cast<ARTdataProp*>(obj->FindProperty("temp"));
                         av = dp->GetRange();
                         if (-273.15 != av->val->nd[0]) return false;
                         if (1000 != av->val->nd[1]) return false;
                         if (C_ART_ndbl != av->typ) return false;
                         if (2 != av->len) return false;
 
-                        dp = static_cast<DataProp*>(obj->FindProperty("loss"));
+                        dp = static_cast<ARTdataProp*>(obj->FindProperty("loss"));
                         av = dp->GetRange();
                         if (0 != av->val->nf[0]) return false;
                         if (10 != av->val->nf[1]) return false;
                         if (C_ART_nflo != av->typ) return false;
                         if (2 != av->len) return false;
 
-                        dp = static_cast<DataProp*>(obj->FindProperty("noRangeProp"));
+                        dp = static_cast<ARTdataProp*>(obj->FindProperty("noRangeProp"));
                         av = dp->GetRange();
                         if (av) return false;  // there's no range specified: range should be NULL!
 
@@ -3657,7 +3657,7 @@ TEST_DEF_START(DataPropRange, ARTobjectsTests)
                 }
                 return true;
         }
-TEST_DEF_END(DataPropRange)
+TEST_DEF_END(ARTdataPropRange)
 //******************************************************************************************************************************************
 
 TestClass* ARTmodelTests = new TestClass("ARTmodelTests", AllMyTests);

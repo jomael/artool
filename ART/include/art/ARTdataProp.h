@@ -50,16 +50,16 @@ using std::string;
 namespace ART{
 /**
  * A value with a concrete name belonging to an ARTobject is represented by an
- * DataProperty. Just like an DataContainer it can specify some way of recalculating
+ * ARTdataProperty. Just like an DataContainer it can specify some way of recalculating
  * itself. (see DataContainer for details)
  */
-class DataProp : public ART::Property, public ART::DataContainer {
+class ARTdataProp : public ART::Property, public ART::DataContainer {
 public:
-        DataProp(const T_ART_Type dtyp, const int dlen, const string name, const string sds="", const string lds="", const string htm="") :
+        ARTdataProp(const T_ART_Type dtyp, const int dlen, const string name, const string sds="", const string lds="", const string htm="") :
   ART::Property(name,sds,lds,htm,false), ART::DataContainer(dtyp, dlen, name), range(NULL) {}
 
         /** copy constructor */
-        DataProp(const DataProp& orig)
+        ARTdataProp(const ARTdataProp& orig)
 	  : ART::Property(orig), ART::DataContainer(orig)
         {
                 if (orig.range)
@@ -68,7 +68,7 @@ public:
                         range = NULL;
         }
 
-        ~DataProp()
+        ~ARTdataProp()
         {
                         delete range;
         }
@@ -76,7 +76,7 @@ public:
         ARTvariant* GetRange() {return range;}
         void SetRange(ARTvariant* r) {range = r;}
 
-        virtual Cell* clone() {return new DataProp(*this);}
+        virtual Cell* clone() {return new ARTdataProp(*this);}
 private:
         ARTvariant* range;
 };

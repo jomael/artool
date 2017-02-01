@@ -104,7 +104,7 @@ public:
   /**
    * @copydoc ITimeModule::addIPort()
    */
-  virtual void addIPort(const string& name, const DataProp* refPort);
+  virtual void addIPort(const string& name, const ARTdataProp* refPort);
   /**
    * @brief Creates a new output port to the
    * @details
@@ -149,7 +149,7 @@ public:
   /**
    * @copydoc ITimeModule::addGlobalParameter()
    */
-  virtual void addGlobalParameter(const DataProp* parameter);
+  virtual void addGlobalParameter(const ARTdataProp* parameter);
   /**
    * @copydoc ITimeModule::removeGlobalParameter()
    */

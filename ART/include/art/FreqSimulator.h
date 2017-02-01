@@ -46,7 +46,7 @@
 #include "mpParser.h"
 #include "ARTobject.h"
 #include "Property.h"
-#include "DataProp.h"
+#include "ARTdataProp.h"
 #include "Simulator.h"
 
 using namespace mup;
@@ -73,7 +73,7 @@ public:
   FreqSimulator(const string name, const string wavetype="MultiModal",
       const string sds="", const string lds="", const string htm="");
 
-  //void SetMultimodeParameters(DataProp* fmin, DataProp* fmax, DataProp* fstep, DataProp* modes);
+  //void SetMultimodeParameters(ARTdataProp* fmin, ARTdataProp* fmax, ARTdataProp* fstep, ARTdataProp* modes);
 
   virtual ART::DataContainer* GetFrequencyGrid() {return frqGrid;}
   virtual ART::DataContainer* GetAngularFrequencyGrid() {return wfrqGrid;}

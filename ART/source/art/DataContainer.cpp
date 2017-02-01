@@ -542,7 +542,7 @@ void DataContainer::AddPropertiesAsDependency(ARTobject* obj)
 	Property* prop = obj->GetProperties(NULL);
 	while (prop)
 	{	
-		DataProp* dprop = dynamic_cast<DataProp*>(prop);
+		ARTdataProp* dprop = dynamic_cast<ARTdataProp*>(prop);
 		//only if it is a dataProperty ...
 		if (dprop)
 		{	
@@ -576,7 +576,7 @@ void DataContainer::SetDefinition(const string& s, Simulator* scope)
 		// change in definition needs to be communicated: notify clients
 		Invalidate();
 		definition_ = s;
-		DataProp* dp;
+		ARTdataProp* dp;
 		try
 		{
 			parser_->SetExpr(definition_);
@@ -693,7 +693,7 @@ void DataContainer::RedoDefinitionDependencies()
 		//remove old dependencies
 		RemoveAllDependencies();
 
-		DataProp* dp;
+		ARTdataProp* dp;
 		try
 		{
 			parser_->SetExpr(definition_);

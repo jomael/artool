@@ -65,7 +65,7 @@ Element::Element(const string name, const string sds, const string lds, const st
                         while (prop)
                         {
                                 //if it is a data property
-                                DataProp* dprop = dynamic_cast<DataProp*>(prop);
+                                ARTdataProp* dprop = dynamic_cast<ARTdataProp*>(prop);
                                 if (dprop)
                                 {
                                         string varname = name_ + "." + dprop->GetName();
@@ -91,7 +91,7 @@ Element::Element(const string name, const string sds, const string lds, const st
 //removes all dependencies
 void Element::PrepareCalculation()
 {
-        DataProp* dprop;
+        ARTdataProp* dprop;
         Property* prop = NULL;
         do
         {
@@ -99,7 +99,7 @@ void Element::PrepareCalculation()
                 if ((prop = this->GetProperties(prop)))
                         //if its no PROTOTYPE prop, but a data property...
                         if (!(this->IsPrototypeProperty(prop)) &&
-                                (dprop = dynamic_cast<DataProp*>(prop)))
+                                (dprop = dynamic_cast<ARTdataProp*>(prop)))
                                 {
                                         dprop->RemoveAllDependencies();
                                 }
@@ -113,11 +113,11 @@ void Element::SetScope(Simulator* sim)
                 throw ARTerror("Element::SetScope", "The specified simulator is invalid.");
 
         piter_ = propertyList_.begin();
-        DataProp* p;
+        ARTdataProp* p;
 
         while (piter_ != propertyList_.end())
         {
-                p = dynamic_cast<DataProp*>(*piter_);
+                p = dynamic_cast<ARTdataProp*>(*piter_);
                 if (p) ((DataContainer*)p)->SetParser(sim->GetParser());
                 piter_++;
         }

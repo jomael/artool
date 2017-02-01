@@ -136,7 +136,7 @@ ITimeModule* TimeModule::Create(const string& name, const string& sds, const str
   return new TimeModule(name, sds, lds, htm);
 }
 
-void TimeModule::addIPort(const string& name, const DataProp* refPort)
+void TimeModule::addIPort(const string& name, const ARTdataProp* refPort)
 {
   // the given name of the input port has to be unique
   if (!FindProperty(name))
@@ -288,7 +288,7 @@ void TimeModule::addLocalParameter(const string& name, const std::complex<double
   }
 }
 
-void TimeModule::addGlobalParameter(const DataProp* parameter)
+void TimeModule::addGlobalParameter(const ARTdataProp* parameter)
 {
   if (!parameter)
   {

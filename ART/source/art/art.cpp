@@ -190,7 +190,7 @@ bool __CALLCONV ARTCheckPropertyCapability(const char* property, const char* cap
 	//check if capability is part of property
 	char* possibleCapability;
 	bool hasCapability = false;
-	DataProp* capabilities = static_cast<DataProp*>(art->FindProperty(property));
+	ARTdataProp* capabilities = static_cast<ARTdataProp*>(art->FindProperty(property));
 	int i = 0;
 	while ((i < capabilities->len) && (possibleCapability = ARTGetString(capabilities, i)))
 	{
@@ -279,11 +279,11 @@ bool __CALLCONV ARTSetFrequencyRange    (Simulator* sim, double f_min, double f_
 	DLL_ERRORHANDLING_BEGIN
 	if (art == NULL) art = new AcousticResearchTool();
 
-	DataProp* fmin = static_cast<DataProp*>(sim->FindProperty("LowerFrequencyLimit"));
+	ARTdataProp* fmin = static_cast<ARTdataProp*>(sim->FindProperty("LowerFrequencyLimit"));
 	if (fmin == NULL) throw ARTerror("ARTSetFrequencyRange", "LowerFrequencyLimit is empty."); 
-	DataProp* fmax = static_cast<DataProp*>(sim->FindProperty("HigherFrequencyLimit"));
+	ARTdataProp* fmax = static_cast<ARTdataProp*>(sim->FindProperty("HigherFrequencyLimit"));
 	if (fmax == NULL) throw ARTerror("ARTSetFrequencyRange", "HigherFrequencyLimit is empty."); 
-	DataProp* fstep = static_cast<DataProp*>(sim->FindProperty("FrequencyStep"));
+	ARTdataProp* fstep = static_cast<ARTdataProp*>(sim->FindProperty("FrequencyStep"));
 	if (fstep == NULL) throw ARTerror("ARTSetFrequencyRange", "FrequencyStep is empty."); 
 	fmin->SetValue(new ARTvariant(f_min));
 	fmax->SetValue(new ARTvariant(f_max));
@@ -297,7 +297,7 @@ bool __CALLCONV ARTSetFrequencyRange    (Simulator* sim, double f_min, double f_
 bool __CALLCONV ARTSetNModes    (Simulator* sim, int Nmodes)
 {
 	DLL_ERRORHANDLING_BEGIN
-	DataProp* modes = static_cast<DataProp*>(sim->FindProperty("NumberOfModes"));
+	ARTdataProp* modes = static_cast<ARTdataProp*>(sim->FindProperty("NumberOfModes"));
 	if (modes == NULL) throw ARTerror("ARTSetNModes", "Property 'modes' is empty."); 
 	modes->SetValue(new ARTvariant(Nmodes));
 	return 1; //No error
@@ -344,7 +344,7 @@ P_ART_Element    __CALLCONV ARTCreateElement     (P_ART_Simulator simulator, con
 
 		while (prop)
 		{
-		  DataProp* dataProp = dynamic_cast<DataProp*>(prop);
+		  ARTdataProp* dataProp = dynamic_cast<ARTdataProp*>(prop);
 
 		  if (dataProp)
 		  {
@@ -360,7 +360,7 @@ P_ART_Element    __CALLCONV ARTCreateElement     (P_ART_Simulator simulator, con
 
 		while (prop)
 		{
-		  DataProp* dataProp = dynamic_cast<DataProp*>(prop);
+		  ARTdataProp* dataProp = dynamic_cast<ARTdataProp*>(prop);
 
 		  if (dataProp)
 		  {
@@ -430,7 +430,7 @@ P_ART_Element    __CALLCONV ARTChangeElementModel     (P_ART_Simulator simulator
 		while ((prop = element->model->GetProperties(prop)))
 		{
 			//if it is a data property 
-			DataProp* dprop = dynamic_cast<DataProp*>(prop);
+			ARTdataProp* dprop = dynamic_cast<ARTdataProp*>(prop);
 			if (dprop)
 			{
 				list<DataContainer*> tmplist = dprop->GetClientList();
@@ -461,7 +461,7 @@ P_ART_Element    __CALLCONV ARTChangeElementModel     (P_ART_Simulator simulator
 			while (prop)
 			{
 				//if it is a data property 
-				DataProp* dprop = dynamic_cast<DataProp*>(prop);
+				ARTdataProp* dprop = dynamic_cast<ARTdataProp*>(prop);
 				if (dprop)
 				{
 					string varname = string(element->GetName()) + "." + dprop->GetName();
@@ -561,7 +561,7 @@ P_ART_DataProp    __CALLCONV ARTSetParameter     (P_ART_Simulator simulator, con
  	if (simulator->GetParser() == NULL) throw ARTerror("ARTSetParameter", "The simulator's parser is NULL");
 	//command string can contain more than one command sperated by ; -> cut string into commands
 	vector<string> commands = strsplit(command,';');
-	DataProp* prop = NULL;
+	ARTdataProp* prop = NULL;
 	for (::size_t i = 0; i < commands.size(); i++)
 	{
 		vector<string> expressions = strsplit(commands[i],'=');
@@ -805,7 +805,7 @@ bool __CALLCONV ARTConnectPorts	(P_ART_Simulator simulator, const char* expr)
 P_ART_DataProp __CALLCONV ARTGetPortFromTModule	(P_ART_TModule module, const char* name)
 {
 	DLL_ERRORHANDLING_BEGIN
-	DataProp* tmpPort = module->getPort(name);
+	ARTdataProp* tmpPort = module->getPort(name);
 	return tmpPort;
 	DLL_ERRORHANDLING_END
 }
@@ -958,7 +958,7 @@ P_ART_DataProp    __CALLCONV ARTInputImpedance     (P_ART_Circuit circuit)
 	DLL_ERRORHANDLING_BEGIN
 	if (circuit == NULL) throw ARTerror("ARTInputImpedance", "Invalid circuit"); 
 
-	DataProp* impCurveProp = static_cast<DataProp*>(circuit->FindProperty("InputImpedanceCurve"));
+	ARTdataProp* impCurveProp = static_cast<ARTdataProp*>(circuit->FindProperty("InputImpedanceCurve"));
 	if (impCurveProp == NULL) throw ARTerror("ARTInputImpedance", "InputImpedanceCurve of circuit '%s1' is NULL.", circuit->GetName()); 
 	
 	circuit->PrepareCalculation(); 
@@ -1396,7 +1396,7 @@ P_ART_DataProp  __CALLCONV ARTFindDataProperty       (P_ART_Object  host, const 
 {
 	DLL_ERRORHANDLING_BEGIN
   if (host == NULL) throw ARTerror("ARTFindDataProperty", "host is NULL.");
-  else return dynamic_cast<DataProp*>(host->FindProperty(nam));
+  else return dynamic_cast<ARTdataProp*>(host->FindProperty(nam));
 	DLL_ERRORHANDLING_END
 }
 
@@ -1439,13 +1439,13 @@ P_ART_DataProp  __CALLCONV ARTGetDataProperties      (P_ART_Object  host, P_ART_
   else 
 	{
 		Property* p = pos;
-		DataProp* dp;
+		ARTdataProp* dp;
 		//cycle though properties until a data property is found, but only as long as there are properties!
 		do 
 		{
 			p = host->GetProperties(p);
 		} 
-		while ( !(dp = dynamic_cast<DataProp*>(p) ) && p);
+		while ( !(dp = dynamic_cast<ARTdataProp*>(p) ) && p);
 		return dp;
 	}
 	DLL_ERRORHANDLING_END
@@ -1570,7 +1570,7 @@ void listprops(ARTobject* obj, string ind) {
         std::cout << ind << "Property " << prp->GetName() << " ("<< prp->GetShortDescription() << ")" << endl;
         if (!prp->IsListable()) 
 		{
-			if (DataProp* dprop = dynamic_cast<DataProp*>(prp))
+			if (ARTdataProp* dprop = dynamic_cast<ARTdataProp*>(prp))
 			{
 				std::cout << dprop->GetName() << "\n";
 				int len = (dprop)->GetCount();
