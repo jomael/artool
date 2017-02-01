@@ -71,7 +71,7 @@ public:
    * This is the generic class representing all types of attributes which can
    * be added to a time module.
    */
-  class timeProperty : public ARTdataProp
+  class timeProperty : public DataProp
   {
   public:
     /**
@@ -86,7 +86,7 @@ public:
      * @param[in] htm Path to help file in HTML format.
      */
     timeProperty(const T_ART_Type dtyp, const int dlen, const string& name, const string sds="", const string lds="", const string htm="")
-    : ARTdataProp(dtyp, dlen, name, sds, lds, htm) {}
+    : DataProp(dtyp, dlen, name, sds, lds, htm) {}
     /**
      * @brief Destructor of the timeProperty class.
      */
@@ -121,7 +121,7 @@ public:
   {
   protected:
     /** Pointer to the actual global simulation parameter object. */
-    const ARTdataProp* param_;
+    const DataProp* param_;
   public:
     /**
      * @brief Constructor of the global parameter class.
@@ -129,7 +129,7 @@ public:
      * @param[in] param Pointer to the actual global simulation parameter this
      *            class is referencing.
      */
-    globalParameterType(const string& name, const ARTdataProp* param);
+    globalParameterType(const string& name, const DataProp* param);
     /**
      * @brief Returns the parser variable of the referenced object.
      */
@@ -342,13 +342,13 @@ public:
    * @exception ARTerror If the given name already exists for another object in
    *            the current time module.
    */
-  virtual void addIPort(const string& name, const ARTdataProp* refPort) = 0;
+  virtual void addIPort(const string& name, const DataProp* refPort) = 0;
   /**
    * @brief Returns a pointer to the port object with the given name.
    * @exception ARTerror If no port with the given name could be found in the
    *            current module.
    */
-  virtual ARTdataProp* getPort(const string& name);
+  virtual DataProp* getPort(const string& name);
 
   /**
    * @brief Sets the definition of the local parameter with the given name.
@@ -382,7 +382,7 @@ public:
    * @exception ARTerror If the given object is no valid global parameter or
    *            there is another property with the same name.
    */
-  virtual void addGlobalParameter(const ARTdataProp* parameter);
+  virtual void addGlobalParameter(const DataProp* parameter);
   /**
    * @brief Removes the definition of the given global parameter from all
    *        output ports and local parameters.

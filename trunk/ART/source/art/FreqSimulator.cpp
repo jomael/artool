@@ -65,16 +65,16 @@ FreqSimulator::FreqSimulator(const string name, const string wavetype,
    */
   modes = AppendDataProp("NumberOfModes", 1, "The number of modes for which this simulator will calculate the impedance.");
 
-  ARTdataProp* fmin = AppendDataProp("LowerFrequencyLimit", 50.0, "The lower frequency (in Hz) of the range for which this simulator will calculate the impedance.");
-  ARTdataProp* fmax = AppendDataProp("HigherFrequencyLimit", 1800.0, "The higher frequency (in Hz) of the range for which this simulator will calculate the impedance.");
-  ARTdataProp* fstep = AppendDataProp("FrequencyStep", 5.0, "The frequency step (in Hz) used to go through the range for which this simulator will calculate the impedance.");
+  DataProp* fmin = AppendDataProp("LowerFrequencyLimit", 50.0, "The lower frequency (in Hz) of the range for which this simulator will calculate the impedance.");
+  DataProp* fmax = AppendDataProp("HigherFrequencyLimit", 1800.0, "The higher frequency (in Hz) of the range for which this simulator will calculate the impedance.");
+  DataProp* fstep = AppendDataProp("FrequencyStep", 5.0, "The frequency step (in Hz) used to go through the range for which this simulator will calculate the impedance.");
 
   //add properties to parser
   Property* prop = GetProperties(NULL);
   while (prop)
   {
     //if it is a data property
-    ARTdataProp* dprop = dynamic_cast<ARTdataProp*>(prop);
+    DataProp* dprop = dynamic_cast<DataProp*>(prop);
     if (dprop)
     {
       string varname = dprop->GetName();

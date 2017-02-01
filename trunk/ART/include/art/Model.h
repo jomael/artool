@@ -342,7 +342,7 @@ private:
 		ART::Property* prop = GetProperties(NULL);
 		while (prop)
 		{
-			ART::ARTdataProp* dprop = dynamic_cast<ART::ARTdataProp*>(prop);
+			ART::DataProp* dprop = dynamic_cast<ART::DataProp*>(prop);
 			if (dprop) 
 			{
 				//...get corresponding pointer to variable in implementation
@@ -508,7 +508,7 @@ private:
 		AppendDataProp("r", 1.0,"radius [cm]");
 		AppendDataProp("temp", 21.0,"local temperature [degC]");
 		AppendDataProp("loss", 1.0,"loss factor (defaults to 1)");
-		ART::ARTdataProp* dp = AppendDataProp("radiation", "Zorumski","The radiation impedance. Can be either 'Reflecting' or 'Zorumski'."); 
+		ART::DataProp* dp = AppendDataProp("radiation", "Zorumski","The radiation impedance. Can be either 'Reflecting' or 'Zorumski'."); 
 			dp->SetRange(new ART::ARTvariant("Reflecting", "Zorumski"));
 		AppendDataProp("humidity", 0.8,"air humidity (molar fraction)");
 		AppendDataProp("xc", 0.000382,"CO2 molar fraction");
@@ -622,13 +622,13 @@ private:
 		double rad;
 
 		//Use the data properties of the element to set the cylindersection's values
-		ART::ARTdataProp* dprop = dynamic_cast<ART::ARTdataProp*>(FindProperty("length"));
+		ART::DataProp* dprop = dynamic_cast<ART::DataProp*>(FindProperty("length"));
 		if (dprop)
 			tunnel->length( len = dprop->GetFloat() );
 		else 
 			throw ARTerror("ToneHole::PrepareCalculation", "The data property '%s1' was not found.", "length"); //Debug
 
-		dprop = dynamic_cast<ART::ARTdataProp*>(FindProperty("r"));
+		dprop = dynamic_cast<ART::DataProp*>(FindProperty("r"));
 		if (dprop)
 		{
 			tunnel->radius( rad = dprop->GetFloat() );
@@ -638,7 +638,7 @@ private:
 		else 
 			throw ARTerror("ToneHole::PrepareCalculation", "The data property '%s1' was not found.", "r");
 
-		dprop = dynamic_cast<ART::ARTdataProp*>(FindProperty("temp"));
+		dprop = dynamic_cast<ART::DataProp*>(FindProperty("temp"));
 		if (dprop) 
 		{
 			tunnel->settempC(dprop->GetFloat());
@@ -648,7 +648,7 @@ private:
 		else 
 			throw ARTerror("ToneHole::PrepareCalculation", "The data property '%s1' was not found.", "temp");
 
-		dprop = dynamic_cast<ART::ARTdataProp*>(FindProperty("loss"));
+		dprop = dynamic_cast<ART::DataProp*>(FindProperty("loss"));
 		if (dprop) 
 		{
 			tunnel->setlossF(dprop->GetFloat());
@@ -658,7 +658,7 @@ private:
 		else 
 			throw ARTerror("ToneHole::PrepareCalculation", "The data property '%s1' was not found.", "loss");
 		
-		dprop = dynamic_cast<ART::ARTdataProp*>(FindProperty("xc"));
+		dprop = dynamic_cast<ART::DataProp*>(FindProperty("xc"));
 		if (dprop) 
 		{
 			tunnel->setxc(dprop->GetFloat());
@@ -668,7 +668,7 @@ private:
 		else 
 			throw ARTerror("TerminationModel::PrepareCalculation", "The data property '%s1' was not found.", "xc");
 
-		dprop = dynamic_cast<ART::ARTdataProp*>(FindProperty("humidity"));
+		dprop = dynamic_cast<ART::DataProp*>(FindProperty("humidity"));
 		if (dprop) 
 		{
 			tunnel->sethumidity(dprop->GetFloat());
@@ -683,7 +683,7 @@ private:
 
 	int GetRadiationType()
 	{
-		ART::ARTdataProp* dprop = dynamic_cast<ART::ARTdataProp*>(FindProperty("radiation"));
+		ART::DataProp* dprop = dynamic_cast<ART::DataProp*>(FindProperty("radiation"));
 		if (dprop) 
 		{
 			/*
@@ -1012,7 +1012,7 @@ private:
 		AppendDataProp("radiationradius", 1.0,"The radius of the radiating surface. [cm]");
 		AppendDataProp("temp", 21.0,"local temperature [degC]");
 		AppendDataProp("loss", 1.0, "loss factor (defaults to 1)");
-		ART::ARTdataProp* dp = AppendDataProp("radiation", "Zorumski","The radiation impedance. Can be either 'Reflecting' or 'Zorumski'."); 
+		ART::DataProp* dp = AppendDataProp("radiation", "Zorumski","The radiation impedance. Can be either 'Reflecting' or 'Zorumski'."); 
 			dp->SetRange(new ART::ARTvariant("Reflecting", "Zorumski"));
 		AppendDataProp("humidity", 0.8,"air humidity (molar fraction)");
 		AppendDataProp("xc", 0.000382,"CO2 molar fraction");
@@ -1100,14 +1100,14 @@ private:
 		model->setboreresolution(0.5); //was ist das?
 		model->RADIATION_TYPE_ = GetRadiationType();
 		//Use the data properties of the element to set the cylindersection's values
-		ART::ARTdataProp* dprop = dynamic_cast<ART::ARTdataProp*>(FindProperty("radiationradius"));
+		ART::DataProp* dprop = dynamic_cast<ART::DataProp*>(FindProperty("radiationradius"));
 		if (dprop)
 			model->radius( dprop->GetFloat() );
 		else 
 			throw ARTerror("TerminationModel::PrepareCalculation", "The data property '%s1' was not found.", "radiationradius"); //Debug
 
 
-		dprop = dynamic_cast<ART::ARTdataProp*>(FindProperty("temp"));
+		dprop = dynamic_cast<ART::DataProp*>(FindProperty("temp"));
 		if (dprop) 
 		{
 			model->settempC(dprop->GetFloat());
@@ -1115,7 +1115,7 @@ private:
 		else 
 			throw ARTerror("TerminationModel::PrepareCalculation", "The data property '%s1' was not found.", "temp");
 
-		dprop = dynamic_cast<ART::ARTdataProp*>(FindProperty("loss"));
+		dprop = dynamic_cast<ART::DataProp*>(FindProperty("loss"));
 		if (dprop) 
 		{
 			model->setlossF(dprop->GetFloat());
@@ -1123,7 +1123,7 @@ private:
 		else 
 			throw ARTerror("TerminationModel::PrepareCalculation", "The data property '%s1' was not found.", "loss");
 		
-		dprop = dynamic_cast<ART::ARTdataProp*>(FindProperty("xc"));
+		dprop = dynamic_cast<ART::DataProp*>(FindProperty("xc"));
 		if (dprop) 
 		{
 			model->setxc(dprop->GetFloat());
@@ -1131,7 +1131,7 @@ private:
 		else 
 			throw ARTerror("TerminationModel::PrepareCalculation", "The data property '%s1' was not found.", "xc");
 
-		dprop = dynamic_cast<ART::ARTdataProp*>(FindProperty("humidity"));
+		dprop = dynamic_cast<ART::DataProp*>(FindProperty("humidity"));
 		if (dprop) 
 		{
 			model->sethumidity(dprop->GetFloat());
@@ -1142,7 +1142,7 @@ private:
 
 	int GetRadiationType()
 	{
-		ART::ARTdataProp* dprop = dynamic_cast<ART::ARTdataProp*>(FindProperty("radiation"));
+		ART::DataProp* dprop = dynamic_cast<ART::DataProp*>(FindProperty("radiation"));
 		if (dprop) 
 		{
 			/*

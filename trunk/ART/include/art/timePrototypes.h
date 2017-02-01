@@ -92,7 +92,7 @@ public:
   /**
    * @copydoc ART::ITimeModule::addIPort()
    */
-  virtual void addIPort(const string& name, const ART::ARTdataProp* refPort);
+  virtual void addIPort(const string& name, const ART::DataProp* refPort);
   /**
    * @brief Creates a new function output port with the given length and the
    *        initial expression.
@@ -110,7 +110,7 @@ public:
    * @exception ARTerror If no port with the given name could be found in the
    *            current module.
    */
-  virtual ART::ARTdataProp* getPort(const string& name);
+  virtual ART::DataProp* getPort(const string& name);
 
   /**
    * @brief This method does not do anything as this module does not evaluate
@@ -166,7 +166,7 @@ public:
    * @param[in] refPort Pointer to an existing output port which will be
    *            associated with the new input port - will be ignored.
    */
-  virtual void addIPort(const string& name, const ART::ARTdataProp* refPort);
+  virtual void addIPort(const string& name, const ART::DataProp* refPort);
   /**
    * @brief Returns a pointer to the port object with the given name.
    * @details The impulse module only has a single valid name for an output
@@ -175,7 +175,7 @@ public:
    * @exception ARTerror If no port with the given name could be found in the
    *            current module.
    */
-  virtual ART::ARTdataProp* getPort(const string& name);
+  virtual ART::DataProp* getPort(const string& name);
 
   /**
    * @copydoc ART::ITimeModule::setCurrentIndex()
@@ -236,7 +236,7 @@ public:
    * @param[in] refPort Pointer to an existing output port which will be
    *            associated with the new input port - will be ignored.
    */
-  virtual void addIPort(const string& name, const ART::ARTdataProp* refPort);
+  virtual void addIPort(const string& name, const ART::DataProp* refPort);
   /**
    * @brief Returns a pointer to the port object with the given name.
    * @details The Heaviside module only has a single valid name for an output
@@ -245,7 +245,7 @@ public:
    * @exception ARTerror If no port with the given name could be found in the
    *            current module.
    */
-  virtual ART::ARTdataProp* getPort(const string& name);
+  virtual ART::DataProp* getPort(const string& name);
 
   /**
    * @copydoc ART::ITimeModule::setCurrentIndex()
@@ -311,7 +311,7 @@ public:
    * @param[in] refPort Pointer to an existing output port which will be
    *            associated with the new input port - will be ignored.
    */
-  virtual void addIPort(const string& name, const ART::ARTdataProp* refPort);
+  virtual void addIPort(const string& name, const ART::DataProp* refPort);
   /**
    * @brief Returns a pointer to the port object with the given name.
    * @details The rectangular module only has a single valid name for an output
@@ -320,7 +320,7 @@ public:
    * @exception ARTerror If no port with the given name could be found in the
    *            current module.
    */
-  virtual ART::ARTdataProp* getPort(const string& name);
+  virtual ART::DataProp* getPort(const string& name);
 
   /**
    * @copydoc ART::ITimeModule::setCurrentIndex()
@@ -387,7 +387,7 @@ public:
    * @exception ARTerror If the given name is different to "in" or the provided
    *            port is no valid output port object.
    */
-  virtual void addIPort(const string& name, const ART::ARTdataProp* refPort);
+  virtual void addIPort(const string& name, const ART::DataProp* refPort);
   /**
    * @brief Returns a pointer to the port object with the given name.
    * @details The amplification module only has a single valid name for an
@@ -396,7 +396,7 @@ public:
    * @exception ARTerror If no port with the given name could be found in the
    *            current module.
    */
-  virtual ART::ARTdataProp* getPort(const string& name);
+  virtual ART::DataProp* getPort(const string& name);
 
   /**
    * @copydoc ART::ITimeModule::setCurrentIndex()
@@ -466,7 +466,7 @@ public:
    * @exception ARTerror If the given name is different to "in" or the provided
    *            port is no valid output port object.
    */
-  virtual void addIPort(const string& name, const ART::ARTdataProp* refPort);
+  virtual void addIPort(const string& name, const ART::DataProp* refPort);
   /**
    * @brief Returns a pointer to the port object with the given name.
    * @details The simple delay module only has a single valid name for an output
@@ -475,7 +475,7 @@ public:
    * @exception ARTerror If no port with the given name could be found in the
    *            current module.
    */
-  virtual ART::ARTdataProp* getPort(const string& name);
+  virtual ART::DataProp* getPort(const string& name);
 
   /**
    * @copydoc ART::ITimeModule::setCurrentIndex()
@@ -538,7 +538,7 @@ public:
    * @exception ARTerror If the given name is different to "in1" or "in2" or the
    *            provided port is no valid output port object.
    */
-  virtual void addIPort(const string& name, const ART::ARTdataProp* refPort);
+  virtual void addIPort(const string& name, const ART::DataProp* refPort);
   /**
    * @brief Returns a pointer to the port object with the given name.
    * @details The add module only has a single valid name for an output
@@ -547,7 +547,7 @@ public:
    * @exception ARTerror If no port with the given name could be found in the
    *            current module.
    */
-  virtual ART::ARTdataProp* getPort(const string& name);
+  virtual ART::DataProp* getPort(const string& name);
 
   /**
    * @copydoc ART::ITimeModule::setCurrentIndex()
@@ -608,7 +608,7 @@ public:
    * @exception ARTerror If the given name is different to "in1" or "in2" or the
    *            provided port is no valid output port object.
    */
-  virtual void addIPort(const string& name, const ART::ARTdataProp* refPort);
+  virtual void addIPort(const string& name, const ART::DataProp* refPort);
   /**
    * @brief Returns a pointer to the port object with the given name.
    * @details The multiplication module only has a single valid name for an
@@ -617,7 +617,7 @@ public:
    * @exception ARTerror If no port with the given name could be found in the
    *            current module.
    */
-  virtual ART::ARTdataProp* getPort(const string& name);
+  virtual ART::DataProp* getPort(const string& name);
 
   /**
    * @copydoc ART::ITimeModule::setCurrentIndex()
@@ -676,7 +676,7 @@ public:
    * @param[in] refPort Pointer to an existing output port which will be
    *            associated with the new input port - will be ignored.
    */
-  virtual void addIPort(const string& name, const ART::ARTdataProp* refPort);
+  virtual void addIPort(const string& name, const ART::DataProp* refPort);
   /**
    * @brief Returns a pointer to the port object with the given name.
    * @details The sine wave module only has a single valid name for an
@@ -685,7 +685,7 @@ public:
    * @exception ARTerror If no port with the given name could be found in the
    *            current module.
    */
-  virtual ART::ARTdataProp* getPort(const string& name);
+  virtual ART::DataProp* getPort(const string& name);
 
   /**
    * @copydoc ART::ITimeModule::setCurrentIndex()
@@ -825,7 +825,7 @@ public:
    * @exception ARTerror If the given name is different to "in" or the provided
    *            port is no valid output port object.
    */
-  virtual void addIPort(const string& name, const ART::ARTdataProp* refPort);
+  virtual void addIPort(const string& name, const ART::DataProp* refPort);
   /**
    * @brief Returns a pointer to the port object with the given name.
    * @details The fractional delay module only has a single valid name for an
@@ -834,7 +834,7 @@ public:
    * @exception ARTerror If no port with the given name could be found in the
    *            current module.
    */
-  virtual ART::ARTdataProp* getPort(const string& name);
+  virtual ART::DataProp* getPort(const string& name);
 
   /**
    * @copydoc ART::ITimeModule::setCurrentIndex()
@@ -933,7 +933,7 @@ public:
    * @exception ARTerror If the given name is different to "p1p" or "p2m" or the
    *            provided port is no valid output port object.
    */
-  virtual void addIPort(const string& name, const ART::ARTdataProp* refPort);
+  virtual void addIPort(const string& name, const ART::DataProp* refPort);
   /**
    * @brief Returns a pointer to the port object with the given name.
    * @details The DWG cylinder module only has valid names for
@@ -942,7 +942,7 @@ public:
    * @exception ARTerror If no port with the given name could be found in the
    *            current module.
    */
-  virtual ART::ARTdataProp* getPort(const string& name);
+  virtual ART::DataProp* getPort(const string& name);
 
   /**
    * @copydoc ART::ITimeModule::setCurrentIndex
@@ -1043,7 +1043,7 @@ public:
    * @exception ARTerror If the given name is different to "p1p" or "p2m" or the
    *            provided port is no valid output port object.
    */
-  virtual void addIPort(const string& name, const ART::ARTdataProp* refPort);
+  virtual void addIPort(const string& name, const ART::DataProp* refPort);
   /**
    * @brief Returns a pointer to the port object with the given name.
    * @details The DWG cylinder junction module only has valid names
@@ -1052,7 +1052,7 @@ public:
    * @exception ARTerror If no port with the given name could be found in the
    *            current module.
    */
-  virtual ART::ARTdataProp* getPort(const string& name);
+  virtual ART::DataProp* getPort(const string& name);
 
   /**
    * @copydoc ART::ITimeModule::setCurrentIndex
@@ -1239,7 +1239,7 @@ public:
    * @exception ARTerror If the given name is different to "p1p" or "p2m" or the
    *            provided port is no valid output port object.
    */
-  virtual void addIPort(const string& name, const ART::ARTdataProp* refPort);
+  virtual void addIPort(const string& name, const ART::DataProp* refPort);
   /**
    * @brief Returns a pointer to the port object with the given name.
    * @details The DWG cone junction module only has a valid names for
@@ -1248,7 +1248,7 @@ public:
    * @exception ARTerror If no port with the given name could be found in the
    *            current module.
    */
-  virtual ART::ARTdataProp* getPort(const string& name);
+  virtual ART::DataProp* getPort(const string& name);
 
   /**
    * @copydoc ART::ITimeModule::setCurrentIndex
