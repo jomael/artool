@@ -30,7 +30,7 @@
 
 using ::testing::AtLeast;
 using ::testing::Return;
-
+using namespace ART;
 /*
  * Definitions for mock class of ARTvariant
  */

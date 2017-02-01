@@ -71,7 +71,7 @@ typedef enum
 	C_ART_ntri,		///< T_ART_Tripl array type
 	C_ART_nmat,		///< T_ART_Matrix array type
 	C_ART_nmatx,	///< math::matrix< std::complex<double> >* array type
-	C_ART_na,		///< ARTvariant array type (container for other ARTvariant objects)
+	C_ART_na,		///< ART::ARTvariant array type (container for other ART::ARTvariant objects)
 	C_ART_undef  	///< uninitialized type
 					} T_ART_Type;
 
@@ -142,9 +142,9 @@ typedef struct
 #ifdef __cplusplus
 typedef math::matrix< std::complex<double> > Matrix;
 
-// cbg: forward declaration
+namespace ART{// cbg: forward declaration
 struct ARTvariant;
-
+}
 /**
  * This structure provides a field, where values or arrays of different types can be 
  * stored. Since it is an union only a value of one type can be stored at once. 
@@ -173,7 +173,7 @@ typedef union
 	math::matrix< std::complex<double> >** nmx;
 	//pointers are not seperate types but nX types with len = 1 
 } T_ART_Var;
-
+namespace ART{
 /**
  * An instance of this structure can hold variables or arrays of different type. The 
  * structure keeps track of the type of variable and the array length. Use the 
@@ -210,7 +210,7 @@ struct ARTvariant
 	virtual void SetArrayLength(int l);
 	ARTvariant* clone();
 } ;
-
+}
 #endif
 
 //**************************************************************************************************************

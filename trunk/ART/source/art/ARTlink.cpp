@@ -45,7 +45,7 @@
 #include "ARTlink.h"
 #include <iostream>
 
-
+using namespace ART;
 T_ART_Cmplx* T_ART_Cmplx::copy()
 {
 	T_ART_Cmplx* nc = new T_ART_Cmplx;
