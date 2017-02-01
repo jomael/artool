@@ -47,7 +47,7 @@
 #include "DataContainer.h"
 
 using std::string;
-
+namespace ART{
 /**
  * A value with a concrete name belonging to an ARTobject is represented by an
  * ARTdataProperty. Just like an DataContainer it can specify some way of recalculating
@@ -80,5 +80,5 @@ public:
 private:
         ARTvariant* range;
 };
-
+}
 #endif /* ARTDATAPROPERTY_H */

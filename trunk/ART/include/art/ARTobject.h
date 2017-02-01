@@ -52,8 +52,9 @@ namespace ART{
 class Property;
 class ListProp;
 class ARTmethod;
-}
 class ARTdataProp;
+}
+
 
 
 namespace ART{

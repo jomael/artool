@@ -840,8 +840,8 @@ namespace ART{
   typedef struct ARTmethod ARTmethod;
   typedef struct ListProp ListProp;
   typedef struct ARTvariant ARTvariant;
+  typedef struct ARTdataProp ARTdataProp;
 }
-typedef struct ARTdataProp ARTdataProp;
 typedef int bool;
 
 #else
@@ -858,8 +858,9 @@ namespace ART{
   class ARTobject;
   class ARTmethod;
   class ARTvariant;
+  class ARTdataProp;
 }
-class ARTdataProp;
+
 
 
 /*
@@ -881,9 +882,8 @@ namespace ART{
   typedef ARTobject*	P_ART_Object;
   typedef ARTmethod*	P_ART_Method;
   typedef ARTvariant*	P_ART_Variant;
+  typedef ARTdataProp*	P_ART_DataProp;
 }
-typedef ARTdataProp*	P_ART_DataProp;
-
 
 
 typedef bool (* TprogressFunction)(double, const char*);
@@ -1085,7 +1085,7 @@ __DECLSPEC bool	__CALLCONV	ARTCheckPropertyCapability	(const char* property, con
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror if not using the DLL interface.
  */ 
-  __DECLSPEC P_ART_DataProp	__CALLCONV	ARTSetParameter	(ART::P_ART_Simulator simulator, const char* command);
+  __DECLSPEC ART::P_ART_DataProp	__CALLCONV	ARTSetParameter	(ART::P_ART_Simulator simulator, const char* command);
 
 
 /**
@@ -1196,7 +1196,7 @@ __DECLSPEC bool __CALLCONV ARTAddLocalParamToTModule	(ART::P_ART_TModule module,
  *   the error message.
  * @throws ARTerror if not using the DLL interface.
  */
-__DECLSPEC P_ART_DataProp __CALLCONV ARTGetPortFromTModule	(ART::P_ART_TModule module, const char* name);
+__DECLSPEC ART::P_ART_DataProp __CALLCONV ARTGetPortFromTModule	(ART::P_ART_TModule module, const char* name);
 
 /**
  * Calculates the output value of the given port at the specified time index.s
@@ -1205,7 +1205,7 @@ __DECLSPEC P_ART_DataProp __CALLCONV ARTGetPortFromTModule	(ART::P_ART_TModule m
  * @returns T_ART_Cmplx value or <0,0> in case of an error.
  * @throws ARTerror if not using the DLL interface.
  */
-__DECLSPEC T_ART_Cmplx __CALLCONV ARTGetComplexFromPort(P_ART_DataProp port, int idx);
+__DECLSPEC T_ART_Cmplx __CALLCONV ARTGetComplexFromPort(ART::P_ART_DataProp port, int idx);
 
 /**
  * Finds the element in the circuit and returns is position. The first element (nearest to
@@ -1304,7 +1304,7 @@ __DECLSPEC T_ART_Cmplx __CALLCONV ARTGetComplexFromPort(P_ART_DataProp port, int
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror if not using the DLL interface.
  */
-  __DECLSPEC P_ART_DataProp	__CALLCONV	ARTInputImpedance	(ART::P_ART_Circuit circuit);
+  __DECLSPEC ART::P_ART_DataProp	__CALLCONV	ARTInputImpedance	(ART::P_ART_Circuit circuit);
 
 /**
  * Returns the name of an object.
@@ -1365,7 +1365,7 @@ __DECLSPEC T_ART_Cmplx __CALLCONV ARTGetComplexFromPort(P_ART_DataProp port, int
  *@param pprp The data property whose range should be recieved.
  * @returns The range of the data property or null if no range is defined or (only when using the DLL) if there was an error.
  */
-__DECLSPEC ART::P_ART_Variant   __CALLCONV ARTGetRange           (P_ART_DataProp pprp);
+__DECLSPEC ART::P_ART_Variant   __CALLCONV ARTGetRange           (ART::P_ART_DataProp pprp);
 
 /**
  * Properties and data properties are saved in the same lists in all objects. When you are not sure if a property retrieved is a
@@ -1383,7 +1383,7 @@ __DECLSPEC ART::P_ART_Variant   __CALLCONV ARTGetRange           (P_ART_DataProp
  * @param dc A data property whose definition should be retrieved.
  * @returns A pointer to a null terminated string containing the definition. Do not change the contents of the string and do not free the associated memory.
  */
-__DECLSPEC const char* __CALLCONV ARTGetDefinitionString          (P_ART_DataProp dc);
+__DECLSPEC const char* __CALLCONV ARTGetDefinitionString          (ART::P_ART_DataProp dc);
 
 /**
  * Returns the datatype of a data property.
@@ -1413,7 +1413,7 @@ __DECLSPEC int	__CALLCONV	ARTGetLength	(ART::P_ART_Variant pprp);
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror if not using the DLL interface.
  */   
-__DECLSPEC ART::P_ART_Variant	__CALLCONV	ARTGetValue	(P_ART_DataProp pprp);
+__DECLSPEC ART::P_ART_Variant	__CALLCONV	ARTGetValue	(ART::P_ART_DataProp pprp);
 
 /**
  * @param pprp A pointer to a data property.
@@ -1621,7 +1621,7 @@ __DECLSPEC bool	__CALLCONV	ARTSetMatrix	(ART::P_ART_Variant pprp, int idx, T_ART
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror if not using the DLL interface.
  */  
-__DECLSPEC P_ART_DataProp	__CALLCONV	ARTFindDataProperty	(ART::P_ART_Object  host, const char* nam);
+__DECLSPEC ART::P_ART_DataProp	__CALLCONV	ARTFindDataProperty	(ART::P_ART_Object  host, const char* nam);
 
 /**
  * Find a method of an object.
@@ -1683,7 +1683,7 @@ __DECLSPEC ART::P_ART_Object	__CALLCONV	ARTFindObject	(ART::P_ART_ListProp host,
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror if not using the DLL interface.
  */   
-__DECLSPEC P_ART_DataProp  __CALLCONV ARTGetDataProperties      (ART::P_ART_Object  host, P_ART_DataProp pos);
+__DECLSPEC ART::P_ART_DataProp  __CALLCONV ARTGetDataProperties      (ART::P_ART_Object  host, ART::P_ART_DataProp pos);
 
 
 /**
@@ -1728,7 +1728,7 @@ __DECLSPEC ART::P_ART_Object	__CALLCONV	ARTGetObjects	(ART::P_ART_ListProp host,
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror if not using the DLL interface.
  */	
-__DECLSPEC P_ART_DataProp	__CALLCONV	ARTAppendDataProp	(ART::P_ART_Object host, ART::P_ART_Variant val, const char* nam, const char* sds, const char* lds, const char* htm);
+__DECLSPEC ART::P_ART_DataProp	__CALLCONV	ARTAppendDataProp	(ART::P_ART_Object host, ART::P_ART_Variant val, const char* nam, const char* sds, const char* lds, const char* htm);
 
 /**
  * Appends a listable property to an ARTobject. A listable property is an array of properties.
@@ -1824,7 +1824,7 @@ __DECLSPEC char *	__CALLCONV	ARTGetLastErrorMessage	();
  * Returns a string representation of the dependency tree. This function is for
  * debugging only and might be removed in the future.
  */  
-char*	__CALLCONV	ARTGetDependencyTree	(P_ART_DataProp pprp, const char* linebreak);
+char*	__CALLCONV	ARTGetDependencyTree	(ART::P_ART_DataProp pprp, const char* linebreak);
 
 /** @}
  * End of documentation group ARTinterface
