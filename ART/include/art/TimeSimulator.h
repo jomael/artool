@@ -46,7 +46,7 @@
 #include "mpParser.h"
 #include "ARTobject.h"
 #include "Property.h"
-#include "ARTdataProp.h"
+#include "DataProp.h"
 #include "Simulator.h"
 
 using namespace mup;
@@ -140,7 +140,7 @@ public:
   /**
    * @copydoc ARTsimulator::FindDataPropInSimulator()
    */
-  virtual ARTdataProp* FindDataPropInSimulator(string exp);
+  virtual DataProp* FindDataPropInSimulator(string exp);
 
   /**
    * @brief Returns a time module with the given name if it is part of the
@@ -181,7 +181,7 @@ protected:
    * @param[in] newParam The new global parameter which will be registered to
    *            all current time modules.
    */
-  virtual void addParamToCurrentModules(ARTdataProp* newParam);
+  virtual void addParamToCurrentModules(DataProp* newParam);
 
 };
 }

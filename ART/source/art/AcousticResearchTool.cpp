@@ -38,7 +38,7 @@
 ***************************************************************************/
 
 #include "AcousticResearchTool.h"
-#include "ARTdataProp.h"
+#include "DataProp.h"
 #include "ARTmethod.h"
 #include "Model.h"
 #include "TimeModule.h"
@@ -57,7 +57,7 @@ AcousticResearchTool::AcousticResearchTool() : ARTobject("ART","Acoustic Researc
 
 // -------------------------------------------------------------------------------------------------------------
 // Top level properties:
-        ARTdataProp* authors = new ARTdataProp(C_ART_nstr, 6, "Authors");
+        DataProp* authors = new DataProp(C_ART_nstr, 6, "Authors");
         ARTSetString(authors,0,"Wilfried Kausel");
         ARTSetString(authors,1,"Alistair Braden");
         ARTSetString(authors,2,"Delphine Cadefaux");

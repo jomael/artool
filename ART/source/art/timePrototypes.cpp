@@ -66,7 +66,7 @@ ITimeModule* inputFunctionModule::Create(const string& name, const string& sds, 
 }
 
 
-void inputFunctionModule::addIPort(const string& name, const ARTdataProp* refPort)
+void inputFunctionModule::addIPort(const string& name, const DataProp* refPort)
 {
   throw ARTerror("InputFunctionModule::addIPort", "Operation not permitted for time module '%s1'.",
       name_);
@@ -108,7 +108,7 @@ void inputFunctionModule::defineOPort(int len, const string& expr)
   }
 }
 
-ARTdataProp* inputFunctionModule::getPort(const string& name)
+DataProp* inputFunctionModule::getPort(const string& name)
 {
   if (name != "out" || !out_)
   {
@@ -143,13 +143,13 @@ ITimeModule* impulseModule::Create(const string& name, const string& sds, const 
   return new impulseModule(name, sds, lds, htm);
 }
 
-void impulseModule::addIPort(const string& name, const ARTdataProp* refPort)
+void impulseModule::addIPort(const string& name, const DataProp* refPort)
 {
   throw ARTerror("impulseModule::addIPort", "Operation not permitted for time module '%s1'.",
       name_);
 }
 
-ARTdataProp* impulseModule::getPort(const string& name)
+DataProp* impulseModule::getPort(const string& name)
 {
   if (name != "out")
   {
@@ -202,13 +202,13 @@ ITimeModule* heavisideModule::Create(const string& name, const string& sds, cons
   return new heavisideModule(name, sds, lds, htm);
 }
 
-void heavisideModule::addIPort(const string& name, const ARTdataProp* refPort)
+void heavisideModule::addIPort(const string& name, const DataProp* refPort)
 {
   throw ARTerror("heavisideModule::addIPort", "Operation not permitted for time module '%s1'.",
       name_);
 }
 
-ARTdataProp* heavisideModule::getPort(const string& name)
+DataProp* heavisideModule::getPort(const string& name)
 {
   if (name != "out")
   {
@@ -262,13 +262,13 @@ ITimeModule* rectangularModule::Create(const string& name, const string& sds, co
   return new rectangularModule(name, sds, lds, htm);
 }
 
-void rectangularModule::addIPort(const string& name, const ARTdataProp* refPort)
+void rectangularModule::addIPort(const string& name, const DataProp* refPort)
 {
   throw ARTerror("rectangularModule::addIPort", "Operation not permitted for time module '%s1'.",
       name_);
 }
 
-ARTdataProp* rectangularModule::getPort(const string& name)
+DataProp* rectangularModule::getPort(const string& name)
 {
   if (name != "out")
   {
@@ -335,7 +335,7 @@ ITimeModule* amplificationModule::Create(const string& name, const string& sds, 
   return new amplificationModule(name, sds, lds, htm);
 }
 
-void amplificationModule::addIPort(const string& name, const ARTdataProp* refPort)
+void amplificationModule::addIPort(const string& name, const DataProp* refPort)
 {
   if (name != "in")
   {
@@ -353,7 +353,7 @@ void amplificationModule::addIPort(const string& name, const ARTdataProp* refPor
   AppendDataProp(in_);
 }
 
-ARTdataProp* amplificationModule::getPort(const string& name)
+DataProp* amplificationModule::getPort(const string& name)
 {
   if (name != "out")
   {
@@ -406,7 +406,7 @@ ITimeModule* simpleDelayModule::Create(const string& name, const string& sds, co
   return new simpleDelayModule(name, sds, lds, htm);
 }
 
-void simpleDelayModule::addIPort(const string& name, const ARTdataProp* refPort)
+void simpleDelayModule::addIPort(const string& name, const DataProp* refPort)
 {
   if (name != "in")
   {
@@ -424,7 +424,7 @@ void simpleDelayModule::addIPort(const string& name, const ARTdataProp* refPort)
   AppendDataProp(in_);
 }
 
-ARTdataProp* simpleDelayModule::getPort(const string& name)
+DataProp* simpleDelayModule::getPort(const string& name)
 {
   if (name != "out")
   {
@@ -476,7 +476,7 @@ ITimeModule* addModule::Create(const string& name, const string& sds, const stri
   return new addModule(name, sds, lds, htm);
 }
 
-void addModule::addIPort(const string& name, const ARTdataProp* refPort)
+void addModule::addIPort(const string& name, const DataProp* refPort)
 {
   IPortType* iPort;
   if (name != "in1" && name != "in2")
@@ -495,7 +495,7 @@ void addModule::addIPort(const string& name, const ARTdataProp* refPort)
   AppendDataProp(iPort);
 }
 
-ARTdataProp* addModule::getPort(const string& name)
+DataProp* addModule::getPort(const string& name)
 {
   if (name != "out")
   {
@@ -535,7 +535,7 @@ ITimeModule* multiplicationModule::Create(const string& name, const string& sds,
   return new multiplicationModule(name, sds, lds, htm);
 }
 
-void multiplicationModule::addIPort(const string& name, const ARTdataProp* refPort)
+void multiplicationModule::addIPort(const string& name, const DataProp* refPort)
 {
   IPortType* iPort;
   if (name != "in1" && name != "in2")
@@ -554,7 +554,7 @@ void multiplicationModule::addIPort(const string& name, const ARTdataProp* refPo
   AppendDataProp(iPort);
 }
 
-ARTdataProp* multiplicationModule::getPort(const string& name)
+DataProp* multiplicationModule::getPort(const string& name)
 {
   if (name != "out")
   {
@@ -596,13 +596,13 @@ ITimeModule* sinewaveModule::Create(const string& name, const string& sds, const
   return new sinewaveModule(name, sds, lds, htm);
 }
 
-void sinewaveModule::addIPort(const string& name, const ARTdataProp* refPort)
+void sinewaveModule::addIPort(const string& name, const DataProp* refPort)
 {
   throw ARTerror("sinewaveModule::addIPort", "Operation not permitted for time module '%s1'.",
       name_);
 }
 
-ARTdataProp* sinewaveModule::getPort(const string& name)
+DataProp* sinewaveModule::getPort(const string& name)
 {
   if (name != "out")
   {
@@ -723,7 +723,7 @@ ITimeModule* fractionalDelayModule::Create(const string& name, const string& sds
   return new fractionalDelayModule(name, sds, lds, htm);
 }
 
-void fractionalDelayModule::addIPort(const string& name, const ARTdataProp* refPort)
+void fractionalDelayModule::addIPort(const string& name, const DataProp* refPort)
 {
   if (name != "in")
   {
@@ -741,7 +741,7 @@ void fractionalDelayModule::addIPort(const string& name, const ARTdataProp* refP
   AppendDataProp(in_);
 }
 
-ARTdataProp* fractionalDelayModule::getPort(const string& name)
+DataProp* fractionalDelayModule::getPort(const string& name)
 {
   if (name != "out")
   {
@@ -929,7 +929,7 @@ ITimeModule* DWGcylinderModule::Create(const string& name, const string& sds, co
   return new DWGcylinderModule(name, sds, lds, htm);
 }
 
-void DWGcylinderModule::addIPort(const string& name, const ARTdataProp* refPort)
+void DWGcylinderModule::addIPort(const string& name, const DataProp* refPort)
 {
   if (name != "p1p" && name != "p2m")
   {
@@ -965,7 +965,7 @@ void DWGcylinderModule::addIPort(const string& name, const ARTdataProp* refPort)
   }
 }
 
-ARTdataProp* DWGcylinderModule::getPort(const string& name)
+DataProp* DWGcylinderModule::getPort(const string& name)
 {
   if (name != "p2p" && name != "p1m")
   {
@@ -974,7 +974,7 @@ ARTdataProp* DWGcylinderModule::getPort(const string& name)
   }
   else
   {
-    return dynamic_cast<ARTdataProp*>(FindProperty(name));
+    return dynamic_cast<DataProp*>(FindProperty(name));
   }
 }
 
@@ -1160,7 +1160,7 @@ ITimeModule* DWGcylinderJunctionModule::Create(const string& name, const string&
   return new DWGcylinderJunctionModule(name, sds, lds, htm);
 }
 
-void DWGcylinderJunctionModule::addIPort(const string& name, const ARTdataProp* refPort)
+void DWGcylinderJunctionModule::addIPort(const string& name, const DataProp* refPort)
 {
   if (name != "p1p" && name != "p2m")
   {
@@ -1198,7 +1198,7 @@ void DWGcylinderJunctionModule::addIPort(const string& name, const ARTdataProp* 
   }
 }
 
-ARTdataProp* DWGcylinderJunctionModule::getPort(const string& name)
+DataProp* DWGcylinderJunctionModule::getPort(const string& name)
 {
   if (name != "p2p" && name != "p1m")
   {
@@ -1207,7 +1207,7 @@ ARTdataProp* DWGcylinderJunctionModule::getPort(const string& name)
   }
   else
   {
-    return dynamic_cast<ARTdataProp*>(FindProperty(name));
+    return dynamic_cast<DataProp*>(FindProperty(name));
   }
 }
 
@@ -1477,7 +1477,7 @@ ITimeModule* DWGconeJunctionModule::Create(const string& name, const string& sds
   return new DWGconeJunctionModule(name, sds, lds, htm);
 }
 
-void DWGconeJunctionModule::addIPort(const string& name, const ARTdataProp* refPort)
+void DWGconeJunctionModule::addIPort(const string& name, const DataProp* refPort)
 {
   if (name != "p1p" && name != "p2m")
   {
@@ -1517,7 +1517,7 @@ void DWGconeJunctionModule::addIPort(const string& name, const ARTdataProp* refP
   }
 }
 
-ARTdataProp* DWGconeJunctionModule::getPort(const string& name)
+DataProp* DWGconeJunctionModule::getPort(const string& name)
 {
   if (name != "p2p" && name != "p1m")
   {
@@ -1526,7 +1526,7 @@ ARTdataProp* DWGconeJunctionModule::getPort(const string& name)
   }
   else
   {
-    return dynamic_cast<ARTdataProp*>(FindProperty(name));
+    return dynamic_cast<DataProp*>(FindProperty(name));
   }
 }
 

@@ -140,9 +140,9 @@ namespace ART{
  * avoid circular references. 
  * 
  * Use DataContainer for values which have a small scope and when the name of the value 
- * you are processing is unimportant, because you can keep track of it. Use ARTdataProp 
+ * you are processing is unimportant, because you can keep track of it. Use DataProp 
  * when you want to add values to an ARTobject, they can then be added to the list of 
- * properties of the object. ARTdataProp is also useful when you have several values, and 
+ * properties of the object. DataProp is also useful when you have several values, and 
  * you can not keep track of their names easily without storing them as strings within the
  * object.
  */ 
