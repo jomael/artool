@@ -15,9 +15,9 @@ public:
 	CylinderSection(HornElement* c);
 	~CylinderSection();
 
-	virtual ARTvariant* getPropertyPointer(const char* name)
+	virtual ART::ARTvariant* getPropertyPointer(const char* name)
 	{
-		ARTvariant* var = new ARTvariant();
+		ART::ARTvariant* var = new ART::ARTvariant();
 
 		if (0 == strcmp(name,"length")) {var->typ = C_ART_ndbl;	var->val->nd = &(length_);	return var; }
 		if (0 == strcmp(name,"xc"))		{var->typ = C_ART_nflo;	var->val->nf = &(xc_);	return var; }

@@ -839,9 +839,9 @@ namespace ART{
   typedef struct ARTobject ARTobject;
   typedef struct ARTmethod ARTmethod;
   typedef struct ListProp ListProp;
+  typedef struct ARTvariant ARTvariant;
 }
 typedef struct ARTdataProp ARTdataProp;
-typedef struct ARTvariant ARTvariant;
 typedef int bool;
 
 #else
@@ -857,9 +857,9 @@ namespace ART{
   class ITimeModule;
   class ARTobject;
   class ARTmethod;
+  class ARTvariant;
 }
 class ARTdataProp;
-class ARTvariant;
 
 
 /*
@@ -880,9 +880,10 @@ namespace ART{
   typedef ITimeModule* P_ART_TModule;
   typedef ARTobject*	P_ART_Object;
   typedef ARTmethod*	P_ART_Method;
+  typedef ARTvariant*	P_ART_Variant;
 }
 typedef ARTdataProp*	P_ART_DataProp;
-typedef ARTvariant*	P_ART_Variant;
+
 
 
 typedef bool (* TprogressFunction)(double, const char*);
@@ -1364,7 +1365,7 @@ __DECLSPEC T_ART_Cmplx __CALLCONV ARTGetComplexFromPort(P_ART_DataProp port, int
  *@param pprp The data property whose range should be recieved.
  * @returns The range of the data property or null if no range is defined or (only when using the DLL) if there was an error.
  */
-__DECLSPEC P_ART_Variant   __CALLCONV ARTGetRange           (P_ART_DataProp pprp);
+__DECLSPEC ART::P_ART_Variant   __CALLCONV ARTGetRange           (P_ART_DataProp pprp);
 
 /**
  * Properties and data properties are saved in the same lists in all objects. When you are not sure if a property retrieved is a
@@ -1392,7 +1393,7 @@ __DECLSPEC const char* __CALLCONV ARTGetDefinitionString          (P_ART_DataPro
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror if not using the DLL interface.
  */   
-__DECLSPEC T_ART_Type	__CALLCONV	ARTGetDatatype	(P_ART_Variant pprp);
+__DECLSPEC T_ART_Type	__CALLCONV	ARTGetDatatype	(ART::P_ART_Variant pprp);
 
 /**
  * Returns the length of a data property.
@@ -1402,7 +1403,7 @@ __DECLSPEC T_ART_Type	__CALLCONV	ARTGetDatatype	(P_ART_Variant pprp);
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror if not using the DLL interface.
  */   
-__DECLSPEC int	__CALLCONV	ARTGetLength	(P_ART_Variant pprp);
+__DECLSPEC int	__CALLCONV	ARTGetLength	(ART::P_ART_Variant pprp);
 
 /**
  * Returns the value of a data property.
@@ -1412,7 +1413,7 @@ __DECLSPEC int	__CALLCONV	ARTGetLength	(P_ART_Variant pprp);
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror if not using the DLL interface.
  */   
-__DECLSPEC P_ART_Variant	__CALLCONV	ARTGetValue	(P_ART_DataProp pprp);
+__DECLSPEC ART::P_ART_Variant	__CALLCONV	ARTGetValue	(P_ART_DataProp pprp);
 
 /**
  * @param pprp A pointer to a data property.
@@ -1423,7 +1424,7 @@ __DECLSPEC P_ART_Variant	__CALLCONV	ARTGetValue	(P_ART_DataProp pprp);
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror if not using the DLL interface.
  */   
-__DECLSPEC char*	__CALLCONV	ARTGetString	(P_ART_Variant pprp, int idx);
+__DECLSPEC char*	__CALLCONV	ARTGetString	(ART::P_ART_Variant pprp, int idx);
 
 /**
  * Set the string at index idx of the data property pointed to by pprp to s. If the 
@@ -1438,7 +1439,7 @@ __DECLSPEC char*	__CALLCONV	ARTGetString	(P_ART_Variant pprp, int idx);
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror if not using the DLL interface.
  */  
-__DECLSPEC bool	__CALLCONV	ARTSetString	(P_ART_Variant pprp, int idx, const char* s);
+__DECLSPEC bool	__CALLCONV	ARTSetString	(ART::P_ART_Variant pprp, int idx, const char* s);
 
 
 /**
@@ -1451,7 +1452,7 @@ __DECLSPEC bool	__CALLCONV	ARTSetString	(P_ART_Variant pprp, int idx, const char
  *    error or if the value of the data property was 0. 
  * @throws ARTerror if not using the DLL interface.
  */   
-__DECLSPEC int	__CALLCONV	ARTGetInteger	(P_ART_Variant pprp, int idx);
+__DECLSPEC int	__CALLCONV	ARTGetInteger	(ART::P_ART_Variant pprp, int idx);
 
 /**
  * Set the integer at index idx of the data property pointed to by pprp to i. 
@@ -1464,7 +1465,7 @@ __DECLSPEC int	__CALLCONV	ARTGetInteger	(P_ART_Variant pprp, int idx);
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror if not using the DLL interface.
  */  
-__DECLSPEC bool	__CALLCONV	ARTSetInteger	(P_ART_Variant pprp, int idx, int i);
+__DECLSPEC bool	__CALLCONV	ARTSetInteger	(ART::P_ART_Variant pprp, int idx, int i);
 
 /**
  * @param pprp A pointer to a data property.
@@ -1476,7 +1477,7 @@ __DECLSPEC bool	__CALLCONV	ARTSetInteger	(P_ART_Variant pprp, int idx, int i);
  *    error or if the value of the data property was 0. 
  * @throws ARTerror if not using the DLL interface.
   */   
-__DECLSPEC float	__CALLCONV	ARTGetFloat	(P_ART_Variant pprp, int idx);
+__DECLSPEC float	__CALLCONV	ARTGetFloat	(ART::P_ART_Variant pprp, int idx);
 
 /**
  * Set the floating point value at index idx of the data property pointed to by pprp to f. 
@@ -1489,7 +1490,7 @@ __DECLSPEC float	__CALLCONV	ARTGetFloat	(P_ART_Variant pprp, int idx);
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror if not using the DLL interface.
  */  
-__DECLSPEC bool	__CALLCONV	ARTSetFloat	(P_ART_Variant pprp, int idx, float f);
+__DECLSPEC bool	__CALLCONV	ARTSetFloat	(ART::P_ART_Variant pprp, int idx, float f);
 
 /**
  * @param pprp A pointer to a data property.
@@ -1501,7 +1502,7 @@ __DECLSPEC bool	__CALLCONV	ARTSetFloat	(P_ART_Variant pprp, int idx, float f);
  *    error or if the value of the data property was 0. 
  * @throws ARTerror if not using the DLL interface.
  */   
-__DECLSPEC double	__CALLCONV	ARTGetDouble	(P_ART_Variant pprp, int idx);
+__DECLSPEC double	__CALLCONV	ARTGetDouble	(ART::P_ART_Variant pprp, int idx);
 
 /**
  * Set the double value at index idx of the data property pointed to by pprp to d. 
@@ -1514,7 +1515,7 @@ __DECLSPEC double	__CALLCONV	ARTGetDouble	(P_ART_Variant pprp, int idx);
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror if not using the DLL interface.
  */  
-__DECLSPEC bool	__CALLCONV	ARTSetDouble	(P_ART_Variant pprp, int idx, double d);
+__DECLSPEC bool	__CALLCONV	ARTSetDouble	(ART::P_ART_Variant pprp, int idx, double d);
 
 /**
  * @param pprp A pointer to a data property.
@@ -1527,9 +1528,9 @@ __DECLSPEC bool	__CALLCONV	ARTSetDouble	(P_ART_Variant pprp, int idx, double d);
  * @throws ARTerror if not using the DLL interface.
  */   
 #ifdef __cplusplus
-__DECLSPEC T_ART_Cmplx	__CALLCONV	ARTGetComplex	(P_ART_Variant pprp, int idx = 0);
+__DECLSPEC T_ART_Cmplx	__CALLCONV	ARTGetComplex	(ART::P_ART_Variant pprp, int idx = 0);
 #else
-__DECLSPEC T_ART_Cmplx	__CALLCONV	ARTGetComplex	(P_ART_Variant pprp, int idx);
+__DECLSPEC T_ART_Cmplx	__CALLCONV	ARTGetComplex	(ART::P_ART_Variant pprp, int idx);
 #endif
 
 /**
@@ -1543,7 +1544,7 @@ __DECLSPEC T_ART_Cmplx	__CALLCONV	ARTGetComplex	(P_ART_Variant pprp, int idx);
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror if not using the DLL interface.
  */  
-__DECLSPEC bool	__CALLCONV	ARTSetComplex	(P_ART_Variant pprp, int idx, T_ART_Cmplx c);
+__DECLSPEC bool	__CALLCONV	ARTSetComplex	(ART::P_ART_Variant pprp, int idx, T_ART_Cmplx c);
 
 /**
  * @param pprp A pointer to a data property.
@@ -1556,9 +1557,9 @@ __DECLSPEC bool	__CALLCONV	ARTSetComplex	(P_ART_Variant pprp, int idx, T_ART_Cmp
  * @throws ARTerror if not using the DLL interface.
  */
 #ifdef __cplusplus
-__DECLSPEC T_ART_Tripl	__CALLCONV	ARTGetTriple	(P_ART_Variant pprp, int idx = 0);
+__DECLSPEC T_ART_Tripl	__CALLCONV	ARTGetTriple	(ART::P_ART_Variant pprp, int idx = 0);
 #else
-__DECLSPEC T_ART_Tripl	__CALLCONV	ARTGetTriple	(P_ART_Variant pprp, int idx);
+__DECLSPEC T_ART_Tripl	__CALLCONV	ARTGetTriple	(ART::P_ART_Variant pprp, int idx);
 #endif
 
 /**
@@ -1572,7 +1573,7 @@ __DECLSPEC T_ART_Tripl	__CALLCONV	ARTGetTriple	(P_ART_Variant pprp, int idx);
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror if not using the DLL interface.
  */  
-__DECLSPEC bool	__CALLCONV	ARTSetTriple	(P_ART_Variant pprp, int idx, T_ART_Tripl t);
+__DECLSPEC bool	__CALLCONV	ARTSetTriple	(ART::P_ART_Variant pprp, int idx, T_ART_Tripl t);
 
 /**
  * @param pprp A pointer to a data property.
@@ -1584,7 +1585,7 @@ __DECLSPEC bool	__CALLCONV	ARTSetTriple	(P_ART_Variant pprp, int idx, T_ART_Trip
  *    error or if the value returned is indeed that of the data property's matrix. 
  * @throws ARTerror if not using the DLL interface.
  */   
-__DECLSPEC T_ART_Matrix	__CALLCONV	ARTGetMatrix	(P_ART_Variant pprp, int idx);
+__DECLSPEC T_ART_Matrix	__CALLCONV	ARTGetMatrix	(ART::P_ART_Variant pprp, int idx);
 
 /**
  * Set the matrix at index idx of the data property pointed to by pprp to m. 
@@ -1597,7 +1598,7 @@ __DECLSPEC T_ART_Matrix	__CALLCONV	ARTGetMatrix	(P_ART_Variant pprp, int idx);
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror if not using the DLL interface.
  */  
-__DECLSPEC bool	__CALLCONV	ARTSetMatrix	(P_ART_Variant pprp, int idx, T_ART_Matrix m);
+__DECLSPEC bool	__CALLCONV	ARTSetMatrix	(ART::P_ART_Variant pprp, int idx, T_ART_Matrix m);
 
 
 /**
@@ -1727,7 +1728,7 @@ __DECLSPEC ART::P_ART_Object	__CALLCONV	ARTGetObjects	(ART::P_ART_ListProp host,
  *    Use ARTGetLastErrorMessage to get the error message.
  * @throws ARTerror if not using the DLL interface.
  */	
-__DECLSPEC P_ART_DataProp	__CALLCONV	ARTAppendDataProp	(ART::P_ART_Object host, P_ART_Variant val, const char* nam, const char* sds, const char* lds, const char* htm);
+__DECLSPEC P_ART_DataProp	__CALLCONV	ARTAppendDataProp	(ART::P_ART_Object host, ART::P_ART_Variant val, const char* nam, const char* sds, const char* lds, const char* htm);
 
 /**
  * Appends a listable property to an ARTobject. A listable property is an array of properties.

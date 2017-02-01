@@ -346,7 +346,7 @@ private:
 			if (dprop) 
 			{
 				//...get corresponding pointer to variable in implementation
-				ARTvariant* p = (implementation)->getPropertyPointer(dprop->GetName().c_str() );
+				ART::ARTvariant* p = (implementation)->getPropertyPointer(dprop->GetName().c_str() );
 				if (p->typ == C_ART_undef) throw ARTerror("Element::PrepareCalculation", "The hornelement attached to element '%s1' does not have the property '%s2', which is specified in the Element.", name_ , dprop->GetName().c_str());
 				switch (p->typ)
 				{
@@ -509,7 +509,7 @@ private:
 		AppendDataProp("temp", 21.0,"local temperature [degC]");
 		AppendDataProp("loss", 1.0,"loss factor (defaults to 1)");
 		ARTdataProp* dp = AppendDataProp("radiation", "Zorumski","The radiation impedance. Can be either 'Reflecting' or 'Zorumski'."); 
-			dp->SetRange(new ARTvariant("Reflecting", "Zorumski"));
+			dp->SetRange(new ART::ARTvariant("Reflecting", "Zorumski"));
 		AppendDataProp("humidity", 0.8,"air humidity (molar fraction)");
 		AppendDataProp("xc", 0.000382,"CO2 molar fraction");
 
@@ -687,9 +687,9 @@ private:
 		if (dprop) 
 		{
 			/*
-			if (dprop->IsEqual(&ARTvariant("Reflecting"))) return REFLECTING_RADIATION;
-			if (dprop->IsEqual(&ARTvariant("Zorumski"))) return ZORUMSKI_RADIATION;
-			if (dprop->IsEqual(&ARTvariant("Levine"))) return LEVINE_RADIATION;
+			if (dprop->IsEqual(&ART::ARTvariant("Reflecting"))) return REFLECTING_RADIATION;
+			if (dprop->IsEqual(&ART::ARTvariant("Zorumski"))) return ZORUMSKI_RADIATION;
+			if (dprop->IsEqual(&ART::ARTvariant("Levine"))) return LEVINE_RADIATION;
 			*/
 			if (dprop->IsEqual((const char*) "Reflecting")) return REFLECTING_RADIATION;
 			if (dprop->IsEqual((const char*) "Zorumski")) return ZORUMSKI_RADIATION;
@@ -1013,7 +1013,7 @@ private:
 		AppendDataProp("temp", 21.0,"local temperature [degC]");
 		AppendDataProp("loss", 1.0, "loss factor (defaults to 1)");
 		ARTdataProp* dp = AppendDataProp("radiation", "Zorumski","The radiation impedance. Can be either 'Reflecting' or 'Zorumski'."); 
-			dp->SetRange(new ARTvariant("Reflecting", "Zorumski"));
+			dp->SetRange(new ART::ARTvariant("Reflecting", "Zorumski"));
 		AppendDataProp("humidity", 0.8,"air humidity (molar fraction)");
 		AppendDataProp("xc", 0.000382,"CO2 molar fraction");
 		
@@ -1146,9 +1146,9 @@ private:
 		if (dprop) 
 		{
 			/*
-			if (dprop->IsEqual(&ARTvariant("Reflecting"))) return REFLECTING_RADIATION;
-			if (dprop->IsEqual(&ARTvariant("Zorumski"))) return ZORUMSKI_RADIATION;
-			if (dprop->IsEqual(&ARTvariant("Levine"))) return LEVINE_RADIATION;
+			if (dprop->IsEqual(&ART::ARTvariant("Reflecting"))) return REFLECTING_RADIATION;
+			if (dprop->IsEqual(&ART::ARTvariant("Zorumski"))) return ZORUMSKI_RADIATION;
+			if (dprop->IsEqual(&ART::ARTvariant("Levine"))) return LEVINE_RADIATION;
 			*/
 			if (dprop->IsEqual((const char*) "Reflecting")) return REFLECTING_RADIATION;
 			if (dprop->IsEqual((const char*) "Zorumski")) return ZORUMSKI_RADIATION;
