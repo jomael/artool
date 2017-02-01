@@ -98,77 +98,77 @@ Property* ARTobject::AppendProperty(const string name, const string sds, const s
 }
 
 // append new data property with given name
-DataProp* ARTobject::AppendDataProp(const string name, ARTvariant* val, const string sds, const string lds, const string htm)
+ARTdataProp* ARTobject::AppendDataProp(const string name, ARTvariant* val, const string sds, const string lds, const string htm)
 {
         if (FindProperty(name)) throw ARTerror("ARTobject::AppendProperty","A property with the name '%s1' has already been appended to object '%s2'.",name,name_);
         //cout << "AppendDataProp: " << name << "\n";
         if (val)
         {
-                propertyList_.push_back(new DataProp(val->typ,val->len,name,sds,lds,htm));
+                propertyList_.push_back(new ARTdataProp(val->typ,val->len,name,sds,lds,htm));
                 piter_ = propertyList_.end();
                 --piter_;
-                ((DataProp*)(*piter_))->SetValue(val);
-                return (DataProp*)(*piter_);
+                ((ARTdataProp*)(*piter_))->SetValue(val);
+                return (ARTdataProp*)(*piter_);
         }
         else
         {
-                propertyList_.push_back(new DataProp(C_ART_undef,-1,name,sds,lds,htm));
+                propertyList_.push_back(new ARTdataProp(C_ART_undef,-1,name,sds,lds,htm));
                 piter_ = propertyList_.end();
                 --piter_;
-                ((DataProp*)(*piter_))->SetValue(NULL);
-                return (DataProp*)(*piter_);
+                ((ARTdataProp*)(*piter_))->SetValue(NULL);
+                return (ARTdataProp*)(*piter_);
         }
 }
 
 // append new data property with given name
-DataProp* ARTobject::AppendDataProp(DataProp* dataProp)
+ARTdataProp* ARTobject::AppendDataProp(ARTdataProp* dataProp)
 {
         if (FindProperty(dataProp->GetName())) throw ARTerror("ARTobject::AppendProperty","A property with the name '%s1' has already been appended to object '%s2'.",dataProp->GetName(),name_);
         propertyList_.push_back(dataProp);
         piter_ = propertyList_.end();
         --piter_;
-        return (DataProp*)(*piter_);
+        return (ARTdataProp*)(*piter_);
 }
 
-DataProp* ARTobject::AppendDataProp(const string name, double val, const string sds, const string lds, const string htm)
+ARTdataProp* ARTobject::AppendDataProp(const string name, double val, const string sds, const string lds, const string htm)
 {
         if (FindProperty(name)) throw ARTerror("ARTobject::AppendProperty","A property with the name '%s1' has already been appended to object '%s2'.",name,name_);
         ARTvariant* av = new ARTvariant(val);
-        propertyList_.push_back(new DataProp(av->typ,av->len,name,sds,lds,htm));
+        propertyList_.push_back(new ARTdataProp(av->typ,av->len,name,sds,lds,htm));
         piter_ = propertyList_.end();
         --piter_;
-        ((DataProp*)(*piter_))->SetValue(av);
-        return (DataProp*)(*piter_);
+        ((ARTdataProp*)(*piter_))->SetValue(av);
+        return (ARTdataProp*)(*piter_);
 }
-DataProp* ARTobject::AppendDataProp(const string name, float val, const string sds, const string lds, const string htm)
+ARTdataProp* ARTobject::AppendDataProp(const string name, float val, const string sds, const string lds, const string htm)
 {
         if (FindProperty(name)) throw ARTerror("ARTobject::AppendProperty","A property with the name '%s1' has already been appended to object '%s2'.",name,name_);
         ARTvariant* av = new ARTvariant(val);
-        propertyList_.push_back(new DataProp(av->typ,av->len,name,sds,lds,htm));
+        propertyList_.push_back(new ARTdataProp(av->typ,av->len,name,sds,lds,htm));
         piter_ = propertyList_.end();
         --piter_;
-        ((DataProp*)(*piter_))->SetValue((av));
-        return (DataProp*)(*piter_);
+        ((ARTdataProp*)(*piter_))->SetValue((av));
+        return (ARTdataProp*)(*piter_);
 }
-DataProp* ARTobject::AppendDataProp(const string name, int val, const string sds, const string lds, const string htm)
+ARTdataProp* ARTobject::AppendDataProp(const string name, int val, const string sds, const string lds, const string htm)
 {
         if (FindProperty(name)) throw ARTerror("ARTobject::AppendProperty","A property with the name '%s1' has already been appended to object '%s2'.",name,name_);
         ARTvariant* av = new ARTvariant(val);
-        propertyList_.push_back(new DataProp(av->typ,av->len,name,sds,lds,htm));
+        propertyList_.push_back(new ARTdataProp(av->typ,av->len,name,sds,lds,htm));
         piter_ = propertyList_.end();
         --piter_;
-        ((DataProp*)(*piter_))->SetValue((av));
-        return (DataProp*)(*piter_);
+        ((ARTdataProp*)(*piter_))->SetValue((av));
+        return (ARTdataProp*)(*piter_);
 }
-DataProp* ARTobject::AppendDataProp(const string name, const string val, const string sds, const string lds, const string htm)
+ARTdataProp* ARTobject::AppendDataProp(const string name, const string val, const string sds, const string lds, const string htm)
 {
         if (FindProperty(name)) throw ARTerror("ARTobject::AppendProperty","A property with the name '%s1' has already been appended to object '%s2'.",name,name_);
         ARTvariant* av = new ARTvariant(val.c_str());
-        propertyList_.push_back(new DataProp(av->typ,av->len,name,sds,lds,htm));
+        propertyList_.push_back(new ARTdataProp(av->typ,av->len,name,sds,lds,htm));
         piter_ = propertyList_.end();
         --piter_;
-        ((DataProp*)(*piter_))->SetValue((av));
-        return (DataProp*)(*piter_);
+        ((ARTdataProp*)(*piter_))->SetValue((av));
+        return (ARTdataProp*)(*piter_);
 }
 
 
@@ -274,7 +274,7 @@ void ARTobject::CopyPropertyListEntries(ARTobject* obj)
                 //clone original object, then overwrite its list entry by setting the iterator to a pointer of the created clone
                 *piter_ = (Property*)((*piter_)->clone());
 
-                //DataProp* dp;
+                //ARTdataProp* dp;
 
                 ++piter_;
         }

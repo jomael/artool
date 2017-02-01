@@ -60,7 +60,7 @@ ITimeModule::localParameterType::~localParameterType()
   parser_ = NULL;
 }
 
-ITimeModule::globalParameterType::globalParameterType(const string& name, const DataProp* param)
+ITimeModule::globalParameterType::globalParameterType(const string& name, const ARTdataProp* param)
 : timeProperty(C_ART_str, 0, name), param_(param)
 {
 
@@ -319,7 +319,7 @@ const Variable& ITimeModule::IPortType::GetParserVar() const
  * ITimeModule
  *************************************************************/
 
-DataProp* ITimeModule::getPort(const string& name)
+ARTdataProp* ITimeModule::getPort(const string& name)
 {
   PortType* port = dynamic_cast<PortType*>(FindProperty(name));
   if (!port)
@@ -388,7 +388,7 @@ void ITimeModule::setLocalParameter(const string& name, const std::complex<doubl
   }
 }
 
-void ITimeModule::addGlobalParameter(const DataProp* parameter)
+void ITimeModule::addGlobalParameter(const ARTdataProp* parameter)
 {
   Property* iter;
   OPortType* oPort;

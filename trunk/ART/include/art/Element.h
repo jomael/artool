@@ -90,7 +90,7 @@ public:
 //                              while (prop)
 //                              {
 //                                      //if it is a data property
-//                                      DataProp* dprop = dynamic_cast<DataProp*>(prop);
+//                                      ARTdataProp* dprop = dynamic_cast<ARTdataProp*>(prop);
 //                                      if (dprop)
 //                                      {
 //                                              string varname = name_ + "." + dprop->GetName();
@@ -121,7 +121,7 @@ public:
                         while (prop)
                         {
                                 //if it is a data property
-                                DataProp* dprop = dynamic_cast<DataProp*>(prop);
+                                ARTdataProp* dprop = dynamic_cast<ARTdataProp*>(prop);
                                 if (dprop)
                                 {
                                         string varname = newname + "." + dprop->GetName();
@@ -157,11 +157,11 @@ public:
 //                      throw ARTerror("Element::SetScope", "The specified simulator is invalid.");
 //
 //              piter_ = propertyList_.begin();
-//              DataProp* p;
+//              ARTdataProp* p;
 //
 //              while (piter_ != propertyList_.end())
 //              {
-//                      p = dynamic_cast<DataProp*>(*piter_);
+//                      p = dynamic_cast<ARTdataProp*>(*piter_);
 //                      if (p) ((DataContainer*)p)->SetParser(sim->GetParser());
 //                      piter_++;
 //              }

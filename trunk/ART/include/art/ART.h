@@ -840,7 +840,7 @@ namespace ART{
   typedef struct ARTmethod ARTmethod;
   typedef struct ListProp ListProp;
   typedef struct ARTvariant ARTvariant;
-  typedef struct DataProp DataProp;
+  typedef struct ARTdataProp ARTdataProp;
 }
 typedef int bool;
 
@@ -858,7 +858,7 @@ namespace ART{
   class ARTobject;
   class ARTmethod;
   class ARTvariant;
-  class DataProp;
+  class ARTdataProp;
 }
 
 
@@ -882,7 +882,7 @@ namespace ART{
   typedef ARTobject*	P_ART_Object;
   typedef ARTmethod*	P_ART_Method;
   typedef ARTvariant*	P_ART_Variant;
-  typedef DataProp*	P_ART_DataProp;
+  typedef ARTdataProp*	P_ART_DataProp;
 }
 
 

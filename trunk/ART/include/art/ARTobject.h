@@ -52,7 +52,7 @@ namespace ART{
 class Property;
 class ListProp;
 class ARTmethod;
-class DataProp;
+class ARTdataProp;
 }
 
 
@@ -92,13 +92,13 @@ public:
         virtual ART::Property* AppendProperty(const string name, const string sds="", const string lds="", const string htm="") ;
 
   /// append new data property with given name to ARTobject
-        virtual DataProp* AppendDataProp(const string name, ARTvariant* val, const string sds="", const string lds="", const string htm="");
-        virtual DataProp* AppendDataProp(const string name, const double val, const string sds="", const string lds="", const string htm="");
-        virtual DataProp* AppendDataProp(const string name, const float  val, const string sds="", const string lds="", const string htm="");
-        virtual DataProp* AppendDataProp(const string name, const string  val, const string sds="", const string lds="", const string htm="");
-        virtual DataProp* AppendDataProp(const string name, const int    val, const string sds="", const string lds="", const string htm="");
-//      virtual DataProp* AppendDataProp(const string name, const string* val, const string sds="", const string lds="", const string htm="");
-        virtual DataProp* AppendDataProp(DataProp* dataProp) ;
+        virtual ARTdataProp* AppendDataProp(const string name, ARTvariant* val, const string sds="", const string lds="", const string htm="");
+        virtual ARTdataProp* AppendDataProp(const string name, const double val, const string sds="", const string lds="", const string htm="");
+        virtual ARTdataProp* AppendDataProp(const string name, const float  val, const string sds="", const string lds="", const string htm="");
+        virtual ARTdataProp* AppendDataProp(const string name, const string  val, const string sds="", const string lds="", const string htm="");
+        virtual ARTdataProp* AppendDataProp(const string name, const int    val, const string sds="", const string lds="", const string htm="");
+//      virtual ARTdataProp* AppendDataProp(const string name, const string* val, const string sds="", const string lds="", const string htm="");
+        virtual ARTdataProp* AppendDataProp(ARTdataProp* dataProp) ;
 
   /// append new listableProperty with given name
         virtual ART::ListProp* AppendListProp(const string name, const string sds="", const string lds="", const string htm="");
