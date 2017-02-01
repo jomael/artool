@@ -838,9 +838,9 @@ namespace ART{
   typedef struct ITimeModule ITimeModule;
   typedef struct ARTobject ARTobject;
   typedef struct ARTmethod ARTmethod;
+  typedef struct ListProp ListProp;
 }
 typedef struct ARTdataProp ARTdataProp;
-typedef struct ListProp ListProp;
 typedef struct ARTvariant ARTvariant;
 typedef int bool;
 
