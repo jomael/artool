@@ -304,13 +304,6 @@ dcomp HornElement::radiationImpedanceLevineCyl(const double w, const double radi
 dcomp HornElement::radiationImpedanceLevineCone(const double w, const double Xin, const double Xout, const double Rin, const double Rout, const float T, const float H, const float XC)  {
 	//This is Levine & Schwinger's model
 
-	const double x_centre = (Xin*Rout-Xout*Rin)/(Rout-Rin);
-	double x0, x1, Si;
-	const double L = sqrt((Xin-Xout)*(Xin-Xout) + (Rin-Rout)*(Rin-Rout));
-
-	x0 = sqrt((Xin-x_centre)*(Xin-x_centre) + Rin*Rin);	
-	x1 = x0 + L;
-	Si = 2*M_PI*x1*(x1+x_centre-Xout);
 	dcomp z_t = dcomp(RHO2(T,H)*w*w/M_PI/C2(T, H,XC)/4, 0.6133*RHO2(T,H)*w/M_PI/Rout); 
 	
 	return z_t;

@@ -1375,7 +1375,7 @@ void WindInstrument::refinePeaks(const double epsilon, const int t, const bool a
 	//Uses internal iterators.
 	
 	bool gradient, oldGradient; //true means +ve gradient, false means -ve gradient)
-	double rCurrent, fCurrent, xCurrent, rPrev, fPrev, xPrev, rPrevPrev, fPrevPrev, xPrevPrev;
+	double rCurrent, xCurrent, rPrev, xPrev, rPrevPrev, xPrevPrev;
 	list<double>::iterator rRight;
 	list<double>::iterator fRight;
 	list<double>::iterator xRight;
@@ -1384,24 +1384,19 @@ void WindInstrument::refinePeaks(const double epsilon, const int t, const bool a
 
 	impedanceCurve.setItersToBegin();
 	rPrev = *(impedanceCurve.rIter_);
-	fPrev = *(impedanceCurve.fIter_);	// WK
 	xPrev = *(impedanceCurve.xIter_);
 	impedanceCurve.rIter_++; impedanceCurve.fIter_++; impedanceCurve.xIter_++; // WK
 	rCurrent = *(impedanceCurve.rIter_);
-	fCurrent = *(impedanceCurve.fIter_);	// WK
 	xCurrent = *(impedanceCurve.xIter_);
 	gradient = rPrev < rCurrent; 
 
 	do {
 		rPrevPrev = rPrev;
-		fPrevPrev = fPrev;	// WK
 		xPrevPrev = xPrev;
 		rPrev = rCurrent;
-		fPrev = fCurrent;	// WK
 		xPrev = xCurrent;
 		impedanceCurve.rIter_++; impedanceCurve.fIter_++; impedanceCurve.xIter_++;	// WK
 		rCurrent = *(impedanceCurve.rIter_);
-		fCurrent = *(impedanceCurve.fIter_);	// WK
 		xCurrent = *(impedanceCurve.xIter_);
 		oldGradient = gradient;
 		gradient = rPrev < rCurrent;
@@ -1414,12 +1409,10 @@ void WindInstrument::refinePeaks(const double epsilon, const int t, const bool a
 			recursiveCombinedFindPeak(xPrevPrev, rPrevPrev, xPrev, rPrev, xCurrent, rCurrent, epsilon, 1, t, accumulate); 
 			xPrev=*(impedanceCurve.xIter_);
 			rPrev=*(impedanceCurve.rIter_);
-			fPrev=*(impedanceCurve.fIter_);	// WK
 			impedanceCurve.xIter_ = xRight;
 			impedanceCurve.rIter_ = rRight;
 			impedanceCurve.fIter_ = fRight;	// WK
 			rCurrent = *(impedanceCurve.rIter_);
-			fCurrent = *(impedanceCurve.fIter_);	// WK
 			xCurrent = *(impedanceCurve.xIter_);
 			gradient = false;
 			impedanceCurve.peakListAppend(xPrev, rPrev);
@@ -1434,7 +1427,7 @@ void WindInstrument::recursiveQuadraticFindPeak (const double xLeft, const doubl
 		// prevents infinite recursion
 
 		//**Note that iterators currently point to Right point.
-	double xNew, rNew, fNew;
+	double xNew, rNew; //, fNew; //SB: unused variable
 	dcomp cNew;
 	bool isLeft;
 	bool isHigher;
@@ -1448,7 +1441,6 @@ void WindInstrument::recursiveQuadraticFindPeak (const double xLeft, const doubl
 		xNew = xCentre - 0.5* (( d*d*f-e*e*g )/( d*f-e*g ));
 		cNew = getInputImpedance(xNew, t, accum);
 		rNew = abs(cNew);
-		fNew = arg(cNew);
 
 		if (xNew<xCentre) {impedanceCurve.xIter_--; impedanceCurve.rIter_--; impedanceCurve.fIter_--; isLeft=true;} //pointing to centre 
 			else isLeft=false;
@@ -1478,12 +1470,12 @@ void WindInstrument::recursiveCombinedFindPeak (const double xLeft, const double
 		// prevents infinite recursion
 
 	//**Note that iterators currently point to Right point.
-
+	/* SB: commenting presently unused code to suppress warning
 	double a, b, c;
 	a=fabs(rCentre-rLeft);
 	b=fabs(rCentre-rRight);
 	c=fabs(rRight-rLeft);
-
+	*/
 	//cout << (c>a) << ", " << (c>b) << endl;
 	if (true) { //(c>a || c>b)
 		recursiveQuadraticFindPeak (xLeft, rLeft, xCentre, rCentre, xRight, rRight, epsilon, counter+1, t, accum); return;}

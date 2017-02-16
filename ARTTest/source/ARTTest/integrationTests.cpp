@@ -1499,7 +1499,7 @@ CUSTOM_TEST_DEF_START(destroyElementThenEvaluate, ARTreferencesInCircuits, ARTre
                 try
                 {
                         ARTDestroyElement(mySim,Kon1);
-                        ARTvariant* meineImpKurve = ARTInputImpedance(meinIns);
+                        ARTInputImpedance(meinIns);
                 }
                 catch(ARTerror e)
                 {
@@ -1519,7 +1519,7 @@ CUSTOM_TEST_DEF_START(destroyElementRecreateThenEvaluate, ARTreferencesInCircuit
                         ARTDestroyElement(mySim,Kon1);
                         //recreate element with the same name
                         Kon1 = ARTCreateElement(mySim, "Kon1", "Cone");
-                        ARTvariant* meineImpKurve = ARTInputImpedance(meinIns);
+                        ARTInputImpedance(meinIns);
                 }
                 catch(ARTerror e)
                 {
@@ -1663,14 +1663,14 @@ TEST_DEF_START(changeElementAndCalculateImpedance2, ARTdependencyTree) //viellei
 
                         ARTSetParameter(ARTdependencyTree->mySim, "Cyl1.length = Bes1.r1 * 2;");
 
-                        ARTvariant* meineImpKurve = ARTInputImpedance(meinIns);
+                        ARTInputImpedance(meinIns);
 
                         //Now change element to cylinder.
                         ARTChangeElementModel(ARTdependencyTree->mySim, Bes, "Cylinder");
 
                         //this should throw an exception, because "Cyl.length = Bes.r1 * 2;" is not valid anymore (Cylinders don't have R1)
                         try {
-                        meineImpKurve = ARTInputImpedance(meinIns);
+                        ARTInputImpedance(meinIns);
                         } catch (ARTerror e) {return true;} //exception expected!
                 }
                 catch(ARTerror e)
@@ -1710,12 +1710,12 @@ TEST_DEF_START(deleteElementAndCalculateImpedance, ARTdependencyTree) //vielleic
                         ARTAppendReference(meinIns, Cyl);
                         ARTAppendReference( meinIns, Bes);
 
-                        ARTvariant* meineImpKurve = ARTInputImpedance(meinIns);
+                        ARTInputImpedance(meinIns);
                         //Now change element to cylinder.
                         ARTDestroyElement(ARTdependencyTree->mySim, Bes);
                         //this should throw an exception, because "Cyl.length = Bes.r1 * 2;" is not valid anymore (Cylinders don't have R1)
                         try {
-                        meineImpKurve = ARTInputImpedance(meinIns);
+                        ARTInputImpedance(meinIns);
                         } catch (ARTerror e) {return true;} //exception expected!
                 }
                 catch(ARTerror e)
@@ -1755,13 +1755,13 @@ TEST_DEF_START(deleteElementAndCalculateImpedance2, ARTdependencyTree) //viellei
                         ARTAppendReference(meinIns, Bes);
 
                         ARTSetParameter(ARTdependencyTree->mySim, "Cyl1.length = Bes1.r1 * 2;");
-                        ARTvariant* meineImpKurve = ARTInputImpedance(meinIns);
+                        ARTInputImpedance(meinIns);
 
                         //Now change element to cylinder.
                         ARTDestroyElement(ARTdependencyTree->mySim, Bes);
                         //this should throw an exception, because "Cyl.length = Bes.r1 * 2;" is not valid anymore (Cylinders don't have R1)
                         try {
-                        meineImpKurve = ARTInputImpedance(meinIns);
+                        ARTInputImpedance(meinIns);
                         } catch (ARTerror e) {return true;} //exception expected!
                 }
                 catch(ARTerror e)
@@ -1801,12 +1801,12 @@ TEST_DEF_START(changeElementAndCalculateImpedance3, ARTdependencyTree) //viellei
                         ARTAppendReference(meinIns, Bes);
 
                         ARTSetParameter(ARTdependencyTree->mySim, "Cyl1.length = Bes1.r1 * 2;");
-                        ARTvariant* meineImpKurve = ARTInputImpedance(meinIns);
+                        ARTInputImpedance(meinIns);
 
                         //Now change element to cylinder.
                         ARTChangeElementModel(ARTdependencyTree->mySim, Bes, "Cone");
                         //this should throw NO exception, because "Cyl.length = Bes.r1 * 2;" is still valid (Cones also have R1)
-                        meineImpKurve = ARTInputImpedance(meinIns);
+                        ARTInputImpedance(meinIns);
                 }
                 catch(ARTerror e)
                 {
@@ -1857,7 +1857,7 @@ TEST_DEF_START(testEvaluationCost, ARTdependencyTree)
                         if (ec_begin!=impCurveProp->GetEvaluationCost()) return false;
 
                         //evaluate
-                        ARTvariant* meineImpKurve = ARTInputImpedance(meinIns);
+                        ARTInputImpedance(meinIns);
 
                         //now the cost should be zero
                         if (0!=impCurveProp->GetEvaluationCost()) return false;
@@ -1917,7 +1917,7 @@ TEST_DEF_START(testEvaluationCounter, ARTdependencyTree)
                         reached_one = false;
                         ARTSetProgressFunction(&testEvaluationCounter::testEvalCounter_callback);
                         ARTAppendReference( meinIns, Cyl);
-                        ARTvariant* meineImpKurve = ARTInputImpedance(meinIns);
+                        ARTInputImpedance(meinIns);
 
                         //the counter should have reached 1
                         if (!reached_one) return false;
@@ -1965,11 +1965,11 @@ TEST_DEF_START(testAbortAndEvaluate, ARTdependencyTree)
                         ARTSetFrequencyRange    (ARTdependencyTree->mySim, 10, 200, 5);
                         ARTSetProgressFunction(&testAbortAndEvaluate::abortAtFifty_callback);
                         ARTAppendReference( meinIns, Cyl);
-                        ARTvariant* meineImpKurve = ARTInputImpedance(meinIns);
+                        ARTInputImpedance(meinIns);
                         //remove the aborting callback
                         ARTSetProgressFunction(NULL);
                         //reevaluate
-                        meineImpKurve = ARTInputImpedance(meinIns);
+                        ARTInputImpedance(meinIns);
                 }
                 catch(ARTerror e)
                 {
@@ -2019,23 +2019,23 @@ TEST_DEF_START(testARTReEvaluation, ARTdependencyTree)
                         ARTAppendReference( myIns, Bes);
 
                         int time1 = GetTickCount();
-                        P_ART_DataProp myImpCurve = ARTInputImpedance(myIns);
+                        ARTInputImpedance(myIns);
                         time1 = GetTickCount() - time1; //this is something like 2000ms on my laptop
 
                         int time2 = GetTickCount();
-                        myImpCurve = ARTInputImpedance(myIns);
+                        ARTInputImpedance(myIns);
                         time2 = GetTickCount() - time2; //this should be much smaller than *time*, something like 0-10ms on my laptop
 
                         //should take slightly longer than the calculation before, because only the cylinder needs to be reevaluated
                         ARTSetParameter(mySim, "Cyl.r = 1.1212; Cyl.length = 101;");
                         int time3 = GetTickCount();
-                        myImpCurve = ARTInputImpedance(myIns);
+                        ARTInputImpedance(myIns);
                         time3 = GetTickCount() - time3;
 
                         //should take nearly as long as first calculation, because all elements (but not frq grids) need to be reevaluated
                         ARTSetParameter(mySim, "Bes.r1 = 2.324; Bes.length = 112;");
                         int time4 = GetTickCount();
-                        myImpCurve = ARTInputImpedance(myIns);
+                        ARTInputImpedance(myIns);
                         time4 = GetTickCount() - time4;
                         //std::cout << time1 << " " << time2 << " " << time3 << " " << time4 << endl;
 
@@ -2542,7 +2542,7 @@ TEST_DEF_START(changeNumberOfModes, ARTcalculatingImpedance)
                         ARTSetParameter(ARTcalculatingImpedance->mySim, "BZyl2.bendradius = 5; ");
                         ARTAppendReference(meinIns, BZyl2);
 
-                        ARTvariant* meineImpKurve = ARTInputImpedance(meinIns); //nur wenn ich hier ARTInputImpedance aufrufe
+                        ARTInputImpedance(meinIns); //nur wenn ich hier ARTInputImpedance aufrufe
 
                 }
                 catch(ARTerror e)
@@ -2566,14 +2566,14 @@ TEST_DEF_START(changeNumberOfModes, ARTcalculatingImpedance)
                         ARTAppendReference(meinIns, ARTcalculatingImpedance->BZyl1);
                         ARTAppendReference(meinIns, BZyl2);
                         ARTAppendReference(meinIns, ARTcalculatingImpedance->Zyl1);
-                        ARTvariant* meineImpKurve = ARTInputImpedance(meinIns);
-                        meineImpKurve = ARTInputImpedance(meinIns);
+                        ARTInputImpedance(meinIns);
+                        ARTInputImpedance(meinIns);
 
                         ARTAppendReference(meinIns2, ARTcalculatingImpedance->Zyl1);
                         ARTAppendReference(meinIns2, ARTcalculatingImpedance->BZyl1);
                         ARTAppendReference(meinIns2, BZyl2);
-                        ARTvariant* meineImpKurve2 = ARTInputImpedance(meinIns2);
-                        meineImpKurve = ARTInputImpedance(meinIns2);
+                        ARTInputImpedance(meinIns2);
+                        ARTInputImpedance(meinIns2);
                 }
                 catch(ARTerror e)
                 {
@@ -2618,13 +2618,13 @@ TEST_DEF_START(calculateImpedanceTwice, ARTcalculatingImpedance)
                 {
                         ARTAppendReference(meinIns, ARTcalculatingImpedance->BZyl1);
                         ARTAppendReference( meinIns, ARTcalculatingImpedance->Zyl1);
-                        ARTvariant* meineImpKurve = ARTInputImpedance(meinIns);
-                        meineImpKurve = ARTInputImpedance(meinIns);
+                        ARTInputImpedance(meinIns);
+                        ARTInputImpedance(meinIns);
 
                         ARTAppendReference(meinIns2, ARTcalculatingImpedance->Zyl1);
                         ARTAppendReference(meinIns2, ARTcalculatingImpedance->BZyl1);
-                        ARTvariant* meineImpKurve2 = ARTInputImpedance(meinIns2);
-                        meineImpKurve = ARTInputImpedance(meinIns2);
+                        ARTInputImpedance(meinIns2);
+                        ARTInputImpedance(meinIns2);
                 }
                 catch(ARTerror e)
                 {
@@ -3063,11 +3063,11 @@ TEST_DEF_START(changeFrqStep, ARTcalculatingImpedance)
                         ARTSetNModes    (mySim2, 1);
                         ARTAppendReference(meinIns, BZyl2);
 
-                        ARTvariant* meineImpKurve = ARTInputImpedance(meinIns);
+                        ARTInputImpedance(meinIns);
 
                         //Now change the frq step
                         ARTSetFrequencyRange    (mySim2, 10, 1800, 10);
-                        meineImpKurve = ARTInputImpedance(meinIns);
+                        ARTInputImpedance(meinIns);
                 }
                 catch(ARTerror e)
                 {
@@ -3676,7 +3676,7 @@ TEST_DEF_START(createUnknownHElements, ARTmodelTests)
         {
                 try
                 {
-                        P_ART_Element El1 = ARTCreateElement(mySim, "error", "UnknownZylinder");
+                        ARTCreateElement(mySim, "error", "UnknownZylinder");
                 }
                 catch(ARTerror e)
                 {
@@ -3708,8 +3708,8 @@ TEST_DEF_START(createHElements, ARTmodelTests)
         {
                 try
                 {
-                        P_ART_Element El1 = ARTCreateElement(mySim, "SZ1", "Cylinder");
-                        P_ART_Element El2 = ARTCreateElement(mySim, "SZ2", "Cylinder");
+                        ARTCreateElement(mySim, "SZ1", "Cylinder");
+                        ARTCreateElement(mySim, "SZ2", "Cylinder");
                 }
                 catch(ARTerror e)
                 {
@@ -3742,8 +3742,8 @@ TEST_DEF_START(createHElementTwice, ARTmodelTests)
         {
                 try
                 {
-                        P_ART_Element El1 = ARTCreateElement(mySim, "Twice", "Cylinder");
-                        P_ART_Element El2 = ARTCreateElement(mySim, "Twice", "Cylinder");
+                        ARTCreateElement(mySim, "Twice", "Cylinder");
+                        ARTCreateElement(mySim, "Twice", "Cylinder");
                 }
                 catch(ARTerror e)
                 {
@@ -4236,7 +4236,7 @@ TEST_DEF_START(addCircuitAsReference, BranchTests)
                         //get input impedance
                         ARTSetFrequencyRange(mySim, 10, 200, 5);
                         ARTSetNModes(mySim, 1);
-                        ARTvariant* meineImpKurve = ARTInputImpedance(Branch1);
+                        ARTInputImpedance(Branch1);
 
                         //for (int i = 0; i < meineImpKurve->len; i++)
                         //{
