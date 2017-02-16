@@ -464,7 +464,7 @@ void ImpedanceCurve::findPeaks(const bool ignoreNoise) {
 	if(verboseMode_) cout << "Finding peaks:" << flush;
 
 	bool gradient[3]; //true means +ve gradient, false means -ve gradient)
-	double rCurrent = 0, rPrev, rPrevPrev, xCurrent = 0, xPrev, xPrevPrev, xPrevPeak = 0, rPrevPeak = 0;
+	double rCurrent = 0, rPrev, xCurrent = 0, xPrev, xPrevPeak = 0, rPrevPeak = 0;
 	const double threshold = 10; //max distance between 'truncated' double-peaks
 	int peakCounter=1;
 	
@@ -478,8 +478,6 @@ void ImpedanceCurve::findPeaks(const bool ignoreNoise) {
 	gradient[2] = rPrev < rCurrent; 
 
 	do {
-		xPrevPrev = xPrev;
-		rPrevPrev = rPrev;
 		rPrev = rCurrent;
 		xPrev = xCurrent;
 		rIter_++; xIter_++;
