@@ -1,7 +1,5 @@
 #include "TerminationElement.h"
-
-
-
+using namespace ART;
 //###############TERMINATION ELEMENT############
 TerminationElement::TerminationElement(HornElement *c) { //copy constructor
 	if ((*c).type()==TERMINATIONELEMENT_TYPE) {

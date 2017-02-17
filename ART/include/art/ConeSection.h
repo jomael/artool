@@ -2,7 +2,8 @@
 #define CONE_SECTION_H
 
 #include "HornElement.h"
-class ConeSection : public ART::HornElement {
+namespace ART{
+class ConeSection : public HornElement {
 public:
 
 	ConeSection(const double length, const double rDiff);
@@ -71,5 +72,5 @@ protected:
 	double rIn_, rOut_, rDiff_;
 	double minLength_, maxLength_, minRin_, maxRin_, minRout_, maxRout_;
 };
-
+}
 #endif //CONE_SECTION_H

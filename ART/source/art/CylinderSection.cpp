@@ -1,6 +1,6 @@
 #include "CylinderSection.h"
 //#######CYLINDER##########
-
+using namespace ART;
 CylinderSection::CylinderSection(const bool canModify, const bool canSplit, const double minLength, const double maxLength, 
 		const double minradius, const double maxradius) {
 

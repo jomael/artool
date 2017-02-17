@@ -2,7 +2,7 @@
 
 //###############BESSEL#########
 
-
+using namespace ART;
 BesselSection::BesselSection(const bool canModify, const bool canSplit, const double minLength, const double maxLength, const double minRin, const double maxRin, 
 		const double minRout, const double maxRout, const double minFlare, const double maxFlare) {
 	

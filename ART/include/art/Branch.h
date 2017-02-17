@@ -3,7 +3,8 @@
 #include "HornElement.h"
 
 //Connexion between a hole and the main section
-class Branch : public ART::HornElement{
+namespace ART{
+class Branch : public HornElement{
 public:
 	Branch(const bool canModify=false, const bool canSplit=false, 
 		const int NbHole = 1, const double rIn = 1.0, const double rOut = 1.0, const int SimpleModel = 1, 
@@ -50,5 +51,5 @@ protected:
 	vector<dcomp> Za_close;
 	vector<dcomp> Zb_;
 };
-
+}
 #endif //BRANCH_H

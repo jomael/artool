@@ -2,7 +2,8 @@
 #define BESSEL_SECTION_H
 
 #include "HornElement.h"
-class BesselSection : public ART::HornElement {
+namespace ART{
+class BesselSection : public HornElement {
 public:
 
 	BesselSection(const bool canModify=false, const bool canSplit=false, const double length=100.0, 
@@ -80,4 +81,5 @@ protected:
 	double rIn_, rOut_, flare_;
 	double minLength_, maxLength_, minRin_, maxRin_, minRout_, maxRout_, maxFlare_, minFlare_;
 };
+}
 #endif //BESSEL_SECTION_H

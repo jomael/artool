@@ -1,5 +1,6 @@
 //***************JUMP DISCONTINUITY******************
 #include "BoreJumpSection.h"
+using namespace ART;
 BoreJumpSection::~BoreJumpSection() { }
 
 BoreJumpSection::BoreJumpSection(HornElement *c) { //copy constructor

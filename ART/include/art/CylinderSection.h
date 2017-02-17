@@ -2,8 +2,8 @@
 #define CYLINDER_SECTION_H
 
 #include "HornElement.h"
-
-class CylinderSection : public ART::HornElement {
+namespace ART{
+class CylinderSection : public HornElement {
 public:
 	CylinderSection(const bool canModify=false, const bool canSplit=false, const double length=100.0, 
 		const double radius=1.0, const float tempC=DFLT_TEMP_C, const float lossF=DFLT_LOSS_F, const float humidity=DFLT_HUMIDITY, 
@@ -69,4 +69,5 @@ protected:
 	double radius_;
 	double minLength_, maxLength_, minRadius_, maxRadius_;
 };
+}
 #endif //CYLINDER_SECTION_H

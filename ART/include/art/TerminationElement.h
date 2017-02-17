@@ -1,9 +1,9 @@
 #ifndef TERMINATION_ELEMENT_H
 #define TERMINATION_ELEMENT_H
 #include "HornElement.h"
-
+namespace ART{
 //Element which contains the radiation impedance
-class TerminationElement : public ART::HornElement {
+class TerminationElement : public HornElement {
 public:
 	TerminationElement(const bool canModify=false, const bool canSplit=false, int test=0,int Contrib=1, const double RadiationRadius=1.0, const double PrevInputRadius  = 1.0, const int PrevType=1, 
 		const int radiation_type = 0,const char filename[100] = " ",const float tempC=DFLT_TEMP_C, const float lossF=DFLT_LOSS_F, 
@@ -61,4 +61,5 @@ protected:
 	int PrevType_, Test_, Contrib_;
 	double minLength_, maxLength_, minRadius_, maxRadius_;
 };
+}
 #endif //TERMINATION_ELEMENT_H
