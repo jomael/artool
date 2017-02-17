@@ -2,7 +2,7 @@
 #define CONE_SECTION_H
 
 #include "HornElement.h"
-class ConeSection : public HornElement {
+class ConeSection : public ART::HornElement {
 public:
 
 	ConeSection(const double length, const double rDiff);

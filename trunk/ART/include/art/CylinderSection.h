@@ -3,7 +3,7 @@
 
 #include "HornElement.h"
 
-class CylinderSection : public HornElement {
+class CylinderSection : public ART::HornElement {
 public:
 	CylinderSection(const bool canModify=false, const bool canSplit=false, const double length=100.0, 
 		const double radius=1.0, const float tempC=DFLT_TEMP_C, const float lossF=DFLT_LOSS_F, const float humidity=DFLT_HUMIDITY, 

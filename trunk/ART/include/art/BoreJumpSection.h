@@ -2,7 +2,7 @@
 #define  BORE_JUMP_SECTION_H
 #include "HornElement.h"
 
-class BoreJumpSection : public HornElement {
+class BoreJumpSection : public ART::HornElement {
 public:
 	BoreJumpSection(const double rIn=0.0, const double rOut=0.0, const float tempC=21.0, 
 		const float lossF=DFLT_LOSS_F, const float humidity=DFLT_HUMIDITY, const float xc=DFLT_CO2_PPM, const string name = " ", 

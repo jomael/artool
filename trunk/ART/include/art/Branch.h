@@ -3,7 +3,7 @@
 #include "HornElement.h"
 
 //Connexion between a hole and the main section
-class Branch : public HornElement{
+class Branch : public ART::HornElement{
 public:
 	Branch(const bool canModify=false, const bool canSplit=false, 
 		const int NbHole = 1, const double rIn = 1.0, const double rOut = 1.0, const int SimpleModel = 1, 

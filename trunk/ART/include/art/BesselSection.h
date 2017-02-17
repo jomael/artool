@@ -2,7 +2,7 @@
 #define BESSEL_SECTION_H
 
 #include "HornElement.h"
-class BesselSection : public HornElement {
+class BesselSection : public ART::HornElement {
 public:
 
 	BesselSection(const bool canModify=false, const bool canSplit=false, const double length=100.0, 

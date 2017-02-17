@@ -80,7 +80,7 @@ class AcousticResearchTool : public ART::ARTobject {
     ART::DataContainer::progressIndicator.SetProgressFunction(f);
   }
 
-  list<HornElement*>::iterator iter;
+  list<ART::HornElement*>::iterator iter;
   ImpedanceCurve impedanceCurve;
   int *paramRefs_;
 };
