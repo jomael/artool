@@ -212,7 +212,7 @@ const float DFLT_TEMP_C = 21.0 /*in Celsius */;
 const float DFLT_HUMIDITY = 80 /* Relative humidity in % */;
 const float DFLT_CO2_PPM = 382 /*in parts per million - ppm */;
 const float DFLT_LOSS_F = 1.0 /*Loss Factor */;
-
+namespace ART{
 class HornElement {
 public:
 
@@ -551,7 +551,7 @@ DBG1 std::cout << "Matrix resize done" << "\n";
 		else return beta;
 	}
 };
-
+}
 #ifdef _MSC_VER
 #undef std::cout
 #endif

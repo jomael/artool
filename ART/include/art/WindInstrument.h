@@ -84,7 +84,7 @@ typedef std::complex<double> type;
 _CRTIMP char * __cdecl itoa( int value, char* result, int base );
 #endif
 namespace ART{
-class WindInstrument : public GAGenome, public HornElement {
+  class WindInstrument : public GAGenome, public ART::HornElement {
 private:
 	list<HornElement*> elementList_;
 //	static bool verboseMode_; 	//Whether text is output to screen as functions are called - defaults to true.

@@ -2,7 +2,7 @@
 #define  CONE_BEND_SECTION_H
 
 #include "HornElement.h"
-class ConeBendSection : public HornElement {
+class ConeBendSection : public ART::HornElement {
 public:
 
 	ConeBendSection(const bool canModify=false, const bool canSplit=false, const double length=100.0, 

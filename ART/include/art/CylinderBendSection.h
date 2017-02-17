@@ -3,7 +3,7 @@
 
 #include "HornElement.h"
 
-class CylinderBendSection : public HornElement {
+class CylinderBendSection : public ART::HornElement {
 public:
 
 	CylinderBendSection(const bool canModify=false, const bool canSplit=false, const double length=100.0, 
