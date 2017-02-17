@@ -30,6 +30,7 @@
 *.exe
 *.out
 *.app
+*test_c*
 out/
 
 #EMacs artifacts
