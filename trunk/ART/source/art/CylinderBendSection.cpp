@@ -1,6 +1,6 @@
 #include "CylinderBendSection.h"
 //#######CYLINDERBEND##########
-
+using namespace ART;
 Matrix CylinderBendSection::K_ = Matrix(nModes_, nModes_);
 Matrix CylinderBendSection::BCKB_ = Matrix(nModes_, nModes_);
 Matrix CylinderBendSection::H_ = Matrix(nModes_, nModes_);

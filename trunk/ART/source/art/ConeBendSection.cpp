@@ -1,7 +1,7 @@
 #include "ConeBendSection.h"
 
 //###############CONE BEND############
-
+using namespace ART;
 //bool ConeBendSection::dimBendMatrices_=true;
 double ConeBendSection::Zc_;
 Matrix ConeBendSection::A_ = Matrix(nModes_, nModes_);

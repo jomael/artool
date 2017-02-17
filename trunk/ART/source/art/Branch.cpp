@@ -1,7 +1,7 @@
 #include "Branch.h"
 
 //###############BRANCH ELEMENT############
-
+using namespace ART;
 Branch::Branch(HornElement *c) { //copy constructor
 	if ((*c).type()==BRANCH_TYPE) {
 		Branch* a = static_cast<Branch*>(c);

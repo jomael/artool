@@ -1,8 +1,8 @@
 #ifndef BORE_JUMP_SECTION_H
 #define  BORE_JUMP_SECTION_H
 #include "HornElement.h"
-
-class BoreJumpSection : public ART::HornElement {
+namespace ART{
+class BoreJumpSection : public HornElement {
 public:
 	BoreJumpSection(const double rIn=0.0, const double rOut=0.0, const float tempC=21.0, 
 		const float lossF=DFLT_LOSS_F, const float humidity=DFLT_HUMIDITY, const float xc=DFLT_CO2_PPM, const string name = " ", 
@@ -63,4 +63,5 @@ protected:
 	//Allows the GA to define this by jumpSize and leave rIn to be given by previous rOut.
 
 };
+}
 #endif // BORE_JUMP_SECTION_H

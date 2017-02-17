@@ -2,7 +2,8 @@
 #define  CONE_BEND_SECTION_H
 
 #include "HornElement.h"
-class ConeBendSection : public ART::HornElement {
+namespace ART{
+class ConeBendSection : public HornElement {
 public:
 
 	ConeBendSection(const bool canModify=false, const bool canSplit=false, const double length=100.0, 
@@ -96,4 +97,5 @@ protected:
 	LeG_quadrature leg; // function for Gauss-Legendre quadrature
 
 };
+}
 #endif //CONE_BEND_SECTION_H

@@ -2,8 +2,8 @@
 #define CYLINDER_BEND_SECTION_H
 
 #include "HornElement.h"
-
-class CylinderBendSection : public ART::HornElement {
+namespace ART{
+class CylinderBendSection : public HornElement {
 public:
 
 	CylinderBendSection(const bool canModify=false, const bool canSplit=false, const double length=100.0, 
@@ -95,5 +95,6 @@ protected:
 		F_ = Matrix(nModes_, nModes_);
 	}
 };
+}
 #endif //CYLINDER_BEND_SECTION_H
 

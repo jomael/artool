@@ -1,7 +1,7 @@
 #include "ConeSection.h"
 
 //###############CONE############
-
+using namespace ART;
 ConeSection::ConeSection(const double length, const double rDiff) {
 	type_ = CONESECTION_TYPE;
 	MA_ = NULL; MB_ = NULL; rr_ = 0.0; 
