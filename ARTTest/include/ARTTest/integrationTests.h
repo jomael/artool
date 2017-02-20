@@ -29,7 +29,7 @@
 
 #include "ARTcli.clp"
 #include "Simulator.h"
-#include "ARTmethod.h"
+#include "CalculationMethod.h"
 #include "WaveObject.h"
 #include "Model.h"
 

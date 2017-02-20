@@ -37,15 +37,15 @@
 *                                                                         *
 ***************************************************************************/
 
-#ifndef ARTMETHOD_H
-#define ARTMETHOD_H
+#ifndef CALCULATIONMETHOD_H
+#define CALCULATIONMETHOD_H
 
 #include <string>
 
 #include "ARTobject.h"
 
 using std::string;
-namespace ART{
+namespace ART {
 /**
  * Objects of this class represent user actions.The impedance calculation for example is
  * an ARTmethod object, and it contains minimum and maximum frequency as well as delta
@@ -53,26 +53,26 @@ namespace ART{
  * \remark One ARTmethod will probably represent one menu command and point to a function
  * executing the command.
  */
-class ARTmethod : public ARTobject {
+class CalculationMethod : public ARTobject {
 protected:
         void (*methodptr_)();
 public:
 
-        ARTmethod(const string name, const string sds="", const string lds="", const string htm="")
+        CalculationMethod(const string name, const string sds="", const string lds="", const string htm="")
          : ART::ARTobject(name,sds,lds,htm), methodptr_(NULL)
         {}
 
-        ARTmethod(const ARTmethod& orig) ///< copy constructor
+        CalculationMethod(const CalculationMethod& orig) ///< copy constructor
         : ART::ARTobject(orig)
         {}
 
-        virtual ~ARTmethod()
+        virtual ~CalculationMethod()
         {}
 
-        virtual Cell* clone() {return new ARTmethod(*this);}
+        virtual Cell* clone() {return new CalculationMethod(*this);}
 
         void ApplyMethod()
         {}
 };
 }
-#endif /* ARTMETHOD_H */
+#endif /* CALCULATIONMETHOD_H */

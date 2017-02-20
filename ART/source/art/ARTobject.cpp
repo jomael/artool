@@ -37,7 +37,8 @@
 ***************************************************************************/
 
 #include "ARTobject.h"
-#include "ARTmethod.h"
+
+#include "../../include/art/CalculationMethod.h"
 #include "ListProp.h"
 #include "Simulator.h"
 
@@ -61,7 +62,7 @@ ARTobject::ARTobject(const ARTobject& orig) //copy constructor
                 miter_ = methodList_.begin();
                 while (miter_ != methodList_.end())
                 {
-                        *miter_ = (ARTmethod*)((*miter_)->clone());
+                        *miter_ = (CalculationMethod*)((*miter_)->clone());
                         ++miter_;
                 }
 
@@ -182,9 +183,9 @@ ListProp* ARTobject::AppendListProp(const string name, const string sds, const s
 }
 
 // append new method with given name
-ARTmethod* ARTobject::AppendMethod(const string name, const string sds, const string lds, const string htm) {
+CalculationMethod* ARTobject::AppendMethod(const string name, const string sds, const string lds, const string htm) {
         if (FindMethod(name)) throw ARTerror("ARTobject::AppendMethod","A method with the name '%s1' has already been appended to object '%s2'.",name,name_);
-        methodList_.push_back(new ARTmethod(name,sds,lds,htm));
+        methodList_.push_back(new CalculationMethod(name,sds,lds,htm));
         miter_ = methodList_.end();
         miter_--;
         return (*miter_);
@@ -202,7 +203,7 @@ Property* ARTobject::FindProperty(const string nam)
 }
 
 // find and return named method (or return NULL if no match)
-ARTmethod* ARTobject::FindMethod(const string nam) {
+CalculationMethod* ARTobject::FindMethod(const string nam) {
         for (miter_ = methodList_.begin(); (miter_ != methodList_.end()); ++miter_) {
                 if ((*miter_)->GetName() == nam) {
                         return *miter_;
@@ -239,7 +240,7 @@ ARTmethod* ARTobject::FindMethod(const string nam) {
                 return false;
         }
 
-        bool ARTobject::DeleteMethod(ARTmethod* mtd)
+        bool ARTobject::DeleteMethod(CalculationMethod* mtd)
         {
                 ::size_t sizeBefore = methodList_.size();
                 //remove all obj
@@ -250,7 +251,7 @@ ARTmethod* ARTobject::FindMethod(const string nam) {
         }
 
 // iterate through method list (pass NULL to restart iteration, receive NULL after last element)
-        ARTmethod* ARTobject::GetMethods        (ARTmethod* pos) {
+        CalculationMethod* ARTobject::GetMethods        (CalculationMethod* pos) {
                 if (pos == NULL) {
                         miter_ = methodList_.begin();
                         return (miter_ == methodList_.end()) ? NULL : *miter_++;
@@ -288,7 +289,7 @@ void ARTobject::CopyMethodListEntries(ARTobject* obj)
         miter_ = methodList_.begin();
         while (miter_ != methodList_.end())
         {
-                *miter_ = (ARTmethod*)((*miter_)->clone());
+                *miter_ = (CalculationMethod*)((*miter_)->clone());
                 ++miter_;
         }
 }

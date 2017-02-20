@@ -3537,7 +3537,7 @@ TEST_DEF_START(ARTobjectCopyConstr, ARTobjectsTests)
                         //Check if all the properties are there. This check will assume an order... anyone who has time to implement it in a more sophisticated way is welcome.
                         string obj_prp = "";
                         Property* prp;
-                        ARTmethod* mtd;
+                        CalculationMethod* mtd;
                         for (prp = obj->GetProperties(NULL); prp != NULL; prp = obj->GetProperties(prp))
                                 obj_prp += prp->GetName() + ", ";
 
