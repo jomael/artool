@@ -65,7 +65,7 @@
 #include "Element.h"
 #include "Prototype.h"
 #include "Circuit.h"
-#include "ARTmethod.h"
+#include "../../include/art/CalculationMethod.h"
 #include "TimeModule.h"
 #include "timePrototypes.h"
 #include "AcousticResearchTool.h"
@@ -326,7 +326,7 @@ P_ART_Element    __CALLCONV ARTCreateElement     (P_ART_Simulator simulator, con
 	if (prototype != NULL)
 	{
 		//check if model features simulator's domain and wavetype
-		ARTmethod* method = prototype->FindMethod(simulator->GetDomain()->GetName().c_str());
+		CalculationMethod* method = prototype->FindMethod(simulator->GetDomain()->GetName().c_str());
 		if (method == NULL) throw ARTerror("ARTCreateElement", "The prototype model does not support the domain of the simulator.");
 
 		if (simulator->GetDomain()->GetName() == "FrequencyDomain")
@@ -414,7 +414,7 @@ P_ART_Element    __CALLCONV ARTChangeElementModel     (P_ART_Simulator simulator
 	if ((prototype != NULL) && (strcmp(prototype->GetName().c_str(),element->model->GetName().c_str()) != 0))
 	{
 		//check if model features simulator's domain and wavetype
-		ARTmethod* method = prototype->FindMethod(simulator->GetDomain()->GetName().c_str());
+		CalculationMethod* method = prototype->FindMethod(simulator->GetDomain()->GetName().c_str());
 		if (method == NULL) throw ARTerror("ARTChangeElementType", "The prototype model does not support the domain of the simulator.");
 
 		if (simulator->GetDomain()->GetName() == "FrequencyDomain")
@@ -689,7 +689,7 @@ P_ART_TModule __CALLCONV ARTCreateTModule	(P_ART_Simulator simulator, const char
 	if (prototype != NULL)
 	{
 		//check if model features simulator's domain and wavetype
-		ARTmethod* method = prototype->FindMethod(simulator->GetDomain()->GetName().c_str());
+		CalculationMethod* method = prototype->FindMethod(simulator->GetDomain()->GetName().c_str());
 		if (method == NULL) throw ARTerror("ARTCreateTModule", "The prototype model does not support the domain of the simulator.");
 
 		newModule = prototype->Create(name);
@@ -1599,7 +1599,7 @@ void listprops(ARTobject* obj, string ind) {
 }
 
 void listmets(ARTobject* obj, string ind) {
-  for (ARTmethod* met = obj->GetMethods(NULL); met != NULL; met = obj->GetMethods(met)) {
+  for (CalculationMethod* met = obj->GetMethods(NULL); met != NULL; met = obj->GetMethods(met)) {
         std::cout << ind << "Method   " << met->GetName() << " ("<< met->GetShortDescription() << ")" << endl;
         listprops((ARTobject*)met,ind+"  ");
     }

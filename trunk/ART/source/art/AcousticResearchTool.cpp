@@ -38,8 +38,9 @@
 ***************************************************************************/
 
 #include "AcousticResearchTool.h"
+
+#include "../../include/art/CalculationMethod.h"
 #include "ARTdataProp.h"
-#include "ARTmethod.h"
 #include "Model.h"
 #include "TimeModule.h"
 #include "timePrototypes.h"
@@ -75,7 +76,7 @@ AcousticResearchTool::AcousticResearchTool() : ARTobject("ART","Acoustic Researc
 // -------------------------------------------------------------------------------------------------------------
 // Top level methods:
 
-        ARTmethod*
+        CalculationMethod*
         met = AppendMethod("ExecuteScript","Read text file with script commands and execute them");
         met->AppendDataProp("FileName", "");
 

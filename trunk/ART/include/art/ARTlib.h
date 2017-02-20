@@ -836,7 +836,7 @@ When calculation the impedance of a cylindrical tube, you would first create an 
   typedef struct Property Property;
   typedef struct ITimeModule ITimeModule;
   typedef struct ARTobject ARTobject;
-  typedef struct ARTmethod ARTmethod;
+  typedef struct CalculationMethod CalculationMethod;
   typedef struct ListProp ListProp;
   typedef struct ARTvariant ARTvariant;
   typedef struct ARTdataProp ARTdataProp;
@@ -854,7 +854,7 @@ namespace ART{
   class ListProp;
   class ITimeModule;
   class ARTobject;
-  class ARTmethod;
+  class CalculationMethod;
   class ARTvariant;
   class ARTdataProp;
 }
@@ -875,7 +875,7 @@ typedef Property*	P_ART_Property;
 typedef ListProp*	P_ART_ListProp;
 typedef ITimeModule* P_ART_TModule;
 typedef ARTobject*	P_ART_Object;
-typedef ARTmethod*	P_ART_Method;
+typedef CalculationMethod*	P_ART_Method;
 typedef ARTvariant*	P_ART_Variant;
 typedef ARTdataProp*	P_ART_DataProp;
 

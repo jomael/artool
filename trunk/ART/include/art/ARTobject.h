@@ -51,7 +51,7 @@
 namespace ART{
 class Property;
 class ListProp;
-class ARTmethod;
+class CalculationMethod;
 class ARTdataProp;
 }
 
@@ -67,13 +67,13 @@ private:
 protected:
         list<ART::Property*>      propertyList_;
         list<ART::Property*>::iterator piter_;
-        list<ARTmethod*>        methodList_;
-        list<ARTmethod*>::iterator miter_;
+        list<CalculationMethod*>        methodList_;
+        list<CalculationMethod*>::iterator miter_;
 public:
         /// objects must have a name, the rest is optional
         ARTobject(const string name, const string sds="", const string lds="", const string htm="") : Cell(name,sds,lds,htm),
                 propertyList_(list<ART::Property*>()),    piter_(propertyList_.begin()),
-                methodList_(list<ARTmethod*>()),                miter_(methodList_.begin()) {}
+                methodList_(list<CalculationMethod*>()),                miter_(methodList_.begin()) {}
 
         ARTobject(const ARTobject& orig); ///<copy constructor
 
@@ -107,16 +107,16 @@ public:
         virtual bool DeleteProperty(ART::Property* prp);
 
   /// iterate through method list (pass NULL to restart iteration, receive NULL after last element)
-        virtual ARTmethod* GetMethods   (ARTmethod* pos);
+        virtual CalculationMethod* GetMethods   (CalculationMethod* pos);
 
   /// find and return named method (or return NULL if no match)
-        virtual ARTmethod* FindMethod(const string nam) ;
+        virtual CalculationMethod* FindMethod(const string nam) ;
 
   /// append new method with given name
-        virtual ARTmethod* AppendMethod(const string name, const string sds="", const string lds="", const string htm="");
+        virtual CalculationMethod* AppendMethod(const string name, const string sds="", const string lds="", const string htm="");
 
   /// delete current method (which was recently accessed by GetProperties, FindProperty or AppendProperty)
-        virtual bool DeleteMethod(ARTmethod* mtd);
+        virtual bool DeleteMethod(CalculationMethod* mtd);
 
         virtual void SetPropertyList(list<ART::Property*> &l)
         {
@@ -127,7 +127,7 @@ public:
         virtual void CopyMethodListEntries(ARTobject* obj);
 
         virtual list<ART::Property*> GetPropertyList(){return propertyList_;}
-        virtual list<ARTmethod*> GetMethodList(){return methodList_;}
+        virtual list<CalculationMethod*> GetMethodList(){return methodList_;}
 
 };
 }
