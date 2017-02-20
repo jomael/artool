@@ -839,7 +839,7 @@ When calculation the impedance of a cylindrical tube, you would first create an 
   typedef struct CalculationMethod CalculationMethod;
   typedef struct ListProp ListProp;
   typedef struct ARTvariant ARTvariant;
-  typedef struct ARTdataProp ARTdataProp;
+  typedef struct DataProp DataProp;
 typedef int bool;
 
 #else
@@ -856,7 +856,7 @@ namespace ART{
   class ARTobject;
   class CalculationMethod;
   class ARTvariant;
-  class ARTdataProp;
+  class DataProp;
 }
 /*
 #include "Interface.h"1
@@ -877,7 +877,7 @@ typedef ITimeModule* P_ART_TModule;
 typedef ARTobject*	P_ART_Object;
 typedef CalculationMethod*	P_ART_Method;
 typedef ARTvariant*	P_ART_Variant;
-typedef ARTdataProp*	P_ART_DataProp;
+typedef DataProp*	P_ART_DataProp;
 
 
 typedef bool (* TprogressFunction)(double, const char*);

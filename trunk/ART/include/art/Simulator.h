@@ -52,7 +52,7 @@
 #include "mpParser.h"
 #include "ARTobject.h"
 #include "Property.h"
-#include "ARTdataProp.h"
+#include "DataProp.h"
 
 using namespace mup;
 //using std::list;
@@ -82,7 +82,7 @@ protected:
 //      std::allocator<std::pair<const std::basic_string<char>, ARTobject*> > > ARTobjectMap;
 
   /// Datatype for saving references to ARTdataProp objects with the given name
-  typedef std::map<string,ARTdataProp*> ARTdataPropMap;
+  typedef std::map<string,DataProp*> ARTdataPropMap;
 
   /// Datatype to access the referenced ARTdataProp objects saved in the map
   typedef ARTdataPropMap::value_type ARTdataPropMapValueType;
@@ -123,7 +123,7 @@ public:
    * @exception ARTerror In case the specified property could not be found in
    *            the current simulator.
    */
-  virtual ARTdataProp* FindDataPropInSimulator(string exp);
+  virtual DataProp* FindDataPropInSimulator(string exp);
   /**
    * @brief The destructor of the simulator class is doing nothing as all saved
    *        properties will be deallocated by the destructor of the ARTObject
@@ -142,16 +142,16 @@ public:
    */
   ListProp* circuits;
 
-  virtual ARTdataProp* AppendDataProp(const string name, ARTvariant* val, const string sds="", const string lds="", const string htm="");
-  virtual ARTdataProp* AppendDataProp(const string name, const double val, const string sds="", const string lds="", const string htm="");
-  virtual ARTdataProp* AppendDataProp(const string name, const float  val, const string sds="", const string lds="", const string htm="");
-  virtual ARTdataProp* AppendDataProp(const string name, const string  val, const string sds="", const string lds="", const string htm="");
-  virtual ARTdataProp* AppendDataProp(const string name, const int    val, const string sds="", const string lds="", const string htm="");
-  virtual ARTdataProp* AppendDataProp(ARTdataProp* dataProp);
+  virtual DataProp* AppendDataProp(const string name, ARTvariant* val, const string sds="", const string lds="", const string htm="");
+  virtual DataProp* AppendDataProp(const string name, const double val, const string sds="", const string lds="", const string htm="");
+  virtual DataProp* AppendDataProp(const string name, const float  val, const string sds="", const string lds="", const string htm="");
+  virtual DataProp* AppendDataProp(const string name, const string  val, const string sds="", const string lds="", const string htm="");
+  virtual DataProp* AppendDataProp(const string name, const int    val, const string sds="", const string lds="", const string htm="");
+  virtual DataProp* AppendDataProp(DataProp* dataProp);
 
-  virtual void RegisterDataProp(ARTdataProp* dataProp);
-  virtual void RegisterDataProp(ARTdataProp* dataProp, string& name);
-  virtual void UnregisterDataProp(ARTdataProp* dataProp);
+  virtual void RegisterDataProp(DataProp* dataProp);
+  virtual void RegisterDataProp(DataProp* dataProp, string& name);
+  virtual void UnregisterDataProp(DataProp* dataProp);
 
 };
 }
