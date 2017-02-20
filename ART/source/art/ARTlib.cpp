@@ -53,9 +53,9 @@
 	#include "common.hpp"
 	using std::strcmp;
 #endif
-#include "art.clp"
+#include "ARTcli.clp"
 
-#include "ART.h"
+#include "ARTlib.h"
 //#include "strparsing.h"
 //#include "Model.h"
 #include "DataContainer.h"

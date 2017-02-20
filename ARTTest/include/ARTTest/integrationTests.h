@@ -21,15 +21,14 @@
 #define GetTickCount() 0
 #endif
 
-#include "ART.h"
+#include "ARTlib.h"
 #include "ARTlink.h"
 
 #include "gmock.h"
 #include "gtest.h"
 
-#include "art.clp"
+#include "ARTcli.clp"
 #include "Simulator.h"
-#include "ART.h"
 #include "ARTmethod.h"
 #include "WaveObject.h"
 #include "Model.h"

@@ -43,7 +43,7 @@
 #include "Model.h"
 #include "TimeModule.h"
 #include "timePrototypes.h"
-#include "ART.h"
+#include "ARTlib.h"
 using namespace ART;
 AcousticResearchTool::AcousticResearchTool() : ARTobject("ART","Acoustic Research Tool","","ART.htm")
 {
