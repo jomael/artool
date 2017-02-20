@@ -99,7 +99,7 @@ void TimeSimulator::AddSimulationParameter(const string& name, const string& exp
   //		_simulParams[name] = newParam;
   //		addParamToCurrentModules(name, newParam);
   //	}
-  ARTdataProp* prop = NULL;
+  DataProp* prop = NULL;
   try
   {
     prop = FindDataPropInSimulator(name);
@@ -107,7 +107,7 @@ void TimeSimulator::AddSimulationParameter(const string& name, const string& exp
   catch(ARTerror& e)
   {
 //    prop = new ARTdataProp(C_ART_cpx, 0, name);
-    prop = new ARTdataProp(C_ART_dbl, 0, name);
+    prop = new DataProp(C_ART_dbl, 0, name);
     prop->SetParser(parser_);
     prop->SetDefinition(expr, this);
     AppendDataProp(prop);
@@ -131,14 +131,14 @@ void TimeSimulator::AddSimulationParameter(const string& name, const std::comple
   //		_simulParams[name] = newParam;
   //		addParamToCurrentModules(name, newParam);
   //	}
-  ARTdataProp* prop = NULL;
+  DataProp* prop = NULL;
   try
   {
     prop = FindDataPropInSimulator(name);
   }
   catch(ARTerror& e)
   {
-    prop = new ARTdataProp(C_ART_cpx, 0, name);
+    prop = new DataProp(C_ART_cpx, 0, name);
     prop->SetParser(parser_);
     prop->SetVal(val);
     AppendDataProp(prop);
@@ -153,14 +153,14 @@ void TimeSimulator::AddSimulationParameter(const string& name, const std::comple
 
 void TimeSimulator::AddSimulationParameter(const string& name, double val)
 {
-  ARTdataProp* prop = NULL;
+  DataProp* prop = NULL;
   try
   {
     prop = FindDataPropInSimulator(name);
   }
   catch(ARTerror& e)
   {
-    prop = new ARTdataProp(C_ART_cpx, 0, name);
+    prop = new DataProp(C_ART_cpx, 0, name);
     prop->SetParser(parser_);
     prop->SetVal(val);
     AppendDataProp(prop);
@@ -188,7 +188,7 @@ void TimeSimulator::SimulateTimeStep(int idx)
 {
 
   // set current time index parameter if it exists
-  ARTdataProp* prop = FindDataPropInSimulator("t");
+  DataProp* prop = FindDataPropInSimulator("t");
   //	if (_simulParams.find("t") != _simulParams.end())
   //	{
   //		DataContainer& tmpContainer = *(_simulParams["t"]->_val);
@@ -238,7 +238,7 @@ void TimeSimulator::SimulateTimeStep(int idx)
 
 void TimeSimulator::SetSimulationParameter(const string& name, const string& expr)
 {
-  ARTdataProp* prop = FindDataPropInSimulator(name);
+  DataProp* prop = FindDataPropInSimulator(name);
   //	if (_simulParams.find(name) != _simulParams.end())
   //	{
   //		DataContainer* tmpContainer = (_simulParams[name])->_val;
@@ -259,7 +259,7 @@ void TimeSimulator::SetSimulationParameter(const string& name, const string& exp
 
 void TimeSimulator::SetSimulationParameter(const string& name, const std::complex<double>& val)
 {
-  ARTdataProp* prop = FindDataPropInSimulator(name);
+  DataProp* prop = FindDataPropInSimulator(name);
   //	if (_simulParams.find(name) != _simulParams.end())
   //	{
   //		DataContainer* tmpContainer = (_simulParams[name])->_val;
@@ -282,7 +282,7 @@ void TimeSimulator::SetSimulationParameter(const string& name, const std::comple
 
 void TimeSimulator::SetSimulationParameter(const string& name, double val)
 {
-  ARTdataProp* prop = FindDataPropInSimulator(name);
+  DataProp* prop = FindDataPropInSimulator(name);
   //	if (_simulParams.find(name) != _simulParams.end())
   //	{
   //		DataContainer* tmpContainer = (_simulParams[name])->_val;
@@ -303,11 +303,11 @@ void TimeSimulator::SetSimulationParameter(const string& name, double val)
   }
 }
 
-ARTdataProp* TimeSimulator::FindDataPropInSimulator(string exp)
+DataProp* TimeSimulator::FindDataPropInSimulator(string exp)
 {
-  ARTdataProp* prop;
+  DataProp* prop;
   //try to find a property of the simulator with name *exp*
-  prop = dynamic_cast<ARTdataProp*>( FindProperty( strcrop( exp ) ));
+  prop = dynamic_cast<DataProp*>( FindProperty( strcrop( exp ) ));
   // if we have not found a property of the simulator,
   // perhaps we find a property of an internal time module
   if (!prop)
@@ -327,7 +327,7 @@ ARTdataProp* TimeSimulator::FindDataPropInSimulator(string exp)
       {
         names[1].erase(pos);
       }
-      prop = dynamic_cast<ARTdataProp*>(timeModule->FindProperty(strcrop(names[1])));
+      prop = dynamic_cast<DataProp*>(timeModule->FindProperty(strcrop(names[1])));
       if (!prop)
       {
         throw ARTerror("ARTtimeSimulator::FindDataPropInSimulator", "The specified data property '%s1' does not exist in time module '%s2'.",
@@ -369,10 +369,10 @@ void TimeSimulator::initStandardSimulParams()
   //	ParserX* tmpParser;
   //	simulParameterType* tmpParam;
 
-  ARTdataProp* tmpProp;
+  DataProp* tmpProp;
 
   // create new simulation parameter for sampling period
-  tmpProp = new ARTdataProp(C_ART_dbl, 0, "T");
+  tmpProp = new DataProp(C_ART_dbl, 0, "T");
   //	tmpParser = new ParserX(mup::pckCOMPLEX_NO_STRING);
   tmpProp->SetParser(parser_);
   tmpProp->SetVal(1.0/44100.0);
@@ -386,7 +386,7 @@ void TimeSimulator::initStandardSimulParams()
   //	_simulParams["T"] = tmpParam;
 
   // create new simulation parameter time index
-  tmpProp = new ARTdataProp(C_ART_int, 0, "t");
+  tmpProp = new DataProp(C_ART_int, 0, "t");
   //	tmpParser = new ParserX(mup::pckCOMPLEX_NO_STRING);
   //	tmpContainer->SetParser(tmpParser);
   tmpProp->SetParser(parser_);
@@ -424,10 +424,10 @@ void TimeSimulator::clean()
 void TimeSimulator::addParamsToModule(ITimeModule* timeModule)
 {
   Property* iter = GetProperties(NULL);
-  ARTdataProp* prop;
+  DataProp* prop;
   while (iter != NULL)
   {
-    prop = dynamic_cast<ARTdataProp*>(iter);
+    prop = dynamic_cast<DataProp*>(iter);
     if (prop)
     {
       timeModule->addGlobalParameter(prop);
@@ -437,7 +437,7 @@ void TimeSimulator::addParamsToModule(ITimeModule* timeModule)
 }
 
 //void ARTtimeSimulator::addParamToCurrentModules(const string& name, simulParameterType* newParam)
-void TimeSimulator::addParamToCurrentModules(ARTdataProp* newParam)
+void TimeSimulator::addParamToCurrentModules(DataProp* newParam)
 {
   if (userElements)
   {

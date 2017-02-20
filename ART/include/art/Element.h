@@ -121,7 +121,7 @@ public:
                         while (prop)
                         {
                                 //if it is a data property
-                                ARTdataProp* dprop = dynamic_cast<ARTdataProp*>(prop);
+                                DataProp* dprop = dynamic_cast<DataProp*>(prop);
                                 if (dprop)
                                 {
                                         string varname = newname + "." + dprop->GetName();

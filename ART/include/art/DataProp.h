@@ -47,19 +47,19 @@
 #include "DataContainer.h"
 
 using std::string;
-namespace ART{
+namespace ART {
 /**
  * A value with a concrete name belonging to an ARTobject is represented by an
  * ARTdataProperty. Just like an DataContainer it can specify some way of recalculating
  * itself. (see DataContainer for details)
  */
-class ARTdataProp : public ART::Property, public ART::DataContainer {
+class DataProp : public ART::Property, public ART::DataContainer {
 public:
-        ARTdataProp(const T_ART_Type dtyp, const int dlen, const string name, const string sds="", const string lds="", const string htm="") :
+        DataProp(const T_ART_Type dtyp, const int dlen, const string name, const string sds="", const string lds="", const string htm="") :
   ART::Property(name,sds,lds,htm,false), ART::DataContainer(dtyp, dlen, name), range(NULL) {}
 
         /** copy constructor */
-        ARTdataProp(const ARTdataProp& orig)
+        DataProp(const DataProp& orig)
 	  : ART::Property(orig), ART::DataContainer(orig)
         {
                 if (orig.range)
@@ -68,7 +68,7 @@ public:
                         range = NULL;
         }
 
-        ~ARTdataProp()
+        ~DataProp()
         {
                         delete range;
         }
@@ -76,7 +76,7 @@ public:
         ARTvariant* GetRange() {return range;}
         void SetRange(ARTvariant* r) {range = r;}
 
-        virtual Cell* clone() {return new ARTdataProp(*this);}
+        virtual Cell* clone() {return new DataProp(*this);}
 private:
         ARTvariant* range;
 };

@@ -46,7 +46,7 @@
 #include "mpParser.h"
 #include "ARTobject.h"
 #include "Property.h"
-#include "ARTdataProp.h"
+#include "DataProp.h"
 #include "Simulator.h"
 
 using namespace mup;

@@ -67,9 +67,9 @@ Simulator::Simulator(const string name, const string domain,
 
 
 /// Finds the data property represented by the string exp; This can be a data property of an element or model in the simulator (then the string is something like "Cyl.length") or a data property of the simulator itself.
-ARTdataProp* Simulator::FindDataPropInSimulator(string exp)
+DataProp* Simulator::FindDataPropInSimulator(string exp)
 {
-  ARTdataProp* dataProp = NULL;
+  DataProp* dataProp = NULL;
 
   dataProp = (*pointerMap_)[exp];
 
@@ -91,54 +91,54 @@ ARTdataProp* Simulator::FindDataPropInSimulator(string exp)
   return dataProp;
 }
 
-ARTdataProp* Simulator::AppendDataProp(const string name, ARTvariant* val, const string sds, const string lds, const string htm)
+DataProp* Simulator::AppendDataProp(const string name, ARTvariant* val, const string sds, const string lds, const string htm)
 {
-  ARTdataProp* dataProp = ARTobject::AppendDataProp(name, val, sds, lds, htm);
+  DataProp* dataProp = ARTobject::AppendDataProp(name, val, sds, lds, htm);
 //  std::cout << "pointerMap[" << dataProp->GetName() << "] = " << dataProp << std::endl;
   (*pointerMap_)[dataProp->GetName()] = dataProp;
   return dataProp;
 }
 
-ARTdataProp* Simulator::AppendDataProp(const string name, const double val, const string sds, const string lds, const string htm)
+DataProp* Simulator::AppendDataProp(const string name, const double val, const string sds, const string lds, const string htm)
 {
-  ARTdataProp* dataProp = ARTobject::AppendDataProp(name, val, sds, lds, htm);
+  DataProp* dataProp = ARTobject::AppendDataProp(name, val, sds, lds, htm);
 //  std::cout << "pointerMap[" << dataProp->GetName() << "] = " << dataProp << std::endl;
   (*pointerMap_)[dataProp->GetName()] = dataProp;
   return dataProp;
 }
 
-ARTdataProp* Simulator::AppendDataProp(const string name, const float  val, const string sds, const string lds, const string htm)
+DataProp* Simulator::AppendDataProp(const string name, const float  val, const string sds, const string lds, const string htm)
 {
-  ARTdataProp* dataProp = ARTobject::AppendDataProp(name, val, sds, lds, htm);
+  DataProp* dataProp = ARTobject::AppendDataProp(name, val, sds, lds, htm);
 //  std::cout << "pointerMap[" << dataProp->GetName() << "] = " << dataProp << std::endl;
   (*pointerMap_)[dataProp->GetName()] = dataProp;
   return dataProp;
 }
 
-ARTdataProp* Simulator::AppendDataProp(const string name, const string val, const string sds, const string lds, const string htm)
+DataProp* Simulator::AppendDataProp(const string name, const string val, const string sds, const string lds, const string htm)
 {
-  ARTdataProp* dataProp = ARTobject::AppendDataProp(name, val, sds, lds, htm);
+  DataProp* dataProp = ARTobject::AppendDataProp(name, val, sds, lds, htm);
 //  std::cout << "pointerMap[" << dataProp->GetName() << "] = " << dataProp << std::endl;
   (*pointerMap_)[dataProp->GetName()] = dataProp;
   return dataProp;
 }
 
-ARTdataProp* Simulator::AppendDataProp(const string name, const int val, const string sds, const string lds, const string htm)
+DataProp* Simulator::AppendDataProp(const string name, const int val, const string sds, const string lds, const string htm)
 {
-  ARTdataProp* dataProp = ARTobject::AppendDataProp(name, val, sds, lds, htm);
+  DataProp* dataProp = ARTobject::AppendDataProp(name, val, sds, lds, htm);
 //  std::cout << "pointerMap[" << dataProp->GetName() << "] = " << dataProp << std::endl;
   (*pointerMap_)[dataProp->GetName()] = dataProp;
   return dataProp;
 }
 
-ARTdataProp* Simulator::AppendDataProp(ARTdataProp* dataProp)
+DataProp* Simulator::AppendDataProp(DataProp* dataProp)
 {
 //  std::cout << "pointerMap[" << dataProp->GetName() << "] = " << dataProp << std::endl;
   (*pointerMap_)[dataProp->GetName()] = dataProp;
   return ARTobject::AppendDataProp(dataProp);
 }
 
-void Simulator::RegisterDataProp(ARTdataProp* dataProp)
+void Simulator::RegisterDataProp(DataProp* dataProp)
 {
   if (dataProp)
   {
@@ -153,7 +153,7 @@ void Simulator::RegisterDataProp(ARTdataProp* dataProp)
   }
 }
 
-void Simulator::RegisterDataProp(ARTdataProp* dataProp, string& name)
+void Simulator::RegisterDataProp(DataProp* dataProp, string& name)
 {
   if (dataProp)
   {
@@ -168,7 +168,7 @@ void Simulator::RegisterDataProp(ARTdataProp* dataProp, string& name)
   }
 }
 
-void Simulator::UnregisterDataProp(ARTdataProp* dataProp)
+void Simulator::UnregisterDataProp(DataProp* dataProp)
 {
   if (dataProp)
   {
