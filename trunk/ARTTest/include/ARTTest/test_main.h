@@ -21,7 +21,7 @@
 #define GetTickCount() 0
 #endif
 
-#include "ART.h"
+#include "ARTlib.h"
 #include "ARTlink.h"
 
 #include "gmock.h"

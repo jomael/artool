@@ -40,7 +40,7 @@
 #ifndef ARTMODEL_H
 #define ARTMODEL_H
 
-#include "ART.h"
+#include "ARTlib.h"
 #include "WaveObject.h"
 #include "ARTlink.h"
 #include "FreqSimulator.h"
