@@ -1743,18 +1743,18 @@ TEST_DEF_START(deleteElementAndCalculateImpedance2, ARTdependencyTree) //viellei
         virtual void prepare()
         {
                 meinIns = ARTCreateCircuit(ARTdependencyTree->mySim, "MeinInstrument");
-                Cyl = ARTCreateElement(ARTdependencyTree->mySim, "Cyl1", "Cylinder");
+                Cyl = ARTCreateElement(ARTdependencyTree->mySim, "Cyl10", "Cylinder");
         }
 
         virtual bool run() //test calculating impedance
         {
                 try
                 {
-                        P_ART_Element Bes = ARTCreateElement(ARTdependencyTree->mySim, "Bes1", "Besselhorn");
+                        P_ART_Element Bes = ARTCreateElement(ARTdependencyTree->mySim, "Bes10", "Besselhorn");
                         ARTAppendReference(meinIns, Cyl);
                         ARTAppendReference(meinIns, Bes);
 
-                        ARTSetParameter(ARTdependencyTree->mySim, "Cyl1.length = Bes1.r1 * 2;");
+                        ARTSetParameter(ARTdependencyTree->mySim, "Cyl10.length = Bes10.r1 * 2;");
                         ARTInputImpedance(meinIns);
 
                         //Now change element to cylinder.
