@@ -400,12 +400,12 @@ P_ART_Element    __CALLCONV ARTChangeElementModel     (P_ART_Simulator simulator
 {
 	DLL_ERRORHANDLING_BEGIN
 	#if ARTDebug > 5
-		std::cout << "ARTChangeElementType("<< simulator << "," << element << "," << type << ");\n";
+		std::cout << "ARTChangeElementModel("<< simulator << "," << element << "," << type << ");\n";
 	#endif
 	//check if art and simulator are valid objects
 	if (art == NULL) art = new AcousticResearchTool();
-	if (simulator == NULL) throw ARTerror("ARTChangeElementType", "Invalid simulator"); 
-	if (element == NULL) throw ARTerror("ARTChangeElementType", "Element is NULL");
+	if (simulator == NULL) throw ARTerror("ARTChangeElementModel", "Invalid simulator"); 
+	if (element == NULL) throw ARTerror("ARTChangeElementModel", "Element is NULL");
 
 	//Find the prototype
 	ModelInterface* prototype = (ModelInterface*)(art->prototypeModels->FindObject(type));
@@ -415,13 +415,13 @@ P_ART_Element    __CALLCONV ARTChangeElementModel     (P_ART_Simulator simulator
 	{
 		//check if model features simulator's domain and wavetype
 		CalculationMethod* method = prototype->FindMethod(simulator->GetDomain()->GetName().c_str());
-		if (method == NULL) throw ARTerror("ARTChangeElementType", "The prototype model does not support the domain of the simulator.");
+		if (method == NULL) throw ARTerror("ARTChangeElementModel", "The prototype model does not support the domain of the simulator.");
 
 		if (simulator->GetDomain()->GetName() == "FrequencyDomain")
 		{
 			FreqSimulator* freqSimulator = dynamic_cast<FreqSimulator*>(simulator);
 			method = prototype->FindMethod(freqSimulator->GetWavetype()->GetName().c_str());
-			if (method == NULL) throw ARTerror("ARTChangeElementType", "The prototype model does not support the wavetype of the simulator.");
+			if (method == NULL) throw ARTerror("ARTChangeElementModel", "The prototype model does not support the wavetype of the simulator.");
 		}
 
 		//save list of all datacontainers dependent on properties of this one
@@ -488,7 +488,7 @@ P_ART_Element    __CALLCONV ARTChangeElementModel     (P_ART_Simulator simulator
 		return element;
 	}
 	else //if a model of "name" was not found in the list: 
-		throw ARTerror("ARTChangeElementType", "A prototype model of the specified type does not exist.");
+		throw ARTerror("ARTChangeElementModel", "A prototype model of the specified type does not exist.");
 	DLL_ERRORHANDLING_END
 }
 
@@ -497,7 +497,7 @@ P_ART_Element    __CALLCONV ARTChangeElementModel     (P_ART_Simulator simulator
 P_ART_Object	__CALLCONV	ARTGetModel	(P_ART_Element  element)
 {
 	DLL_ERRORHANDLING_BEGIN
-  if (element == NULL) throw ARTerror("ARTGetProperties", "element is NULL.");
+  if (element == NULL) throw ARTerror("ARTGetModel", "element is NULL.");
   else return element->model;
 	DLL_ERRORHANDLING_END
 }
@@ -774,7 +774,7 @@ bool __CALLCONV ARTConnectPorts	(P_ART_Simulator simulator, const char* expr)
 	ITimeModule *inModule, *outModule;
 	TimeSimulator* sim = dynamic_cast<TimeSimulator*>(simulator);
 	//check if the simulator is a valid object
-	if (sim == NULL) throw ARTerror("ARTCreateTModule", "Invalid time domain simulator");
+	if (sim == NULL) throw ARTerror("ARTConnectPorts", "Invalid time domain simulator");
 	for (commandIter = 0; commandIter < commands.size(); ++commandIter)
 	{
 		vector<string> moduleNames = strsplit(strcrop(commands[commandIter]), '=');
@@ -854,9 +854,9 @@ int	__CALLCONV	ARTGetReferencePosition	(P_ART_Circuit circuit, P_ART_Element ele
 {
 	DLL_ERRORHANDLING_BEGIN
 
-	if (circuit == NULL) throw ARTerror("ARTAppendReference", "Invalid circuit"); 
+	if (circuit == NULL) throw ARTerror("ARTGetReferencePosition", "Invalid circuit"); 
 
-	if (element == NULL) throw ARTerror("ARTAppendReference", "Invalid element");
+	if (element == NULL) throw ARTerror("ARTGetReferencePosition", "Invalid element");
 
 	return circuit->GetElementPosition(element);
 	DLL_ERRORHANDLING_END_CUSTOM_RETURN( -1 )
@@ -885,9 +885,9 @@ P_ART_Object	__CALLCONV	ARTAppendReferenceBefore	(P_ART_Circuit circuit, P_ART_E
 {
 	DLL_ERRORHANDLING_BEGIN
 	//check if the circuit is valid
-	if (circuit == NULL) throw ARTerror("ARTAppendReference", "Invalid circuit"); 
-	if (reference == NULL) throw ARTerror("ARTAppendReference", "Invalid reference passed in parameter reference"); 
-	if (referenceAfter == NULL) throw ARTerror("ARTAppendReference", "Invalid reference passed in parameter referenceBefore"); 
+	if (circuit == NULL) throw ARTerror("ARTAppendReferenceBefore", "Invalid circuit"); 
+	if (reference == NULL) throw ARTerror("ARTAppendReferenceBefore", "Invalid reference passed in parameter reference"); 
+	if (referenceAfter == NULL) throw ARTerror("ARTAppendReferenceBefore", "Invalid reference passed in parameter referenceBefore"); 
 
 	circuit->AppendElementBefore(referenceAfter, reference);
 
@@ -902,10 +902,10 @@ P_ART_Object	__CALLCONV	ARTAppendReferenceAfter	(P_ART_Circuit circuit, P_ART_El
 {
 	DLL_ERRORHANDLING_BEGIN
 	//check if the circuit is valid
-	if (circuit == NULL) throw ARTerror("ARTAppendReference", "Invalid circuit"); 
+	if (circuit == NULL) throw ARTerror("ARTAppendReferenceAfter", "Invalid circuit"); 
 
-	if (reference == NULL) throw ARTerror("ARTAppendReference", "reference is NULL"); 
-	if (referenceBefore == NULL) throw ARTerror("ARTAppendReference", "referenceBefore is NULL"); 
+	if (reference == NULL) throw ARTerror("ARTAppendReferenceAfter", "reference is NULL"); 
+	if (referenceBefore == NULL) throw ARTerror("ARTAppendReferenceAfter", "referenceBefore is NULL"); 
 
 	circuit->AppendElementAfter(referenceBefore, reference);
 
@@ -919,8 +919,8 @@ int	__CALLCONV	ARTRemoveReference	(P_ART_Circuit circuit, P_ART_Element referenc
 {
 	DLL_ERRORHANDLING_BEGIN
 	//check if the circuit is valid
-	if (circuit == NULL) throw ARTerror("ARTAppendReference", "Invalid circuit"); 
-	if (reference == NULL) throw ARTerror("ARTAppendReference", "reference is NULL"); 
+	if (circuit == NULL) throw ARTerror("ARTRemoveReference", "Invalid circuit"); 
+	if (reference == NULL) throw ARTerror("ARTRemoveReference", "reference is NULL"); 
 
 	return circuit->RemoveElement(reference);
 	DLL_ERRORHANDLING_END
@@ -932,9 +932,9 @@ int	__CALLCONV	ARTReplaceReference	(P_ART_Circuit circuit, P_ART_Element search,
 {
 	DLL_ERRORHANDLING_BEGIN
 	//check if the circuit is valid
-	if (circuit == NULL) throw ARTerror("ARTAppendReference", "Invalid circuit"); 
-	if (search == NULL) throw ARTerror("ARTAppendReference", "search is NULL"); 
-	if (replace == NULL) throw ARTerror("ARTAppendReference", "replace is NULL"); 
+	if (circuit == NULL) throw ARTerror("ARTReplaceReference", "Invalid circuit"); 
+	if (search == NULL) throw ARTerror("ARTReplaceReference", "search is NULL"); 
+	if (replace == NULL) throw ARTerror("ARTReplaceReference", "replace is NULL"); 
 
 	return circuit->ReplaceElement(search, replace);
 	DLL_ERRORHANDLING_END
@@ -945,7 +945,7 @@ int    __CALLCONV ARTRemoveAllReferences     (P_ART_Circuit circuit)
 {
 	DLL_ERRORHANDLING_BEGIN
 	//check if the circuit is valid
-	if (circuit == NULL) throw ARTerror("ARTAppendReference", "Invalid circuit"); 
+	if (circuit == NULL) throw ARTerror("ARTRemoveAllReferences", "Invalid circuit"); 
 
 	return circuit->RemoveAllElements();
 	DLL_ERRORHANDLING_END
