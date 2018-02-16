@@ -58,13 +58,14 @@ AcousticResearchTool::AcousticResearchTool() : ARTobject("ART","Acoustic Researc
 
 // -------------------------------------------------------------------------------------------------------------
 // Top level properties:
-        DataProp* authors = new DataProp(C_ART_nstr, 6, "Authors");
+        DataProp* authors = new DataProp(C_ART_nstr, 7, "Authors");
         ARTSetString(authors,0,"Wilfried Kausel");
         ARTSetString(authors,1,"Alistair Braden");
         ARTSetString(authors,2,"Delphine Cadefaux");
         ARTSetString(authors,3,"Vasileios Chatziioannou");
         ARTSetString(authors,4,"Sadjad Siddiq");
         ARTSetString(authors,5,"Clemens Geyer");
+	ARTSetString(authors,6,"Saranya Balasubramanian");
         AppendDataProp(authors);
 
         AppendDataProp("Copyright","This program is licenced according to GPL-Library ()");
