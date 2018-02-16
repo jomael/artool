@@ -1335,7 +1335,7 @@ bool            __CALLCONV ARTSetTriple          (P_ART_Variant pprp, int idx, T
 	  if (idx < pprp->len)
 		pprp->val->nt[idx] = t;
 	  else
-		throw ARTerror("ARTSetMatrix","The index is out of bounds.");
+		throw ARTerror("ARTSetTriple","The index is out of bounds.");
 	}	
   }
 	return 1; //No error
